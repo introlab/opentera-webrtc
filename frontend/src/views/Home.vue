@@ -19,6 +19,7 @@
 
     <VideoView
       ref="webcam"
+      selectFirstDevice="true"
       :name="name"
       :deviceId="deviceId"
       @cameras="camera_list"
