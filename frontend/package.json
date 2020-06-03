@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "adapterjs": "^0.15.4",
+    "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "socket.io": "^2.3.0",
     "uuid": "^8.1.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
+    "vue-webrtc": "^1.2.1",
     "vuex": "^3.4.0"
   },
   "devDependencies": {
