@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node server_ssl.js"
+    "start-open-easyrtc": "node server_open_easyrtc_ssl.js",
+    "start-rtc-multi-connection": "node server_rtc_multi_connection_ssl.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.5",
@@ -11,6 +12,7 @@
     "open-easyrtc": "^2.0.5",
     "express": "^4.17.1",
     "morgan": "~1.10.0",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "rtcmulticonnection-server": "^1.3.2"
   }
 }
