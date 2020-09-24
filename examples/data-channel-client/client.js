@@ -35,6 +35,7 @@
       clients.forEach(client => {
         let li = document.createElement('li');
         li.textContent = client.id + ' - ' + client.name;
+        li.style.color = client.isConnected ? 'green' : 'red';
         clientList.appendChild(li);
       });
     };
@@ -45,7 +46,7 @@
       hangUpButton.disabled = false;
     }
     dataChannelClient.onDataChannelClose = () => {
-      sendButton.disabled = true;
+      sendButton.disabled = !dataChannelClient.isConnected;
       callButton.disabled = dataChannelClient.isConnected;
       hangUpButton.disabled = !dataChannelClient.isConnected;
     };
@@ -65,7 +66,7 @@
     const RtcConfiguration = {};
     const Room = 'chat';
 
-    dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration, 
+    dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration,
       DataChannelConfiguration, RtcConfiguration, nameInput.value, Room);
     connectDataChannelClientEvents();
 
@@ -88,5 +89,5 @@
     chatTextArea.value += '\n';
 
     dataChannelClient.sendToAll(textInput.value)
-  };  
+  };
 })();

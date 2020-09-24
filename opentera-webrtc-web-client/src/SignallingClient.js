@@ -2,18 +2,22 @@ import io from 'socket.io-client';
 
 
 class SignallingClient {
-  constructor(signallingServerConfiguration, name, room, getRtcPeerConnection, getAllRtcPeerConnection) {
+  constructor(signallingServerConfiguration, name, room,
+    hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection) {
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
     }
 
     this._signallingServerConfiguration = signallingServerConfiguration;
+    this._hasRtcPeerConnection = hasRtcPeerConnection;
     this._getRtcPeerConnection = getRtcPeerConnection;
     this._getAllRtcPeerConnection = getAllRtcPeerConnection;
     this._name = name;
     this._room = room;
 
     this._socket = null;
+
+    this._clients = [];
 
     this._onConnectionOpen = () => {};
     this._onConnectionClose = () => {};
@@ -40,7 +44,10 @@ class SignallingClient {
   _connectEvents() {
     this._socket.on('disconnect', () => this._disconnect());
 
-    this._socket.on('room-clients', clients => this._onRoomClientsChanged(clients));
+    this._socket.on('room-clients', clients => {
+      this._clients = clients;
+      this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
+    });
 
     this._socket.on('make-calls', async ids => await this._makeCalls(ids));
     this._socket.on('call-received', async data => await this._callReceived(data));
@@ -99,6 +106,10 @@ class SignallingClient {
   async _makeCalls(ids) {
     ids = ids.filter(id => id != this._socket.id);
     ids.forEach(async id => {
+      if (this._hasRtcPeerConnection(id)) {
+        return;
+      }
+
       let rtcPeerConnection = this._getRtcPeerConnection(id, true);
       this._connectOnIceCandidateEvent(id, rtcPeerConnection);
 
@@ -117,8 +128,27 @@ class SignallingClient {
     };
   }
 
+  _addConnectionStateToClients(clients) {
+    let newClients = [];
+    clients.forEach(client => {
+      newClients.push({
+        id: client.id,
+        name: client.name,
+        isConnected: this._hasRtcPeerConnection(client.id) || client.id == this.id
+      });
+    });
+
+    return newClients;
+  }
+
+  updateRoomClients() {
+    this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
+  }
+
   close() {
-    this._socket.close();
+    if (this._socket !== null) {
+      this._disconnect();
+    }
   }
 
   callAll() {
@@ -127,6 +157,10 @@ class SignallingClient {
 
   hangUp() {
     this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
+  }
+
+  get id() {
+    return this._socket.id;
   }
 
   set onConnectionOpen(onConnectionOpen) {

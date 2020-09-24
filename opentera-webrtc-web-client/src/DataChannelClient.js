@@ -41,10 +41,11 @@ class DataChannelClient {
   }
 
   async connect() {
+    let hasRtcPeerConnection = id => this._hasRtcPeerConnection(id);
     let getRtcPeerConnection = (id, isCaller) => this._getRtcPeerConnection(id, isCaller);
     let getAllRtcPeerConnection = () => this._getAllRtcPeerConnection();
     this._signallingClient = new SignallingClient(this._signallingServerConfiguration, this._name, this._room,
-      getRtcPeerConnection, getAllRtcPeerConnection);
+      hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection);
 
     this._signallingClient.onConnectionOpen = this._onSignallingConnectionOpen;
     this._signallingClient.onConnectionClose = () => {
@@ -57,6 +58,10 @@ class DataChannelClient {
     };
 
     await this._signallingClient.connect();
+  }
+
+  _hasRtcPeerConnection(id) {
+    return id in this._rtcPeerConnections;
   }
 
   _getRtcPeerConnection(id, isCaller) {
@@ -105,15 +110,18 @@ class DataChannelClient {
     };
     dataChannel.onopen = event => {
       this._onDataChannelOpen(id, this._clientNames[id], event);
+      this._signallingClient.updateRoomClients();
     };
     dataChannel.onclose = event => {
       this._removeConnection(id);
       this._onDataChannelClose(id, this._clientNames[id], event);
+      this._signallingClient.updateRoomClients();
     };
     dataChannel.onerror = event => {
       this._removeConnection(id);
       this._onDataChannelError(id, this._clientNames[id], event);
       this._onDataChannelClose(id, this._clientNames[id], event);
+      this._signallingClient.updateRoomClients();
     };
   }
 
@@ -159,6 +167,8 @@ class DataChannelClient {
       this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
     }
     this._rtcPeerConnections = {};
+
+    this._signallingClient.updateRoomClients();
   }
 
   close () {
@@ -193,6 +203,15 @@ class DataChannelClient {
 
   get isConnected() {
     return Object.keys(this._rtcPeerConnections).length > 0;
+  }
+
+  get id() {
+    if (this._signallingClient !== null) {
+      return this._signallingClient.id();
+    }
+    else {
+      return null;
+    }
   }
 
   set onSignallingConnectionOpen(onSignallingConnectionOpen) {
