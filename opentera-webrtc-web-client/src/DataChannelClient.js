@@ -69,8 +69,8 @@ class DataChannelClient {
     };
   }
 
-  _disconnectDataChannelsRtcPeerConnectionEvents() {
-    this._rtcPeerConnection.ondatachannel = () => {};
+  _disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection) {
+    rtcPeerConnection.ondatachannel = () => {};
   }
 
   _connectDataChannelEvents() {
@@ -119,7 +119,7 @@ class DataChannelClient {
       let rtcPeerConnection = this._rtcPeerConnection;
       this._rtcPeerConnection = null;
       rtcPeerConnection.close();
-      this._disconnectDataChannelsRtcPeerConnectionEvents();
+      this._disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection);
     }
   }
 

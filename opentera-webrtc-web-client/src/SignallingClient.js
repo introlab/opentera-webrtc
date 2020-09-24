@@ -112,7 +112,6 @@ class SignallingClient {
 
   close() {
     this._socket.close();
-    this._disconnectEvents();
   }
 
   get isReady() {
