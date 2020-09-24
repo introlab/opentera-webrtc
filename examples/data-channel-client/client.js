@@ -29,12 +29,7 @@
       hangUpButton.disabled = true;
     };
     dataChannelClient.onRoomClientsChanged = clients => {
-      if (clients.length > 1 && hangUpButton.disabled) {
-        callButton.disabled = false;
-      }
-      else {
-        callButton.disabled = true;
-      }
+      callButton.disabled = !(clients.length > 1 && hangUpButton.disabled);
 
       clientList.innerHTML = '';
       clients.forEach(client => {
@@ -51,8 +46,8 @@
     }
     dataChannelClient.onDataChannelClose = () => {
       sendButton.disabled = true;
-      callButton.disabled = !dataChannelClient.isReady;
-      hangUpButton.disabled = true;
+      callButton.disabled = dataChannelClient.isConnected;
+      hangUpButton.disabled = !dataChannelClient.isConnected;
     };
     dataChannelClient.onDataChannelMessage = (id, name, message) => {
       chatTextArea.value += id + ' - ' + name + ': ';
@@ -83,6 +78,9 @@
   callButton.onclick = async () => await dataChannelClient.callAll();
   hangUpButton.onclick = () => {
     dataChannelClient.hangUp();
+    hangUpButton.disabled = true;
+    callButton.disabled = false;
+    sendButton.disabled = true;
   };
   sendButton.onclick = () => {
     chatTextArea.value += 'Me: ';
