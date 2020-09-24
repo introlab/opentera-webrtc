@@ -2,22 +2,22 @@ import io from 'socket.io-client';
 
 
 class SignallingClient {
-  constructor(signallingServerConfiguration, rtcPeerConnection, name, clientType) {
+  constructor(signallingServerConfiguration, name, room, getRtcPeerConnection, getAllRtcPeerConnection) {
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
     }
 
     this._signallingServerConfiguration = signallingServerConfiguration;
-    this._rtcPeerConnection = rtcPeerConnection;
+    this._getRtcPeerConnection = getRtcPeerConnection;
+    this._getAllRtcPeerConnection = getAllRtcPeerConnection;
     this._name = name;
-    this._clientType = clientType;
+    this._room = room;
 
     this._socket = null;
-    this._isReady = false;
 
     this._onConnectionOpen = () => {};
     this._onConnectionClose = () => {};
-    this._onReadyChanged = () => {};
+    this._onRoomClientsChanged = () => {};
   }
   
   async connect() {
@@ -25,38 +25,28 @@ class SignallingClient {
     this._connectEvents();
 
     await new Promise((resolve, reject) => {
-      this._socket.on('connect', () => resolve());
+      this._socket.on('connect', () => {
+        resolve();
+        this._onConnectionOpen();
+      });
       this._socket.on('connect_error', error => reject(error));
       this._socket.on('connect_timeout', error => reject(error));
     });
-    await new Promise((resolve, reject) => {
-      let data = { client_type: this._clientType, room: this._name };
-      this._socket.emit('join-room', data, isJoined => {
-        if (isJoined) {
-          resolve();
-          this._onConnectionOpen();
-        }
-        else {
-          this._disconnectEvents();
-          this._socket.close();
-          this._socket = null;
-          reject(new Error('join-room rejected'));
-        }
-      });
-    });
+    
+    let data = { name: this._name, room: this._room };
+    this._socket.emit('join-room', data);
   }  
 
   _connectEvents() {
     this._socket.on('disconnect', () => this._disconnect());
 
-    this._socket.on('room-not-ready', () => this._roomNotReady());
-    this._socket.on('room-ready', () => this._roomReady());
+    this._socket.on('room-clients', clients => this._onRoomClientsChanged(clients));
 
-    this._socket.on('call-received', offer => this._callReceived(offer));
-    this._socket.on('call-answer-received', answer => this._callAnswerReceived(answer));
+    this._socket.on('make-calls', async ids => await this._makeCalls(ids));
+    this._socket.on('call-received', async data => await this._callReceived(data));
+    this._socket.on('call-answer-received', async data => await this._callAnswerReceived(data));
 
-    this._rtcPeerConnection.onicecandidate = event => this._socket.emit('ice-candidate', event.candidate);
-    this._socket.on('ice-candidate', candidate => this._rtcPeerConnection.addIceCandidate(candidate));
+    this._socket.on('ice-candidate-received', async data => await this._addIceCandidate(data));
   }
 
   _disconnectEvents() {
@@ -65,13 +55,13 @@ class SignallingClient {
     this._socket.off('connect_timeout');
     this._socket.off('disconnect');
 
-    this._socket.off('room-not-ready');
-    this._socket.off('room-ready');
+    this._socket.off('room-clients');
 
+    this._socket.off('make-calls');
     this._socket.off('call-received');
     this._socket.off('call-answer-received');
 
-    this._rtcPeerConnection.onicecandidate = () => {};
+    this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
     this._socket.off('ice-candidate');
   }
 
@@ -82,40 +72,61 @@ class SignallingClient {
     this._onConnectionClose();
   }
 
-  _roomNotReady() {
-    this._isReady = false;
-    this._onReadyChanged(false);
-  }
+  async _callReceived(data) {
+    let rtcPeerConnection = this._getRtcPeerConnection(data.fromId, false);
+    this._connectOnIceCandidateEvent(data.fromId, rtcPeerConnection);
 
-  _roomReady() {
-    this._isReady = true;
-    this._onReadyChanged(true);
-  }
-
-  async _callReceived(offer) {
-    await this._rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(offer));
+    await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.offer));
     
-    let answer = await this._rtcPeerConnection.createAnswer();    
-    await this._rtcPeerConnection.setLocalDescription(new window.RTCSessionDescription(answer));
-    this._socket.emit('make-call-answer', answer);
+    let answer = await rtcPeerConnection.createAnswer();    
+    await rtcPeerConnection.setLocalDescription(new window.RTCSessionDescription(answer));
+
+    data = { toId: data.fromId, answer: answer };
+    this._socket.emit('make-call-answer', data);
   }
 
-  _callAnswerReceived(answer) {
-    this._rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(answer));
+  async _callAnswerReceived(data) {
+    let _rtcPeerConnection =  this._getRtcPeerConnection(data.fromId, false);
+    await _rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
   }
 
-  async call() {
-    let offer = await this._rtcPeerConnection.createOffer();
-    await this._rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
-    this._socket.emit('call', offer);
+  async _addIceCandidate(data) {
+    if (data && data.candidate) {
+      this._getRtcPeerConnection(data.fromId).addIceCandidate(data.candidate);
+    }
+  }
+
+  async _makeCalls(ids) {
+    ids = ids.filter(id => id != this._socket.id);
+    ids.forEach(async id => {
+      let rtcPeerConnection = this._getRtcPeerConnection(id, true);
+      this._connectOnIceCandidateEvent(id, rtcPeerConnection);
+
+      let offer = await rtcPeerConnection.createOffer();
+      await rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
+
+      let data = { toId: id, offer: offer };
+      this._socket.emit('call', data);
+    });
+  }
+
+  _connectOnIceCandidateEvent(id, rtcPeerConnection) {
+    rtcPeerConnection.onicecandidate = event => {
+      let data = { toId: id, candidate: event.candidate };
+      this._socket.emit('send-ice-candidate', data);
+    };
   }
 
   close() {
     this._socket.close();
   }
 
-  get isReady() {
-    return this._isReady;
+  callAll() {
+    this._socket.emit('call-all');
+  }
+
+  hangUp() {
+    this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
   }
 
   set onConnectionOpen(onConnectionOpen) {
@@ -126,8 +137,8 @@ class SignallingClient {
     this._onConnectionClose = onConnectionClose;
   }
 
-  set onReadyChanged(onReadyChanged) {
-    this._onReadyChanged = onReadyChanged;
+  set onRoomClientsChanged(onRoomClientsChanged) {
+    this._onRoomClientsChanged = onRoomClientsChanged;
   }
 }
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web Data Channel Client</title>
+    <meta charset="UTF-8">
+
+    <script src="openteraWebrtcWebClient.js"></script>
+  </head>
+  <body>
+
+    <h1>Web Data Channel Client</h1>
+
+    <h4>Name: </h4>
+    <input id="name_input" type="text"></input>
+    
+    <h4>Signalling Server Connection: </h4>
+    <button id="connect_button" type="button">Connect</button>
+    <button id="close_button" type="button">Close</button>
+
+    <h4>Clients: </h4>
+    <ul id="client_list"></ul>
+    
+    <h4>Call: </h4>
+    <button id="call_button" type="button">Call All</button>
+    <button id="hang_up_button" type="button">Hang Up All</button>
+
+    <h4>Messages: </h4>
+    <input id="text_input" type="text"></input>
+    <button id="send_button" type="button">Send</button><br><br>
+    <textarea id="chat_text_area" rows="10" cols="50" readonly></textarea>
+
+
+    
+    <script src="client.js"></script>
+
+  </body>
+</html>

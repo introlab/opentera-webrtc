@@ -2,7 +2,7 @@ import SignallingClient from './SignallingClient';
 
 
 class DataChannelClient {
-  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration, clientType) {
+  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration, name, room) {
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
     }
@@ -20,52 +20,78 @@ class DataChannelClient {
     this._signallingServerConfiguration = signallingServerConfiguration;
     this._dataChannelConfiguration = dataChannelConfiguration;
     this._rtcConfiguration = rtcConfiguration;
-    this._clientType = clientType;
+    this._name = name;
+    this._room = room;
 
-    this._rtcPeerConnection = null;
-    this._dataChannel = null;
+    this._rtcPeerConnections = {};
+    this._dataChannels = {};
+    this._clientNames = {};
 
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
-    this._onPeerReadyChanged = () => {};
+
+    this._onRoomClientsChanged = () => {};
 
     this._onDataChannelMessage = () => {};
     this._onDataChannelOpen = () => {};
     this._onDataChannelClose = () => {};
-    this._onDataChannelError = (event) => {
-      console.error('Data channel error: ' + event);
+    this._onDataChannelError = (id, event) => {
+      console.error('Data channel error: ' + id + ', ' + event);
     };
   }
 
   async connect() {
-    this._rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
-    this._signallingClient = new SignallingClient(this._signallingServerConfiguration, this._rtcPeerConnection,
-      this._dataChannelConfiguration.name, this._clientType);
+    let getRtcPeerConnection = (id, isCaller) => this._getRtcPeerConnection(id, isCaller);
+    let getAllRtcPeerConnection = () => this._getAllRtcPeerConnection();
+    this._signallingClient = new SignallingClient(this._signallingServerConfiguration, this._name, this._room,
+      getRtcPeerConnection, getAllRtcPeerConnection);
 
     this._signallingClient.onConnectionOpen = this._onSignallingConnectionOpen;
     this._signallingClient.onConnectionClose = () => {
       this._signallingClient = null;
       this._onSignallingConnectionClose();
     };
-    this._signallingClient.onReadyChanged = this._onPeerReadyChanged;
-
-    if (!this._dataChannelConfiguration.isRemote) {
-      let channel = this._rtcPeerConnection.createDataChannel(this._dataChannelConfiguration.name,
-        this._dataChannelConfiguration.options);
-      this._dataChannel = channel;
-      this._connectDataChannelEvents();
-    }
-    else {
-      this._connectDataChannelsRtcPeerConnectionEvents();
-    }
+    this._signallingClient.onRoomClientsChanged = clients => {
+      this._onRoomClientsChanged(clients);
+      this._updateClientNames(clients);
+    };
 
     await this._signallingClient.connect();
   }
 
-  _connectDataChannelsRtcPeerConnectionEvents() {
-    this._rtcPeerConnection.ondatachannel = ({ channel: channel }) => {
-      this._dataChannel = channel;
-      this._connectDataChannelEvents(channel);
+  _getRtcPeerConnection(id, isCaller) {
+    if (id in this._rtcPeerConnections) {
+      return this._rtcPeerConnections[id];
+    }
+    else {
+      let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
+
+      if (isCaller) {
+        let dataChannel = rtcPeerConnection.createDataChannel(this._room, this._dataChannelConfiguration);
+        this._dataChannels[id] = dataChannel;
+        this._connectDataChannelEvents(id, dataChannel);
+      }
+      else {
+        this._connectDataChannelsRtcPeerConnectionEvents(id, rtcPeerConnection);
+      }
+
+      this._rtcPeerConnections[id] = rtcPeerConnection;
+      return rtcPeerConnection;
+    }
+  } 
+  
+  _getAllRtcPeerConnection() {
+    let rtcPeerConnections = [];
+    for (let id in this._rtcPeerConnections) {
+      rtcPeerConnections.push(this._rtcPeerConnections[id]);
+    }
+    return rtcPeerConnections;
+  }
+
+  _connectDataChannelsRtcPeerConnectionEvents(id, rtcPeerConnection) {
+    rtcPeerConnection.ondatachannel = ({ channel: dataChannel }) => {
+      this._dataChannels[id] = dataChannel;
+      this._connectDataChannelEvents(id, dataChannel);
     };
   }
 
@@ -73,67 +99,89 @@ class DataChannelClient {
     rtcPeerConnection.ondatachannel = () => {};
   }
 
-  _connectDataChannelEvents() {
-    this._dataChannel.onmessage = event => {
-      this._onDataChannelMessage(event.data);
+  _connectDataChannelEvents(id, dataChannel) {
+    dataChannel.onmessage = event => {
+      this._onDataChannelMessage(id, this._clientNames[id], event.data);
     };
-    this._dataChannel.onopen = event => {
-      this._onDataChannelOpen(event);
+    dataChannel.onopen = event => {
+      this._onDataChannelOpen(id, this._clientNames[id], event);
     };
-    this._dataChannel.onclose = event => {
-      this._dataChannel = null;
+    dataChannel.onclose = event => {
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+      delete this._dataChannels[id];
 
-      if (this._rtcPeerConnection !== null) {
-        this.close();
-        this._onDataChannelClose(event);
-      }
+      this._onDataChannelClose(id, this._clientNames[id], event);
     };
-    this._dataChannel.onerror = event => {
-      this._onDataChannelError(event);
+    dataChannel.onerror = event => {
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+      delete this._dataChannels[id];
+
+      this._onDataChannelError(id, this._clientNames[id], event);
     };
   }
 
-  _disconnectDataChannelEvents() {
-    this._dataChannel.onmessage = () => {};
-    this._dataChannel.onopen = () => {};
-    this._dataChannel.onclose = () => {};
-    this._dataChannel.onerror = () => {};
+  _disconnectDataChannelEvents(dataChannel) {
+    dataChannel.onmessage = () => {};
+    dataChannel.onopen = () => {};
+    dataChannel.onclose = () => {};
+    dataChannel.onerror = () => {};
   }
 
-  async call() {
-    this._signallingClient.call();
+  _updateClientNames(clients) {
+    this._clientNames = {};
+    clients.forEach(client => {
+      this._clientNames[client.id] = client.name;
+    });
+  }
+
+  async callAll() {
+    this._signallingClient.callAll();
+  }
+
+  hangUp() {
+    this._signallingClient.hangUp();
+
+    for (let id in this._dataChannels) {
+      this._dataChannels[id].close();
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+    }
+    this._dataChannels = {};
+
+    for (let id in this._rtcPeerConnections) {
+      this._rtcPeerConnections[id].close();
+      this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+    }
+    this._rtcPeerConnections = {};
   }
 
   close () {
-    if (this._dataChannel !== null) {
-      this._dataChannel.close();
-      this._disconnectDataChannelEvents();
-      this._dataChannel = null;
+    for (let id in this._dataChannels) {
+      this._dataChannels[id].close();
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
     }
+    this._dataChannels = {};
 
-    if (this._rtcPeerConnection !== null) {
+    if (this._signallingClient !== null) {
       let signallingClient = this._signallingClient;
       this._signallingClient = null;
       signallingClient.close();
-      
-      let rtcPeerConnection = this._rtcPeerConnection;
-      this._rtcPeerConnection = null;
-      rtcPeerConnection.close();
-      this._disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection);
     }
+    
+    for (let id in this._rtcPeerConnections) {
+      this._rtcPeerConnections[id].close();
+      this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+    }
+    this._rtcPeerConnections = {};
   }
 
-  send(data) {
-    if (this._dataChannel !== null) {
-      this._dataChannel.send(data);
-    }
-    else {
-      console.error('Not connected data channel');
-    }
+  sendTo(data, id) {
+    this._dataChannels[id].send(data);
   }
 
-  get dataChannel() {
-    return this._dataChannel;
+  sendToAll(data) {
+    for (let id in this._dataChannels) {
+      this._dataChannels[id].send(data);
+    }
   }
 
   get isReady() {
@@ -151,8 +199,8 @@ class DataChannelClient {
     this._onSignallingConnectionClose = onSignallingConnectionClose;
   }
 
-  set onPeerReadyChanged(onPeerReadyChanged) {
-    this._onPeerReadyChanged = onPeerReadyChanged;
+  set onRoomClientsChanged(onRoomClientsChanged) {
+    this._onRoomClientsChanged = onRoomClientsChanged;
   }
 
   set onDataChannelMessage(onDataChannelMessage) {

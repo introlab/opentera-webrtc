@@ -1,102 +1,94 @@
 import argparse
 import asyncio
+import itertools
 
 from aiohttp import web
 
 import socketio
+
+from room_manager import RoomManager
 
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
 sio.attach(app)
 
+room_manager = RoomManager(sio)
+
 
 @sio.on('connect')
-async def connect(socket_id, env):
-    print('connect ', socket_id)
+async def connect(id, env):
+    print('connect ', id)
 
 
 @sio.on('disconnect')
-async def disconnect(socket_id):
-    print('disconnect ', socket_id)
-
-    room = await get_room(socket_id)
-    if room is not None:
-        room_socket_ids = get_room_socket_ids(room)
-        room_socket_ids.remove(socket_id)
-        if len(room_socket_ids) < 2:
-            print(room, 'room not ready')
-            await sio.emit('room-not-ready', '', room=room)
+async def disconnect(id):
+    print('disconnect ', id)
+    room = await room_manager.get_room(id)
+    await room_manager.remove_client(id)
+    
+    if room != None:
+        clients = await room_manager.list_clients(room)
+        await room_manager.send_to_all('room-clients', clients, room=room)
 
 
 @sio.on('join-room')
-async def join_room(socket_id, data):
-    print('join_room ', socket_id, data)
-    room_socket_ids = get_room_socket_ids(data['room'])
-    
-    if len(room_socket_ids) > 1:
-        print('join_room refused')
-        return False
-    if len(room_socket_ids) == 1 and await get_client_type(room_socket_ids[0]) == data['client_type']:
-        print('join_room refused')
-        return False
+async def join_room(id, data):
+    print('join_room ', id, data)
+    await room_manager.add_client(id, data['name'], data['room'])
 
-    await sio.save_session(socket_id, {'client_type': data['client_type'], 'room': data['room']})
-    sio.enter_room(socket_id, data['room'])
-
-    room_socket_ids = get_room_socket_ids(data['room'])
-    if len(room_socket_ids) == 2:
-        print(data['room'], 'room ready')
-        await sio.emit('room-ready', '', room=data['room'])
-    else:
-        print(data['room'], 'room not ready')
-        await sio.emit('room-not-ready', '', room=data['room'])
-    
-    return True
+    clients = await room_manager.list_clients(data['room'])
+    await room_manager.send_to_all('room-clients', clients, room=data['room'])
 
 
-@sio.on('ice-candidate')
-async def ice_candidate(socket_id, candidate):
-    print('ice_candidate ', socket_id, candidate)
-    room = await get_room(socket_id)
-    if room is not None:
-        await sio.emit('ice-candidate', candidate, room=room, skip_sid=socket_id)
+@sio.on('send-ice-candidate')
+async def ice_candidate(from_id, data):
+    #print('send-ice-candidate ', from_id, 'to', data['toId'])
+    room1 = await room_manager.get_room(from_id)
+    room2 = await room_manager.get_room(data['toId'])
+
+    if room1 is not None and room1 == room2:
+        data['fromId'] = from_id
+        await sio.emit('ice-candidate-received', data, to=data['toId'])
 
 
 @sio.on('call')
-async def call(socket_id, offer):
-    print('call ', socket_id, offer)
-    room = await get_room(socket_id)
+async def call(from_id, data):
+    print('call ', from_id, 'to', data['toId'])
+    room1 = await room_manager.get_room(from_id)
+    room2 = await room_manager.get_room(data['toId'])
+
+    if room1 is not None and room1 == room2:
+        data['fromId'] = from_id
+        await sio.emit('call-received', data, to=data['toId'])
+
+
+@sio.on('call-all')
+async def call(from_id):
+    print('call-all', from_id)
+    room = await room_manager.get_room(from_id)
+
     if room is not None:
-        await sio.emit('call-received', offer, room=room, skip_sid=socket_id)
+        clients = await room_manager.list_clients(room)
+        ids = [client['id'] for client in clients]
+        combinations = list(itertools.combinations(ids, 2))
+        
+        tasks = []
+        for id in ids:
+            ids_to_call = [c[1] for c in combinations if c[0] == id]
+            tasks.append(sio.emit('make-calls', ids_to_call, to=id))
+        await asyncio.wait(tasks)
 
 
 @sio.on('make-call-answer')
-async def make_call_answer(socket_id, answer):
-    print('answer ', socket_id, answer)
-    room = await get_room(socket_id)
-    if room is not None:
-        await sio.emit('call-answer-received', answer, room=room, skip_sid=socket_id)
+async def make_call_answer(from_id, data):
+    print('make-call-answer ', from_id, 'to', data['toId'])
+    room1 = await room_manager.get_room(from_id)
+    room2 = await room_manager.get_room(data['toId'])
 
-
-def get_room_socket_ids(room):
-    if '/' in sio.manager.rooms and room in sio.manager.rooms['/']:
-        return list(sio.manager.rooms['/'][room].keys())
-    else:
-        return []
-
-
-async def get_client_type(socket_id):
-    session = await sio.get_session(socket_id)
-    return session['client_type']
-
-
-async def get_room(socket_id):
-    session = await sio.get_session(socket_id)
-    if 'room' in session:
-        return session['room']
-    else:
-        return None
+    if room1 is not None and room1 == room2:
+        data['fromId'] = from_id
+        await sio.emit('call-answer-received', data, to=data['toId'])
 
 
 if __name__ == '__main__':
