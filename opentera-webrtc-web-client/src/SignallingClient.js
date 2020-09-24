@@ -2,8 +2,7 @@ import io from 'socket.io-client';
 
 
 class SignallingClient {
-  constructor(signallingServerConfiguration, name, room,
-    hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection) {
+  constructor(signallingServerConfiguration, hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection) {
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
     }
@@ -12,8 +11,6 @@ class SignallingClient {
     this._hasRtcPeerConnection = hasRtcPeerConnection;
     this._getRtcPeerConnection = getRtcPeerConnection;
     this._getAllRtcPeerConnection = getAllRtcPeerConnection;
-    this._name = name;
-    this._room = room;
 
     this._socket = null;
 
@@ -21,6 +18,7 @@ class SignallingClient {
 
     this._onConnectionOpen = () => {};
     this._onConnectionClose = () => {};
+    this._onConnectionError = () => {};
     this._onRoomClientsChanged = () => {};
   }
   
@@ -29,16 +27,25 @@ class SignallingClient {
     this._connectEvents();
 
     await new Promise((resolve, reject) => {
-      this._socket.on('connect', () => {
-        resolve();
-        this._onConnectionOpen();
-      });
+      this._socket.on('connect', () => resolve());
       this._socket.on('connect_error', error => reject(error));
       this._socket.on('connect_timeout', error => reject(error));
     });
     
-    let data = { name: this._name, room: this._room };
-    this._socket.emit('join-room', data);
+    let data = {
+      name: this._signallingServerConfiguration.name,
+      room: this._signallingServerConfiguration.room,
+      password: this._signallingServerConfiguration.password
+    };
+    this._socket.emit('join-room', data, isJoined => {
+      if (isJoined) {
+        this._onConnectionOpen();
+      }
+      else {
+        this.close();
+        this._onConnectionError('Invalid password');
+      }
+    });
   }  
 
   _connectEvents() {
@@ -169,6 +176,10 @@ class SignallingClient {
 
   set onConnectionClose(onConnectionClose) {
     this._onConnectionClose = onConnectionClose;
+  }
+
+  set onConnectionError(onConnectionError) {
+    this._onConnectionError = onConnectionError;
   }
 
   set onRoomClientsChanged(onRoomClientsChanged) {

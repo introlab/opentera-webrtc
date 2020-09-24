@@ -1,5 +1,6 @@
 (function() {
   let nameInput = document.getElementById('name_input');
+  let passwordInput = document.getElementById('password_input');
   let connectButton = document.getElementById('connect_button');
   let closeButton = document.getElementById('close_button');
   let clientList = document.getElementById('client_list');
@@ -28,6 +29,9 @@
       callButton.disabled = true;
       hangUpButton.disabled = true;
     };
+    dataChannelClient.onSignallingConnectionError = message => {
+      alert(message);
+    }
     dataChannelClient.onRoomClientsChanged = clients => {
       callButton.disabled = !(clients.length > 1 && hangUpButton.disabled);
 
@@ -60,14 +64,16 @@
 
   connectButton.onclick = async () => {
     const SignallingServerConfiguration = {
-      url: 'http://localhost:8080'
+      url: 'http://localhost:8080',
+      name: nameInput.value,
+      room: 'chat',
+      password: passwordInput.value
     };
     const DataChannelConfiguration = {};
     const RtcConfiguration = {};
-    const Room = 'chat';
 
     dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration,
-      DataChannelConfiguration, RtcConfiguration, nameInput.value, Room);
+      DataChannelConfiguration, RtcConfiguration);
     connectDataChannelClientEvents();
 
     await dataChannelClient.connect();

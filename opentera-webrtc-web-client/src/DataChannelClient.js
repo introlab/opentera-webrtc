@@ -2,7 +2,7 @@ import SignallingClient from './SignallingClient';
 
 
 class DataChannelClient {
-  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration, name, room) {
+  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration) {
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
     }
@@ -20,8 +20,6 @@ class DataChannelClient {
     this._signallingServerConfiguration = signallingServerConfiguration;
     this._dataChannelConfiguration = dataChannelConfiguration;
     this._rtcConfiguration = rtcConfiguration;
-    this._name = name;
-    this._room = room;
 
     this._rtcPeerConnections = {};
     this._dataChannels = {};
@@ -29,6 +27,7 @@ class DataChannelClient {
 
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
+    this._onSignallingConnectionError = () => {};
 
     this._onRoomClientsChanged = () => {};
 
@@ -44,7 +43,7 @@ class DataChannelClient {
     let hasRtcPeerConnection = id => this._hasRtcPeerConnection(id);
     let getRtcPeerConnection = (id, isCaller) => this._getRtcPeerConnection(id, isCaller);
     let getAllRtcPeerConnection = () => this._getAllRtcPeerConnection();
-    this._signallingClient = new SignallingClient(this._signallingServerConfiguration, this._name, this._room,
+    this._signallingClient = new SignallingClient(this._signallingServerConfiguration,
       hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection);
 
     this._signallingClient.onConnectionOpen = this._onSignallingConnectionOpen;
@@ -52,6 +51,7 @@ class DataChannelClient {
       this.close();
       this._onSignallingConnectionClose();
     };
+    this._signallingClient.onConnectionError = this._onSignallingConnectionError;
     this._signallingClient.onRoomClientsChanged = clients => {
       this._onRoomClientsChanged(clients);
       this._updateClientNames(clients);
@@ -72,7 +72,8 @@ class DataChannelClient {
       let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
 
       if (isCaller) {
-        let dataChannel = rtcPeerConnection.createDataChannel(this._room, this._dataChannelConfiguration);
+        let dataChannel = rtcPeerConnection.createDataChannel(this._signallingServerConfiguration.room,
+          this._dataChannelConfiguration);
         this._dataChannels[id] = dataChannel;
         this._connectDataChannelEvents(id, dataChannel);
       }
@@ -220,6 +221,10 @@ class DataChannelClient {
 
   set onSignallingConnectionClose(onSignallingConnectionClose) {
     this._onSignallingConnectionClose = onSignallingConnectionClose;
+  }
+
+  set onSignallingConnectionError(onSignallingConnectionError) {
+    this._onSignallingConnectionError = onSignallingConnectionError;
   }
 
   set onRoomClientsChanged(onRoomClientsChanged) {

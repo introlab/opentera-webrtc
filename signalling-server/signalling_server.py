@@ -14,6 +14,7 @@ app = web.Application()
 sio.attach(app)
 
 room_manager = RoomManager(sio)
+password = None
 
 
 @sio.on('connect')
@@ -35,10 +36,16 @@ async def disconnect(id):
 @sio.on('join-room')
 async def join_room(id, data):
     print('join_room ', id, data)
+
+    if password is not None and ('password' not in data or data['password'] != password):
+        return False
+
     await room_manager.add_client(id, data['name'], data['room'])
 
     clients = await room_manager.list_clients(data['room'])
     await room_manager.send_to_all('room-clients', clients, room=data['room'])
+
+    return True
 
 
 @sio.on('send-ice-candidate')
@@ -94,8 +101,11 @@ async def make_call_answer(from_id, data):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signalling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
+    parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
     args = parser.parse_args()
+
+    password = args.password
 
     if args.static_folder is not None:
         app.add_routes([web.static('/', args.static_folder)])
