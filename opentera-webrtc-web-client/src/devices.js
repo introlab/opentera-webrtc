@@ -19,9 +19,27 @@ async function getStream(constraints) {
   return await navigator.mediaDevices.getUserMedia(constraints);
 }
 
+async function getDefaultAudioStream() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error('getUserMedia() is not supported.');
+  }
+
+  return await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+}
+
+async function getDefaultVideoStream() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error('getUserMedia() is not supported.');
+  }
+
+  return await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
+}
+
 let devices = {
   enumerate,
-  getStream
+  getStream,
+  getDefaultAudioStream,
+  getDefaultVideoStream
 };
 
 export default devices;

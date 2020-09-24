@@ -50,7 +50,7 @@ class StreamClient
 
     this._localStream = null;
     this._remoteStream = null;
-    
+
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
     this._onPeerReadyChanged = () => {};
@@ -85,16 +85,40 @@ class StreamClient
       this._onLocalStream(this._localStream);
     }
 
-    this._connectStreamRtcPeerConnectionEvents();
+    this._connectRtcPeerConnectionEvents();
 
     await this._signallingClient.connect();
   }
 
-  _connectStreamRtcPeerConnectionEvents() {
+  _connectRtcPeerConnectionEvents() {
     this._rtcPeerConnection.ontrack = ({ streams: [stream] }) => {
       this._remoteStream = stream;
       this._onRemoteStream(stream);
     };
+    this._rtcPeerConnection.onconnectionstatechange = () => {
+      switch (this._rtcPeerConnection.connectionState) {
+      case 'disconnected':
+      case 'failed':
+      case 'closed':
+        this.close();
+        break;
+      }
+    };
+    this._rtcPeerConnection.oniceconnectionstatechange = () => {
+      switch (this._rtcPeerConnection.iceConnectionState) {
+      case 'disconnected':
+      case 'failed':
+      case 'closed':
+        this.close();
+        break;
+      }
+    };
+  }
+
+  _disconnectRtcPeerConnectionEvents(rtcPeerConnection) {
+    rtcPeerConnection.ontrack = () => {};
+    rtcPeerConnection.onconnectionstatechange = () => {};
+    rtcPeerConnection.oniceconnectionstatechange = () => {};
   }
 
   async call() {
@@ -102,7 +126,10 @@ class StreamClient
   }
 
   close () {
-    if (this._rtcPeerConnection !== null) {      
+    if (this._rtcPeerConnection !== null) {
+      this._localStream.getTracks().forEach(track => track.stop());
+      this._remoteStream.getTracks().forEach(track => track.stop());
+
       this._localStream = null;
       this._remoteStream = null;
 
@@ -113,6 +140,7 @@ class StreamClient
       let rtcPeerConnection = this._rtcPeerConnection;
       this._rtcPeerConnection = null;
       rtcPeerConnection.close();
+      this._disconnectRtcPeerConnectionEvents(rtcPeerConnection);
     }
   }
 
