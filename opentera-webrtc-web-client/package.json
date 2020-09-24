@@ -1,0 +1,61 @@
+{
+  "name": "opentera-webrtc-web-client",
+  "version": "1.0.0",
+  "description": "opentera-webrtc-web-client",
+  "main": "lib/Library.js",
+  "files": [
+    "src/",
+    "dist/",
+    "lib/"
+  ],
+  "scripts": {
+    "test": "cross-env NODE_ENV=test mocha --require @babel/register --colors ./test/*.spec.js",
+    "coverage": "nyc --reporter=text --reporter=lcov npm test",
+    "lint": "eslint src/**/*.js",
+    "build:umdmin": "webpack --mode=production --output-library-target=umd",
+    "build:umd": "webpack --mode=development --output-library-target=umd",
+    "build:commonjs": "webpack --mode=development --output-library-target=commonjs2",
+    "build": "npm-run-all build:*",
+    "dev:umd": "webpack --progress --colors --watch --mode=development --output-library-target=umd",
+    "dev:commonjs": "webpack --progress --colors --watch --mode=development --output-library-target=commonjs2",
+    "dev": "npm-run-all --parallel dev:*",
+    "clean": "rimraf dist lib coverage",
+    "prepare": "npm-run-all clean build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/introlab/opentera-webrtc-teleop"
+  },
+  "keywords": [],
+  "author": "IntRoLab",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/introlab/opentera-webrtc-teleop/issues"
+  },
+  "homepage": "https://github.com/introlab/opentera-webrtc-teleop#readme",
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-object-rest-spread": "~7.5.5",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "babel-loader": "~8.0.6",
+    "chai": "~4.2.0",
+    "cross-env": "^6.0.3",
+    "eslint": "^7.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-loader": "~3.0.2",
+    "mocha": "^6.2.3",
+    "npm-run-all": "~4.1.5",
+    "nyc": "~14.1.1",
+    "rimraf": "^3.0.2",
+    "sinon": "~7.4.2",
+    "sinon-chai": "~3.3.0",
+    "webpack": "^4.40.3",
+    "webpack-cli": "^3.3.12",
+    "yargs": "~14.1.0"
+  },
+  "browserslist": "> 0.5%, last 2 versions, Firefox ESR, not dead",
+  "dependencies": {
+    "socket.io-client": "^2.3.0"
+  }
+}
