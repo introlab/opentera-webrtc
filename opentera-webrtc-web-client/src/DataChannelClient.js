@@ -69,6 +69,10 @@ class DataChannelClient {
     };
   }
 
+  _disconnectDataChannelsRtcPeerConnectionEvents() {
+    this._rtcPeerConnection.ondatachannel = () => {};
+  }
+
   _connectDataChannelEvents() {
     this._dataChannel.onmessage = event => {
       this._onDataChannelMessage(event.data);
@@ -89,6 +93,13 @@ class DataChannelClient {
     };
   }
 
+  _disconnectDataChannelEvents() {
+    this._dataChannel.onmessage = () => {};
+    this._dataChannel.onopen = () => {};
+    this._dataChannel.onclose = () => {};
+    this._dataChannel.onerror = () => {};
+  }
+
   async call() {
     this._signallingClient.call();
   }
@@ -96,6 +107,7 @@ class DataChannelClient {
   close () {
     if (this._dataChannel !== null) {
       this._dataChannel.close();
+      this._disconnectDataChannelEvents();
       this._dataChannel = null;
     }
 
@@ -107,6 +119,7 @@ class DataChannelClient {
       let rtcPeerConnection = this._rtcPeerConnection;
       this._rtcPeerConnection = null;
       rtcPeerConnection.close();
+      this._disconnectDataChannelsRtcPeerConnectionEvents();
     }
   }
 

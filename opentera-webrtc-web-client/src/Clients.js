@@ -32,8 +32,11 @@ class Clients
 
     this._onStreamSignallingConnectionOpen = () => {};
     this._onStreamSignallingConnectionClose = () => {};
+    this._onStreamPeerReadyChanged = () => {};
+
     this._onDataChannelSignallingConnectionOpen = () => {};
     this._onDataChannelSignallingConnectionClose = () => {};
+    this._onDataChannelPeerReadyChanged = () => {};
 
     this._onLocalStream = () => {};
     this._onRemoteStream = () => {};
@@ -50,6 +53,7 @@ class Clients
     for (let name in this._streamClients) {
       this._streamClients[name].onSignallingConnectionOpen = event => this._onStreamSignallingConnectionOpen(name, event);
       this._streamClients[name].onSignallingConnectionClose = event => this._onStreamSignallingConnectionClose(name, event);
+      this._streamClients[name].onPeerReadyChanged = event => this._onStreamPeerReadyChanged(name, event);
 
       this._streamClients[name].onLocalStream = event => this._onLocalStream(name, event);
       this._streamClients[name].onRemoteStream = event => this._onRemoteStream(name, event);
@@ -60,6 +64,7 @@ class Clients
     for (let name in this._dataChannelClients) {
       this._dataChannelClients[name].onSignallingConnectionOpen = event => this._onDataChannelSignallingConnectionOpen(name, event);
       this._dataChannelClients[name].onSignallingConnectionClose = event => this._onDataChannelSignallingConnectionClose(name, event);
+      this._dataChannelClients[name].onPeerReadyChanged = event => this._onDataChannelPeerReadyChanged(name, event);
 
       this._dataChannelClients[name].onDataChannelMessage = event => this._onDataChannelMessage(name, event);
       this._dataChannelClients[name].onDataChannelOpen = event => this._onDataChannelOpen(name, event);
@@ -107,20 +112,28 @@ class Clients
     this._onLocalStream = onLocalStream;
   }
 
-  set onStreamConnectionOpen(onStreamConnectionOpen) {
-    this._onStreamConnectionOpen = onStreamConnectionOpen;
+  set onStreamSignallingConnectionOpen(onStreamSignallingConnectionOpen) {
+    this._onStreamSignallingConnectionOpen = onStreamSignallingConnectionOpen;
   }
 
-  set StreamConnectionClose(StreamConnectionClose) {
-    this._onStreamConnectionClose = StreamConnectionClose;
+  set onStreamSignallingConnectionClose(onStreamSignallingConnectionClose) {
+    this._onStreamSignallingConnectionClose = onStreamSignallingConnectionClose;
   }
 
-  set onDataChannelConnectionOpen(onDataChannelConnectionOpen) {
-    this._onDataChannelConnectionOpen = onDataChannelConnectionOpen;
+  set onStreamPeerReadyChanged(onStreamPeerReadyChanged) {
+    this._onStreamPeerReadyChanged = onStreamPeerReadyChanged;
   }
 
-  set onDataChannelConnectionClose(onDataChannelConnectionClose) {
-    this._onDataChannelConnectionClose = onDataChannelConnectionClose;
+  set onDataChannelSignallingConnectionOpen(onDataChannelSignallingConnectionOpen) {
+    this._onDataChannelSignallingConnectionOpen = onDataChannelSignallingConnectionOpen;
+  }
+
+  set onDataChannelSignallingConnectionClose(onDataChannelSignallingConnectionClose) {
+    this._onDataChannelSignallingConnectionClose = onDataChannelSignallingConnectionClose;
+  }
+
+  set onDataChannelPeerReadyChanged(onDataChannelPeerReadyChanged) {
+    this._onDataChannelPeerReadyChanged = onDataChannelPeerReadyChanged;
   }
 
   set onRemoteStream(onRemoteStream) {

@@ -27,7 +27,7 @@ class SignallingClient {
     await new Promise((resolve, reject) => {
       this._socket.on('connect', () => resolve());
       this._socket.on('connect_error', error => reject(error));
-      this._socket.on('connect_timeout', error_1 => reject(error_1));
+      this._socket.on('connect_timeout', error => reject(error));
     });
     await new Promise((resolve, reject) => {
       let data = { client_type: this._clientType, room: this._name };
@@ -37,7 +37,10 @@ class SignallingClient {
           this._onConnectionOpen();
         }
         else {
-          reject();
+          this._disconnectEvents();
+          this._socket.close();
+          this._socket = null;
+          reject(new Error('join-room rejected'));
         }
       });
     });
@@ -56,7 +59,24 @@ class SignallingClient {
     this._socket.on('ice-candidate', candidate => this._rtcPeerConnection.addIceCandidate(candidate));
   }
 
+  _disconnectEvents() {
+    this._socket.off('connect');
+    this._socket.off('connect_error');
+    this._socket.off('connect_timeout');
+    this._socket.off('disconnect');
+
+    this._socket.off('room-not-ready');
+    this._socket.off('room-ready');
+
+    this._socket.off('call-received');
+    this._socket.off('call-answer-received');
+
+    this._rtcPeerConnection.onicecandidate = () => {};
+    this._socket.off('ice-candidate');
+  }
+
   _disconnect() {
+    this._disconnectEvents();
     this._socket.close();
     this._socket = null;
     this._onConnectionClose();
@@ -92,6 +112,7 @@ class SignallingClient {
 
   close() {
     this._socket.close();
+    this._disconnectEvents();
   }
 
   get isReady() {
