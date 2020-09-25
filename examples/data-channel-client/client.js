@@ -4,15 +4,18 @@
   let connectButton = document.getElementById('connect_button');
   let closeButton = document.getElementById('close_button');
   let clientList = document.getElementById('client_list');
-  let callButton = document.getElementById('call_button');
-  let hangUpButton = document.getElementById('hang_up_button');
+  let callAllButton = document.getElementById('call_all_button');
+  let hangUpAllButton = document.getElementById('hang_up_all_button');
+  let idInput = document.getElementById('id_input');
+  let callOneButton = document.getElementById('call_one_button');
   let textInput = document.getElementById('text_input');
   let sendButton = document.getElementById('send_button');
   let chatTextArea = document.getElementById('chat_text_area');
 
   closeButton.disabled = true;
-  callButton.disabled = true;
-  hangUpButton.disabled = true;
+  callAllButton.disabled = true;
+  hangUpAllButton.disabled = true;
+  callOneButton.disabled = true;
   sendButton.disabled = true;
   chatTextArea.value = '';
 
@@ -26,14 +29,16 @@
     dataChannelClient.onSignallingConnectionClose = async () => {
       connectButton.disabled = false;
       closeButton.disabled = true;
-      callButton.disabled = true;
-      hangUpButton.disabled = true;
+      callAllButton.disabled = true;
+      hangUpAllButton.disabled = true;
+      callOneButton.disabled = true;
     };
     dataChannelClient.onSignallingConnectionError = message => {
       alert(message);
     }
     dataChannelClient.onRoomClientsChanged = clients => {
-      callButton.disabled = !(clients.length > 1 && hangUpButton.disabled);
+      callAllButton.disabled = !(clients.length > 1 && hangUpAllButton.disabled);
+      callOneButton.disabled = callAllButton.disabled;
 
       clientList.innerHTML = '';
       clients.forEach(client => {
@@ -46,13 +51,15 @@
 
     dataChannelClient.onDataChannelOpen = () => {
       sendButton.disabled = false;
-      callButton.disabled = true;
-      hangUpButton.disabled = false;
+      callAllButton.disabled = true;
+      hangUpAllButton.disabled = false;
+      callOneButton.disabled = true;
     }
     dataChannelClient.onDataChannelClose = () => {
       sendButton.disabled = !dataChannelClient.isConnected;
-      callButton.disabled = dataChannelClient.isConnected;
-      hangUpButton.disabled = !dataChannelClient.isConnected;
+      callAllButton.disabled = dataChannelClient.isConnected;
+      hangUpAllButton.disabled = !dataChannelClient.isConnected;
+      callOneButton.disabled = dataChannelClient.isConnected;
     };
     dataChannelClient.onDataChannelMessage = (id, name, message) => {
       chatTextArea.value += id + ' - ' + name + ': ';
@@ -84,13 +91,15 @@
     dataChannelClient.close();
     clientList.innerHTML = '';
   };
-  callButton.onclick = async () => await dataChannelClient.callAll();
-  hangUpButton.onclick = () => {
-    dataChannelClient.hangUp();
-    hangUpButton.disabled = true;
-    callButton.disabled = false;
+  callAllButton.onclick = () => dataChannelClient.callAll();
+  hangUpAllButton.onclick = () => {
+    dataChannelClient.hangUpAll();
+    hangUpAllButton.disabled = true;
+    callAllButton.disabled = false;
     sendButton.disabled = true;
+    callOneButton.disabled = false;
   };
+  callOneButton.onclick = () => dataChannelClient.callIds([idInput.value]);
   sendButton.onclick = () => {
     chatTextArea.value += 'Me: ';
     chatTextArea.value += textInput.value;

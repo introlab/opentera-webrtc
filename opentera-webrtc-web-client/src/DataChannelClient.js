@@ -150,12 +150,16 @@ class DataChannelClient {
     delete this._rtcPeerConnections[id];
   }
 
-  async callAll() {
+  callAll() {
     this._signallingClient.callAll();
   }
 
-  hangUp() {
-    this._signallingClient.hangUp();
+  callIds(ids) {
+    this._signallingClient.callIds(ids);
+  }
+
+  hangUpAll() {
+    this._signallingClient.hangUpAll();
 
     for (let id in this._dataChannels) {
       this._dataChannels[id].close();

@@ -56,9 +56,9 @@ class SignallingClient {
       this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
     });
 
-    this._socket.on('make-calls', async ids => await this._makeCalls(ids));
-    this._socket.on('call-received', async data => await this._callReceived(data));
-    this._socket.on('call-answer-received', async data => await this._callAnswerReceived(data));
+    this._socket.on('make-peer-call', async ids => await this._makePeerCall(ids));
+    this._socket.on('peer-call-received', async data => await this._peerCallReceived(data));
+    this._socket.on('peer-call-answer-received', async data => await this._peerCallAnswerReceived(data));
 
     this._socket.on('ice-candidate-received', async data => await this._addIceCandidate(data));
   }
@@ -71,9 +71,9 @@ class SignallingClient {
 
     this._socket.off('room-clients');
 
-    this._socket.off('make-calls');
-    this._socket.off('call-received');
-    this._socket.off('call-answer-received');
+    this._socket.off('make-peer-call');
+    this._socket.off('peer-call-received');
+    this._socket.off('peer-call-answer-received');
 
     this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
     this._socket.off('ice-candidate');
@@ -86,7 +86,7 @@ class SignallingClient {
     this._onConnectionClose();
   }
 
-  async _callReceived(data) {
+  async _peerCallReceived(data) {
     let rtcPeerConnection = this._getRtcPeerConnection(data.fromId, false);
     this._connectOnIceCandidateEvent(data.fromId, rtcPeerConnection);
 
@@ -96,10 +96,10 @@ class SignallingClient {
     await rtcPeerConnection.setLocalDescription(new window.RTCSessionDescription(answer));
 
     data = { toId: data.fromId, answer: answer };
-    this._socket.emit('make-call-answer', data);
+    this._socket.emit('make-peer-call-answer', data);
   }
 
-  async _callAnswerReceived(data) {
+  async _peerCallAnswerReceived(data) {
     let _rtcPeerConnection =  this._getRtcPeerConnection(data.fromId, false);
     await _rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
   }
@@ -110,7 +110,7 @@ class SignallingClient {
     }
   }
 
-  async _makeCalls(ids) {
+  async _makePeerCall(ids) {
     ids = ids.filter(id => id != this._socket.id);
     ids.forEach(async id => {
       if (this._hasRtcPeerConnection(id)) {
@@ -124,7 +124,7 @@ class SignallingClient {
       await rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
 
       let data = { toId: id, offer: offer };
-      this._socket.emit('call', data);
+      this._socket.emit('call-peer', data);
     });
   }
 
@@ -162,7 +162,11 @@ class SignallingClient {
     this._socket.emit('call-all');
   }
 
-  hangUp() {
+  callIds(ids) {
+    this._socket.emit('call-ids', ids);
+  }
+
+  hangUpAll() {
     this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
   }
 
