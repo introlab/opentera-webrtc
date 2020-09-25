@@ -24,7 +24,6 @@ class DataChannelClient {
     this._signallingClient = null;
     this._rtcPeerConnections = {};
     this._dataChannels = {};
-    this._clientNames = {};
 
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
@@ -56,10 +55,7 @@ class DataChannelClient {
       this.close();
       this._onSignallingConnectionError(error);
     };
-    this._signallingClient.onRoomClientsChanged = clients => {
-      this._onRoomClientsChanged(clients);
-      this._updateClientNames(clients);
-    };
+    this._signallingClient.onRoomClientsChanged = this._onRoomClientsChanged;
 
     await this._signallingClient.connect();
   }
@@ -111,21 +107,21 @@ class DataChannelClient {
 
   _connectDataChannelEvents(id, dataChannel) {
     dataChannel.onmessage = event => {
-      this._onDataChannelMessage(id, this._clientNames[id], event.data);
+      this._onDataChannelMessage(id, this._signallingClient.getClientName(id), event.data);
     };
     dataChannel.onopen = event => {
-      this._onDataChannelOpen(id, this._clientNames[id], event);
+      this._onDataChannelOpen(id, this._signallingClient.getClientName(id), event);
       this._signallingClient.updateRoomClients();
     };
     dataChannel.onclose = event => {
       this._removeConnection(id);
-      this._onDataChannelClose(id, this._clientNames[id], event);
+      this._onDataChannelClose(id, this._signallingClient.getClientName(id), event);
       this._signallingClient.updateRoomClients();
     };
     dataChannel.onerror = event => {
       this._removeConnection(id);
-      this._onDataChannelError(id, this._clientNames[id], event);
-      this._onDataChannelClose(id, this._clientNames[id], event);
+      this._onDataChannelError(id, this._signallingClient.getClientName(id), event);
+      this._onDataChannelClose(id, this._signallingClient.getClientName(id), event);
       this._signallingClient.updateRoomClients();
     };
   }
@@ -135,13 +131,6 @@ class DataChannelClient {
     dataChannel.onopen = () => {};
     dataChannel.onclose = () => {};
     dataChannel.onerror = () => {};
-  }
-
-  _updateClientNames(clients) {
-    this._clientNames = {};
-    clients.forEach(client => {
-      this._clientNames[client.id] = client.name;
-    });
   }
 
   _removeConnection(id) {

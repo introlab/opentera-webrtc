@@ -15,6 +15,7 @@ class SignallingClient {
     this._socket = null;
 
     this._clients = [];
+    this._clientNamesById = {};
 
     this._onConnectionOpen = () => {};
     this._onConnectionClose = () => {};
@@ -53,6 +54,7 @@ class SignallingClient {
 
     this._socket.on('room-clients', clients => {
       this._clients = clients;
+      this._updateClientNamesById(clients);
       this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
     });
 
@@ -148,6 +150,13 @@ class SignallingClient {
     return newClients;
   }
 
+  _updateClientNamesById(clients) {
+    this._clientNamesById = {};
+    clients.forEach(client => {
+      this._clientNamesById[client.id] = client.name;
+    });
+  }
+
   updateRoomClients() {
     this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
   }
@@ -168,6 +177,10 @@ class SignallingClient {
 
   hangUpAll() {
     this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
+  }
+
+  getClientName(id) {
+    return this._clientNamesById[id];
   }
 
   get id() {
