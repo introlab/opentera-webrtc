@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import itertools
+import json
 
 from aiohttp import web
 
@@ -14,7 +15,13 @@ app = web.Application()
 sio.attach(app)
 
 room_manager = RoomManager(sio)
+
 password = None
+ice_servers = []
+
+
+def isAuthorized(user_password):
+    return password is None or user_password == password
 
 
 @sio.on('connect')
@@ -37,7 +44,7 @@ async def disconnect(id):
 async def join_room(id, data):
     print('join_room ', id, data)
 
-    if password is not None and ('password' not in data or data['password'] != password):
+    if not isAuthorized(data['password'] if 'password' in data else ''):
         return False
 
     await room_manager.add_client(id, data['name'], data['room'])
@@ -98,16 +105,30 @@ async def make_call_answer(from_id, data):
         await sio.emit('call-answer-received', data, to=data['toId'])
 
 
+async def get_ice_servers(request):
+    if 'Authorization' in request.headers and isAuthorized(request.headers['Authorization']):
+        return web.json_response(ice_servers)
+    else:
+        return web.json_response([])
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signalling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
+    parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
     args = parser.parse_args()
 
+
     password = args.password
 
+    if args.ice_servers is not None:
+        with open(args.ice_servers) as file:
+            ice_servers = json.load(file)
+
+
+    app.add_routes([web.get('/iceservers', get_ice_servers)])
     if args.static_folder is not None:
         app.add_routes([web.static('/', args.static_folder)])
-
     web.run_app(app, port=args.port)

@@ -70,7 +70,9 @@
       password: passwordInput.value
     };
     const DataChannelConfiguration = {};
-    const RtcConfiguration = {};
+    const RtcConfiguration = {
+      iceServers: await window.openteraWebrtcWebClient.iceServers.fetchFromServer('http://localhost:8080/iceservers', passwordInput.value)
+    };
 
     dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration,
       DataChannelConfiguration, RtcConfiguration);
