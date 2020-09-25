@@ -19,6 +19,14 @@ async function getStream(constraints) {
   return await navigator.mediaDevices.getUserMedia(constraints);
 }
 
+async function getDefaultStream() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    throw new Error('getUserMedia() is not supported.');
+  }
+
+  return await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+}
+
 async function getDefaultAudioStream() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     throw new Error('getUserMedia() is not supported.');
@@ -38,6 +46,7 @@ async function getDefaultVideoStream() {
 let devices = {
   enumerate,
   getStream,
+  getDefaultStream,
   getDefaultAudioStream,
   getDefaultVideoStream
 };

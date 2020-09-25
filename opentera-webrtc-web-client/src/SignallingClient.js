@@ -102,8 +102,8 @@ class SignallingClient {
   }
 
   async _peerCallAnswerReceived(data) {
-    let _rtcPeerConnection =  this._getRtcPeerConnection(data.fromId, false);
-    await _rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
+    let rtcPeerConnection =  this._getRtcPeerConnection(data.fromId, false);
+    await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
   }
 
   async _addIceCandidate(data) {
