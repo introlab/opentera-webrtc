@@ -56,10 +56,10 @@
       callOneButton.disabled = true;
     }
     dataChannelClient.onDataChannelClose = () => {
-      sendButton.disabled = !dataChannelClient.isConnected;
-      callAllButton.disabled = dataChannelClient.isConnected;
-      hangUpAllButton.disabled = !dataChannelClient.isConnected;
-      callOneButton.disabled = dataChannelClient.isConnected;
+      sendButton.disabled = !dataChannelClient.isRtcConnected;
+      callAllButton.disabled = dataChannelClient.isRtcConnected;
+      hangUpAllButton.disabled = !dataChannelClient.isRtcConnected;
+      callOneButton.disabled = dataChannelClient.isRtcConnected;
     };
     dataChannelClient.onDataChannelMessage = (id, name, message) => {
       chatTextArea.value += id + ' - ' + name + ': ';

@@ -174,6 +174,10 @@ class SignallingClient {
     return this._socket.id;
   }
 
+  get clients() {
+    return this._addConnectionStateToClients(this._clients);
+  }
+
   set onConnectionOpen(onConnectionOpen) {
     this._onConnectionOpen = onConnectionOpen;
   }

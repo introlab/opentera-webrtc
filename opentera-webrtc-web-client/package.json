@@ -9,8 +9,7 @@
     "lib/"
   ],
   "scripts": {
-    "test": "cross-env NODE_ENV=test mocha --require @babel/register --colors ./test/*.spec.js",
-    "coverage": "nyc --reporter=text --reporter=lcov npm test",
+    "test": "browser-tests/run_browser_tests.bash",
     "lint": "eslint src/**/*.js",
     "build:umdmin": "webpack --mode=production --output-library-target=umd",
     "build:umd": "webpack --mode=development --output-library-target=umd",

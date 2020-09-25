@@ -5,10 +5,10 @@ import iceServers from './iceServers';
 import DataChannelClient from './DataChannelClient';
 
 
-let opentera_webrtc_web_client = {
+let openteraWebrtcWebClient = {
   devices,
   iceServers,
   DataChannelClient
 };
 
-export default opentera_webrtc_web_client;
+export default openteraWebrtcWebClient;

@@ -21,6 +21,7 @@ class DataChannelClient {
     this._dataChannelConfiguration = dataChannelConfiguration;
     this._rtcConfiguration = rtcConfiguration;
 
+    this._signallingClient = null;
     this._rtcPeerConnections = {};
     this._dataChannels = {};
     this._clientNames = {};
@@ -51,7 +52,10 @@ class DataChannelClient {
       this.close();
       this._onSignallingConnectionClose();
     };
-    this._signallingClient.onConnectionError = this._onSignallingConnectionError;
+    this._signallingClient.onConnectionError = error => {
+      this.close();
+      this._onSignallingConnectionError(error);
+    };
     this._signallingClient.onRoomClientsChanged = clients => {
       this._onRoomClientsChanged(clients);
       this._updateClientNames(clients);
@@ -196,8 +200,8 @@ class DataChannelClient {
     this._rtcPeerConnections = {};
   }
 
-  sendTo(data, id) {
-    this._dataChannels[id].send(data);
+  sendTo(data, ids) {
+    ids.forEach(id => this._dataChannels[id].send(data));
   }
 
   sendToAll(data) {
@@ -207,16 +211,28 @@ class DataChannelClient {
   }
 
   get isConnected() {
+    return this._signallingClient !== null;
+  }
+
+  get isRtcConnected() {
     return Object.keys(this._rtcPeerConnections).length > 0;
   }
 
   get id() {
     if (this._signallingClient !== null) {
-      return this._signallingClient.id();
+      return this._signallingClient.id;
     }
     else {
       return null;
     }
+  }
+
+  get connectedRoomClientIds() {
+    return Object.keys(this._rtcPeerConnections);
+  }
+
+  get roomClients() {
+    return this._signallingClient !== null ? this._signallingClient.clients : [];
   }
 
   set onSignallingConnectionOpen(onSignallingConnectionOpen) {
