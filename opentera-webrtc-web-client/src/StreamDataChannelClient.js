@@ -44,6 +44,7 @@ class StreamDataChannelClient {
     };
 
     this._onAddRemoteStream = () => {};
+    this._onClientConnect = () => {};
     this._onClientDisconnect = () => {};
   }
 
@@ -123,8 +124,12 @@ class StreamDataChannelClient {
         }
       };
     }
-    rtcPeerConnection.onconnectionstatechange = () => {
+    rtcPeerConnection.onconnectionstatechange = event => {
       switch(rtcPeerConnection.connectionState) {
+      case 'connected':
+        this._onClientConnect(id, this._signallingClient.getClientName(id), event);
+        break;
+
       case 'disconnected':
       case 'failed':
       case 'closed':
@@ -311,6 +316,10 @@ class StreamDataChannelClient {
   
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;
+  }
+
+  set onClientConnect(onClientConnect) {
+    this._onClientConnect = onClientConnect;
   }
 
   set onClientDisconnect(onClientDisconnect) {
