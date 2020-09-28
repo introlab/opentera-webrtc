@@ -20,6 +20,7 @@
 
   window.openteraWebrtcWebClient.devices.getDefaultStream().then(stream => {
     localVideo.srcObject = stream;
+    localVideo.autoplay = true;
   });
 
   function connectStreamClientEvents() {
@@ -62,11 +63,12 @@
       let video = document.createElement("video");
       video.srcObject = stream;
       video.id = 'video' + id;
+      video.autoplay = true;
 
       remoteVideos.appendChild(h5);
       remoteVideos.appendChild(video);
     }
-    streamClient.onRemoveRemoteStream = (id, name, stream) => {
+    streamClient.onClientDisconnect = (id, name, stream) => {
       callAllButton.disabled = streamClient.isRtcConnected;
       hangUpAllButton.disabled = !streamClient.isRtcConnected;
       callOneButton.disabled = streamClient.isRtcConnected;

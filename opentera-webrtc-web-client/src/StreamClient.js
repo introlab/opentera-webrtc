@@ -36,7 +36,7 @@ class StreamClient {
     this._onRoomClientsChanged = () => {};
     
     this._onAddRemoteStream = () => {};
-    this._onRemoveRemoteStream = () => {};
+    this._onClientDisconnect = () => {};
   }
 
   async connect() {
@@ -100,32 +100,27 @@ class StreamClient {
       else {
         this._remoteStreams[id].addTrack(event.track, this._remoteStreams[id]);
       }
-
-      this._connectRemoteStreamTrackEvents(id, event.track);
+    };
+    rtcPeerConnection.onconnectionstatechange = () => {
+      switch(rtcPeerConnection.connectionState) {
+      case 'disconnected':
+      case 'failed':
+      case 'closed':
+        this._removeConnection(id);
+        this._onClientDisconnect(id, this._signallingClient.getClientName(id), event);
+        this._signallingClient.updateRoomClients();
+        break;
+      }
     };
   }
 
   _disconnectRtcPeerConnectionEvents(rtcPeerConnection) {
     rtcPeerConnection.ontrack = () => {};
-  }
-
-  _connectRemoteStreamTrackEvents(id, track) {
-    track.onended = event => {
-      this._removeConnection(id);
-      this._onRemoveRemoteStream(id, this._signallingClient.getClientName(id), event);
-      this._signallingClient.updateRoomClients();
-    };
-  }
-
-  _disconnectRemoteStreamTrackEvents(track) {
-    track.onended = () => {};
+    rtcPeerConnection.onconnectionstatechange = () => {};
   }
 
   _removeConnection(id) {
-    this._remoteStreams[id].getTracks().forEach(track => {
-      this._disconnectRemoteStreamTrackEvents(track);
-      track.stop();
-    });
+    this._remoteStreams[id].getTracks().forEach(track => track.stop());
     delete this._remoteStreams[id];
 
     this._rtcPeerConnections[id].close();
@@ -135,10 +130,7 @@ class StreamClient {
 
   _closeAllRemoteStreams() {
     for (let id in this._remoteStreams) {
-      this._remoteStreams[id].getTracks().forEach(track => {
-        this._disconnectRemoteStreamTrackEvents(track);
-        track.stop();
-      });
+      this._remoteStreams[id].getTracks().forEach(track => track.stop());
     }
     this._remoteStreams = {};
   }
@@ -223,8 +215,8 @@ class StreamClient {
     this._onAddRemoteStream = onAddRemoteStream;
   }
 
-  set onRemoveRemoteStream(onRemoveRemoteStream) {
-    this._onRemoveRemoteStream = onRemoveRemoteStream;
+  set onClientDisconnect(onClientDisconnect) {
+    this._onClientDisconnect = onClientDisconnect;
   }
 }
 
