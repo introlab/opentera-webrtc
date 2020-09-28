@@ -76,8 +76,8 @@
       room: 'chat',
       password: passwordInput.value
     };
-    const DataChannelConfiguration = {};
-    const RtcConfiguration = {
+    const DataChannelConfiguration = {}; // See: https://developer.mozilla.org/fr/docs/Web/API/RTCPeerConnection/createDataChannel#RTCDataChannelInit_dictionary
+    const RtcConfiguration = { // See: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection#RTCConfiguration_dictionary
       iceServers: await window.openteraWebrtcWebClient.iceServers.fetchFromServer('http://localhost:8080/iceservers', passwordInput.value)
     };
 

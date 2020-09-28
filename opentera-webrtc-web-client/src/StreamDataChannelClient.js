@@ -1,13 +1,10 @@
 import SignallingClient from './SignallingClient';
 
 
-class StreamClient {
-  constructor(signallingServerConfiguration, streamConfiguration, rtcConfiguration) {
+class StreamDataChannelClient {
+  constructor(signallingServerConfiguration, streamConfiguration, dataChannelConfiguration, rtcConfiguration) {
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
-    }
-    if (!window.MediaStream) {
-      throw new Error('MediaStream is not supported.');
     }
 
     if (!signallingServerConfiguration) {
@@ -16,24 +13,36 @@ class StreamClient {
     if (!streamConfiguration) {
       throw new Error('streamConfiguration is required');
     }
+    if (!dataChannelConfiguration) {
+      throw new Error('dataChannelConfiguration is required');
+    }
     if (!rtcConfiguration) {
       rtcConfiguration = {};
     }
 
     this._signallingServerConfiguration = signallingServerConfiguration;
     this._streamConfiguration = streamConfiguration;
+    this._dataChannelConfiguration = dataChannelConfiguration;
     this._rtcConfiguration = rtcConfiguration;
 
     this._signallingClient = null;
     this._rtcPeerConnections = {};
+    this._dataChannels = {};
     this._remoteStreams = {};
-    
+
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
     this._onSignallingConnectionError = () => {};
 
     this._onRoomClientsChanged = () => {};
-    
+
+    this._onDataChannelMessage = () => {};
+    this._onDataChannelOpen = () => {};
+    this._onDataChannelClose = () => {};
+    this._onDataChannelError = (id, event) => {
+      console.error('Data channel error: ' + id + ', ' + event);
+    };
+
     this._onAddRemoteStream = () => {};
     this._onClientDisconnect = () => {};
   }
@@ -58,19 +67,26 @@ class StreamClient {
 
     await this._signallingClient.connect();
   }
-  
+
   _hasRtcPeerConnection(id) {
     return id in this._rtcPeerConnections;
   }
 
-  _getRtcPeerConnection(id) {
+  _getRtcPeerConnection(id, isCaller) {
     if (id in this._rtcPeerConnections) {
       return this._rtcPeerConnections[id];
     }
     else {
       let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
-      
-      this._connectRtcPeerConnectionEvents(id, rtcPeerConnection);
+
+      if (isCaller) {
+        let dataChannel = rtcPeerConnection.createDataChannel(this._signallingServerConfiguration.room,
+          this._dataChannelConfiguration);
+        this._dataChannels[id] = dataChannel;
+        this._connectDataChannelEvents(id, dataChannel);
+      }
+
+      this._connectRtcPeerConnectionEvents(id, rtcPeerConnection, isCaller);
       if (this._streamConfiguration.localStream) {
         this._streamConfiguration.localStream.getTracks().forEach(track => {
           rtcPeerConnection.addTrack(track, this._streamConfiguration.localStream);
@@ -85,8 +101,15 @@ class StreamClient {
   _getAllRtcPeerConnection() {
     return Object.values(this._rtcPeerConnections);
   }
-  
-  _connectRtcPeerConnectionEvents(id, rtcPeerConnection) {
+
+  _connectRtcPeerConnectionEvents(id, rtcPeerConnection, isCaller) {
+    if (!isCaller) {
+      rtcPeerConnection.ondatachannel = ({ channel: dataChannel }) => {
+        this._dataChannels[id] = dataChannel;
+        this._connectDataChannelEvents(id, dataChannel);
+      };
+    }
+
     if (!this._streamConfiguration.isSendOnly) {
       rtcPeerConnection.ontrack = event => {
         if (!(id in this._remoteStreams)) {
@@ -113,12 +136,48 @@ class StreamClient {
     };
   }
 
-  _disconnectRtcPeerConnectionEvents(rtcPeerConnection) {
+  _disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection) {
+    rtcPeerConnection.ondatachannel = () => {};
+
     rtcPeerConnection.ontrack = () => {};
     rtcPeerConnection.onconnectionstatechange = () => {};
   }
 
+  _connectDataChannelEvents(id, dataChannel) {
+    dataChannel.onmessage = event => {
+      this._onDataChannelMessage(id, this._signallingClient.getClientName(id), event.data);
+    };
+    dataChannel.onopen = event => {
+      this._onDataChannelOpen(id, this._signallingClient.getClientName(id), event);
+      this._signallingClient.updateRoomClients();
+    };
+    dataChannel.onclose = event => {
+      this._removeConnection(id);
+      this._onDataChannelClose(id, this._signallingClient.getClientName(id), event);
+      this._signallingClient.updateRoomClients();
+    };
+    dataChannel.onerror = event => {
+      this._removeConnection(id);
+      this._onDataChannelError(id, this._signallingClient.getClientName(id), event);
+      this._onDataChannelClose(id, this._signallingClient.getClientName(id), event);
+      this._signallingClient.updateRoomClients();
+    };
+  }
+
+  _disconnectDataChannelEvents(dataChannel) {
+    dataChannel.onmessage = () => {};
+    dataChannel.onopen = () => {};
+    dataChannel.onclose = () => {};
+    dataChannel.onerror = () => {};
+  }
+
   _removeConnection(id) {
+    if (id in this._dataChannels) {
+      this._dataChannels[id].close();
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+      delete this._dataChannels[id];
+    }
+
     if (id in this._remoteStreams) {
       this._remoteStreams[id].getTracks().forEach(track => track.stop());
       delete this._remoteStreams[id];
@@ -126,9 +185,17 @@ class StreamClient {
 
     if (id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
-      this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+      this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
       delete this._rtcPeerConnections[id];
     }
+  }
+
+  _closeAllDataChannels() {
+    for (let id in this._dataChannels) {
+      this._dataChannels[id].close();
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+    }
+    this._dataChannels = {};
   }
 
   _closeAllRemoteStreams() {
@@ -141,7 +208,7 @@ class StreamClient {
   _closeAllRtcPeerConnections() {
     for (let id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
-      this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+      this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
     }
     this._rtcPeerConnections = {};
   }
@@ -156,12 +223,14 @@ class StreamClient {
 
   hangUpAll() {
     this._signallingClient.hangUpAll();
+    this._closeAllDataChannels();
     this._closeAllRemoteStreams();
     this._closeAllRtcPeerConnections();
     this._signallingClient.updateRoomClients();
   }
 
   close () {
+    this._closeAllDataChannels();
     this._closeAllRemoteStreams();
 
     if (this._signallingClient !== null) {
@@ -172,7 +241,17 @@ class StreamClient {
     
     this._closeAllRtcPeerConnections();
   }
-  
+
+  sendTo(data, ids) {
+    ids.forEach(id => this._dataChannels[id].send(data));
+  }
+
+  sendToAll(data) {
+    for (let id in this._dataChannels) {
+      this._dataChannels[id].send(data);
+    }
+  }
+
   get isConnected() {
     return this._signallingClient !== null;
   }
@@ -213,6 +292,22 @@ class StreamClient {
   set onRoomClientsChanged(onRoomClientsChanged) {
     this._onRoomClientsChanged = onRoomClientsChanged;
   }
+
+  set onDataChannelMessage(onDataChannelMessage) {
+    this._onDataChannelMessage = onDataChannelMessage;
+  }
+
+  set onDataChannelOpen(onDataChannelOpen) {
+    this._onDataChannelOpen = onDataChannelOpen;
+  }
+
+  set onDataChannelClose(onDataChannelClose) {
+    this._onDataChannelClose = onDataChannelClose;
+  }
+
+  set onDataChannelError(onDataChannelError) {
+    this._onDataChannelError = onDataChannelError;
+  }
   
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;
@@ -223,4 +318,4 @@ class StreamClient {
   }
 }
 
-export default StreamClient;
+export default StreamDataChannelClient;

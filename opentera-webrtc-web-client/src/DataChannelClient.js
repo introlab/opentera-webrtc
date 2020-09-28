@@ -130,13 +130,17 @@ class DataChannelClient {
   }
 
   _removeConnection(id) {
-    this._dataChannels[id].close();
-    this._disconnectDataChannelEvents(this._dataChannels[id]);
-    delete this._dataChannels[id];
+    if (id in this._dataChannels) {
+      this._dataChannels[id].close();
+      this._disconnectDataChannelEvents(this._dataChannels[id]);
+      delete this._dataChannels[id];
+    }
 
-    this._rtcPeerConnections[id].close();
-    this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
-    delete this._rtcPeerConnections[id];
+    if (id in this._rtcPeerConnections) {
+      this._rtcPeerConnections[id].close();
+      this._disconnectDataChannelsRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+      delete this._rtcPeerConnections[id];
+    }
   }
 
   _closeAllDataChannels() {

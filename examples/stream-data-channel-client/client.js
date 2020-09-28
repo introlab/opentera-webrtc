@@ -9,14 +9,18 @@
   let hangUpAllButton = document.getElementById('hang_up_all_button');
   let idInput = document.getElementById('id_input');
   let callOneButton = document.getElementById('call_one_button');
+  let textInput = document.getElementById('text_input');
+  let sendButton = document.getElementById('send_button');
+  let chatTextArea = document.getElementById('chat_text_area');
   let remoteVideos = document.getElementById('remote_videos');
 
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
   callOneButton.disabled = true;
+  sendButton.disabled = true;
 
-  let streamClient = null;
+  let streamDataChannelClient = null;
 
   window.openteraWebrtcWebClient.devices.getDefaultStream().then(stream => {
     localVideo.srcObject = stream;
@@ -24,21 +28,21 @@
   });
 
   function connectStreamClientEvents() {
-    streamClient.onSignallingConnectionOpen = () => {
+    streamDataChannelClient.onSignallingConnectionOpen = () => {
       connectButton.disabled = true;
       closeButton.disabled = false;
     };
-    streamClient.onSignallingConnectionClose = async () => {
+    streamDataChannelClient.onSignallingConnectionClose = async () => {
       connectButton.disabled = false;
       closeButton.disabled = true;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = true;
       callOneButton.disabled = true;
     };
-    streamClient.onSignallingConnectionError = message => {
+    streamDataChannelClient.onSignallingConnectionError = message => {
       alert(message);
     }
-    streamClient.onRoomClientsChanged = clients => {
+    streamDataChannelClient.onRoomClientsChanged = clients => {
       callAllButton.disabled = !(clients.length > 1 && hangUpAllButton.disabled);
       callOneButton.disabled = callAllButton.disabled;
 
@@ -51,7 +55,8 @@
       });
     };
 
-    streamClient.onAddRemoteStream = (id, name, stream) => {
+    streamDataChannelClient.onAddRemoteStream = (id, name, stream) => {
+      sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
       callOneButton.disabled = true;
@@ -68,13 +73,28 @@
       remoteVideos.appendChild(h5);
       remoteVideos.appendChild(video);
     }
-    streamClient.onClientDisconnect = (id, name, stream) => {
-      callAllButton.disabled = streamClient.isRtcConnected;
-      hangUpAllButton.disabled = !streamClient.isRtcConnected;
-      callOneButton.disabled = streamClient.isRtcConnected;
+    let onClientDisconnect = (id, name, stream) => {
+      sendButton.disabled = !streamDataChannelClient.isRtcConnected;
+      callAllButton.disabled = streamDataChannelClient.isRtcConnected;
+      hangUpAllButton.disabled = !streamDataChannelClient.isRtcConnected;
+      callOneButton.disabled = streamDataChannelClient.isRtcConnected;
 
       remoteVideos.removeChild(document.getElementById('h5' + id));
       remoteVideos.removeChild(document.getElementById('video' + id));
+    };
+    streamDataChannelClient.onClientDisconnect = onClientDisconnect;
+
+    streamDataChannelClient.onDataChannelOpen = () => {
+      sendButton.disabled = false;
+      callAllButton.disabled = true;
+      hangUpAllButton.disabled = false;
+      callOneButton.disabled = true;
+    }
+    streamDataChannelClient.onDataChannelClose = onClientDisconnect;
+    streamDataChannelClient.onDataChannelMessage = (id, name, message) => {
+      chatTextArea.value += id + ' - ' + name + ': ';
+      chatTextArea.value += message;
+      chatTextArea.value += '\n';
     };
   }
 
@@ -90,28 +110,37 @@
       localStream: localVideo.srcObject, // Optional
       isSendOnly: false
     };
+    const DataChannelConfiguration = {}; // See: https://developer.mozilla.org/fr/docs/Web/API/RTCPeerConnection/createDataChannel#RTCDataChannelInit_dictionary
     const RtcConfiguration = { // See: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection#RTCConfiguration_dictionary
       iceServers: await window.openteraWebrtcWebClient.iceServers.fetchFromServer('http://localhost:8080/iceservers', passwordInput.value)
     };
 
-    streamClient = new window.openteraWebrtcWebClient.StreamClient(SignallingServerConfiguration,
-      StreamConfiguration, RtcConfiguration);
+    streamDataChannelClient = new window.openteraWebrtcWebClient.StreamDataChannelClient(SignallingServerConfiguration,
+      StreamConfiguration, DataChannelConfiguration, RtcConfiguration);
     connectStreamClientEvents();
 
-    await streamClient.connect();
+    await streamDataChannelClient.connect();
   };
   closeButton.onclick = () => {
-    streamClient.close();
+    streamDataChannelClient.close();
     clientList.innerHTML = '';
     remoteVideos.innerHTML = '';
   };
-  callAllButton.onclick = () => streamClient.callAll();
+  callAllButton.onclick = () => streamDataChannelClient.callAll();
   hangUpAllButton.onclick = () => {
-    streamClient.hangUpAll();
+    streamDataChannelClient.hangUpAll();
     hangUpAllButton.disabled = true;
     callAllButton.disabled = false;
     callOneButton.disabled = false;
+    sendButton.disabled = true;
     remoteVideos.innerHTML = '';
   };
-  callOneButton.onclick = () => streamClient.callIds([idInput.value]);
+  callOneButton.onclick = () => streamDataChannelClient.callIds([idInput.value]);
+  sendButton.onclick = () => {
+    chatTextArea.value += 'Me: ';
+    chatTextArea.value += textInput.value;
+    chatTextArea.value += '\n';
+
+    streamDataChannelClient.sendToAll(textInput.value)
+  };
 })();
