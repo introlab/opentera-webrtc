@@ -72,6 +72,7 @@ class SignallingClient {
     this._socket.on('make-peer-call', async ids => await this._makePeerCall(ids));
     this._socket.on('peer-call-received', async data => await this._peerCallReceived(data));
     this._socket.on('peer-call-answer-received', async data => await this._peerCallAnswerReceived(data));
+    this._socket.on('close-all-peer-connections-request-received', () => this.hangUpAll());
 
     this._socket.on('ice-candidate-received', async data => await this._addIceCandidate(data));
   }
@@ -249,6 +250,10 @@ class SignallingClient {
   hangUpAll() {
     this._closeAllRtcPeerConnections();
     this.updateRoomClients();
+  }
+
+  closeAllRoomPeerConnections() {
+    this._socket.emit('close-all-room-peer-connections');
   }
 
   getClientName(id) {

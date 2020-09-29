@@ -33,7 +33,7 @@ async def disconnect(id):
     
     if room != None:
         clients = await room_manager.list_clients(room)
-        await room_manager.send_to_all('room-clients', clients, room=room)
+        await room_manager.send_to_all('room-clients', data=clients, room=room)
 
 
 @sio.on('join-room')
@@ -49,7 +49,7 @@ async def join_room(id, data):
     await room_manager.add_client(id, data['name'], data['data'], data['room'])
 
     clients = await room_manager.list_clients(data['room'])
-    await room_manager.send_to_all('room-clients', clients, room=data['room'])
+    await room_manager.send_to_all('room-clients', data=clients, room=data['room'])
 
     return True
 
@@ -119,6 +119,15 @@ async def _make_peer_calls(ids):
         ids_to_call = [c[1] for c in combinations if c[0] == id]
         tasks.append(sio.emit('make-peer-call', ids_to_call, to=id))
     await asyncio.wait(tasks)
+
+
+@sio.on('close-all-room-peer-connections')
+async def close_all_peer_connections(from_id):
+    print('call-all', from_id)
+    room = await room_manager.get_room(from_id)
+
+    if room is not None:
+        await room_manager.send_to_all('close-all-peer-connections-request-received', room=room)
 
 
 async def get_ice_servers(request):

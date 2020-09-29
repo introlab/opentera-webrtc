@@ -288,6 +288,43 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient1.callAll();
   });
 
+  it('closeAllRoomPeerConnections should all room peer connections', done => {
+    let dataChannelOpenCounter = 0;
+    let dataChannelCloseCounter = 0;
+
+    let onDataChannelOpen = () => {
+      dataChannelOpenCounter++;
+      if (dataChannelOpenCounter >= 6) {
+        dataChannelClient1.closeAllRoomPeerConnections();
+      }
+    };
+
+    let onDataChannelClose = () => {
+      dataChannelCloseCounter++;
+      if (dataChannelCloseCounter >= 6) {
+        expect(dataChannelClient1.isRtcConnected).to.eql(false);
+        expect(dataChannelClient2.isRtcConnected).to.eql(false);
+        expect(dataChannelClient3.isRtcConnected).to.eql(false);
+
+        expect(dataChannelClient1.connectedRoomClientIds).to.eql([]);
+        expect(dataChannelClient2.connectedRoomClientIds).to.eql([]);
+        expect(dataChannelClient3.connectedRoomClientIds).to.eql([]);
+
+        done();
+      }
+    };
+
+    dataChannelClient1.onDataChannelOpen = onDataChannelOpen;
+    dataChannelClient2.onDataChannelOpen = onDataChannelOpen;
+    dataChannelClient3.onDataChannelOpen = onDataChannelOpen;
+
+    dataChannelClient1.onDataChannelClose = onDataChannelClose;
+    dataChannelClient2.onDataChannelClose = onDataChannelClose;
+    dataChannelClient3.onDataChannelClose = onDataChannelClose;
+
+    dataChannelClient1.callAll();
+  });
+
   it('sendTo should send the data to the specified clients', done => {
     let dataChannelOpenCounter = 0;
     let dataChannelMessageCounter = 0;

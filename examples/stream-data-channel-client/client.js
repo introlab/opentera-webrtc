@@ -7,6 +7,7 @@
   let clientList = document.getElementById('client_list');
   let callAllButton = document.getElementById('call_all_button');
   let hangUpAllButton = document.getElementById('hang_up_all_button');
+  let closeAllRoomPeerConnectionsButton = document.getElementById('close_all_room_peer_connections');
   let idInput = document.getElementById('id_input');
   let callOneButton = document.getElementById('call_one_button');
   let textInput = document.getElementById('text_input');
@@ -17,6 +18,7 @@
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
+  closeAllRoomPeerConnectionsButton.disabled = true;
   callOneButton.disabled = true;
   sendButton.disabled = true;
 
@@ -37,6 +39,7 @@
       closeButton.disabled = true;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = true;
+      closeAllRoomPeerConnectionsButton.disabled = true;
       callOneButton.disabled = true;
     };
     streamDataChannelClient.onSignallingConnectionError = message => {
@@ -59,6 +62,7 @@
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
+      closeAllRoomPeerConnectionsButton.disabled = false;
       callOneButton.disabled = true;
 
       let h5 = document.createElement("h5");;
@@ -77,6 +81,7 @@
       sendButton.disabled = !streamDataChannelClient.isRtcConnected;
       callAllButton.disabled = streamDataChannelClient.isRtcConnected;
       hangUpAllButton.disabled = !streamDataChannelClient.isRtcConnected;
+      closeAllRoomPeerConnectionsButton.disabled = !streamDataChannelClient.isRtcConnected;
       callOneButton.disabled = streamDataChannelClient.isRtcConnected;
 
       let h5 = document.getElementById('h5' + id);
@@ -94,6 +99,7 @@
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
+      closeAllRoomPeerConnectionsButton.disabled = false;
       callOneButton.disabled = true;
     }
     streamDataChannelClient.onDataChannelClose = onClientDisconnect;
@@ -134,14 +140,8 @@
     remoteVideos.innerHTML = '';
   };
   callAllButton.onclick = () => streamDataChannelClient.callAll();
-  hangUpAllButton.onclick = () => {
-    streamDataChannelClient.hangUpAll();
-    hangUpAllButton.disabled = true;
-    callAllButton.disabled = false;
-    callOneButton.disabled = false;
-    sendButton.disabled = true;
-    remoteVideos.innerHTML = '';
-  };
+  hangUpAllButton.onclick = () => streamDataChannelClient.hangUpAll();
+  closeAllRoomPeerConnectionsButton.onclick = () => streamDataChannelClient.closeAllRoomPeerConnections();
   callOneButton.onclick = () => streamDataChannelClient.callIds([idInput.value]);
   sendButton.onclick = () => {
     chatTextArea.value += 'Me: ';

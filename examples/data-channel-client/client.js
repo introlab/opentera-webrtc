@@ -6,6 +6,7 @@
   let clientList = document.getElementById('client_list');
   let callAllButton = document.getElementById('call_all_button');
   let hangUpAllButton = document.getElementById('hang_up_all_button');
+  let closeAllRoomPeerConnectionsButton = document.getElementById('close_all_room_peer_connections');
   let idInput = document.getElementById('id_input');
   let callOneButton = document.getElementById('call_one_button');
   let textInput = document.getElementById('text_input');
@@ -15,6 +16,7 @@
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
+  closeAllRoomPeerConnectionsButton.disabled = true;
   callOneButton.disabled = true;
   sendButton.disabled = true;
   chatTextArea.value = '';
@@ -31,6 +33,7 @@
       closeButton.disabled = true;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = true;
+      closeAllRoomPeerConnectionsButton.disabled = true;
       callOneButton.disabled = true;
     };
     dataChannelClient.onSignallingConnectionError = message => {
@@ -53,12 +56,14 @@
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
+      closeAllRoomPeerConnectionsButton.disabled = false;
       callOneButton.disabled = true;
     }
     dataChannelClient.onDataChannelClose = (id, name, clientData) => {
       sendButton.disabled = !dataChannelClient.isRtcConnected;
       callAllButton.disabled = dataChannelClient.isRtcConnected;
       hangUpAllButton.disabled = !dataChannelClient.isRtcConnected;
+      closeAllRoomPeerConnectionsButton.disabled = !dataChannelClient.isRtcConnected;
       callOneButton.disabled = dataChannelClient.isRtcConnected;
     };
     dataChannelClient.onDataChannelMessage = (id, name, clientData, message) => {
@@ -93,9 +98,8 @@
     clientList.innerHTML = '';
   };
   callAllButton.onclick = () => dataChannelClient.callAll();
-  hangUpAllButton.onclick = () => {
-    dataChannelClient.hangUpAll();
-  };
+  hangUpAllButton.onclick = () => dataChannelClient.hangUpAll();
+  closeAllRoomPeerConnectionsButton.onclick = () => dataChannelClient.closeAllRoomPeerConnections();
   callOneButton.onclick = () => dataChannelClient.callIds([idInput.value]);
   sendButton.onclick = () => {
     chatTextArea.value += 'Me: ';

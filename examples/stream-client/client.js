@@ -7,6 +7,7 @@
   let clientList = document.getElementById('client_list');
   let callAllButton = document.getElementById('call_all_button');
   let hangUpAllButton = document.getElementById('hang_up_all_button');
+  let closeAllRoomPeerConnectionsButton = document.getElementById('close_all_room_peer_connections');
   let idInput = document.getElementById('id_input');
   let callOneButton = document.getElementById('call_one_button');
   let remoteVideos = document.getElementById('remote_videos');
@@ -14,6 +15,7 @@
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
+  closeAllRoomPeerConnectionsButton.disabled = true;
   callOneButton.disabled = true;
 
   let streamClient = null;
@@ -33,6 +35,7 @@
       closeButton.disabled = true;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = true;
+      closeAllRoomPeerConnectionsButton.disabled = true;
       callOneButton.disabled = true;
     };
     streamClient.onSignallingConnectionError = message => {
@@ -54,6 +57,7 @@
     streamClient.onAddRemoteStream = (id, name, clientData, stream) => {
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
+      closeAllRoomPeerConnectionsButton.disabled = false;
       callOneButton.disabled = true;
 
       let h5 = document.createElement("h5");;
@@ -71,6 +75,7 @@
     streamClient.onClientDisconnect = (id, name, clientData) => {
       callAllButton.disabled = streamClient.isRtcConnected;
       hangUpAllButton.disabled = !streamClient.isRtcConnected;
+      closeAllRoomPeerConnectionsButton.disabled = !streamClient.isRtcConnected;
       callOneButton.disabled = streamClient.isRtcConnected;
 
       remoteVideos.removeChild(document.getElementById('h5' + id));
@@ -107,12 +112,7 @@
     remoteVideos.innerHTML = '';
   };
   callAllButton.onclick = () => streamClient.callAll();
-  hangUpAllButton.onclick = () => {
-    streamClient.hangUpAll();
-    hangUpAllButton.disabled = true;
-    callAllButton.disabled = false;
-    callOneButton.disabled = false;
-    remoteVideos.innerHTML = '';
-  };
+  hangUpAllButton.onclick = () => streamClient.hangUpAll();
+  closeAllRoomPeerConnectionsButton.onclick = () => streamClient.closeAllRoomPeerConnections();
   callOneButton.onclick = () => streamClient.callIds([idInput.value]);
 })();

@@ -66,7 +66,7 @@ class RoomManager:
             else:
                 return []
 
-    async def send_to_all(self, event, data, room=None, skip_id=None):
+    async def send_to_all(self, event, data=None, room=None, skip_id=None):
         if room == None:
             await self._sio.emit(event, data)
         else:
