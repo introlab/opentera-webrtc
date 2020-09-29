@@ -184,10 +184,10 @@ describe('Right password DataChannelClient', done => {
 
     let onDataChannelClose = () => {
       dataChannelCloseCounter++;
-      if (dataChannelCloseCounter == 2) {
+      if (dataChannelCloseCounter == 4) {
         dataChannelClient2.hangUpAll();
       }
-      else if (dataChannelCloseCounter >= 3) {
+      else if (dataChannelCloseCounter >= 6) {
         expect(dataChannelClient1.isRtcConnected).to.eql(false);
         expect(dataChannelClient2.isRtcConnected).to.eql(false);
         expect(dataChannelClient3.isRtcConnected).to.eql(false);

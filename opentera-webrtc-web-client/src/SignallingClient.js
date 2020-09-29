@@ -2,24 +2,32 @@ import io from 'socket.io-client';
 
 
 class SignallingClient {
-  constructor(signallingServerConfiguration, hasRtcPeerConnection, getRtcPeerConnection, getAllRtcPeerConnection) {
+  constructor(signallingServerConfiguration) {
+    if (this.constructor === SignallingClient) {
+      throw new TypeError('Abstract class "SignallingClient" cannot be instantiated directly.');
+    }
+    if (this._createRtcPeerConnection === undefined) {
+      throw new TypeError('_createRtcPeerConnection is missing.');
+    }
+    if (this._removeConnection === undefined) {
+      throw new TypeError('_removeConnection is missing.');
+    }
+
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
     }
 
     this._signallingServerConfiguration = signallingServerConfiguration;
-    this._hasRtcPeerConnection = hasRtcPeerConnection;
-    this._getRtcPeerConnection = getRtcPeerConnection;
-    this._getAllRtcPeerConnection = getAllRtcPeerConnection;
 
     this._socket = null;
+    this._rtcPeerConnections = {};
 
     this._clients = [];
     this._clientNamesById = {};
 
-    this._onConnectionOpen = () => {};
-    this._onConnectionClose = () => {};
-    this._onConnectionError = () => {};
+    this._onSignallingConnectionOpen = () => {};
+    this._onSignallingConnectionClose = () => {};
+    this._onSignallingConnectionError = () => {};
     this._onRoomClientsChanged = () => {};
   }
   
@@ -40,14 +48,14 @@ class SignallingClient {
     };
     this._socket.emit('join-room', data, isJoined => {
       if (isJoined) {
-        this._onConnectionOpen();
+        this._onSignallingConnectionOpen();
       }
       else {
         this.close();
-        this._onConnectionError('Invalid password');
+        this._onSignallingConnectionError('Invalid password');
       }
     });
-  }  
+  }
 
   _connectEvents() {
     this._socket.on('disconnect', () => this._disconnect());
@@ -85,11 +93,14 @@ class SignallingClient {
     this._disconnectEvents();
     this._socket.close();
     this._socket = null;
-    this._onConnectionClose();
+    this._clients = [];
+    this.close();
+    this._onSignallingConnectionClose();
   }
 
   async _peerCallReceived(data) {
-    let rtcPeerConnection = this._getRtcPeerConnection(data.fromId, false);
+    let rtcPeerConnection = this._createRtcPeerConnection(data.fromId, false);
+    this._rtcPeerConnections[data.fromId] = rtcPeerConnection;
     this._connectOnIceCandidateEvent(data.fromId, rtcPeerConnection);
 
     await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.offer));
@@ -102,13 +113,13 @@ class SignallingClient {
   }
 
   async _peerCallAnswerReceived(data) {
-    let rtcPeerConnection =  this._getRtcPeerConnection(data.fromId, false);
+    let rtcPeerConnection = this._rtcPeerConnections[data.fromId];
     await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
   }
 
   async _addIceCandidate(data) {
     if (data && data.candidate) {
-      this._getRtcPeerConnection(data.fromId).addIceCandidate(data.candidate);
+      this._rtcPeerConnections[data.fromId].addIceCandidate(data.candidate);
     }
   }
 
@@ -119,7 +130,8 @@ class SignallingClient {
         return;
       }
 
-      let rtcPeerConnection = this._getRtcPeerConnection(id, true);
+      let rtcPeerConnection = this._createRtcPeerConnection(id, true);
+      this._rtcPeerConnections[id] = rtcPeerConnection;
       this._connectOnIceCandidateEvent(id, rtcPeerConnection);
 
       let offer = await rtcPeerConnection.createOffer();
@@ -157,6 +169,22 @@ class SignallingClient {
     });
   }
 
+  _hasRtcPeerConnection(id) {
+    return id in this._rtcPeerConnections;
+  }
+
+  _getAllRtcPeerConnection() {
+    return Object.values(this._rtcPeerConnections);
+  }
+
+  _closeAllRtcPeerConnections() {
+    this._getAllRtcPeerConnection().forEach(rtcPeerConnection => {
+      rtcPeerConnection.close();
+      this._disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection);
+    });
+    this._rtcPeerConnections = {};
+  }
+
   updateRoomClients() {
     this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
   }
@@ -165,6 +193,8 @@ class SignallingClient {
     if (this._socket !== null) {
       this._disconnect();
     }
+    // The RTC peer connections need to close after the socket because of socket can create a RTC connection after RTC peer connections closing.
+    this._closeAllRtcPeerConnections();
   }
 
   callAll() {
@@ -177,30 +207,50 @@ class SignallingClient {
 
   hangUpAll() {
     this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
+
+    this._closeAllRtcPeerConnections();
+    this.updateRoomClients();
   }
 
   getClientName(id) {
     return this._clientNamesById[id];
   }
 
-  get id() {
-    return this._socket.id;
+  get isConnected() {
+    return this._socket !== null;
   }
 
-  get clients() {
+  get isRtcConnected() {
+    return Object.keys(this._rtcPeerConnections).length > 0;
+  }
+
+  get id() {
+    if (this._socket !== null) {
+      return this._socket.id;
+    }
+    else {
+      return null;
+    }
+  }
+
+  get connectedRoomClientIds() {
+    return Object.keys(this._rtcPeerConnections);
+  }
+
+  get roomClients() {
     return this._addConnectionStateToClients(this._clients);
   }
 
-  set onConnectionOpen(onConnectionOpen) {
-    this._onConnectionOpen = onConnectionOpen;
+  set onSignallingConnectionOpen(onSignallingConnectionOpen) {
+    this._onSignallingConnectionOpen = onSignallingConnectionOpen;
   }
 
-  set onConnectionClose(onConnectionClose) {
-    this._onConnectionClose = onConnectionClose;
+  set onSignallingConnectionClose(onSignallingConnectionClose) {
+    this._onSignallingConnectionClose = onSignallingConnectionClose;
   }
 
-  set onConnectionError(onConnectionError) {
-    this._onConnectionError = onConnectionError;
+  set onSignallingConnectionError(onSignallingConnectionError) {
+    this._onSignallingConnectionError = onSignallingConnectionError;
   }
 
   set onRoomClientsChanged(onRoomClientsChanged) {

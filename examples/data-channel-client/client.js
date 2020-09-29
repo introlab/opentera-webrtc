@@ -94,10 +94,6 @@
   callAllButton.onclick = () => dataChannelClient.callAll();
   hangUpAllButton.onclick = () => {
     dataChannelClient.hangUpAll();
-    hangUpAllButton.disabled = true;
-    callAllButton.disabled = false;
-    sendButton.disabled = true;
-    callOneButton.disabled = false;
   };
   callOneButton.onclick = () => dataChannelClient.callIds([idInput.value]);
   sendButton.onclick = () => {
