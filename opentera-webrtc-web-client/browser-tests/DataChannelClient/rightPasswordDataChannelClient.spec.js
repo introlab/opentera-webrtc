@@ -154,12 +154,18 @@ describe('Right password DataChannelClient', done => {
       }
     };
 
-    dataChannelClient1.onDataChannelOpen = () => {
+    dataChannelClient1.onDataChannelOpen = (id, name, event) => {
+      expect(id).to.eql(dataChannelClient2.id);
+      expect(name).to.eql('c2');
+
       expect(dataChannelClient1.isRtcConnected).to.eql(true);
       expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient2.id);
       onClientCallFinish();
     };
-    dataChannelClient2.onDataChannelOpen = () => {
+    dataChannelClient2.onDataChannelOpen = (id, name, event) => {
+      expect(id).to.eql(dataChannelClient1.id);
+      expect(name).to.eql('c1');
+
       expect(dataChannelClient2.isRtcConnected).to.eql(true);
       expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient1.id);
       onClientCallFinish();
@@ -170,6 +176,68 @@ describe('Right password DataChannelClient', done => {
 
     dataChannelClient1.callIds([dataChannelClient2.id]);
   });
+
+  it('onClientConnect should be called after a call', done => {
+    let clientCounter = 0;
+
+    let onClientCallFinish = () => {
+      clientCounter++;
+      if (clientCounter >= 2) {
+        done();
+      }
+    };
+
+    dataChannelClient1.onClientConnect = (id, name) => {
+      expect(id).to.eql(dataChannelClient2.id);
+      expect(name).to.eql('c2');
+
+      onClientCallFinish();
+    };
+    dataChannelClient2.onClientConnect = (id, name) => {
+      expect(id).to.eql(dataChannelClient1.id);
+      expect(name).to.eql('c1');
+
+      onClientCallFinish();
+    };
+    dataChannelClient3.onClientConnect = () => {
+      expect.fail();
+    };
+
+    dataChannelClient1.callIds([dataChannelClient2.id]);
+  });
+
+  it('onClientDisconnect should be called after the hangUpAll function call', done => {
+    let clientCounter = 0;
+
+    let onClientCallFinish = () => {
+      clientCounter++;
+      if (clientCounter >= 2) {
+        done();
+      }
+    };
+
+    dataChannelClient1.onClientConnect = () => {
+      dataChannelClient1.hangUpAll();
+    };
+
+    dataChannelClient1.onClientDisconnect = (id, name) => {
+      expect(id).to.eql(dataChannelClient2.id);
+      expect(name).to.eql('c2');
+
+      onClientCallFinish();
+    };
+    dataChannelClient2.onClientDisconnect = (id, name) => {
+      expect(id).to.eql(dataChannelClient1.id);
+      expect(name).to.eql('c1');
+
+      onClientCallFinish();
+    };
+    dataChannelClient3.onClientConnect = () => {
+      expect.fail();
+    };
+
+    dataChannelClient1.callIds([dataChannelClient2.id]);
+  }).timeout(15000);
 
   it('hangUpAll should hang up all clients', done => {
     let dataChannelOpenCounter = 0;

@@ -29,6 +29,9 @@ class SignallingClient {
     this._onSignallingConnectionClose = () => {};
     this._onSignallingConnectionError = () => {};
     this._onRoomClientsChanged = () => {};
+
+    this._onClientConnect = () => {};
+    this._onClientDisconnect = () => {};
   }
   
   async connect() {
@@ -85,7 +88,7 @@ class SignallingClient {
     this._socket.off('peer-call-received');
     this._socket.off('peer-call-answer-received');
 
-    this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
+    this._getAllRtcPeerConnection().forEach(c => this._disconnectRtcPeerConnectionEvents(c));
     this._socket.off('ice-candidate');
   }
 
@@ -101,7 +104,7 @@ class SignallingClient {
   async _peerCallReceived(data) {
     let rtcPeerConnection = this._createRtcPeerConnection(data.fromId, false);
     this._rtcPeerConnections[data.fromId] = rtcPeerConnection;
-    this._connectOnIceCandidateEvent(data.fromId, rtcPeerConnection);
+    this._connectRtcPeerConnectionEvents(data.fromId, rtcPeerConnection);
 
     await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.offer));
     
@@ -132,7 +135,7 @@ class SignallingClient {
 
       let rtcPeerConnection = this._createRtcPeerConnection(id, true);
       this._rtcPeerConnections[id] = rtcPeerConnection;
-      this._connectOnIceCandidateEvent(id, rtcPeerConnection);
+      this._connectRtcPeerConnectionEvents(id, rtcPeerConnection);
 
       let offer = await rtcPeerConnection.createOffer();
       await rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
@@ -142,11 +145,40 @@ class SignallingClient {
     });
   }
 
-  _connectOnIceCandidateEvent(id, rtcPeerConnection) {
+  _connectRtcPeerConnectionEvents(id, rtcPeerConnection) {
     rtcPeerConnection.onicecandidate = event => {
       let data = { toId: id, candidate: event.candidate };
       this._socket.emit('send-ice-candidate', data);
     };
+
+    rtcPeerConnection.onconnectionstatechange = () => {
+      switch(rtcPeerConnection.connectionState) {
+      case 'connected':
+        this._onClientConnect(id, this.getClientName(id));
+        break;
+
+      case 'disconnected':
+      case 'failed':
+      case 'closed':
+        this._removeConnection(id);
+        this.updateRoomClients();
+        break;
+      }
+    };
+  }
+
+  _disconnectRtcPeerConnectionEvents(rtcPeerConnection) {
+    rtcPeerConnection.onicecandidate = () => {};
+    rtcPeerConnection.onconnectionstatechange = () => {};
+  }
+
+  _removeConnection(id) {
+    if (id in this._rtcPeerConnections) {
+      this._rtcPeerConnections[id].close();
+      this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+      this._onClientDisconnect(id, this.getClientName(id));
+      delete this._rtcPeerConnections[id];
+    }
   }
 
   _addConnectionStateToClients(clients) {
@@ -178,11 +210,12 @@ class SignallingClient {
   }
 
   _closeAllRtcPeerConnections() {
-    this._getAllRtcPeerConnection().forEach(rtcPeerConnection => {
-      rtcPeerConnection.close();
-      this._disconnectDataChannelsRtcPeerConnectionEvents(rtcPeerConnection);
-    });
-    this._rtcPeerConnections = {};
+    for (let id in this._rtcPeerConnections) {
+      this._rtcPeerConnections[id].close();
+      this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
+      this._onClientDisconnect(id, this.getClientName(id), {});
+      delete this._rtcPeerConnections[id];
+    }
   }
 
   updateRoomClients() {
@@ -206,8 +239,6 @@ class SignallingClient {
   }
 
   hangUpAll() {
-    this._getAllRtcPeerConnection().forEach(c => c.onicecandidate = () => {});
-
     this._closeAllRtcPeerConnections();
     this.updateRoomClients();
   }
@@ -255,6 +286,18 @@ class SignallingClient {
 
   set onRoomClientsChanged(onRoomClientsChanged) {
     this._onRoomClientsChanged = onRoomClientsChanged;
+  }
+
+  set onClientConnect(onClientConnect) {
+    this._onClientConnect = onClientConnect;
+  }
+
+  set onClientDisconnect(onClientDisconnect) {
+    this._onClientDisconnect = (id, name) => {
+      if (id in this._rtcPeerConnections) {
+        onClientDisconnect(id, name);
+      }
+    };
   }
 }
 
