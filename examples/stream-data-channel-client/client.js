@@ -55,7 +55,7 @@
       });
     };
 
-    streamDataChannelClient.onAddRemoteStream = (id, name, stream) => {
+    streamDataChannelClient.onAddRemoteStream = (id, name, clientData, stream) => {
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
@@ -73,7 +73,7 @@
       remoteVideos.appendChild(h5);
       remoteVideos.appendChild(video);
     }
-    let onClientDisconnect = (id, name, stream) => {
+    let onClientDisconnect = (id, name, clientData) => {
       sendButton.disabled = !streamDataChannelClient.isRtcConnected;
       callAllButton.disabled = streamDataChannelClient.isRtcConnected;
       hangUpAllButton.disabled = !streamDataChannelClient.isRtcConnected;
@@ -90,14 +90,14 @@
     };
     streamDataChannelClient.onClientDisconnect = onClientDisconnect;
 
-    streamDataChannelClient.onDataChannelOpen = () => {
+    streamDataChannelClient.onDataChannelOpen = (id, name, clientData) => {
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
       callOneButton.disabled = true;
     }
     streamDataChannelClient.onDataChannelClose = onClientDisconnect;
-    streamDataChannelClient.onDataChannelMessage = (id, name, message) => {
+    streamDataChannelClient.onDataChannelMessage = (id, name, clientData, message) => {
       chatTextArea.value += id + ' - ' + name + ': ';
       chatTextArea.value += message;
       chatTextArea.value += '\n';
@@ -109,6 +109,7 @@
     const SignallingServerConfiguration = {
       url: 'http://localhost:8080',
       name: nameInput.value,
+      data: {}, // Client custom data
       room: 'chat',
       password: passwordInput.value
     };

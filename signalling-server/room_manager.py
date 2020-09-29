@@ -7,10 +7,11 @@ class RoomManager:
         self._room_by_id = {}
         self._ids_by_room = {}
         self._client_name_by_id = {}
+        self._client_datum_by_id = {}
 
         self._lock = asyncio.Lock()    
 
-    async def add_client(self, id, client_name, room):
+    async def add_client(self, id, client_name, client_data, room):
         async with self._lock:
             if id in self._room_by_id:
                 return
@@ -24,6 +25,7 @@ class RoomManager:
                 self._ids_by_room[room] = [id]
 
             self._client_name_by_id[id] = client_name
+            self._client_datum_by_id[id] = client_data
 
     async def remove_client(self, id):
         async with self._lock:
@@ -39,6 +41,9 @@ class RoomManager:
             if id in self._client_name_by_id:
                 del self._client_name_by_id[id]
 
+            if id in self._client_datum_by_id:
+                del self._client_datum_by_id[id]
+
     async def get_room(self, id):
         async with self._lock:
             if id in self._room_by_id:
@@ -51,10 +56,11 @@ class RoomManager:
             if room in self._ids_by_room:
                 clients = []
                 for id in self._ids_by_room[room]:
-                    if id in self._client_name_by_id:
+                    if id in self._client_name_by_id and id in self._client_datum_by_id:
                         clients.append({
                             'id': id,
-                            'name': self._client_name_by_id[id]
+                            'name': self._client_name_by_id[id],
+                            'data': self._client_datum_by_id[id]
                         })
                 return clients
             else:

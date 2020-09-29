@@ -48,7 +48,7 @@ class StreamClient extends SignallingClient {
         if (!(id in this._remoteStreams)) {
           this._remoteStreams[id] = new window.MediaStream();
           this._remoteStreams[id].addTrack(event.track, this._remoteStreams[id]);
-          this._onAddRemoteStream(id, this.getClientName(id), this._remoteStreams[id]);
+          this._onAddRemoteStream(id, this.getClientName(id), this.getClientData(id), this._remoteStreams[id]);
           this.updateRoomClients();
         }
         else {

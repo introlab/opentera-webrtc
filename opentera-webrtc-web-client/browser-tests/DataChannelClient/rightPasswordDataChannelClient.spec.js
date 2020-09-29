@@ -7,18 +7,21 @@ describe('Right password DataChannelClient', done => {
   const SignallingServerConfiguration1 = {
     url: 'http://localhost:8080',
     name: 'c1',
+    data:'cd1',
     room: 'chat',
     password: 'abc'
   };
   const SignallingServerConfiguration2 = {
     url: 'http://localhost:8080',
     name: 'c2',
+    data:'cd2',
     room: 'chat',
     password: 'abc'
   };
   const SignallingServerConfiguration3 = {
     url: 'http://localhost:8080',
     name: 'c3',
+    data:'cd3',
     room: 'chat',
     password: 'abc'
   };
@@ -85,19 +88,19 @@ describe('Right password DataChannelClient', done => {
   });
   it('roomClients should return all clients', () => {
     expect(dataChannelClient1.roomClients.length).to.eql(3);
-    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', isConnected: true});
-    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', isConnected: false});
-    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', isConnected: false});
+    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', data: 'cd1', isConnected: true});
+    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', data: 'cd2', isConnected: false});
+    expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', data: 'cd3', isConnected: false});
 
     expect(dataChannelClient2.roomClients.length).to.eql(3);
-    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', isConnected: false});
-    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', isConnected: true});
-    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', isConnected: false});
+    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', data: 'cd1', isConnected: false});
+    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', data: 'cd2', isConnected: true});
+    expect(dataChannelClient2.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', data: 'cd3', isConnected: false});
 
     expect(dataChannelClient3.roomClients.length).to.eql(3);
-    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', isConnected: false});
-    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', isConnected: false});
-    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', isConnected: true});
+    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', data: 'cd1', isConnected: false});
+    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', data: 'cd2', isConnected: false});
+    expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', data: 'cd3', isConnected: true});
   });
 
   it('callAll should call all clients', done => {
@@ -154,17 +157,19 @@ describe('Right password DataChannelClient', done => {
       }
     };
 
-    dataChannelClient1.onDataChannelOpen = (id, name, event) => {
+    dataChannelClient1.onDataChannelOpen = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient2.id);
       expect(name).to.eql('c2');
+      expect(clientData).to.eql('cd2');
 
       expect(dataChannelClient1.isRtcConnected).to.eql(true);
       expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient2.id);
       onClientCallFinish();
     };
-    dataChannelClient2.onDataChannelOpen = (id, name, event) => {
+    dataChannelClient2.onDataChannelOpen = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient1.id);
       expect(name).to.eql('c1');
+      expect(clientData).to.eql('cd1');
 
       expect(dataChannelClient2.isRtcConnected).to.eql(true);
       expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient1.id);
@@ -187,15 +192,17 @@ describe('Right password DataChannelClient', done => {
       }
     };
 
-    dataChannelClient1.onClientConnect = (id, name) => {
+    dataChannelClient1.onClientConnect = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient2.id);
       expect(name).to.eql('c2');
+      expect(clientData).to.eql('cd2');
 
       onClientCallFinish();
     };
-    dataChannelClient2.onClientConnect = (id, name) => {
+    dataChannelClient2.onClientConnect = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient1.id);
       expect(name).to.eql('c1');
+      expect(clientData).to.eql('cd1');
 
       onClientCallFinish();
     };
@@ -220,15 +227,17 @@ describe('Right password DataChannelClient', done => {
       dataChannelClient1.hangUpAll();
     };
 
-    dataChannelClient1.onClientDisconnect = (id, name) => {
+    dataChannelClient1.onClientDisconnect = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient2.id);
       expect(name).to.eql('c2');
+      expect(clientData).to.eql('cd2');
 
       onClientCallFinish();
     };
-    dataChannelClient2.onClientDisconnect = (id, name) => {
+    dataChannelClient2.onClientDisconnect = (id, name, clientData) => {
       expect(id).to.eql(dataChannelClient1.id);
       expect(name).to.eql('c1');
+      expect(clientData).to.eql('cd1');
 
       onClientCallFinish();
     };
@@ -303,21 +312,24 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient2.onDataChannelOpen = onDataChannelOpen;
     dataChannelClient3.onDataChannelOpen = onDataChannelOpen;
 
-    dataChannelClient1.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient1.onDataChannelMessage = (id, name, clientData, data) => {
       expect(id).to.eql(dataChannelClient3.id);
       expect(name).to.eql('c3');
+      expect(clientData).to.eql('cd3');
       expect(data).to.eql('data3');
       onDataChannelMessageFinish();
     };
-    dataChannelClient2.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient2.onDataChannelMessage = (id, name, clientData, data) => {
       expect(id).to.eql(dataChannelClient1.id);
       expect(name).to.eql('c1');
+      expect(clientData).to.eql('cd1');
       expect(data).to.eql('data1');
       onDataChannelMessageFinish();
     };
-    dataChannelClient3.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient3.onDataChannelMessage = (id, name, clientData, data) => {
       expect(id).to.eql(dataChannelClient2.id);
       expect(name).to.eql('c2');
+      expect(clientData).to.eql('cd2');
       expect(data).to.eql('data2');
       onDataChannelMessageFinish();
     };
@@ -349,14 +361,16 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient2.onDataChannelOpen = onDataChannelOpen;
     dataChannelClient3.onDataChannelOpen = onDataChannelOpen;
 
-    dataChannelClient1.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient1.onDataChannelMessage = (id, name, clientData, data) => {
       if (id == dataChannelClient2.id) {
         expect(name).to.eql('c2');
+        expect(clientData).to.eql('cd2');
         expect(data).to.eql('data2');
         onDataChannelMessageFinish();
       }
       else if (id == dataChannelClient3.id) {
         expect(name).to.eql('c3');
+        expect(clientData).to.eql('cd3');
         expect(data).to.eql('data3');
         onDataChannelMessageFinish();
       }
@@ -364,14 +378,16 @@ describe('Right password DataChannelClient', done => {
         expect.fail();
       }
     };
-    dataChannelClient2.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient2.onDataChannelMessage = (id, name, clientData, data) => {
       if (id == dataChannelClient1.id) {
         expect(name).to.eql('c1');
+        expect(clientData).to.eql('cd1');
         expect(data).to.eql('data1');
         onDataChannelMessageFinish();
       }
       else if (id == dataChannelClient3.id) {
         expect(name).to.eql('c3');
+        expect(clientData).to.eql('cd3');
         expect(data).to.eql('data3');
         onDataChannelMessageFinish();
       }
@@ -379,14 +395,16 @@ describe('Right password DataChannelClient', done => {
         expect.fail();
       }
     };
-    dataChannelClient3.onDataChannelMessage = (id, name, data) => {
+    dataChannelClient3.onDataChannelMessage = (id, name, clientData, data) => {
       if (id == dataChannelClient1.id) {
         expect(name).to.eql('c1');
+        expect(clientData).to.eql('cd1');
         expect(data).to.eql('data1');
         onDataChannelMessageFinish();
       }
       else if (id == dataChannelClient2.id) {
         expect(name).to.eql('c2');
+        expect(clientData).to.eql('cd2');
         expect(data).to.eql('data2');
         onDataChannelMessageFinish();
       }

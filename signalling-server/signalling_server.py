@@ -43,7 +43,10 @@ async def join_room(id, data):
     if not _isAuthorized(data['password'] if 'password' in data else ''):
         return False
 
-    await room_manager.add_client(id, data['name'], data['room'])
+    if 'data' not in data:
+        data['data'] = {}
+
+    await room_manager.add_client(id, data['name'], data['data'], data['room'])
 
     clients = await room_manager.list_clients(data['room'])
     await room_manager.send_to_all('room-clients', clients, room=data['room'])

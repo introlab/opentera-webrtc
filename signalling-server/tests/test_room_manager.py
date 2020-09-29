@@ -24,30 +24,30 @@ class TestRoomManager(unittest.TestCase):
         self._room_manager = RoomManager(self._sio_mock)
 
     def test_get_room(self):
-        _run_async(self._room_manager.add_client('id1', 'name1', 'room1'))
-        _run_async(self._room_manager.add_client('id2', 'name2', 'room2'))
+        _run_async(self._room_manager.add_client('id1', 'name1', 'data1', 'room1'))
+        _run_async(self._room_manager.add_client('id2', 'name2', 'data2', 'room2'))
 
         self.assertEqual(_run_async(self._room_manager.get_room('id1')), 'room1')
         self.assertEqual(_run_async(self._room_manager.get_room('id2')), 'room2')
         self.assertEqual(_run_async(self._room_manager.get_room('id3')), None)
 
     def test_list_clients(self):
-        _run_async(self._room_manager.add_client('id1', 'name1', 'room1'))
-        _run_async(self._room_manager.add_client('id2', 'name2', 'room1'))
+        _run_async(self._room_manager.add_client('id1', 'name1', 'data1', 'room1'))
+        _run_async(self._room_manager.add_client('id2', 'name2', 'data2', 'room1'))
 
         clients = _run_async(self._room_manager.list_clients('room1'))
         self.assertEqual(len(clients), 2)
-        self.assertEqual(clients[0], {'id': 'id1', 'name': 'name1'})
-        self.assertEqual(clients[1], {'id': 'id2', 'name': 'name2'})
+        self.assertEqual(clients[0], {'id': 'id1', 'name': 'name1', 'data': 'data1'})
+        self.assertEqual(clients[1], {'id': 'id2', 'name': 'name2', 'data': 'data2'})
 
     def test_remove_client(self):
-        _run_async(self._room_manager.add_client('id1', 'name1', 'room1'))
+        _run_async(self._room_manager.add_client('id1', 'name1', 'data1', 'room1'))
 
         self.assertEqual(_run_async(self._room_manager.get_room('id1')), 'room1')
 
         clients = _run_async(self._room_manager.list_clients('room1'))
         self.assertEqual(len(clients), 1)
-        self.assertEqual(clients[0], {'id': 'id1', 'name': 'name1'})
+        self.assertEqual(clients[0], {'id': 'id1', 'name': 'name1', 'data': 'data1'})
 
 
         _run_async(self._room_manager.remove_client('id1'))
@@ -59,9 +59,9 @@ class TestRoomManager(unittest.TestCase):
         self.assertEqual(len(clients), 0)
 
     def test_send_to_all(self):
-        _run_async(self._room_manager.add_client('id1', 'name1', 'room1'))
-        _run_async(self._room_manager.add_client('id2', 'name2', 'room1'))
-        _run_async(self._room_manager.add_client('id3', 'name3', 'room2'))
+        _run_async(self._room_manager.add_client('id1', 'name1', 'data1', 'room1'))
+        _run_async(self._room_manager.add_client('id2', 'name2', 'data2', 'room1'))
+        _run_async(self._room_manager.add_client('id3', 'name3', 'data3', 'room2'))
 
         _run_async(self._room_manager.send_to_all('event1', 'data1'))
         _run_async(self._room_manager.send_to_all('event2', 'data2', room='room1'))

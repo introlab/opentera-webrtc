@@ -21,6 +21,7 @@ class SignallingClient {
 
     this._clients = [];
     this._clientNamesById = {};
+    this._clientDatumById = {};
 
     this._onSignallingConnectionOpen = () => {};
     this._onSignallingConnectionClose = () => {};
@@ -43,6 +44,7 @@ class SignallingClient {
     
     let data = {
       name: this._signallingServerConfiguration.name,
+      data: this._signallingServerConfiguration.data,
       room: this._signallingServerConfiguration.room,
       password: this._signallingServerConfiguration.password
     };
@@ -63,6 +65,7 @@ class SignallingClient {
     this._socket.on('room-clients', clients => {
       this._clients = clients;
       this._updateClientNamesById(clients);
+      this._updateClientDatumById(clients);
       this._onRoomClientsChanged(this._addConnectionStateToClients(this._clients));
     });
 
@@ -151,7 +154,7 @@ class SignallingClient {
     rtcPeerConnection.onconnectionstatechange = () => {
       switch(rtcPeerConnection.connectionState) {
       case 'connected':
-        this._onClientConnect(id, this.getClientName(id));
+        this._onClientConnect(id, this.getClientName(id), this.getClientData(id));
         break;
 
       case 'disconnected':
@@ -174,7 +177,7 @@ class SignallingClient {
       this._rtcPeerConnections[id].close();
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
       delete this._rtcPeerConnections[id];
-      this._onClientDisconnect(id, this.getClientName(id));
+      this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
     }
   }
 
@@ -184,6 +187,7 @@ class SignallingClient {
       newClients.push({
         id: client.id,
         name: client.name,
+        data: client.data,
         isConnected: this._hasRtcPeerConnection(client.id) || client.id == this.id
       });
     });
@@ -195,6 +199,13 @@ class SignallingClient {
     this._clientNamesById = {};
     clients.forEach(client => {
       this._clientNamesById[client.id] = client.name;
+    });
+  }
+
+  _updateClientDatumById(clients) {
+    this._clientDatumById = {};
+    clients.forEach(client => {
+      this._clientDatumById[client.id] = client.data;
     });
   }
 
@@ -210,7 +221,7 @@ class SignallingClient {
     for (let id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
-      this._onClientDisconnect(id, this.getClientName(id), {});
+      this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
       delete this._rtcPeerConnections[id];
     }
   }
@@ -242,6 +253,10 @@ class SignallingClient {
 
   getClientName(id) {
     return this._clientNamesById[id];
+  }
+
+  getClientData(id) {
+    return this._clientDatumById[id];
   }
 
   get isConnected() {

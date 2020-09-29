@@ -74,7 +74,7 @@ class StreamDataChannelClient extends SignallingClient {
         if (!(id in this._remoteStreams)) {
           this._remoteStreams[id] = new window.MediaStream();
           this._remoteStreams[id].addTrack(event.track, this._remoteStreams[id]);
-          this._onAddRemoteStream(id, this.getClientName(id), this._remoteStreams[id]);
+          this._onAddRemoteStream(id, this.getClientName(id), this.getClientData(id), this._remoteStreams[id]);
           this.updateRoomClients();
         }
         else {
@@ -93,10 +93,10 @@ class StreamDataChannelClient extends SignallingClient {
 
   _connectDataChannelEvents(id, dataChannel) {
     dataChannel.onmessage = event => {
-      this._onDataChannelMessage(id, this.getClientName(id), event.data);
+      this._onDataChannelMessage(id, this.getClientName(id), this.getClientData(id), event.data);
     };
     dataChannel.onopen = () => {
-      this._onDataChannelOpen(id, this.getClientName(id));
+      this._onDataChannelOpen(id, this.getClientName(id), this.getClientData(id));
       this.updateRoomClients();
     };
     dataChannel.onclose = () => {
@@ -105,7 +105,7 @@ class StreamDataChannelClient extends SignallingClient {
     };
     dataChannel.onerror = event => {
       this._removeConnection(id);
-      this._onDataChannelError(id, this.getClientName(id), event);
+      this._onDataChannelError(id, this.getClientName(id), this.getClientData(id), event);
       this.updateRoomClients();
     };
   }
@@ -123,7 +123,7 @@ class StreamDataChannelClient extends SignallingClient {
     if (id in this._dataChannels) {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
-      this._onDataChannelClose(id, this.getClientName(id), {});
+      this._onDataChannelClose(id, this.getClientName(id), this.getClientData(id));
       delete this._dataChannels[id];
     }
 
@@ -137,7 +137,7 @@ class StreamDataChannelClient extends SignallingClient {
     for (let id in this._dataChannels) {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
-      this._onDataChannelClose(id, this.getClientName(id), {});
+      this._onDataChannelClose(id, this.getClientName(id), this.getClientData(id));
       delete this._dataChannels[id];
     }
   }

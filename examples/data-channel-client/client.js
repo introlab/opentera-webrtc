@@ -49,19 +49,19 @@
       });
     };
 
-    dataChannelClient.onDataChannelOpen = () => {
+    dataChannelClient.onDataChannelOpen = (id, name, clientData) => {
       sendButton.disabled = false;
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
       callOneButton.disabled = true;
     }
-    dataChannelClient.onDataChannelClose = () => {
+    dataChannelClient.onDataChannelClose = (id, name, clientData) => {
       sendButton.disabled = !dataChannelClient.isRtcConnected;
       callAllButton.disabled = dataChannelClient.isRtcConnected;
       hangUpAllButton.disabled = !dataChannelClient.isRtcConnected;
       callOneButton.disabled = dataChannelClient.isRtcConnected;
     };
-    dataChannelClient.onDataChannelMessage = (id, name, message) => {
+    dataChannelClient.onDataChannelMessage = (id, name, clientData, message) => {
       chatTextArea.value += id + ' - ' + name + ': ';
       chatTextArea.value += message;
       chatTextArea.value += '\n';
@@ -73,6 +73,7 @@
     const SignallingServerConfiguration = {
       url: 'http://localhost:8080',
       name: nameInput.value,
+      data: {}, // Client custom data
       room: 'chat',
       password: passwordInput.value
     };

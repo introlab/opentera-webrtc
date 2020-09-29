@@ -61,10 +61,10 @@ class DataChannelClient extends SignallingClient {
 
   _connectDataChannelEvents(id, dataChannel) {
     dataChannel.onmessage = event => {
-      this._onDataChannelMessage(id, this.getClientName(id), event.data);
+      this._onDataChannelMessage(id, this.getClientName(id), this.getClientData(id), event.data);
     };
     dataChannel.onopen = () => {
-      this._onDataChannelOpen(id, this.getClientName(id));
+      this._onDataChannelOpen(id, this.getClientName(id), this.getClientData(id));
       this.updateRoomClients();
     };
     dataChannel.onclose = () => {
@@ -73,7 +73,7 @@ class DataChannelClient extends SignallingClient {
     };
     dataChannel.onerror = event => {
       this._removeConnection(id);
-      this._onDataChannelError(id, this.getClientName(id), event);
+      this._onDataChannelError(id, this.getClientName(id), this.getClientData(id), event);
       this.updateRoomClients();
     };
   }
@@ -92,7 +92,7 @@ class DataChannelClient extends SignallingClient {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
       delete this._dataChannels[id];
-      this._onDataChannelClose(id, this.getClientName(id), {});
+      this._onDataChannelClose(id, this.getClientName(id), this.getClientData(id));
     }
   }
 
@@ -101,7 +101,7 @@ class DataChannelClient extends SignallingClient {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
       delete this._dataChannels[id];
-      this._onDataChannelClose(id, this.getClientName(id), {});
+      this._onDataChannelClose(id, this.getClientName(id), this.getClientData(id));
     }
   }
 

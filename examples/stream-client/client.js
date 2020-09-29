@@ -51,7 +51,7 @@
       });
     };
 
-    streamClient.onAddRemoteStream = (id, name, stream) => {
+    streamClient.onAddRemoteStream = (id, name, clientData, stream) => {
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;
       callOneButton.disabled = true;
@@ -68,7 +68,7 @@
       remoteVideos.appendChild(h5);
       remoteVideos.appendChild(video);
     }
-    streamClient.onClientDisconnect = (id) => {
+    streamClient.onClientDisconnect = (id, name, clientData) => {
       callAllButton.disabled = streamClient.isRtcConnected;
       hangUpAllButton.disabled = !streamClient.isRtcConnected;
       callOneButton.disabled = streamClient.isRtcConnected;
@@ -83,6 +83,7 @@
     const SignallingServerConfiguration = {
       url: 'http://localhost:8080',
       name: nameInput.value,
+      data: {}, // Client custom data
       room: 'chat',
       password: passwordInput.value
     };
