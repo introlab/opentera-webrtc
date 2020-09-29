@@ -53,7 +53,7 @@ async def join_room(id, data):
 
 @sio.on('send-ice-candidate')
 async def ice_candidate(from_id, data):
-    #print('send-ice-candidate ', from_id, 'to', data['toId'])
+    print('send-ice-candidate ', from_id, 'to', data['toId'])
     room1 = await room_manager.get_room(from_id)
     room2 = await room_manager.get_room(data['toId'])
 
