@@ -68,7 +68,7 @@
       remoteVideos.appendChild(h5);
       remoteVideos.appendChild(video);
     }
-    streamClient.onClientDisconnect = (id, name, stream) => {
+    streamClient.onClientDisconnect = (id) => {
       callAllButton.disabled = streamClient.isRtcConnected;
       hangUpAllButton.disabled = !streamClient.isRtcConnected;
       callOneButton.disabled = streamClient.isRtcConnected;

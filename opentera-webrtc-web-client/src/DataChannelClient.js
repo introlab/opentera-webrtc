@@ -9,9 +9,6 @@ class DataChannelClient extends SignallingClient {
       throw new Error('RTCPeerConnection is not supported.');
     }
 
-    if (!signallingServerConfiguration) {
-      throw new Error('signallingServerConfiguration is required');
-    }
     if (!dataChannelConfiguration) {
       throw new Error('dataChannelConfiguration is required');
     }
@@ -94,8 +91,8 @@ class DataChannelClient extends SignallingClient {
     if (id in this._dataChannels) {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
-      this._onDataChannelClose(id, this.getClientName(id), {});
       delete this._dataChannels[id];
+      this._onDataChannelClose(id, this.getClientName(id), {});
     }
   }
 
@@ -103,8 +100,8 @@ class DataChannelClient extends SignallingClient {
     for (let id in this._dataChannels) {
       this._dataChannels[id].close();
       this._disconnectDataChannelEvents(this._dataChannels[id]);
-      this._onDataChannelClose(id, this.getClientName(id), {});
       delete this._dataChannels[id];
+      this._onDataChannelClose(id, this.getClientName(id), {});
     }
   }
 
@@ -137,11 +134,7 @@ class DataChannelClient extends SignallingClient {
   }
 
   set onDataChannelClose(onDataChannelClose) {
-    this._onDataChannelClose = (id, name) => {
-      if (id in this._dataChannels) {
-        onDataChannelClose(id, name);
-      }
-    };
+    this._onDataChannelClose = onDataChannelClose;
   }
 
   set onDataChannelError(onDataChannelError) {

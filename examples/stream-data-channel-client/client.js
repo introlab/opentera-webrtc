@@ -79,8 +79,14 @@
       hangUpAllButton.disabled = !streamDataChannelClient.isRtcConnected;
       callOneButton.disabled = streamDataChannelClient.isRtcConnected;
 
-      remoteVideos.removeChild(document.getElementById('h5' + id));
-      remoteVideos.removeChild(document.getElementById('video' + id));
+      let h5 = document.getElementById('h5' + id);
+      let video = document.getElementById('video' + id);
+      if (h5 !== null) {
+        remoteVideos.removeChild(document.getElementById('h5' + id));
+      }
+      if (video !== null) {
+        remoteVideos.removeChild(document.getElementById('video' + id));
+      }
     };
     streamDataChannelClient.onClientDisconnect = onClientDisconnect;
 

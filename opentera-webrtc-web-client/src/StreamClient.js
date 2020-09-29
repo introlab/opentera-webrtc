@@ -12,9 +12,6 @@ class StreamClient extends SignallingClient {
       throw new Error('MediaStream is not supported.');
     }
 
-    if (!signallingServerConfiguration) {
-      throw new Error('signallingServerConfiguration is required');
-    }
     if (!streamConfiguration) {
       throw new Error('streamConfiguration is required');
     }
@@ -31,10 +28,9 @@ class StreamClient extends SignallingClient {
     this._onAddRemoteStream = () => {};
   }
 
-  _createRtcPeerConnection(id) {
+  _createRtcPeerConnection() {
     let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
 
-    this._connectRtcPeerConnectionEvents(id, rtcPeerConnection);
     if (this._streamConfiguration.localStream) {
       this._streamConfiguration.localStream.getTracks().forEach(track => {
         rtcPeerConnection.addTrack(track, this._streamConfiguration.localStream);

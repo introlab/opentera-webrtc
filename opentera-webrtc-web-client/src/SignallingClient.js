@@ -9,9 +9,6 @@ class SignallingClient {
     if (this._createRtcPeerConnection === undefined) {
       throw new TypeError('_createRtcPeerConnection is missing.');
     }
-    if (this._removeConnection === undefined) {
-      throw new TypeError('_removeConnection is missing.');
-    }
 
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
@@ -176,8 +173,8 @@ class SignallingClient {
     if (id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
-      this._onClientDisconnect(id, this.getClientName(id));
       delete this._rtcPeerConnections[id];
+      this._onClientDisconnect(id, this.getClientName(id));
     }
   }
 
@@ -293,11 +290,7 @@ class SignallingClient {
   }
 
   set onClientDisconnect(onClientDisconnect) {
-    this._onClientDisconnect = (id, name) => {
-      if (id in this._rtcPeerConnections) {
-        onClientDisconnect(id, name);
-      }
-    };
+    this._onClientDisconnect = onClientDisconnect;
   }
 }
 

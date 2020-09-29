@@ -4,7 +4,7 @@ SCRIPT=`realpath $0`
 SCRIPT_PATH=`dirname $SCRIPT`
 
 cd $SCRIPT_PATH/../../opentera-webrtc-web-client
-#npm install
+npm install
 npm run build:umd
 
 cp $SCRIPT_PATH/../../opentera-webrtc-web-client/dist/openteraWebrtcWebClient.js $SCRIPT_PATH
