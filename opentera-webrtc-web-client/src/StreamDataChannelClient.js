@@ -2,8 +2,8 @@ import SignallingClient from './SignallingClient';
 
 
 class StreamDataChannelClient extends SignallingClient {
-  constructor(signallingServerConfiguration, streamConfiguration, dataChannelConfiguration, rtcConfiguration) {
-    super(signallingServerConfiguration);
+  constructor(signallingServerConfiguration, streamConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
+    super(signallingServerConfiguration, logger);
 
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
@@ -71,6 +71,8 @@ class StreamDataChannelClient extends SignallingClient {
 
     if (!this._streamConfiguration.isSendOnly) {
       rtcPeerConnection.ontrack = event => {
+        this._logger('RtcPeerConnection ontrack event, event=', event);
+
         if (!(id in this._remoteStreams)) {
           this._remoteStreams[id] = new window.MediaStream();
           this._remoteStreams[id].addTrack(event.track, this._remoteStreams[id]);
@@ -96,14 +98,20 @@ class StreamDataChannelClient extends SignallingClient {
       this._onDataChannelMessage(id, this.getClientName(id), this.getClientData(id), event.data);
     };
     dataChannel.onopen = () => {
+      this._logger('onDataChannelOpen, id=', id);
+
       this._onDataChannelOpen(id, this.getClientName(id), this.getClientData(id));
       this.updateRoomClients();
     };
     dataChannel.onclose = () => {
+      this._logger('onDataChannelClose, id=', id);
+
       this._removeConnection(id);
       this.updateRoomClients();
     };
     dataChannel.onerror = event => {
+      this._logger('onDataChannelError, id=', id);
+
       this._removeConnection(id);
       this._onDataChannelError(id, this.getClientName(id), this.getClientData(id), event);
       this.updateRoomClients();

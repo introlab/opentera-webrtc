@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 
 class SignallingClient {
-  constructor(signallingServerConfiguration) {
+  constructor(signallingServerConfiguration, logger) {
     if (this.constructor === SignallingClient) {
       throw new TypeError('Abstract class "SignallingClient" cannot be instantiated directly.');
     }
@@ -13,8 +13,12 @@ class SignallingClient {
     if (!window.RTCSessionDescription) {
       throw new Error('RTCSessionDescription is not supported.');
     }
+    if (!logger) {
+      logger = () => {};
+    }
 
     this._signallingServerConfiguration = signallingServerConfiguration;
+    this._logger = logger;
 
     this._socket = null;
     this._rtcPeerConnections = {};
@@ -33,13 +37,27 @@ class SignallingClient {
   }
   
   async connect() {
+    this._logger('SignallingClient.connect method call');
+
     this._socket = io(this._signallingServerConfiguration.url);
     this._connectEvents();
 
     await new Promise((resolve, reject) => {
-      this._socket.on('connect', () => resolve());
-      this._socket.on('connect_error', error => reject(error));
-      this._socket.on('connect_timeout', error => reject(error));
+      this._socket.on('connect', () => {
+        this._logger('SignallingServer connect event');
+
+        resolve();
+      });
+      this._socket.on('connect_error', error => {
+        this._logger('SignallingServer connect_error event');
+
+        reject(error);
+      });
+      this._socket.on('connect_timeout', error => {
+        this._logger('SignallingServer connect_timeout event');
+
+        reject(error);
+      });
     });
     
     let data = {
@@ -49,6 +67,7 @@ class SignallingClient {
       password: this._signallingServerConfiguration.password
     };
     this._socket.emit('join-room', data, isJoined => {
+      this._logger('SignallingServer join-room event, isJoined=', isJoined);
       if (isJoined) {
         this._onSignallingConnectionOpen();
       }
@@ -60,9 +79,15 @@ class SignallingClient {
   }
 
   _connectEvents() {
-    this._socket.on('disconnect', () => this._disconnect());
+    this._socket.on('disconnect', () => {
+      this._logger('SignallingServer disconnect event');
+
+      this._disconnect();
+    });
 
     this._socket.on('room-clients', clients => {
+      this._logger('SignallingServer room-clients event, clients=', clients);
+
       this._clients = clients;
       this._updateClientNamesById(clients);
       this._updateClientDatumById(clients);
@@ -72,7 +97,11 @@ class SignallingClient {
     this._socket.on('make-peer-call', async ids => await this._makePeerCall(ids));
     this._socket.on('peer-call-received', async data => await this._peerCallReceived(data));
     this._socket.on('peer-call-answer-received', async data => await this._peerCallAnswerReceived(data));
-    this._socket.on('close-all-peer-connections-request-received', () => this.hangUpAll());
+    this._socket.on('close-all-peer-connections-request-received', () => {
+      this._logger('SignallingServer close-all-peer-connections-request-received event');
+
+      this.hangUpAll();
+    });
 
     this._socket.on('ice-candidate-received', async data => await this._addIceCandidate(data));
   }
@@ -103,6 +132,8 @@ class SignallingClient {
   }
 
   async _peerCallReceived(data) {
+    this._logger('SignallingServer peer-call-received event, data=', data);
+
     let rtcPeerConnection = this._createRtcPeerConnection(data.fromId, false);
     this._rtcPeerConnections[data.fromId] = rtcPeerConnection;
     this._connectRtcPeerConnectionEvents(data.fromId, rtcPeerConnection);
@@ -117,17 +148,23 @@ class SignallingClient {
   }
 
   async _peerCallAnswerReceived(data) {
+    this._logger('SignallingServer peer-call-answer-received event, data=', data);
+
     let rtcPeerConnection = this._rtcPeerConnections[data.fromId];
     await rtcPeerConnection.setRemoteDescription(new window.RTCSessionDescription(data.answer));
   }
 
   async _addIceCandidate(data) {
+    this._logger('SignallingServer ice-candidate-received event, data=', data);
+
     if (data && data.candidate) {
       this._rtcPeerConnections[data.fromId].addIceCandidate(data.candidate);
     }
   }
 
   async _makePeerCall(ids) {
+    this._logger('SignallingServer make-peer-call event, ids=', ids);
+
     ids = ids.filter(id => id != this._socket.id);
     ids.forEach(async id => {
       if (this._hasRtcPeerConnection(id)) {
@@ -155,12 +192,16 @@ class SignallingClient {
     rtcPeerConnection.onconnectionstatechange = () => {
       switch(rtcPeerConnection.connectionState) {
       case 'connected':
+        this._logger('RtcPeerConnection connected event id=', id);
+
         this._onClientConnect(id, this.getClientName(id), this.getClientData(id));
         break;
 
       case 'disconnected':
       case 'failed':
       case 'closed':
+        this._logger('RtcPeerConnection disconnected, failed or closed event, id=', id);
+
         this._removeConnection(id);
         this.updateRoomClients();
         break;
@@ -240,19 +281,27 @@ class SignallingClient {
   }
 
   callAll() {
+    this._logger('SignallingClient.callAll method call');
+
     this._socket.emit('call-all');
   }
 
   callIds(ids) {
+    this._logger('SignallingClient.callIds method call, ids=', ids);
+
     this._socket.emit('call-ids', ids);
   }
 
   hangUpAll() {
+    this._logger('SignallingClient.hangUpAll method call');
+
     this._closeAllRtcPeerConnections();
     this.updateRoomClients();
   }
 
   closeAllRoomPeerConnections() {
+    this._logger('SignallingClient.closeAllRoomPeerConnections method call');
+
     this._socket.emit('close-all-room-peer-connections');
   }
 

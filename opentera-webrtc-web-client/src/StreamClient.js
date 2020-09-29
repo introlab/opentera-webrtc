@@ -2,8 +2,8 @@ import SignallingClient from './SignallingClient';
 
 
 class StreamClient extends SignallingClient {
-  constructor(signallingServerConfiguration, streamConfiguration, rtcConfiguration) {
-    super(signallingServerConfiguration);
+  constructor(signallingServerConfiguration, streamConfiguration, rtcConfiguration, logger) {
+    super(signallingServerConfiguration, logger);
 
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
@@ -45,6 +45,8 @@ class StreamClient extends SignallingClient {
 
     if (!this._streamConfiguration.isSendOnly) {
       rtcPeerConnection.ontrack = event => {
+        this._logger('RtcPeerConnection ontrack event, event=', event);
+
         if (!(id in this._remoteStreams)) {
           this._remoteStreams[id] = new window.MediaStream();
           this._remoteStreams[id].addTrack(event.track, this._remoteStreams[id]);

@@ -2,8 +2,8 @@ import SignallingClient from './SignallingClient';
 
 
 class DataChannelClient extends SignallingClient {
-  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration) {
-    super(signallingServerConfiguration);
+  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
+    super(signallingServerConfiguration, logger);
 
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
@@ -64,14 +64,20 @@ class DataChannelClient extends SignallingClient {
       this._onDataChannelMessage(id, this.getClientName(id), this.getClientData(id), event.data);
     };
     dataChannel.onopen = () => {
+      this._logger('onDataChannelOpen, id=', id);
+
       this._onDataChannelOpen(id, this.getClientName(id), this.getClientData(id));
       this.updateRoomClients();
     };
     dataChannel.onclose = () => {
+      this._logger('onDataChannelClose, id=', id);
+
       this._removeConnection(id);
       this.updateRoomClients();
     };
     dataChannel.onerror = event => {
+      this._logger('onDataChannelError, id=', id);
+
       this._removeConnection(id);
       this._onDataChannelError(id, this.getClientName(id), this.getClientData(id), event);
       this.updateRoomClients();
