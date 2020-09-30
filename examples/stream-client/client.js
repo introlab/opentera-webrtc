@@ -99,7 +99,7 @@
     const RtcConfiguration = { // See: https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection#RTCConfiguration_dictionary
       iceServers: await window.openteraWebrtcWebClient.iceServers.fetchFromServer('http://localhost:8080/iceservers', passwordInput.value)
     };
-    const logger = (...args) => console.log(...args);
+    let logger = (...args) => console.log(...args);
 
     streamClient = new window.openteraWebrtcWebClient.StreamClient(SignallingServerConfiguration,
       StreamConfiguration, RtcConfiguration, logger);
