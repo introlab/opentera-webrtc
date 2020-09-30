@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- Setup the test environnement -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/3.2.0/mocha.js"></script>
+        <script>
+            mocha.setup('bdd');
+        </script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.js"></script>
+        <script>
+            let assert = chai.assert;
+            let expect = chai.expect;
+        </script>
+    </head>
+    <body>
+        <!-- Library file -->
+        <script src="openteraWebrtcWebClient.js"></script>
+
+        <!-- Test files -->
+        <script src="iceServers.spec.js"></script>
+        <script src="DataChannelClient/disconnectedDataChannelClient.spec.js"></script>
+        <script src="DataChannelClient/wrongPasswordDataChannelClient.spec.js"></script>
+        <script src="DataChannelClient/rightPasswordDataChannelClient.spec.js"></script>
+
+        <div id="mocha"></div>
+        <script>mocha.run();</script>
+    </body>
+</html>
