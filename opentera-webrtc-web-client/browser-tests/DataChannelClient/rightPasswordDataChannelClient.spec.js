@@ -55,8 +55,8 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient3.onSignallingConnectionError = onSignallingConnectionError;
 
     dataChannelClient1.connect();
-    dataChannelClient2.connect();
-    dataChannelClient3.connect();
+    setTimeout(() => dataChannelClient2.connect(), BEFORE_AFTER_TIMEOUT_MS);
+    setTimeout(() => dataChannelClient3.connect(), 2 * BEFORE_AFTER_TIMEOUT_MS);
   });
 
   afterEach(done => {
@@ -120,6 +120,7 @@ describe('Right password DataChannelClient', done => {
       dataChannelCounter1++;
       if (dataChannelCounter1 >= 2) {
         expect(dataChannelClient1.isRtcConnected).to.eql(true);
+        expect(dataChannelClient1.connectedRoomClientIds.length).to.eql(2);
         expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient2.id);
         expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient3.id);
         onClientCallFinish();
@@ -129,6 +130,7 @@ describe('Right password DataChannelClient', done => {
       dataChannelCounter2++;
       if (dataChannelCounter2 >= 2) {
         expect(dataChannelClient2.isRtcConnected).to.eql(true);
+        expect(dataChannelClient2.connectedRoomClientIds.length).to.eql(2);
         expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient1.id);
         expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient3.id);
         onClientCallFinish();
@@ -138,6 +140,7 @@ describe('Right password DataChannelClient', done => {
       dataChannelCounter3++;
       if (dataChannelCounter3 >= 2) {
         expect(dataChannelClient3.isRtcConnected).to.eql(true);
+        expect(dataChannelClient3.connectedRoomClientIds.length).to.eql(2);
         expect(dataChannelClient3.connectedRoomClientIds).to.include(dataChannelClient1.id);
         expect(dataChannelClient3.connectedRoomClientIds).to.include(dataChannelClient2.id);
         onClientCallFinish();
@@ -153,6 +156,7 @@ describe('Right password DataChannelClient', done => {
     let onClientCallFinish = () => {
       clientCounter++;
       if (clientCounter >= 2) {
+        expect(dataChannelClient3.connectedRoomClientIds).to.eql([]);
         done();
       }
     };
@@ -163,6 +167,7 @@ describe('Right password DataChannelClient', done => {
       expect(clientData).to.eql('cd2');
 
       expect(dataChannelClient1.isRtcConnected).to.eql(true);
+      expect(dataChannelClient1.connectedRoomClientIds.length).to.eql(1);
       expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient2.id);
       onClientCallFinish();
     };
@@ -172,6 +177,7 @@ describe('Right password DataChannelClient', done => {
       expect(clientData).to.eql('cd1');
 
       expect(dataChannelClient2.isRtcConnected).to.eql(true);
+      expect(dataChannelClient2.connectedRoomClientIds.length).to.eql(1);
       expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient1.id);
       onClientCallFinish();
     };
@@ -247,6 +253,113 @@ describe('Right password DataChannelClient', done => {
 
     dataChannelClient1.callIds([dataChannelClient2.id]);
   }).timeout(15000);
+
+  it('callAcceptor should be able to reject a call and onCallReject should be called', done => {
+    let clientCallFinishCounter = 0;
+    let clientCallRejectCounter = 0;
+
+    let onFinish = () => {
+      if (clientCallFinishCounter >= 2 && clientCallRejectCounter >= 2) {
+        expect(dataChannelClient1.isRtcConnected).to.eql(true);
+        expect(dataChannelClient1.connectedRoomClientIds.length).to.eql(1);
+        expect(dataChannelClient1.connectedRoomClientIds).to.include(dataChannelClient2.id);
+
+        expect(dataChannelClient2.isRtcConnected).to.eql(true);
+        expect(dataChannelClient2.connectedRoomClientIds.length).to.eql(1);
+        expect(dataChannelClient2.connectedRoomClientIds).to.include(dataChannelClient1.id);
+
+        expect(dataChannelClient3.isRtcConnected).to.eql(false);
+        expect(dataChannelClient3.connectedRoomClientIds).to.eql([]);
+
+        done();
+      }
+    }
+
+    let onClientCallFinish = () => {
+      clientCallFinishCounter++;
+      onFinish();
+    };
+
+    let onClientCallRejectFinish = () => {
+      clientCallRejectCounter++;
+      onFinish();
+    }
+
+    dataChannelClient1.onClientConnect = (id, name, clientData) => {
+      expect(id).to.eql(dataChannelClient2.id);
+      expect(name).to.eql('c2');
+      expect(clientData).to.eql('cd2');
+
+      onClientCallFinish();
+    };
+    dataChannelClient2.onClientConnect = (id, name, clientData) => {
+      expect(id).to.eql(dataChannelClient1.id);
+      expect(name).to.eql('c1');
+      expect(clientData).to.eql('cd1');
+
+      onClientCallFinish();
+    };
+    dataChannelClient3.onClientConnect = () => {
+      expect.fail();
+    };
+
+    dataChannelClient1.callAcceptor = async (id, name, clientData) => {
+      expect.fail();
+      return true;
+    };
+
+    dataChannelClient2.callAcceptor = (id, name, clientData) => {
+      if (id == dataChannelClient1.id) {
+        expect(name).to.eql('c1');
+        expect(clientData).to.eql('cd1');
+      }
+      else if (id == dataChannelClient3.id) {
+        expect(name).to.eql('c3');
+        expect(clientData).to.eql('cd3');
+      }
+      else {
+        expect.fail();
+      }
+
+      return id == dataChannelClient1.id;
+    };
+
+    dataChannelClient3.callAcceptor = (id, name, clientData) => {
+      if (id == dataChannelClient1.id) {
+        expect(name).to.eql('c1');
+        expect(clientData).to.eql('cd1');
+      }
+      else if (id == dataChannelClient2.id) {
+        expect(name).to.eql('c2');
+        expect(clientData).to.eql('cd2');
+      }
+      else {
+        expect.fail();
+      }
+
+      return id == dataChannelClient2.id;
+    };
+
+    dataChannelClient1.onCallReject = (id, name, clientData) => {
+      expect(id).to.eql(dataChannelClient3.id);
+      expect(name).to.eql('c3');
+      expect(clientData).to.eql('cd3');
+      onClientCallRejectFinish();
+    };
+
+    dataChannelClient2.onCallReject = (id, name, clientData) => {
+      expect(id).to.eql(dataChannelClient3.id);
+      expect(name).to.eql('c3');
+      expect(clientData).to.eql('cd3');
+      onClientCallRejectFinish();
+    };
+
+    dataChannelClient3.onCallReject = () => {
+      expect.fail();
+    };
+
+    dataChannelClient1.callAll();
+  });
 
   it('hangUpAll should hang up all clients', done => {
     let dataChannelOpenCounter = 0;

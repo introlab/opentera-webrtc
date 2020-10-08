@@ -16,7 +16,7 @@ trap "kill ${SERVER_PID}; exit 1" INT
 
 URL="http://localhost:8080/tests.html"
 
-#!/bin/bash
+
 if which xdg-open > /dev/null
 then
   xdg-open $URL
