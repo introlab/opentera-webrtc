@@ -39,7 +39,7 @@
     dataChannelClient.onSignallingConnectionError = message => {
       alert(message);
     }
-    dataChannelClient.onRoomClientsChanged = clients => {
+    dataChannelClient.onRoomClientsChange = clients => {
       callAllButton.disabled = !(clients.length > 1 && hangUpAllButton.disabled);
       callOneButton.disabled = callAllButton.disabled;
 
@@ -50,6 +50,14 @@
         li.style.color = client.isConnected ? 'green' : 'red';
         clientList.appendChild(li);
       });
+    };
+
+    dataChannelClient.callAcceptor = async (id, name, clientData) => {
+      return confirm('Do you accept the call from ' + name + '?');
+    };
+
+    dataChannelClient.onCallReject = (id, name, clientData) => {
+      alert('The call is rejected (' + name + ')');
     };
 
     dataChannelClient.onDataChannelOpen = (id, name, clientData) => {

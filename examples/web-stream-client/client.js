@@ -41,7 +41,7 @@
     streamClient.onSignallingConnectionError = message => {
       alert(message);
     }
-    streamClient.onRoomClientsChanged = clients => {
+    streamClient.onRoomClientsChange = clients => {
       callAllButton.disabled = !(clients.length > 1 && hangUpAllButton.disabled);
       callOneButton.disabled = callAllButton.disabled;
 
