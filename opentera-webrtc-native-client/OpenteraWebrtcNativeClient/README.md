@@ -1,0 +1,6 @@
+# OpenteraWebrtcNativeClient
+
+## Dependancies
+ - OpenSSL
+ - BOOST
+
