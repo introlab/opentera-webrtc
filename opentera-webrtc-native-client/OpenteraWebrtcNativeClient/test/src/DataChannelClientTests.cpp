@@ -73,6 +73,23 @@ protected:
     }
 };
 
+class SingleDataChannelClientTests : public DataChannelClientTests
+{
+protected:
+    unique_ptr<DataChannelClient> m_client1;
+
+    void SetUp() override
+    {
+        m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
+                                                   "chat", "abc", "");
+    }
+
+    void TearDown() override
+    {
+        m_client1->closeSync();
+    }
+};
+
 class RightPasswordDataChannelClientTests : public DataChannelClientTests
 {
 protected:
@@ -168,6 +185,25 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
     m_client1->setOnSignallingConnectionOpen([] {});
     m_client1->setOnSignallingConnectionError([](const string& error) {});
     m_client1->setOnSignallingConnectionClosed([] {});
+}
+
+
+TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConnection)
+{
+    CallbackAwaiter awaiter(2);
+    m_client1->setOnSignallingConnectionOpen([&] { awaiter.done(); });
+    m_client1->setOnRoomClientsChanged([&](const std::vector<RoomClient>& roomClients)
+    {
+        EXPECT_NE(roomClients.size(), 1);
+        EXPECT_EQ(count(roomClients.begin(), roomClients.end(),
+                RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)), 1);
+        awaiter.done();
+    });
+
+    m_client1->connect();
+    awaiter.wait();
+
+    m_client1->setOnSignallingConnectionOpen([] {});
 }
 
 
