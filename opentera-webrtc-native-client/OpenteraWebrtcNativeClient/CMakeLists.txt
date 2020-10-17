@@ -4,20 +4,23 @@ project(OpenteraWebrtcNativeClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
+include_directories(../3rdParty/socket.io-client-cpp/src)
+include_directories(include)
+
 file(GLOB_RECURSE
         source_files
         src/*
         include/*)
 
 add_library(OpenteraWebrtcNativeClient
-        SHARED
+        STATIC
         ${source_files})
 
 target_link_libraries(OpenteraWebrtcNativeClient
         sioclient
         sioclient_tls)
 
-set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
+set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 17)
 
 assign_source_group(${source_files})
 
