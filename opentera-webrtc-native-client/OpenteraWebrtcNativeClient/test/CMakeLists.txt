@@ -21,6 +21,7 @@ add_executable(OpenteraWebrtcNativeClientTests
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
         OpenteraWebrtcNativeClient
+        ${webrtc_native_LIBRARY}
         gtest
         gmock)
 

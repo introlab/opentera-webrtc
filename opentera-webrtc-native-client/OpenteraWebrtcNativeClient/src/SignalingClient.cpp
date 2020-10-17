@@ -1,5 +1,11 @@
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
 
+#include <api/create_peerconnection_factory.h>
+#include <api/audio_codecs/builtin_audio_decoder_factory.h>
+#include <api/audio_codecs/builtin_audio_encoder_factory.h>
+#include <api/video_codecs/builtin_video_decoder_factory.h>
+#include <api/video_codecs/builtin_video_encoder_factory.h>
+
 using namespace introlab;
 using namespace std;
 
@@ -11,6 +17,22 @@ SignalingClient::SignalingClient(const string& url, const string& clientName, co
     constexpr int ReconnectAttempts = 10;
     m_sio.set_reconnect_attempts(ReconnectAttempts);
     connectSioEvents();
+
+    m_peerConnectionFactoryInterface = webrtc::CreatePeerConnectionFactory(nullptr, // Network thread
+            nullptr, // Worker thread
+            nullptr, // Signaling thread
+            nullptr, // Default adm
+            webrtc::CreateBuiltinAudioEncoderFactory(),
+            webrtc::CreateBuiltinAudioDecoderFactory(),
+            webrtc::CreateBuiltinVideoEncoderFactory(),
+            webrtc::CreateBuiltinVideoDecoderFactory(),
+            nullptr, // Audio mixer,
+            nullptr); // Audio processing
+
+    if (!m_peerConnectionFactoryInterface)
+    {
+        throw runtime_error("Failed to create PeerConnectionFactory");
+    }
 }
 
 SignalingClient::~SignalingClient()
@@ -51,13 +73,28 @@ void SignalingClient::closeSync()
 void SignalingClient::callAll()
 {
     std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-    throw runtime_error("Not implemented");
+
+    m_alreadyAcceptedCalls.clear();
+    for (const auto& pair : m_roomClientsById)
+    {
+        m_alreadyAcceptedCalls.push_back(pair.first);
+    }
+
+    m_sio.socket()->emit("call-all");
 }
 
 void SignalingClient::callIds(const vector<string>& ids)
 {
     std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-    throw runtime_error("Not implemented");
+
+    m_alreadyAcceptedCalls = ids;
+
+    auto data = sio::array_message::create();
+    for (const auto& id : ids)
+    {
+        data->get_vector().push_back(sio::string_message::create(id));
+    }
+    m_sio.socket()->emit("call-ids", data);
 }
 
 void SignalingClient::hangUpAll()
@@ -69,7 +106,7 @@ void SignalingClient::hangUpAll()
 void SignalingClient::closeAllRoomPeerConnections()
 {
     std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-    throw runtime_error("Not implemented");
+    m_sio.socket()->emit("close-all-room-peer-connections");
 }
 
 vector<string> SignalingClient::getConnectedRoomClientIds()
@@ -101,6 +138,15 @@ void SignalingClient::connectSioEvents()
     m_sio.set_close_listener([this](const sio::client::close_reason& reason) { onSioDisconnectEvent(reason); });
 
     m_sio.socket()->on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
+
+    m_sio.socket()->on("make-peer-call", [this] (sio::event& event) { onMakePeerCallEvent(event); });
+    m_sio.socket()->on("peer-call-received", [this] (sio::event& event) { onPeerCallReceivedEvent(event); });
+    m_sio.socket()->on("peer-call-answer-received",
+            [this] (sio::event& event) { onPeerCallAnswerReceivedEvent(event); });
+    m_sio.socket()->on("close-all-peer-connections-request-received",
+        [this] (sio::event& event) { onCloseAllPeerConnectionsRequestReceivedEvent(event); });
+
+    m_sio.socket()->on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
 }
 
 void SignalingClient::onSioConnectEvent()
@@ -165,4 +211,25 @@ void SignalingClient::onRoomClientsEvent(sio::event& event)
     }
 
     invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
+}
+
+void SignalingClient::onMakePeerCallEvent(sio::event& event)
+{
+}
+
+void SignalingClient::onPeerCallReceivedEvent(sio::event& event)
+{
+}
+
+void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
+{
+}
+
+void SignalingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
+{
+    hangUpAll();
+}
+
+void SignalingClient::onIceCandidateReceivedEvent(sio::event& event)
+{
 }

@@ -6,6 +6,9 @@
 
 #include <sio_client.h>
 
+#include <api/peer_connection_interface.h>
+#include <api/scoped_refptr.h>
+
 #include <functional>
 #include <map>
 #include <mutex>
@@ -31,6 +34,7 @@ namespace introlab
 
         std::map<std::string, Client> m_roomClientsById;
         std::map<std::string, bool> m_peerConnectionsById;
+        std::vector<std::string> m_alreadyAcceptedCalls;
 
         std::function<void()> m_onSignallingConnectionOpen;
         std::function<void()> m_onSignallingConnectionClosed;
@@ -40,6 +44,9 @@ namespace introlab
 
         std::function<bool(const Client&)> m_callAcceptor;
         std::function<void(const Client&)> m_onCallRejected;
+
+    protected:
+        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactoryInterface;
 
     public:
         SignalingClient(const std::string& url, const std::string& clientName, const sio::message::ptr& clientData,
@@ -87,6 +94,13 @@ namespace introlab
         void onJoinRoomCallback(const sio::message::list& message);
 
         void onRoomClientsEvent(sio::event& event);
+
+        void onMakePeerCallEvent(sio::event& event);
+        void onPeerCallReceivedEvent(sio::event& event);
+        void onPeerCallAnswerReceivedEvent(sio::event& event);
+        void onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event);
+
+        void onIceCandidateReceivedEvent(sio::event& event);
 
         template<class T, class ... Types>
         void invokeIfCallable(const std::function<T>& f, Types... args);

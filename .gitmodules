@@ -7,3 +7,9 @@
 [submodule "opentera-webrtc-native-client/3rdParty/cpp-subprocess"]
 	path = opentera-webrtc-native-client/3rdParty/cpp-subprocess
 	url = https://github.com/arun11299/cpp-subprocess.git
+[submodule "opentera-webrtc-native-client/opentera-webrtc-native-client/3rdParty/depot_tools"]
+	path = opentera-webrtc-native-client/opentera-webrtc-native-client/3rdParty/depot_tools
+	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git
+[submodule "opentera-webrtc-native-client/3rdParty/depot_tools"]
+	path = opentera-webrtc-native-client/3rdParty/depot_tools
+	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git

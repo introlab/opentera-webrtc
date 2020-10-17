@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 2.6.4)
 
 if (POLICY CMP0048)
@@ -7,3 +6,4 @@ endif (POLICY CMP0048)
 
 add_subdirectory(googletest)
 add_subdirectory(socket.io-client-cpp)
+add_subdirectory(webrtc_native)
