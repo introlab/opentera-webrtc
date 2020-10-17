@@ -19,14 +19,14 @@ SignalingClient::~SignalingClient()
 
 void SignalingClient::connect()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     m_hasClosePending = false;
     m_sio.connect(m_url);
 }
 
 void SignalingClient::close()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     if (m_sio.opened())
     {
         m_sio.close();
@@ -38,7 +38,7 @@ void SignalingClient::close()
 
 void SignalingClient::closeSync()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     if (m_sio.opened())
     {
         m_sio.sync_close();
@@ -50,31 +50,38 @@ void SignalingClient::closeSync()
 
 void SignalingClient::callAll()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     throw runtime_error("Not implemented");
 }
 
 void SignalingClient::callIds(const vector<string>& ids)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     throw runtime_error("Not implemented");
 }
 
 void SignalingClient::hangUpAll()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     throw runtime_error("Not implemented");
 }
 
 void SignalingClient::closeAllRoomPeerConnections()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     throw runtime_error("Not implemented");
 }
 
 vector<string> SignalingClient::getConnectedRoomClientIds()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     return {};
 }
 
 vector<RoomClient> SignalingClient::getRoomClients()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
+
     vector<RoomClient> roomClients(m_roomClientsById.size());
     for (const auto& pair : m_roomClientsById)
     {
@@ -87,8 +94,10 @@ vector<RoomClient> SignalingClient::getRoomClients()
 
 void SignalingClient::connectSioEvents()
 {
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
+
     m_sio.set_open_listener([this] { onSioConnectEvent(); });
-    m_sio.set_fail_listener([this]{ onSioErrorEvent(); });
+    m_sio.set_fail_listener([this] { onSioErrorEvent(); });
     m_sio.set_close_listener([this](const sio::client::close_reason& reason) { onSioDisconnectEvent(reason); });
 
     m_sio.socket()->on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
@@ -96,14 +105,13 @@ void SignalingClient::connectSioEvents()
 
 void SignalingClient::onSioConnectEvent()
 {
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-
     auto data = sio::object_message::create();
     data->get_map()["name"] = sio::string_message::create(m_clientName);
     data->get_map()["data"] = m_clientData;
     data->get_map()["room"] = sio::string_message::create(m_room);
     data->get_map()["password"] = sio::string_message::create(m_password);
 
+    std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
     m_sio.socket()->emit("join-room", data, [this](const sio::message::list& msg) { onJoinRoomCallback(msg); });
 }
 
@@ -142,15 +150,19 @@ void SignalingClient::onRoomClientsEvent(sio::event& event)
 {
     if (event.get_message()->get_flag() != sio::message::flag_array) { return; }
 
-    std::lock_guard<std::recursive_mutex> lock(m_mutex);
-
-    m_roomClientsById.clear();
-    for (const auto& roomClient : event.get_message()->get_vector())
     {
-        if (Client::isValid(roomClient))
+        std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
+
+        m_roomClientsById.clear();
+        for (const auto& roomClient : event.get_message()->get_vector())
         {
-            Client decodedClient(roomClient);
-            m_roomClientsById[decodedClient.id()] = decodedClient;
+            if (Client::isValid(roomClient))
+            {
+                Client decodedClient(roomClient);
+                m_roomClientsById[decodedClient.id()] = decodedClient;
+            }
         }
     }
+
+    invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
 }

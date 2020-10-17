@@ -60,13 +60,11 @@ class WrongPasswordDataChannelClientTests : public DataChannelClientTests
 {
 protected:
     unique_ptr<DataChannelClient> m_client1;
-    unique_ptr<CallbackAwaiter> m_awaiter;
 
     void SetUp() override
     {
         m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
                 "chat", "", "");
-        m_awaiter = make_unique<CallbackAwaiter>(1);
     }
 
     void TearDown() override
@@ -143,10 +141,12 @@ TEST_F(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVec
 
 TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 {
+    CallbackAwaiter awaiter(2);
     m_client1->setOnSignallingConnectionOpen([&]
     {
         ADD_FAILURE();
-        m_awaiter->done();
+        awaiter.done();
+        awaiter.done();
     });
     m_client1->setOnSignallingConnectionError([&](const string& error)
     {
@@ -155,11 +155,19 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
         EXPECT_EQ(m_client1->id(), "");
         EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
         EXPECT_EQ(m_client1->getRoomClients().size(), 0);
-        m_awaiter->done();
+        awaiter.done();
+    });
+    m_client1->setOnSignallingConnectionClosed([&]
+    {
+        awaiter.done();
     });
 
     m_client1->connect();
-    m_awaiter->wait();
+    awaiter.wait();
+
+    m_client1->setOnSignallingConnectionOpen([] {});
+    m_client1->setOnSignallingConnectionError([](const string& error) {});
+    m_client1->setOnSignallingConnectionClosed([] {});
 }
 
 
@@ -189,6 +197,18 @@ TEST_F(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotR
     EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
     EXPECT_EQ(m_client2->getConnectedRoomClientIds().size(), 0);
     EXPECT_EQ(m_client3->getConnectedRoomClientIds().size(), 0);
+}
+
+TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrThrow)
+{
+    EXPECT_EQ(m_client1->getRoomClient(m_client1->id()),
+            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
+    EXPECT_EQ(m_client1->getRoomClient(m_client2->id()),
+            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false));
+    EXPECT_EQ(m_client1->getRoomClient(m_client3->id()),
+            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false));
+
+    EXPECT_THROW(m_client1->getRoomClient(""), out_of_range);
 }
 
 TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient)
