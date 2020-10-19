@@ -3,6 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
+#include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
 #include <api/data_channel_interface.h>
 
@@ -10,6 +11,8 @@ namespace introlab
 {
     class DataChannelClient : public SignalingClient
     {
+        DataChannelConfiguration m_dataChannelConfiguration;
+
         std::function<void(const Client&)> m_onDataChannelOpen;
         std::function<void(const Client&)> m_onDataChannelClosed;
         std::function<void(const Client&, const std::string&)> m_onDataChannelError;
@@ -17,9 +20,10 @@ namespace introlab
         std::function<void(const Client&, const std::string&)> m_onDataChannelMessageString;
 
     public:
-        DataChannelClient(const std::string& url, const std::string& clientName, const sio::message::ptr& clientData,
-                const std::string& room, const std::string& password, const std::vector<IceServer>& iceServers);
-        ~DataChannelClient() override;
+        DataChannelClient(const SignallingServerConfiguration& signallingServerConfiguration,
+                const WebrtcConfiguration& webrtcConfiguration,
+                const DataChannelConfiguration& dataChannelConfiguration);
+        ~DataChannelClient() override = default;
 
         DECLARE_NOT_COPYABLE(DataChannelClient);
         DECLARE_NOT_MOVABLE(DataChannelClient);
@@ -42,6 +46,26 @@ namespace introlab
         std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
                 const Client& peerClient, bool isCaller) override;
     };
+
+    inline void DataChannelClient::sendTo(const uint8_t* data, size_t size, const std::vector<std::string>& ids)
+    {
+        sendTo(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true), ids);
+    }
+
+    inline void DataChannelClient::sendTo(const std::string& message, const std::vector<std::string>& ids)
+    {
+        sendTo(webrtc::DataBuffer(message), ids);
+    }
+
+    inline void DataChannelClient::sendToAll(const uint8_t* data, size_t size)
+    {
+        sendToAll(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true));
+    }
+
+    inline void DataChannelClient::sendToAll(const std::string& message)
+    {
+        sendToAll(webrtc::DataBuffer(message));
+    }
 
     inline void DataChannelClient::setOnDataChannelOpen(const std::function<void(const Client&)>& callback)
     {

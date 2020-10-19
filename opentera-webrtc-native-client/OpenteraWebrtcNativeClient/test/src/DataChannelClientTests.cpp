@@ -46,8 +46,9 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                "chat", "", vector<IceServer>());
+        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+                sio::string_message::create("cd1"),"chat", ""),
+                WebrtcConfiguration::create(), DataChannelConfiguration::create());
     }
 
     void TearDown() override
@@ -63,14 +64,14 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                "chat", "", vector<IceServer>());
+        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+                sio::string_message::create("cd1"), "chat", ""),
+                WebrtcConfiguration::create(), DataChannelConfiguration::create());
     }
 
     void TearDown() override
     {
         m_client1->closeSync();
-        cout << "-----------------------------------------------------------------b" << endl;
     }
 };
 
@@ -81,8 +82,9 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                                                   "chat", "abc", vector<IceServer>());
+        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+                sio::string_message::create("cd1"), "chat", "abc"),
+                WebrtcConfiguration::create(),DataChannelConfiguration::create());
     }
 
     void TearDown() override
@@ -101,12 +103,15 @@ protected:
     void SetUp() override
     {
         CallbackAwaiter setupAwaiter(3);
-        m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-               "chat", "abc", vector<IceServer>());
-        m_client2 = make_unique<DataChannelClient>("http://localhost:8080", "c2", sio::string_message::create("cd2"),
-               "chat", "abc", vector<IceServer>());
-        m_client3 = make_unique<DataChannelClient>("http://localhost:8080", "c3", sio::string_message::create("cd3"),
-               "chat", "abc", vector<IceServer>());
+        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+                sio::string_message::create("cd1"), "chat", "abc"),
+                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+        m_client2 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c2",
+                sio::string_message::create("cd2"), "chat", "abc"),
+                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+        m_client3 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c3",
+                sio::string_message::create("cd3"), "chat", "abc"),
+                WebrtcConfiguration::create(), DataChannelConfiguration::create());
 
         m_client1->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
         m_client2->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
@@ -186,8 +191,6 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
     m_client1->setOnSignallingConnectionOpen([] {});
     m_client1->setOnSignallingConnectionError([](const string& error) {});
     m_client1->setOnSignallingConnectionClosed([] {});
-
-    cout << "-----------------------------------------------------------------a" << endl;
 }
 
 

@@ -1,6 +1,8 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
 
+#include <OpenteraWebrtcNativeClient/Configurations/SignallingServerConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
@@ -22,12 +24,7 @@ namespace introlab
 {
     class SignalingClient
     {
-        std::string m_url;
-        std::string m_clientName;
-        sio::message::ptr m_clientData;
-        std::string m_room;
-        std::string m_password;
-        std::vector<IceServer> m_iceServers;
+        WebrtcConfiguration m_webrtcConfiguration;
 
         std::recursive_mutex m_sioMutex;
 
@@ -54,15 +51,17 @@ namespace introlab
         std::function<void(const std::string& error)> m_onError;
 
     protected:
+        SignallingServerConfiguration m_signallingServerConfiguration;
+
         std::recursive_mutex m_peerConnectionMutex;
         std::recursive_mutex m_callbackMutex;
 
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionsHandlerById;
 
     public:
-        SignalingClient(const std::string& url, const std::string& clientName, const sio::message::ptr& clientData,
-                const std::string& room, const std::string& password, const std::vector<IceServer>& iceServers);
-        virtual ~SignalingClient();
+        SignalingClient(const SignallingServerConfiguration& signallingServerConfiguration,
+                const WebrtcConfiguration& webrtcConfiguration);
+        virtual ~SignalingClient() = default;
 
         DECLARE_NOT_COPYABLE(SignalingClient);
         DECLARE_NOT_MOVABLE(SignalingClient);
@@ -109,6 +108,8 @@ namespace introlab
 
         std::function<void(const std::string&, sio::message::ptr)> getSendEventFunction();
         std::function<void(const std::string&)> getOnErrorFunction();
+        std::function<void(const Client&)> getOnClientConnectedFunction();
+        std::function<void(const Client&)> getOnClientDisconnectedFunction();
 
     private:
         void connectSioEvents();
@@ -125,10 +126,17 @@ namespace introlab
         void makePeerCall(const std::string& id);
 
         void onPeerCallReceivedEvent(sio::event& event);
+        void receivePeerCall(const std::string& fromId, const std::string& sdp);
+
         void onPeerCallAnswerReceivedEvent(sio::event& event);
+        void receivePeerCallAnswer(const std::string& fromId, const std::string& sdp);
+
         void onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event);
 
         void onIceCandidateReceivedEvent(sio::event& event);
+        void receiveIceCandidate(const std::string& fromId, const std::string& sdpMid, int sdpMLineIndex,
+                const std::string& sdp);
+
         void closeAllConnections();
 
         bool getCallAcceptance(const std::string& id);

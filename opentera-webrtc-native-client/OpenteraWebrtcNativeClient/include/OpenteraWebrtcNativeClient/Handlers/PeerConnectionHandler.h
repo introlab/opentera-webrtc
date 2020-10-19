@@ -3,7 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
-#include <sio_client.h>
+#include <sio_message.h>
 
 #include <api/peer_connection_interface.h>
 
@@ -20,6 +20,9 @@ namespace introlab
         bool m_isCaller;
         std::function<void(const std::string&, sio::message::ptr)> m_sendEvent;
         std::function<void(const std::string&)> m_onError;
+        std::function<void(const Client&)> m_onClientConnected;
+        std::function<void(const Client&)> m_onClientDisconnected;
+
         rtc::scoped_refptr<webrtc::PeerConnectionInterface> m_peerConnection;
 
     public:
@@ -27,12 +30,17 @@ namespace introlab
                 const Client& peerClient,
                 bool isCaller,
                 const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
-                const std::function<void(const std::string&)>& onError);
+                const std::function<void(const std::string&)>& onError,
+                const std::function<void(const Client&)>& onClientConnected,
+                const std::function<void(const Client&)>& onClientDisconnected);
         ~PeerConnectionHandler() override;
 
-        void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection);
+        virtual void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection);
 
         void makePeerCall();
+        void receivePeerCall(const std::string& sdp);
+        void receivePeerCallAnswer(const std::string& sdp);
+        void receiveIceCandidate(const std::string& sdpMid, int sdpMLineIndex, const std::string& sdp);
 
         // Observer methods
         void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState newState) override;
@@ -49,12 +57,6 @@ namespace introlab
         void OnSuccess(webrtc::SessionDescriptionInterface* desc) override;
         void OnFailure(webrtc::RTCError error) override;
     };
-
-    inline void PeerConnectionHandler::setPeerConnection(
-            const rtc::scoped_refptr<webrtc::PeerConnectionInterface> &peerConnection)
-    {
-        m_peerConnection = peerConnection;
-    }
 }
 
 #endif

@@ -11,7 +11,7 @@ TEST(ClientTests, constructor_Client_shouldSetTheAttributes)
 
     EXPECT_EQ(testee1.id(), "id1");
     EXPECT_EQ(testee1.name(), "name1");
-    EXPECT_EQ(testee1.data()->get_flag(), sio::message::flag_string);
+    ASSERT_EQ(testee1.data()->get_flag(), sio::message::flag_string);
     EXPECT_EQ(testee1.data()->get_string(), "data1");
 
     auto message = sio::object_message::create();
@@ -22,7 +22,7 @@ TEST(ClientTests, constructor_Client_shouldSetTheAttributes)
 
     EXPECT_EQ(testee2.id(), "id2");
     EXPECT_EQ(testee2.name(), "name2");
-    EXPECT_EQ(testee2.data()->get_flag(), sio::message::flag_string);
+    ASSERT_EQ(testee2.data()->get_flag(), sio::message::flag_string);
     EXPECT_EQ(testee2.data()->get_string(), "data2");
 }
 

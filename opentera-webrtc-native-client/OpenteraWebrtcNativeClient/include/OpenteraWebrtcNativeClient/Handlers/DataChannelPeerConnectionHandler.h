@@ -2,6 +2,7 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_FUNCTIONAL_DATA_CHANNEL_OBSERVER_H
 
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
+#include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
 #include <api/data_channel_interface.h>
 
@@ -11,6 +12,9 @@ namespace introlab
 {
     class DataChannelPeerConnectionHandler : public PeerConnectionHandler, public webrtc::DataChannelObserver
     {
+        std::string m_room;
+        DataChannelConfiguration m_dataChannelConfiguration;
+
         std::function<void(const Client&)> m_onDataChannelOpen;
         std::function<void(const Client&)> m_onDataChannelClosed;
         std::function<void(const Client&, const std::string&)> m_onDataChannelError;
@@ -25,6 +29,10 @@ namespace introlab
                 bool isCaller,
                 const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
                 const std::function<void(const std::string&)>& onError,
+                const std::function<void(const Client&)>& onClientConnected,
+                const std::function<void(const Client&)>& onClientDisconnected,
+                const std::string& room,
+                const DataChannelConfiguration& dataChannelConfiguration,
                 const std::function<void(const Client&)>& onDataChannelOpen,
                 const std::function<void(const Client&)>& onDataChannelClosed,
                 const std::function<void(const Client&, const std::string&)>& onDataChannelError,
@@ -32,6 +40,8 @@ namespace introlab
                 const std::function<void(const Client&, const std::string&)>& onDataChannelMessageString);
 
         ~DataChannelPeerConnectionHandler() override = default;
+
+        void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
 
         void send(const webrtc::DataBuffer& buffer);
 

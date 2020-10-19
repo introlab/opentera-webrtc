@@ -17,7 +17,7 @@ file(GLOB_RECURSE
         include/*)
 
 add_executable(OpenteraWebrtcNativeClientTests
-        ${source_files})
+        ${source_files} src/Configurations/DataChannelConfigurationTests.cpp)
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
         OpenteraWebrtcNativeClient

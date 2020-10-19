@@ -9,7 +9,7 @@ TEST(IceServerTests, constructor_url_shouldSetTheAttributes)
 {
     IceServer testee("url1");
 
-    EXPECT_EQ(testee.urls().size(), 1);
+    ASSERT_EQ(testee.urls().size(), 1);
     EXPECT_EQ(testee.urls()[0], "url1");
     EXPECT_EQ(testee.username(), "");
     EXPECT_EQ(testee.credential(), "");
@@ -19,7 +19,7 @@ TEST(IceServerTests, constructor_urlUsernameCredential_shouldSetTheAttributes)
 {
     IceServer testee("url1", "user", "password");
 
-    EXPECT_EQ(testee.urls().size(), 1);
+    ASSERT_EQ(testee.urls().size(), 1);
     EXPECT_EQ(testee.urls()[0], "url1");
     EXPECT_EQ(testee.username(), "user");
     EXPECT_EQ(testee.credential(), "password");
@@ -29,7 +29,7 @@ TEST(IceServerTests, constructor_urls_shouldSetTheAttributes)
 {
     IceServer testee(vector<string>({"url1", "url2"}));
 
-    EXPECT_EQ(testee.urls().size(), 2);
+    ASSERT_EQ(testee.urls().size(), 2);
     EXPECT_EQ(testee.urls()[0], "url1");
     EXPECT_EQ(testee.urls()[1], "url2");
     EXPECT_EQ(testee.username(), "");
@@ -40,18 +40,18 @@ TEST(IceServerTests, constructor_urlsUsernameCredential_shouldSetTheAttributes)
 {
     IceServer testee(vector<string>({"url1", "url2"}), "user", "password");
 
-    EXPECT_EQ(testee.urls().size(), 2);
+    ASSERT_EQ(testee.urls().size(), 2);
     EXPECT_EQ(testee.urls()[0], "url1");
     EXPECT_EQ(testee.urls()[1], "url2");
     EXPECT_EQ(testee.username(), "user");
     EXPECT_EQ(testee.credential(), "password");
 }
 
-TEST(IceServerTests, operator_webRtcIceServer_shouldSetTheAttributes)
+TEST(IceServerTests, operator_webrtcIceServer_shouldSetTheAttributes)
 {
     auto testee = static_cast<webrtc::PeerConnectionInterface::IceServer>(IceServer(vector<string>({"u"}), "s", "p"));
 
-    EXPECT_EQ(testee.urls.size(), 1);
+    ASSERT_EQ(testee.urls.size(), 1);
     EXPECT_EQ(testee.urls[0], "u");
     EXPECT_EQ(testee.username, "s");
     EXPECT_EQ(testee.password, "p");

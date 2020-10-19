@@ -8,16 +8,33 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(const string&
         bool isCaller,
         const function<void(const string&, sio::message::ptr)>& sendEvent,
         const function<void(const string&)>& onError,
+        const function<void(const Client&)>& onClientConnected,
+        const function<void(const Client&)>& onClientDisconnected,
+        const string& room,
+        const DataChannelConfiguration& dataChannelConfiguration,
         const function<void(const Client&)>& onDataChannelOpen,
         const function<void(const Client&)>& onDataChannelClosed,
         const function<void(const Client&, const string&)>& onDataChannelError,
         const function<void(const Client&, const uint8_t*, size_t)>& onDataChannelMessageBinary,
         const function<void(const Client&, const string&)>& onDataChannelMessageString) :
-        PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError),
+        PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
+        m_room(room), m_dataChannelConfiguration(dataChannelConfiguration),
         m_onDataChannelOpen(onDataChannelOpen), m_onDataChannelClosed(onDataChannelClosed),
         m_onDataChannelError(onDataChannelError), m_onDataChannelMessageBinary(onDataChannelMessageBinary),
         m_onDataChannelMessageString(onDataChannelMessageString)
 {
+}
+
+void DataChannelPeerConnectionHandler::setPeerConnection(
+        const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
+{
+    PeerConnectionHandler::setPeerConnection(peerConnection);
+    if (m_isCaller)
+    {
+        auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
+        m_dataChannel = m_peerConnection->CreateDataChannel(m_room, &configuration);
+        m_dataChannel->RegisterObserver(this);
+    }
 }
 
 void DataChannelPeerConnectionHandler::send(const webrtc::DataBuffer& buffer)
@@ -33,6 +50,7 @@ void DataChannelPeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::
     if (!m_isCaller)
     {
         m_dataChannel = dataChannel;
+        m_dataChannel->RegisterObserver(this);
     }
 }
 

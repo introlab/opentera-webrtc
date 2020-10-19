@@ -15,9 +15,9 @@ namespace introlab
         std::string m_credential;
 
     public:
-        IceServer(const std::string& url);
+        explicit IceServer(const std::string& url);
         IceServer(const std::string& url, const std::string& username, const std::string& credential);
-        IceServer(const std::vector<std::string>& urls);
+        explicit IceServer(const std::vector<std::string>& urls);
         IceServer(const std::vector<std::string>& urls, const std::string& username, const std::string& credential);
         virtual ~IceServer() = default;
 
@@ -25,7 +25,7 @@ namespace introlab
         const std::string& username() const;
         const std::string& credential() const;
 
-        operator webrtc::PeerConnectionInterface::IceServer() const;
+        explicit operator webrtc::PeerConnectionInterface::IceServer() const;
     };
 
     inline const std::vector<std::string>& IceServer::urls() const
