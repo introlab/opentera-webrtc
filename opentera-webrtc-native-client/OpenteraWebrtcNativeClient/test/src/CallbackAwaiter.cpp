@@ -23,7 +23,7 @@ void CallbackAwaiter::wait()
         this_thread::sleep_for(50ms);
 
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
-        if (std::chrono::duration_cast<std::chrono::seconds>(end - begin).count() > Timeout)
+        if (chrono::duration_cast<chrono::seconds>(end - begin).count() > Timeout)
         {
             ADD_FAILURE();
             return;

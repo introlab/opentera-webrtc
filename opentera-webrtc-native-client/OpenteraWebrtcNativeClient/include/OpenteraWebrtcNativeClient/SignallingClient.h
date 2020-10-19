@@ -3,6 +3,8 @@
 
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
+#include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
+#include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 
 #include <sio_client.h>
 
@@ -11,6 +13,7 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <vector>
@@ -24,17 +27,17 @@ namespace introlab
         sio::message::ptr m_clientData;
         std::string m_room;
         std::string m_password;
-        std::string m_iceServers;
+        std::vector<IceServer> m_iceServers;
+
+        std::recursive_mutex m_sioMutex;
 
         sio::client m_sio;
         bool m_hasClosePending;
 
-        std::recursive_mutex m_sioMutex;
-        std::recursive_mutex m_callbackMutex;
-
         std::map<std::string, Client> m_roomClientsById;
-        std::map<std::string, bool> m_peerConnectionsById;
         std::vector<std::string> m_alreadyAcceptedCalls;
+
+        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
 
         std::function<void()> m_onSignallingConnectionOpen;
         std::function<void()> m_onSignallingConnectionClosed;
@@ -45,12 +48,20 @@ namespace introlab
         std::function<bool(const Client&)> m_callAcceptor;
         std::function<void(const Client&)> m_onCallRejected;
 
+        std::function<void(const Client&)> m_onClientConnected;
+        std::function<void(const Client&)> m_onClientDisconnected;
+
+        std::function<void(const std::string& error)> m_onError;
+
     protected:
-        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactoryInterface;
+        std::recursive_mutex m_peerConnectionMutex;
+        std::recursive_mutex m_callbackMutex;
+
+        std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionsHandlerById;
 
     public:
         SignalingClient(const std::string& url, const std::string& clientName, const sio::message::ptr& clientData,
-                const std::string& room, const std::string& password, const std::string& iceServers);
+                const std::string& room, const std::string& password, const std::vector<IceServer>& iceServers);
         virtual ~SignalingClient();
 
         DECLARE_NOT_COPYABLE(SignalingClient);
@@ -84,7 +95,22 @@ namespace introlab
         void setCallAcceptor(const std::function<bool(const Client&)>& callback);
         void setOnCallRejected(const std::function<void(const Client&)>& callback);
 
+        void setOnClientConnected(const std::function<void(const Client&)>& callback);
+        void setOnClientDisconnected(const std::function<void(const Client&)>& callback);
+
+        void setOnError(const std::function<void(const std::string& error)>& callback);
+
     protected:
+        template<class T, class ... Types>
+        void invokeIfCallable(const std::function<T>& f, Types... args);
+
+        virtual std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
+                const Client& peerClient, bool isCaller) = 0;
+
+        std::function<void(const std::string&, sio::message::ptr)> getSendEventFunction();
+        std::function<void(const std::string&)> getOnErrorFunction();
+
+    private:
         void connectSioEvents();
 
         void onSioConnectEvent();
@@ -96,14 +122,19 @@ namespace introlab
         void onRoomClientsEvent(sio::event& event);
 
         void onMakePeerCallEvent(sio::event& event);
+        void makePeerCall(const std::string& id);
+
         void onPeerCallReceivedEvent(sio::event& event);
         void onPeerCallAnswerReceivedEvent(sio::event& event);
         void onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event);
 
         void onIceCandidateReceivedEvent(sio::event& event);
+        void closeAllConnections();
 
-        template<class T, class ... Types>
-        void invokeIfCallable(const std::function<T>& f, Types... args);
+        bool getCallAcceptance(const std::string& id);
+
+        std::unique_ptr<PeerConnectionHandler> createConnection(const std::string& peerId, bool isCaller);
+        void removeConnection(const std::string& id);
     };
 
     inline bool SignalingClient::isConnected()
@@ -114,8 +145,8 @@ namespace introlab
 
     inline bool SignalingClient::isRtcConnected()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-        return !m_peerConnectionsById.empty();
+        std::lock_guard<std::recursive_mutex> lock(m_peerConnectionMutex);
+        return !m_peerConnectionsHandlerById.empty();
     }
 
     inline std::string SignalingClient::id()
@@ -126,10 +157,11 @@ namespace introlab
 
     inline RoomClient SignalingClient::getRoomClient(const std::string& id)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
+        std::lock_guard<std::recursive_mutex> lockSio(m_sioMutex);
+        std::lock_guard<std::recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
 
         const Client& client = m_roomClientsById.at(id);
-        bool isConnected = m_peerConnectionsById.find(client.id()) != m_peerConnectionsById.end() ||
+        bool isConnected = m_peerConnectionsHandlerById.find(client.id()) != m_peerConnectionsHandlerById.end() ||
                 client.id() == this->id();
         return RoomClient(client, isConnected);
     }
@@ -169,6 +201,24 @@ namespace introlab
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onCallRejected = callback;
+    }
+
+    inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
+    {
+        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
+        m_onClientConnected = callback;
+    }
+
+    inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
+    {
+        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
+        m_onClientDisconnected = callback;
+    }
+
+    inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
+    {
+        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
+        m_onError = callback;
     }
 
     template<class T, class ... Types>

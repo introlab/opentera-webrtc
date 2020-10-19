@@ -38,12 +38,16 @@ function(assign_source_group)
     endforeach ()
 endfunction(assign_source_group)
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-    list(APPEND webrtc_native_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/out/Debug/obj/libwebrtc.a" dl X11 expat)
-endif ()
-if (CMAKE_BUILD_TYPE MATCHES Release)
-    list(APPEND webrtc_native_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/out/Release/obj/libwebrtc.a" dl X11 expat)
-endif ()
+if (WIN32)
+    #TODO
+elseif (UNIX)
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
+        list(APPEND webrtc_native_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/out/Debug/obj/libwebrtc.a" dl X11 expat)
+    endif ()
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        list(APPEND webrtc_native_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/out/Release/obj/libwebrtc.a" dl X11 expat)
+    endif ()
+endif (WIN32)
 
 add_compile_definitions(WEBRTC_POSIX)
 

@@ -47,7 +47,7 @@ protected:
     void SetUp() override
     {
         m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                "chat", "", "");
+                "chat", "", vector<IceServer>());
     }
 
     void TearDown() override
@@ -64,12 +64,13 @@ protected:
     void SetUp() override
     {
         m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                "chat", "", "");
+                "chat", "", vector<IceServer>());
     }
 
     void TearDown() override
     {
         m_client1->closeSync();
+        cout << "-----------------------------------------------------------------b" << endl;
     }
 };
 
@@ -81,7 +82,7 @@ protected:
     void SetUp() override
     {
         m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-                                                   "chat", "abc", "");
+                                                   "chat", "abc", vector<IceServer>());
     }
 
     void TearDown() override
@@ -101,11 +102,11 @@ protected:
     {
         CallbackAwaiter setupAwaiter(3);
         m_client1 = make_unique<DataChannelClient>("http://localhost:8080", "c1", sio::string_message::create("cd1"),
-               "chat", "abc", "");
+               "chat", "abc", vector<IceServer>());
         m_client2 = make_unique<DataChannelClient>("http://localhost:8080", "c2", sio::string_message::create("cd2"),
-               "chat", "abc", "");
+               "chat", "abc", vector<IceServer>());
         m_client3 = make_unique<DataChannelClient>("http://localhost:8080", "c3", sio::string_message::create("cd3"),
-               "chat", "abc", "");
+               "chat", "abc", vector<IceServer>());
 
         m_client1->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
         m_client2->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
@@ -185,6 +186,8 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
     m_client1->setOnSignallingConnectionOpen([] {});
     m_client1->setOnSignallingConnectionError([](const string& error) {});
     m_client1->setOnSignallingConnectionClosed([] {});
+
+    cout << "-----------------------------------------------------------------a" << endl;
 }
 
 
@@ -192,7 +195,7 @@ TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConn
 {
     CallbackAwaiter awaiter(2);
     m_client1->setOnSignallingConnectionOpen([&] { awaiter.done(); });
-    m_client1->setOnRoomClientsChanged([&](const std::vector<RoomClient>& roomClients)
+    m_client1->setOnRoomClientsChanged([&](const vector<RoomClient>& roomClients)
     {
         EXPECT_NE(roomClients.size(), 1);
         EXPECT_EQ(count(roomClients.begin(), roomClients.end(),
