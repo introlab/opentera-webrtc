@@ -6,7 +6,7 @@ using namespace std;
 
 DataChannelClient::DataChannelClient(const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration, const DataChannelConfiguration& dataChannelConfiguration) :
-        SignalingClient(signallingServerConfiguration, webrtcConfiguration),
+        SignallingClient(signallingServerConfiguration, webrtcConfiguration),
         m_dataChannelConfiguration(dataChannelConfiguration)
 {
 }

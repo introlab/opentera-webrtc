@@ -22,7 +22,7 @@
 
 namespace introlab
 {
-    class SignalingClient
+    class SignallingClient
     {
         WebrtcConfiguration m_webrtcConfiguration;
 
@@ -50,6 +50,10 @@ namespace introlab
 
         std::function<void(const std::string& error)> m_onError;
 
+        std::unique_ptr<rtc::Thread> m_networkThread;
+        std::unique_ptr<rtc::Thread> m_workerThread;
+        std::unique_ptr<rtc::Thread> m_signallingThread;
+
     protected:
         SignallingServerConfiguration m_signallingServerConfiguration;
 
@@ -59,12 +63,12 @@ namespace introlab
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionsHandlerById;
 
     public:
-        SignalingClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                const WebrtcConfiguration& webrtcConfiguration);
-        virtual ~SignalingClient() = default;
+        SignallingClient(const SignallingServerConfiguration& signallingServerConfiguration,
+                         const WebrtcConfiguration& webrtcConfiguration);
+        virtual ~SignallingClient();
 
-        DECLARE_NOT_COPYABLE(SignalingClient);
-        DECLARE_NOT_MOVABLE(SignalingClient);
+        DECLARE_NOT_COPYABLE(SignallingClient);
+        DECLARE_NOT_MOVABLE(SignallingClient);
 
         void connect();
         void close();
@@ -142,29 +146,28 @@ namespace introlab
         bool getCallAcceptance(const std::string& id);
 
         std::unique_ptr<PeerConnectionHandler> createConnection(const std::string& peerId, bool isCaller);
-        void createPeerConnectionFactoryIfNeeded();
         void removeConnection(const std::string& id);
     };
 
-    inline bool SignalingClient::isConnected()
+    inline bool SignallingClient::isConnected()
     {
         std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
         return m_sio.opened();
     }
 
-    inline bool SignalingClient::isRtcConnected()
+    inline bool SignallingClient::isRtcConnected()
     {
         std::lock_guard<std::recursive_mutex> lock(m_peerConnectionMutex);
         return !m_peerConnectionsHandlerById.empty();
     }
 
-    inline std::string SignalingClient::id()
+    inline std::string SignallingClient::id()
     {
         std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
         return m_hasClosePending ? "" : m_sio.get_sessionid();
     }
 
-    inline RoomClient SignalingClient::getRoomClient(const std::string& id)
+    inline RoomClient SignallingClient::getRoomClient(const std::string& id)
     {
         std::lock_guard<std::recursive_mutex> lockSio(m_sioMutex);
         std::lock_guard<std::recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
@@ -175,63 +178,64 @@ namespace introlab
         return RoomClient(client, isConnected);
     }
 
-    inline void SignalingClient::setOnSignallingConnectionOpen(const std::function<void()>& callback)
+    inline void SignallingClient::setOnSignallingConnectionOpen(const std::function<void()>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onSignallingConnectionOpen = callback;
     }
 
-    inline void SignalingClient::setOnSignallingConnectionClosed(const std::function<void()>& callback)
+    inline void SignallingClient::setOnSignallingConnectionClosed(const std::function<void()>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onSignallingConnectionClosed = callback;
     }
 
-    inline void SignalingClient::setOnSignallingConnectionError(const std::function<void(const std::string&)>& callback)
+    inline void SignallingClient::setOnSignallingConnectionError(
+            const std::function<void(const std::string&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onSignallingConnectionError = callback;
     }
 
-    inline void SignalingClient::setOnRoomClientsChanged(
+    inline void SignallingClient::setOnRoomClientsChanged(
             const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onRoomClientsChanged = callback;
     }
 
-    inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
+    inline void SignallingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_callAcceptor = callback;
     }
 
-    inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
+    inline void SignallingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onCallRejected = callback;
     }
 
-    inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
+    inline void SignallingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onClientConnected = callback;
     }
 
-    inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
+    inline void SignallingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onClientDisconnected = callback;
     }
 
-    inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
+    inline void SignallingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         m_onError = callback;
     }
 
     template<class T, class ... Types>
-    void SignalingClient::invokeIfCallable(const std::function<T>& f, Types... args)
+    void SignallingClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
         std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
         if (f)

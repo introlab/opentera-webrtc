@@ -9,7 +9,7 @@
 
 namespace introlab
 {
-    class DataChannelClient : public SignalingClient
+    class DataChannelClient : public SignallingClient
     {
         DataChannelConfiguration m_dataChannelConfiguration;
 
