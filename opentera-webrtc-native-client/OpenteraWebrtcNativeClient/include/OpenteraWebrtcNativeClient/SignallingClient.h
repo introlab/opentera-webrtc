@@ -34,8 +34,6 @@ namespace introlab
         std::map<std::string, Client> m_roomClientsById;
         std::vector<std::string> m_alreadyAcceptedCalls;
 
-        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
-
         std::function<void()> m_onSignallingConnectionOpen;
         std::function<void()> m_onSignallingConnectionClosed;
         std::function<void(const std::string&)> m_onSignallingConnectionError;
@@ -53,6 +51,7 @@ namespace introlab
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signallingThread;
+        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
 
     protected:
         SignallingServerConfiguration m_signallingServerConfiguration;

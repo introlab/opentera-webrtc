@@ -9,6 +9,23 @@
 using namespace introlab;
 using namespace std;
 
+#define SIO_MESSAGE_CHECK_RETURN(condition, message) \
+        if ((condition)) \
+        { \
+            invokeIfCallable(m_onError, (message)); \
+            return; \
+        } \
+        do {} while(false)
+
+#define SIO_MESSAGE_CHECK_CONTINUE(condition, message) \
+        if ((condition)) \
+        { \
+            invokeIfCallable(m_onError, (message)); \
+            continue; \
+        } \
+        do {} while(false)
+
+
 SignallingClient::SignallingClient(const SignallingServerConfiguration& signallingServerConfiguration,
                                    const WebrtcConfiguration& webrtcConfiguration) :
         m_signallingServerConfiguration(signallingServerConfiguration), m_webrtcConfiguration(webrtcConfiguration),
@@ -18,10 +35,13 @@ SignallingClient::SignallingClient(const SignallingServerConfiguration& signalli
     m_sio.set_reconnect_attempts(ReconnectAttempts);
 
     m_networkThread = move(rtc::Thread::CreateWithSocketServer());
+    m_networkThread->SetName(m_signallingServerConfiguration.clientName() + " - network", nullptr);
     m_networkThread->Start();
     m_workerThread = move(rtc::Thread::Create());
+    m_workerThread->SetName(m_signallingServerConfiguration.clientName() + " - worker", nullptr);
     m_workerThread->Start();
     m_signallingThread = move(rtc::Thread::Create());
+    m_signallingThread->SetName(m_signallingServerConfiguration.clientName() + " - signalling", nullptr);
     m_signallingThread->Start();
 
     m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(m_networkThread.get(),
@@ -44,9 +64,6 @@ SignallingClient::SignallingClient(const SignallingServerConfiguration& signalli
 SignallingClient::~SignallingClient()
 {
     closeAllConnections();
-    m_networkThread->Stop();
-    m_workerThread->Stop();
-    m_signallingThread->Stop();
 }
 
 void SignallingClient::connect()
@@ -247,7 +264,8 @@ void SignallingClient::onJoinRoomCallback(const sio::message::list& message)
 
 void SignallingClient::onRoomClientsEvent(sio::event& event)
 {
-    if (event.get_message()->get_flag() != sio::message::flag_array) { return; }
+    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_array,
+            "Invalid onRoomClientsEvent message (global type)");
 
     {
         lock_guard<recursive_mutex> lock(m_sioMutex);
@@ -268,11 +286,13 @@ void SignallingClient::onRoomClientsEvent(sio::event& event)
 
 void SignallingClient::onMakePeerCallEvent(sio::event& event)
 {
-    if (event.get_message()->get_flag() != sio::message::flag_array) { return; }
+    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_array,
+            "Invalid onMakePeerCallEvent message (global type)");
 
     for (const auto& idMessage : event.get_message()->get_vector())
     {
-        if (idMessage->get_flag() != sio::message::flag_string) { continue; }
+        SIO_MESSAGE_CHECK_CONTINUE(idMessage->get_flag() != sio::message::flag_string,
+                "Invalid onMakePeerCallEvent peer id");
         makePeerCall(idMessage->get_string());
     }
 }
@@ -281,7 +301,7 @@ void SignallingClient::makePeerCall(const string& id)
 {
     lock_guard<recursive_mutex> lock(m_sioMutex);
     lock_guard<recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
-    if (m_peerConnectionsHandlerById.find(id) != m_peerConnectionsHandlerById.end()) { return; }
+    if (m_peerConnectionsHandlerById.find(id) != m_peerConnectionsHandlerById.end()){ return; }
     if (!getCallAcceptance(id)) { return; }
 
     m_peerConnectionsHandlerById[id] = createConnection(id, true);
@@ -290,12 +310,14 @@ void SignallingClient::makePeerCall(const string& id)
 
 void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
 {
-    if (event.get_message()->get_flag() != sio::message::flag_object) { return; }
+    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
+            "Invalid onPeerCallReceivedEvent message (global type)");
     auto data = event.get_message()->get_map();
     auto fromIdIt = data.find("fromId");
     auto offerIt = data.find("offer");
 
-    if (fromIdIt == data.end() || fromIdIt->second->get_flag() != sio::message::flag_string) { return; }
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || fromIdIt->second->get_flag() != sio::message::flag_string,
+            "Invalid onPeerCallReceivedEvent message (fromId type)");
     auto fromId = fromIdIt->second->get_string();
 
     if (offerIt == data.end() || offerIt->second->get_flag() != sio::message::flag_object)
@@ -309,13 +331,15 @@ void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
     auto sdpIt = offer.find("sdp");
     auto typeIt = offer.find("type");
 
-    if (sdpIt == offer.end() || typeIt == offer.end()) { return; }
-    if (sdpIt->second->get_flag() != sio::message::flag_string ||
-            typeIt->second->get_flag() != sio::message::flag_string) { return; }
+    SIO_MESSAGE_CHECK_RETURN(sdpIt == offer.end() || typeIt == offer.end(),
+            "Invalid onPeerCallReceivedEvent message (sdp or type are missing)");
+    SIO_MESSAGE_CHECK_RETURN(sdpIt->second->get_flag() != sio::message::flag_string ||
+            typeIt->second->get_flag() != sio::message::flag_string,
+            "Invalid onPeerCallReceivedEvent message (sdp or type wrong types)");
     auto sdp = sdpIt->second->get_string();
     auto type = typeIt->second->get_string();
 
-    if (type != "offer") { return; }
+    SIO_MESSAGE_CHECK_RETURN(type != "offer", "Invalid onPeerCallReceivedEvent message (invalid offer type)");
     receivePeerCall(fromId, sdp);
 }
 
@@ -332,26 +356,31 @@ void SignallingClient::receivePeerCall(const string& fromId, const string& sdp)
 
 void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
 {
-    if (event.get_message()->get_flag() != sio::message::flag_object) { return; }
+    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
+            "Invalid onPeerCallAnswerReceivedEvent message (global type)");
     auto data = event.get_message()->get_map();
     auto fromIdIt = data.find("fromId");
     auto answerIt = data.find("answer");
 
-    if (fromIdIt == data.end() || answerIt == data.end()) { return; }
-    if (fromIdIt->second->get_flag() != sio::message::flag_string ||
-            answerIt->second->get_flag() != sio::message::flag_object) { return; }
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || answerIt == data.end(),
+            "Invalid onPeerCallAnswerReceivedEvent message (fromId or answer are missing)");
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt->second->get_flag() != sio::message::flag_string ||
+            answerIt->second->get_flag() != sio::message::flag_object,
+            "Invalid onPeerCallAnswerReceivedEvent message (fromId or answer types)");
     auto fromId = fromIdIt->second->get_string();
     auto answer = answerIt->second->get_map();
     auto sdpIt = answer.find("sdp");
     auto typeIt = answer.find("type");
 
-    if (sdpIt == answer.end() || typeIt == answer.end()) { return; }
-    if (sdpIt->second->get_flag() != sio::message::flag_string ||
-            typeIt->second->get_flag() != sio::message::flag_string) { return; }
+    SIO_MESSAGE_CHECK_RETURN(sdpIt == answer.end() || typeIt == answer.end(),
+            "Invalid onPeerCallAnswerReceivedEvent message (sdp or type are missing)");
+    SIO_MESSAGE_CHECK_RETURN(sdpIt->second->get_flag() != sio::message::flag_string ||
+            typeIt->second->get_flag() != sio::message::flag_string,
+            "Invalid onPeerCallAnswerReceivedEvent message (sdp or type types)");
     auto sdp = sdpIt->second->get_string();
     auto type = typeIt->second->get_string();
 
-    if (type != "answer") { return; }
+    SIO_MESSAGE_CHECK_RETURN(type != "answer", "Invalid onPeerCallAnswerReceivedEvent message (invalid answer type)");
     receivePeerCallAnswer(fromId, sdp);
 }
 
@@ -372,24 +401,30 @@ void SignallingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event&
 
 void SignallingClient::onIceCandidateReceivedEvent(sio::event& event)
 {
-    if (event.get_message()->get_flag() != sio::message::flag_object) { return; }
+    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
+            "Invalid onIceCandidateReceivedEvent message (global type)");
     auto data = event.get_message()->get_map();
     auto fromIdIt = data.find("fromId");
     auto candidateIt = data.find("candidate");
 
-    if (fromIdIt == data.end() || candidateIt == data.end()) { return; }
-    if (fromIdIt->second->get_flag() != sio::message::flag_string ||
-            candidateIt->second->get_flag() != sio::message::flag_object) { return; }
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || candidateIt == data.end(),
+            "Invalid onIceCandidateReceivedEvent message (fromId or candidate are missing)");
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt->second->get_flag() != sio::message::flag_string ||
+            candidateIt->second->get_flag() != sio::message::flag_object,
+            "Invalid onIceCandidateReceivedEvent message (fromId or candidate wrong types)");
     auto fromId = fromIdIt->second->get_string();
     auto candidate = candidateIt->second->get_map();
     auto sdpMidIt = candidate.find("sdpMid");
     auto sdpMLineIndexIt = candidate.find("sdpMLineIndex");
     auto sdpIt = candidate.find("candidate");
 
-    if (sdpMidIt == candidate.end() || sdpMLineIndexIt == candidate.end() || sdpIt == candidate.end()) { return; }
-    if (sdpMidIt->second->get_flag() != sio::message::flag_string ||
+    SIO_MESSAGE_CHECK_RETURN(sdpMidIt == candidate.end() || sdpMLineIndexIt == candidate.end() ||
+            sdpIt == candidate.end(),
+            "Invalid onIceCandidateReceivedEvent message (sdpMid, sdpMLineIndex or candidate are missing)");
+    SIO_MESSAGE_CHECK_RETURN(sdpMidIt->second->get_flag() != sio::message::flag_string ||
             sdpMLineIndexIt->second->get_flag() != sio::message::flag_integer ||
-            sdpIt->second->get_flag() != sio::message::flag_string) { return; }
+            sdpIt->second->get_flag() != sio::message::flag_string,
+            "Invalid onIceCandidateReceivedEvent message (sdpMid, sdpMLineIndex or candidate wrong types)");
     auto sdpMid = sdpMidIt->second->get_string();
     auto sdpMLineIndex = sdpMLineIndexIt->second->get_int();
     auto sdp = sdpIt->second->get_string();
@@ -411,9 +446,15 @@ void SignallingClient::receiveIceCandidate(const string& fromId, const string& s
 void SignallingClient::closeAllConnections()
 {
     lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
+    vector<string> ids(m_peerConnectionsHandlerById.size());
     for (const auto& pair : m_peerConnectionsHandlerById)
     {
-        removeConnection(pair.first);
+        ids.push_back(pair.first);
+    }
+
+    for (const auto& id : ids)
+    {
+        removeConnection(id);
     }
 }
 

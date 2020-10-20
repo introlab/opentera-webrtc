@@ -30,6 +30,10 @@ PeerConnectionHandler::~PeerConnectionHandler()
 {
     if (m_peerConnection)
     {
+        m_sendEvent = [](const string&, sio::message::ptr) {};
+        m_onError = [](const string&) {};
+        m_onClientConnected = [](const Client&) {};
+        m_onClientDisconnected = [](const Client&) {};
         m_peerConnection->Close();
     }
 }
