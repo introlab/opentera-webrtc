@@ -142,6 +142,7 @@ namespace introlab
         bool getCallAcceptance(const std::string& id);
 
         std::unique_ptr<PeerConnectionHandler> createConnection(const std::string& peerId, bool isCaller);
+        void createPeerConnectionFactoryIfNeeded();
         void removeConnection(const std::string& id);
     };
 

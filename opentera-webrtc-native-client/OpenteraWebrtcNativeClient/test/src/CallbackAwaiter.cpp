@@ -31,7 +31,7 @@ void CallbackAwaiter::wait()
     }
 }
 
-void CallbackAwaiter::done()
+bool CallbackAwaiter::done()
 {
-    m_count++;
+    return (++m_count) == m_count;
 }

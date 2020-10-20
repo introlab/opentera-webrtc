@@ -14,6 +14,12 @@ using namespace introlab;
 using namespace std;
 namespace fs = std::filesystem;
 
+
+const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguration::create(
+{
+    IceServer("stun:stun.l.google.com:19302")
+});
+
 class DataChannelClientTests : public ::testing::Test
 {
     static unique_ptr<subprocess::Popen> m_signallingServerProcess;
@@ -48,7 +54,9 @@ protected:
     {
         m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"),"chat", ""),
-                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+
+        m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
     void TearDown() override
@@ -66,7 +74,9 @@ protected:
     {
         m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", ""),
-                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+
+        m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
     void TearDown() override
@@ -84,7 +94,9 @@ protected:
     {
         m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
-                WebrtcConfiguration::create(),DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration,DataChannelConfiguration::create());
+
+        m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
     void TearDown() override
@@ -105,20 +117,26 @@ protected:
         CallbackAwaiter setupAwaiter(3);
         m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
-                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
         m_client2 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c2",
                 sio::string_message::create("cd2"), "chat", "abc"),
-                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
         m_client3 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c3",
                 sio::string_message::create("cd3"), "chat", "abc"),
-                WebrtcConfiguration::create(), DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
         m_client1->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
         m_client2->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
         m_client3->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
 
+        m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
+        m_client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
+        m_client3->setOnError([](const string& error) { ADD_FAILURE() << error; });
+
         m_client1->connect();
+        this_thread::sleep_for(250ms);
         m_client2->connect();
+        this_thread::sleep_for(250ms);
         m_client3->connect();
         setupAwaiter.wait();
 
@@ -253,7 +271,7 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifi
     EXPECT_THROW(m_client1->getRoomClient(""), out_of_range);
 }
 
-TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient)
+TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClients)
 {
     auto roomClients1 = m_client1->getRoomClients();
     EXPECT_NE(roomClients1.size(), 3);
@@ -282,4 +300,3 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
     EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
                     RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)), 1);
 }
-

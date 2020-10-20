@@ -25,6 +25,15 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(const string&
 {
 }
 
+DataChannelPeerConnectionHandler::~DataChannelPeerConnectionHandler()
+{
+    if (m_dataChannel)
+    {
+        m_dataChannel->UnregisterObserver();
+        m_dataChannel->Close();
+    }
+}
+
 void DataChannelPeerConnectionHandler::setPeerConnection(
         const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {
@@ -33,7 +42,14 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     {
         auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
         m_dataChannel = m_peerConnection->CreateDataChannel(m_room, &configuration);
-        m_dataChannel->RegisterObserver(this);
+        if (m_dataChannel)
+        {
+            m_dataChannel->RegisterObserver(this);
+        }
+        else
+        {
+            m_onError("CreateDataChannel failed");
+        }
     }
 }
 
@@ -86,13 +102,4 @@ void DataChannelPeerConnectionHandler::OnMessage(const webrtc::DataBuffer& buffe
     {
         m_onDataChannelMessageString(m_peerClient, string(buffer.data.data<char>(), buffer.size()));
     }
-}
-
-void DataChannelPeerConnectionHandler::AddRef() const
-{
-}
-
-rtc::RefCountReleaseStatus DataChannelPeerConnectionHandler::Release() const
-{
-    return rtc::RefCountReleaseStatus::kOtherRefsRemained;
 }

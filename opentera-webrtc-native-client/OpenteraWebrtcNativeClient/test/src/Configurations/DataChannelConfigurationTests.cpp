@@ -127,18 +127,24 @@ TEST(DataChannelConfigurationTests, createMaxRetransmits_orderedProtocol_shouldS
 
 TEST(DataChannelConfigurationTests, operator_webrtcDataChannelInit_shouldSetTheAttributes)
 {
-    auto testee1 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxPacketLifeTime(false, 10,
+    auto testee1 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::create());
+    auto testee2 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxPacketLifeTime(false, 10,
             "a"));
-    auto testee2 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxRetransmits(false, 10, "a"));
+    auto testee3 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxRetransmits(false, 10, "a"));
 
-    EXPECT_EQ(testee1.ordered, false);
-    EXPECT_EQ(testee1.maxRetransmitTime, 10);
+    EXPECT_EQ(testee1.ordered, true);
+    EXPECT_EQ(testee1.maxRetransmitTime, nullopt);
     EXPECT_EQ(testee1.maxRetransmits, nullopt);
-    EXPECT_EQ(testee1.protocol, "a");
+    EXPECT_EQ(testee1.protocol, "");
 
     EXPECT_EQ(testee2.ordered, false);
-    EXPECT_EQ(testee2.maxRetransmitTime, nullopt);
-    EXPECT_EQ(testee2.maxRetransmits, 10);
+    EXPECT_EQ(testee2.maxRetransmitTime, 10);
+    EXPECT_EQ(testee2.maxRetransmits, nullopt);
     EXPECT_EQ(testee2.protocol, "a");
+
+    EXPECT_EQ(testee3.ordered, false);
+    EXPECT_EQ(testee3.maxRetransmitTime, nullopt);
+    EXPECT_EQ(testee3.maxRetransmits, 10);
+    EXPECT_EQ(testee3.protocol, "a");
 
 }

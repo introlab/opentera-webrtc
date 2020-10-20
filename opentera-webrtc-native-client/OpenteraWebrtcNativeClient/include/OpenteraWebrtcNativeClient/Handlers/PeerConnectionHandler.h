@@ -56,6 +56,9 @@ namespace introlab
 
         void OnSuccess(webrtc::SessionDescriptionInterface* desc) override;
         void OnFailure(webrtc::RTCError error) override;
+
+        void AddRef() const override;
+        rtc::RefCountReleaseStatus Release() const override;
     };
 }
 

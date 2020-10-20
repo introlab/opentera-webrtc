@@ -43,6 +43,15 @@ elseif (UNIX)
         if(NOT ${git_checkout_webrtc_result} EQUAL 0)
             message(FATAL_ERROR "\"git checkout\" failed (${git_checkout_webrtc_result})")
         endif()
+
+        execute_process(
+                COMMAND gclient sync --with_branch_heads --with_tags
+                WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc"
+                RESULT_VARIABLE gclient_sync_webrtc_result
+        )
+        if(NOT ${gclient_sync_webrtc_result} EQUAL 0)
+            message(FATAL_ERROR "\"gclient sync --with_branch_heads --with_tags\" failed (${gclient_sync_webrtc_result})")
+        endif()
     endif()
 
     execute_process(

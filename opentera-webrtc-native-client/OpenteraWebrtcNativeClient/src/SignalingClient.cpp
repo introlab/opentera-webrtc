@@ -16,22 +16,6 @@ SignalingClient::SignalingClient(const SignallingServerConfiguration& signalling
 {
     constexpr int ReconnectAttempts = 10;
     m_sio.set_reconnect_attempts(ReconnectAttempts);
-
-    m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(nullptr, // Network thread
-            nullptr, // Worker thread
-            nullptr, // Signaling thread
-            nullptr, // Default adm
-            webrtc::CreateBuiltinAudioEncoderFactory(),
-            webrtc::CreateBuiltinAudioDecoderFactory(),
-            webrtc::CreateBuiltinVideoEncoderFactory(),
-            webrtc::CreateBuiltinVideoDecoderFactory(),
-            nullptr, // Audio mixer,
-            nullptr); // Audio processing
-
-    if (!m_peerConnectionFactory)
-    {
-        throw runtime_error("Failed to create PeerConnectionFactory");
-    }
 }
 
 void SignalingClient::connect()
@@ -424,6 +408,7 @@ unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string
 {
     lock_guard<recursive_mutex> lockSio(m_sioMutex);
     lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
+    createPeerConnectionFactoryIfNeeded();
 
     auto configuration = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(m_webrtcConfiguration);
     unique_ptr<PeerConnectionHandler> handler = createPeerConnectionHandler(id(), m_roomClientsById[peerId], isCaller);
@@ -431,6 +416,24 @@ unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string
             webrtc::PeerConnectionDependencies(handler.get()));
     handler->setPeerConnection(peerConnection);
     return handler;
+}
+
+void SignalingClient::createPeerConnectionFactoryIfNeeded()
+{
+    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
+    if (!m_peerConnectionFactory)
+    {
+        m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(nullptr, // Network thread
+                nullptr, // Worker thread
+                nullptr, // Signaling thread
+                nullptr, // Default adm
+                webrtc::CreateBuiltinAudioEncoderFactory(),
+                webrtc::CreateBuiltinAudioDecoderFactory(),
+                webrtc::CreateBuiltinVideoEncoderFactory(),
+                webrtc::CreateBuiltinVideoDecoderFactory(),
+                nullptr, // Audio mixer,
+                nullptr); // Audio processing
+    }
 }
 
 void SignalingClient::removeConnection(const string& id)

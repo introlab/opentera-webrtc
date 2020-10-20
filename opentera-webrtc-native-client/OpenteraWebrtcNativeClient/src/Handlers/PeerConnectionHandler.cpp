@@ -28,7 +28,10 @@ PeerConnectionHandler::PeerConnectionHandler(const string& id,
 
 PeerConnectionHandler::~PeerConnectionHandler()
 {
-    m_peerConnection->Close();
+    if (m_peerConnection)
+    {
+        m_peerConnection->Close();
+    }
 }
 
 void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface> &peerConnection)
@@ -174,4 +177,13 @@ void PeerConnectionHandler::OnSuccess(webrtc::SessionDescriptionInterface* desc)
 void PeerConnectionHandler::OnFailure(webrtc::RTCError error)
 {
     m_onError(error.message());
+}
+
+void PeerConnectionHandler::AddRef() const
+{
+}
+
+rtc::RefCountReleaseStatus PeerConnectionHandler::Release() const
+{
+    return rtc::RefCountReleaseStatus::kOtherRefsRemained;
 }

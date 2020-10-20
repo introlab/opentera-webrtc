@@ -39,7 +39,7 @@ namespace introlab
                 const std::function<void(const Client&, const uint8_t*, std::size_t)>& onDataChannelMessageBinary,
                 const std::function<void(const Client&, const std::string&)>& onDataChannelMessageString);
 
-        ~DataChannelPeerConnectionHandler() override = default;
+        ~DataChannelPeerConnectionHandler() override;
 
         void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
 
@@ -50,9 +50,6 @@ namespace introlab
 
         void OnStateChange() override;
         void OnMessage(const webrtc::DataBuffer& buffer) override;
-
-        void AddRef() const override;
-        rtc::RefCountReleaseStatus Release() const override;
     };
 }
 

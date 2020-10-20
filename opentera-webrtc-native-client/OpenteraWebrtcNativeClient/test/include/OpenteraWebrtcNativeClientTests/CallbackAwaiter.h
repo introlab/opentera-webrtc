@@ -14,7 +14,7 @@ namespace introlab
         explicit CallbackAwaiter(int maxCount);
 
         void wait();
-        void done();
+        bool done();
     };
 }
 
