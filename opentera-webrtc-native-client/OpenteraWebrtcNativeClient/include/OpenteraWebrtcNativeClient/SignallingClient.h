@@ -144,7 +144,8 @@ namespace introlab
 
         bool getCallAcceptance(const std::string& id);
 
-        std::unique_ptr<PeerConnectionHandler> createConnection(const std::string& peerId, bool isCaller);
+        std::unique_ptr<PeerConnectionHandler> createConnection(const std::string& peerId, const Client& peerClient,
+                bool isCaller);
         void removeConnection(const std::string& id);
     };
 
@@ -168,13 +169,17 @@ namespace introlab
 
     inline RoomClient SignallingClient::getRoomClient(const std::string& id)
     {
-        std::lock_guard<std::recursive_mutex> lockSio(m_sioMutex);
-        std::lock_guard<std::recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
-
-        const Client& client = m_roomClientsById.at(id);
-        bool isConnected = m_peerConnectionsHandlerById.find(client.id()) != m_peerConnectionsHandlerById.end() ||
-                client.id() == this->id();
-        return RoomClient(client, isConnected);
+        Client client;
+        {
+            std::lock_guard<std::recursive_mutex> lockSio(m_sioMutex);
+            client = m_roomClientsById.at(id);
+        }
+        {
+            std::lock_guard<std::recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
+            bool isConnected = m_peerConnectionsHandlerById.find(client.id()) != m_peerConnectionsHandlerById.end() ||
+                    client.id() == this->id();
+            return RoomClient(client, isConnected);
+        }
     }
 
     inline void SignallingClient::setOnSignallingConnectionOpen(const std::function<void()>& callback)
