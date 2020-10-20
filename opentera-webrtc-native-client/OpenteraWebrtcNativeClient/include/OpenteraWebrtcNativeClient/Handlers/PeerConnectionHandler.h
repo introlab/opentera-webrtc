@@ -11,8 +11,30 @@
 
 namespace introlab
 {
+    class CreateSessionDescriptionObserverHelper : public webrtc::CreateSessionDescriptionObserver
+    {
+    public:
+        void OnSuccess(webrtc::SessionDescriptionInterface* desc) final;
+        void OnFailure(webrtc::RTCError error) final;
+
+        virtual void OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc) = 0;
+        virtual void OnCreateSessionDescriptionObserverFailure(webrtc::RTCError error) = 0;
+    };
+
+    class SetSessionDescriptionObserverHelper : public webrtc::SetSessionDescriptionObserver
+    {
+    public:
+        void OnSuccess() final;
+        void OnFailure(webrtc::RTCError error) final;
+
+        virtual void OnSetSessionDescriptionObserverSuccess() = 0;
+        virtual void OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) = 0;
+    };
+
+
     class PeerConnectionHandler : public webrtc::PeerConnectionObserver,
-            public webrtc::CreateSessionDescriptionObserver
+            public CreateSessionDescriptionObserverHelper,
+            public SetSessionDescriptionObserverHelper
     {
     protected:
         std::string m_id;
@@ -54,8 +76,11 @@ namespace introlab
         void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) override;
         void OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) override;
 
-        void OnSuccess(webrtc::SessionDescriptionInterface* desc) override;
-        void OnFailure(webrtc::RTCError error) override;
+        void OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc) override;
+        void OnCreateSessionDescriptionObserverFailure(webrtc::RTCError error) override;
+
+        void OnSetSessionDescriptionObserverSuccess() override;
+        void OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) override;
 
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;

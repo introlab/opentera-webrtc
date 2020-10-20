@@ -6,13 +6,34 @@ using namespace std;
 class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver
 {
 public:
-    static DummySetSessionDescriptionObserver* Create() {
+    static DummySetSessionDescriptionObserver* Create()
+    {
         return new rtc::RefCountedObject<DummySetSessionDescriptionObserver>();
     }
 
     void OnSuccess() override {}
     void OnFailure(webrtc::RTCError error) override {}
 };
+
+void CreateSessionDescriptionObserverHelper::OnSuccess(webrtc::SessionDescriptionInterface* desc)
+{
+    OnCreateSessionDescriptionObserverSuccess(desc);
+}
+
+void CreateSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
+{
+    OnCreateSessionDescriptionObserverFailure(error);
+}
+
+void SetSessionDescriptionObserverHelper::OnSuccess()
+{
+    OnSetSessionDescriptionObserverSuccess();
+}
+
+void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
+{
+    OnSetSessionDescriptionObserverFailure(error);
+}
 
 PeerConnectionHandler::PeerConnectionHandler(const string& id,
         const Client& peerClient,
@@ -55,10 +76,7 @@ void PeerConnectionHandler::receivePeerCall(const string& sdp)
     auto desc = webrtc::CreateSessionDescription("offer", sdp, &error);
     if (desc)
     {
-        m_peerConnection->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), desc);
-
-        webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
-        m_peerConnection->CreateAnswer(this, options);
+        m_peerConnection->SetRemoteDescription(this, desc);
     }
     else
     {
@@ -151,7 +169,7 @@ void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface
 {
 }
 
-void PeerConnectionHandler::OnSuccess(webrtc::SessionDescriptionInterface* desc)
+void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc)
 {
     m_peerConnection->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
 
@@ -178,7 +196,21 @@ void PeerConnectionHandler::OnSuccess(webrtc::SessionDescriptionInterface* desc)
     }
 }
 
-void PeerConnectionHandler::OnFailure(webrtc::RTCError error)
+void PeerConnectionHandler::OnCreateSessionDescriptionObserverFailure(webrtc::RTCError error)
+{
+    m_onError(error.message());
+}
+
+void PeerConnectionHandler::OnSetSessionDescriptionObserverSuccess()
+{
+    if (!m_isCaller)
+    {
+        webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+        m_peerConnection->CreateAnswer(this, options);
+    }
+}
+
+void PeerConnectionHandler::OnSetSessionDescriptionObserverFailure(webrtc::RTCError error)
 {
     m_onError(error.message());
 }

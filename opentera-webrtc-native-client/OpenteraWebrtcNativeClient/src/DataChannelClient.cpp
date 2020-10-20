@@ -13,24 +13,28 @@ DataChannelClient::DataChannelClient(const SignallingServerConfiguration& signal
 
 void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<string>& ids)
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-    for (const auto& id: ids)
+    FunctionTask<void>::callSync(getInternalClientThread(), [this, &buffer, &ids]()
     {
-        auto it = m_peerConnectionsHandlerById.find(id);
-        if (it != m_peerConnectionsHandlerById.end())
+        for (const auto& id: ids)
         {
-            dynamic_cast<DataChannelPeerConnectionHandler*>(it->second.get())->send(buffer);
+            auto it = m_peerConnectionHandlersById.find(id);
+            if (it != m_peerConnectionHandlersById.end())
+            {
+                dynamic_cast<DataChannelPeerConnectionHandler*>(it->second.get())->send(buffer);
+            }
         }
-    }
+    });
 }
 
 void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-    for (auto& pair : m_peerConnectionsHandlerById)
+    FunctionTask<void>::callSync(getInternalClientThread(), [this, &buffer]()
     {
-        dynamic_cast<DataChannelPeerConnectionHandler*>(pair.second.get())->send(buffer);
-    }
+        for (auto& pair : m_peerConnectionHandlersById)
+        {
+            dynamic_cast<DataChannelPeerConnectionHandler*>(pair.second.get())->send(buffer);
+        }
+    });
 }
 
 unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler(const string& id,

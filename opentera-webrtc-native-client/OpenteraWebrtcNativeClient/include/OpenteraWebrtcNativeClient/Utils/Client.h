@@ -106,8 +106,19 @@ namespace introlab
 
     inline bool operator==(const RoomClient& c1, const RoomClient& c2)
     {
-        return c1.m_id == c2.m_id && c1.m_name == c2.m_name && *c1.m_data == *c2.m_data &&
-            c1.m_isConnected == c2.m_isConnected;
+        if (c1.m_data != nullptr && c2.m_data != nullptr)
+        {
+            return c1.m_id == c2.m_id && c1.m_name == c2.m_name && (*c1.m_data == *c2.m_data) &&
+                    c1.m_isConnected == c2.m_isConnected;
+        }
+        else if (c1.m_data == nullptr && c2.m_data == nullptr)
+        {
+            return c1.m_id == c2.m_id && c1.m_name == c2.m_name && c1.m_isConnected == c2.m_isConnected;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     inline bool operator!=(const RoomClient& c1, const RoomClient& c2)

@@ -130,10 +130,14 @@ TEST(ClientTests, equalityOperator_RoomClient_shouldReturnFalseIfOperandsAreNotE
         RoomClient("c1", "n1", sio::string_message::create("e"), false));
     EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
         RoomClient("c1", "n1", sio::string_message::create("d"), false));
+
+    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) == RoomClient());
+    EXPECT_FALSE(RoomClient() == RoomClient("c1", "n1", sio::string_message::create("d"), true));
 }
 
 TEST(ClientTests, equalityOperator_RoomClient_shouldReturnTrueIfOperandsAreEqual)
 {
     EXPECT_TRUE(RoomClient("c", "n", sio::int_message::create(10), false) ==
         RoomClient("c", "n", sio::int_message::create(10), false));
+    EXPECT_TRUE(RoomClient() == RoomClient());
 }

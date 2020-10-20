@@ -7,6 +7,7 @@
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
+#include <OpenteraWebrtcNativeClient/Utils/FunctionTask.h>
 
 #include <sio_client.h>
 
@@ -16,7 +17,6 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include <mutex>
 #include <string>
 #include <vector>
 
@@ -24,9 +24,9 @@ namespace introlab
 {
     class SignallingClient
     {
-        WebrtcConfiguration m_webrtcConfiguration;
+        std::unique_ptr<rtc::Thread> m_internalClientThread;
 
-        std::recursive_mutex m_sioMutex;
+        WebrtcConfiguration m_webrtcConfiguration;
 
         sio::client m_sio;
         bool m_hasClosePending;
@@ -56,10 +56,7 @@ namespace introlab
     protected:
         SignallingServerConfiguration m_signallingServerConfiguration;
 
-        std::recursive_mutex m_peerConnectionMutex;
-        std::recursive_mutex m_callbackMutex;
-
-        std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionsHandlerById;
+        std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
     public:
         SignallingClient(const SignallingServerConfiguration& signallingServerConfiguration,
@@ -114,6 +111,8 @@ namespace introlab
         std::function<void(const Client&)> getOnClientConnectedFunction();
         std::function<void(const Client&)> getOnClientDisconnectedFunction();
 
+        rtc::Thread* getInternalClientThread();
+
     private:
         void connectSioEvents();
 
@@ -151,101 +150,137 @@ namespace introlab
 
     inline bool SignallingClient::isConnected()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-        return m_sio.opened();
+        return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
+        {
+            return m_sio.opened();
+        });
     }
 
     inline bool SignallingClient::isRtcConnected()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_peerConnectionMutex);
-        return !m_peerConnectionsHandlerById.empty();
+        return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
+        {
+            return !m_peerConnectionHandlersById.empty();
+        });
     }
 
     inline std::string SignallingClient::id()
     {
-        std::lock_guard<std::recursive_mutex> lock(m_sioMutex);
-        return m_hasClosePending ? "" : m_sio.get_sessionid();
+        return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
+        {
+            return m_hasClosePending ? "" : m_sio.get_sessionid();
+        });
     }
 
     inline RoomClient SignallingClient::getRoomClient(const std::string& id)
     {
-        Client client;
+        return FunctionTask<RoomClient>::callSync(m_internalClientThread.get(), [this, &id]()
         {
-            std::lock_guard<std::recursive_mutex> lockSio(m_sioMutex);
-            client = m_roomClientsById.at(id);
-        }
-        {
-            std::lock_guard<std::recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
-            bool isConnected = m_peerConnectionsHandlerById.find(client.id()) != m_peerConnectionsHandlerById.end() ||
-                    client.id() == this->id();
-            return RoomClient(client, isConnected);
-        }
+            auto clientIt = m_roomClientsById.find(id);
+            if (clientIt != m_roomClientsById.end())
+            {
+                const auto& client = clientIt->second;
+                bool isConnected = m_peerConnectionHandlersById.find(client.id()) != m_peerConnectionHandlersById.end() ||
+                                   client.id() == this->id();
+                return RoomClient(client, isConnected);
+            }
+            else
+            {
+                return RoomClient();
+            }
+        });
+
     }
 
     inline void SignallingClient::setOnSignallingConnectionOpen(const std::function<void()>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onSignallingConnectionOpen = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onSignallingConnectionOpen = callback;
+        });
     }
 
     inline void SignallingClient::setOnSignallingConnectionClosed(const std::function<void()>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onSignallingConnectionClosed = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onSignallingConnectionClosed = callback;
+        });
     }
 
     inline void SignallingClient::setOnSignallingConnectionError(
             const std::function<void(const std::string&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onSignallingConnectionError = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onSignallingConnectionError = callback;
+        });
     }
 
     inline void SignallingClient::setOnRoomClientsChanged(
             const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onRoomClientsChanged = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onRoomClientsChanged = callback;
+        });
     }
 
     inline void SignallingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_callAcceptor = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_callAcceptor = callback;
+        });
     }
 
     inline void SignallingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onCallRejected = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onCallRejected = callback;
+        });
     }
 
     inline void SignallingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onClientConnected = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onClientConnected = callback;
+        });
     }
 
     inline void SignallingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onClientDisconnected = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onClientDisconnected = callback;
+        });
     }
 
     inline void SignallingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onError = callback;
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_onError = callback;
+        });
     }
 
     template<class T, class ... Types>
     void SignallingClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        if (f)
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [=]()
         {
-            f(args...);
-        }
+            if (f)
+            {
+                f(args...);
+            }
+        });
+    }
+
+    inline rtc::Thread* SignallingClient::getInternalClientThread()
+    {
+        return m_internalClientThread.get();
     }
 }
 

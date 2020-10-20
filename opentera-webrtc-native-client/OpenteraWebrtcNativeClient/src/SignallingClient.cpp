@@ -34,6 +34,10 @@ SignallingClient::SignallingClient(const SignallingServerConfiguration& signalli
     constexpr int ReconnectAttempts = 10;
     m_sio.set_reconnect_attempts(ReconnectAttempts);
 
+    m_internalClientThread = move(rtc::Thread::Create());
+    m_internalClientThread->SetName(m_signallingServerConfiguration.clientName() + " - internal client", nullptr);
+    m_internalClientThread->Start();
+
     m_networkThread = move(rtc::Thread::CreateWithSocketServer());
     m_networkThread->SetName(m_signallingServerConfiguration.clientName() + " - network", nullptr);
     m_networkThread->Start();
@@ -63,125 +67,130 @@ SignallingClient::SignallingClient(const SignallingServerConfiguration& signalli
 
 SignallingClient::~SignallingClient()
 {
-    closeAllConnections();
 }
 
 void SignallingClient::connect()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-    m_hasClosePending = false;
-    connectSioEvents();
-    m_sio.connect(m_signallingServerConfiguration.url());
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    {
+        m_hasClosePending = false;
+        connectSioEvents();
+        m_sio.connect(m_signallingServerConfiguration.url());
+    });
 }
 
 void SignallingClient::close()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-    if (m_sio.opened())
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        m_sio.close();
-    }
-    m_hasClosePending = true;
-
-    closeAllConnections();
+        if (m_sio.opened())
+        {
+            m_sio.close();
+        }
+        m_hasClosePending = true;
+        closeAllConnections();
+    });
 }
 
 void SignallingClient::closeSync()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-    if (m_sio.opened())
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        m_sio.sync_close();
-    }
-    m_hasClosePending = true;
-
-    closeAllConnections();
+        if (m_sio.opened())
+        {
+            m_sio.sync_close();
+        }
+        m_hasClosePending = true;
+        closeAllConnections();
+    });
 }
 
 void SignallingClient::callAll()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-
-    m_alreadyAcceptedCalls.clear();
-    for (const auto& pair : m_roomClientsById)
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        m_alreadyAcceptedCalls.push_back(pair.first);
-    }
+        m_alreadyAcceptedCalls.clear();
+        for (const auto& pair : m_roomClientsById)
+        {
+            m_alreadyAcceptedCalls.push_back(pair.first);
+        }
 
-    m_sio.socket()->emit("call-all");
+        m_sio.socket()->emit("call-all");
+    });
 }
 
 void SignallingClient::callIds(const vector<string>& ids)
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-
-    m_alreadyAcceptedCalls = ids;
-
-    auto data = sio::array_message::create();
-    for (const auto& id : ids)
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &ids]()
     {
-        data->get_vector().push_back(sio::string_message::create(id));
-    }
-    m_sio.socket()->emit("call-ids", data);
+        m_alreadyAcceptedCalls = ids;
+
+        auto data = sio::array_message::create();
+        for (const auto& id : ids)
+        {
+            data->get_vector().push_back(sio::string_message::create(id));
+        }
+        m_sio.socket()->emit("call-ids", data);
+    });
 }
 
 void SignallingClient::hangUpAll()
 {
-    closeAllConnections();
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
+        closeAllConnections();
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
-    }
+    });
 }
 
 void SignallingClient::closeAllRoomPeerConnections()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-    m_sio.socket()->emit("close-all-room-peer-connections");
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    {
+        m_sio.socket()->emit("close-all-room-peer-connections");
+    });
 }
 
 vector<string> SignallingClient::getConnectedRoomClientIds()
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-    vector<string> ids(m_peerConnectionsHandlerById.size());
-    for (const auto& pair : m_peerConnectionsHandlerById)
+    return FunctionTask<vector<string>>::callSync(m_internalClientThread.get(), [this]()
     {
-        ids.push_back(pair.first);
-    }
-    return ids;
+        vector<string> ids;
+        ids.reserve(m_peerConnectionHandlersById.size());
+        for (const auto& pair : m_peerConnectionHandlersById)
+        {
+            ids.push_back(pair.first);
+        }
+        return ids;
+    });
 }
 
 vector<RoomClient> SignallingClient::getRoomClients()
 {
-    vector<Client> clients;
+    return FunctionTask<vector<RoomClient>>::callSync(m_internalClientThread.get(), [this]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
-        for (const auto& pair : m_roomClientsById)
+        vector<RoomClient> roomClients;
+        roomClients.reserve(m_roomClientsById.size());
+        for (const auto &pair : m_roomClientsById)
         {
-            clients.push_back(pair.second);
-        }
-    }
-    {
-        lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-
-        vector<RoomClient> roomClients(clients.size());
-        for (const auto &client : clients)
-        {
-            bool isConnected = m_peerConnectionsHandlerById.find(client.id()) != m_peerConnectionsHandlerById.end() ||
-                    client.id() == id();
+            auto client = pair.second;
+            bool isConnected = m_peerConnectionHandlersById.find(client.id()) != m_peerConnectionHandlersById.end() ||
+                               client.id() == id();
             roomClients.emplace_back(client, isConnected);
         }
 
         return roomClients;
-    }
+    });
 }
 
 function<void(const string&, sio::message::ptr)> SignallingClient::getSendEventFunction()
 {
     return [this](const string& event, sio::message::ptr message)
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
-        m_sio.socket()->emit(event, message);
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event, message]()
+        {
+            m_sio.socket()->emit(event, message);
+        });
     };
 }
 
@@ -205,15 +214,16 @@ function<void(const Client&)> SignallingClient::getOnClientDisconnectedFunction(
 {
     return [this](const Client& client)
     {
-        removeConnection(client.id());
-        invokeIfCallable(m_onClientDisconnected, client);
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, client]()
+        {
+            removeConnection(client.id());
+            invokeIfCallable(m_onClientDisconnected, client);
+        });
     };
 }
 
 void SignallingClient::connectSioEvents()
 {
-    lock_guard<recursive_mutex> lock(m_sioMutex);
-
     m_sio.set_open_listener([this] { onSioConnectEvent(); });
     m_sio.set_fail_listener([this] { onSioErrorEvent(); });
     m_sio.set_close_listener([this](const sio::client::close_reason& reason) { onSioDisconnectEvent(reason); });
@@ -238,7 +248,6 @@ void SignallingClient::onSioConnectEvent()
     data->get_map()["room"] = sio::string_message::create(m_signallingServerConfiguration.room());
     data->get_map()["password"] = sio::string_message::create(m_signallingServerConfiguration.password());
 
-    lock_guard<recursive_mutex> lock(m_sioMutex);
     m_sio.socket()->emit("join-room", data, [this](const sio::message::list& msg) { onJoinRoomCallback(msg); });
 }
 
@@ -275,12 +284,8 @@ void SignallingClient::onJoinRoomCallback(const sio::message::list& message)
 
 void SignallingClient::onRoomClientsEvent(sio::event& event)
 {
-    SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_array,
-            "Invalid onRoomClientsEvent message (global type)");
-
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
-
         m_roomClientsById.clear();
         for (const auto& roomClient : event.get_message()->get_vector())
         {
@@ -290,9 +295,8 @@ void SignallingClient::onRoomClientsEvent(sio::event& event)
                 m_roomClientsById[decodedClient.id()] = decodedClient;
             }
         }
-    }
-
-    invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
+        invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
+    });
 }
 
 void SignallingClient::onMakePeerCallEvent(sio::event& event)
@@ -310,21 +314,16 @@ void SignallingClient::onMakePeerCallEvent(sio::event& event)
 
 void SignallingClient::makePeerCall(const string& id)
 {
-    Client client;
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, id]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
         auto clientIt = m_roomClientsById.find(id);
         if (clientIt == m_roomClientsById.end()) { return; }
-        client = clientIt->second;
-    }
-    {
-        lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-        if (m_peerConnectionsHandlerById.find(id) != m_peerConnectionsHandlerById.end()) { return; }
+        if (m_peerConnectionHandlersById.find(id) != m_peerConnectionHandlersById.end()) { return; }
         if (!getCallAcceptance(id)) { return; }
 
-        m_peerConnectionsHandlerById[id] = createConnection(id, client, true);
-        m_peerConnectionsHandlerById[id]->makePeerCall();
-    }
+        m_peerConnectionHandlersById[id] = createConnection(id, clientIt->second, true);
+        m_peerConnectionHandlersById[id]->makePeerCall();
+    });
 }
 
 void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
@@ -341,9 +340,11 @@ void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
 
     if (offerIt == data.end() || offerIt->second->get_flag() != sio::message::flag_object)
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
-        auto clientIt = m_roomClientsById.find(fromId);
-        invokeIfCallable(m_onCallRejected, clientIt->second);
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId]()
+        {
+            auto clientIt = m_roomClientsById.find(fromId);
+            invokeIfCallable(m_onCallRejected, clientIt->second);
+        });
         return;
     }
     auto offer = offerIt->second->get_map();
@@ -364,21 +365,17 @@ void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
 
 void SignallingClient::receivePeerCall(const string& fromId, const string& sdp)
 {
-    Client fromClient;
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
         auto fromClientIt = m_roomClientsById.find(fromId);
         if (fromClientIt == m_roomClientsById.end()) { return; }
-        fromClient = fromClientIt->second;
-    }
-    {
-        lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-        if (m_peerConnectionsHandlerById.find(fromId) != m_peerConnectionsHandlerById.end()) { return; }
+
+        if (m_peerConnectionHandlersById.find(fromId) != m_peerConnectionHandlersById.end()) { return; }
         if (!getCallAcceptance(fromId)) { return; }
 
-        m_peerConnectionsHandlerById[fromId] = createConnection(fromId, fromClient, false);
-        m_peerConnectionsHandlerById[fromId]->receivePeerCall(sdp);
-    }
+        m_peerConnectionHandlersById[fromId] = createConnection(fromId, fromClientIt->second, false);
+        m_peerConnectionHandlersById[fromId]->receivePeerCall(sdp);
+    });
 }
 
 void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
@@ -413,11 +410,13 @@ void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
 
 void SignallingClient::receivePeerCallAnswer(const string& fromId, const string& sdp)
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-    auto peerConnectionsHandlerIt = m_peerConnectionsHandlerById.find(fromId);
-    if (peerConnectionsHandlerIt == m_peerConnectionsHandlerById.end()) { return; }
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
+    {
+        auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
+        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end()) { return; }
 
-    peerConnectionsHandlerIt->second->receivePeerCallAnswer(sdp);
+        peerConnectionsHandlerIt->second->receivePeerCallAnswer(sdp);
+    });
 }
 
 void SignallingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
@@ -461,33 +460,36 @@ void SignallingClient::onIceCandidateReceivedEvent(sio::event& event)
 void SignallingClient::receiveIceCandidate(const string& fromId, const string& sdpMid, int sdpMLineIndex,
                                            const string& sdp)
 {
-    lock_guard<recursive_mutex> lockPeerConnection(m_peerConnectionMutex);
-    auto peerConnectionsHandlerIt = m_peerConnectionsHandlerById.find(fromId);
-    if (peerConnectionsHandlerIt == m_peerConnectionsHandlerById.end()) { return; }
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdpMid, sdpMLineIndex, sdp]()
+    {
+        auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
+        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end()) { return; }
 
-    peerConnectionsHandlerIt->second->receiveIceCandidate(sdpMid, sdpMLineIndex, sdp);
+        peerConnectionsHandlerIt->second->receiveIceCandidate(sdpMid, sdpMLineIndex, sdp);
+    });
 }
 
 void SignallingClient::closeAllConnections()
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-    vector<string> ids(m_peerConnectionsHandlerById.size());
-    for (const auto& pair : m_peerConnectionsHandlerById)
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        ids.push_back(pair.first);
-    }
+        vector<string> ids(m_peerConnectionHandlersById.size());
+        for (const auto& pair : m_peerConnectionHandlersById)
+        {
+            ids.push_back(pair.first);
+        }
 
-    for (const auto& id : ids)
-    {
-        removeConnection(id);
-    }
+        for (const auto& id : ids)
+        {
+            removeConnection(id);
+        }
+    });
 }
 
 bool SignallingClient::getCallAcceptance(const string& id)
 {
-    Client client;
+    return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this, id]()
     {
-        lock_guard<recursive_mutex> lock(m_sioMutex);
         if (find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id) != m_alreadyAcceptedCalls.end())
         {
             return true;
@@ -500,44 +502,41 @@ bool SignallingClient::getCallAcceptance(const string& id)
         }
         else
         {
-            client = clientIt->second;
+            return m_callAcceptor ? m_callAcceptor(clientIt->second) : true;
         }
-    }
-    {
-        lock_guard<recursive_mutex> lock(m_callbackMutex);
-        return m_callAcceptor ? m_callAcceptor(client) : true;
-    }
+    });
 }
 
 unique_ptr<PeerConnectionHandler> SignallingClient::createConnection(const string& peerId, const Client& peerClient,
         bool isCaller)
 {
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-
-    auto configuration = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(m_webrtcConfiguration);
-    unique_ptr<PeerConnectionHandler> handler = createPeerConnectionHandler(id(), peerClient, isCaller);
-    auto peerConnection = m_peerConnectionFactory->CreatePeerConnection(configuration,
-            webrtc::PeerConnectionDependencies(handler.get()));
-    handler->setPeerConnection(peerConnection);
-    return handler;
+    return FunctionTask<unique_ptr<PeerConnectionHandler>>::callSync(m_internalClientThread.get(), [&, this]()
+    {
+        auto configuration = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(m_webrtcConfiguration);
+        unique_ptr<PeerConnectionHandler> handler = createPeerConnectionHandler(id(), peerClient, isCaller);
+        auto peerConnection = m_peerConnectionFactory->CreatePeerConnection(configuration,
+                webrtc::PeerConnectionDependencies(handler.get()));
+        handler->setPeerConnection(peerConnection);
+        return handler;
+    });
 }
 
 void SignallingClient::removeConnection(const string& id)
 {
+    FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &id]()
     {
-        lock_guard<recursive_mutex> lockSio(m_sioMutex);
         auto it = find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id);
         if (it != m_alreadyAcceptedCalls.end())
         {
             m_alreadyAcceptedCalls.erase(it);
         }
-    }
 
-    lock_guard<recursive_mutex> lock(m_peerConnectionMutex);
-
-    auto peerConnectionIt = m_peerConnectionsHandlerById.find(id);
-    if (peerConnectionIt != m_peerConnectionsHandlerById.end())
-    {
-        m_peerConnectionsHandlerById.erase(peerConnectionIt);
-    }
+        auto peerConnectionIt = m_peerConnectionHandlersById.find(id);
+        if (peerConnectionIt != m_peerConnectionHandlersById.end())
+        {
+            unique_ptr<PeerConnectionHandler> peerConnectionHandler;
+            peerConnectionHandler = move(peerConnectionIt->second);
+            m_peerConnectionHandlersById.erase(peerConnectionIt);
+        }
+    });
 }

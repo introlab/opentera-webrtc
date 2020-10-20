@@ -114,7 +114,7 @@ protected:
 
     void SetUp() override
     {
-        CallbackAwaiter setupAwaiter(3);
+        CallbackAwaiter setupAwaiter(3, 15s);
         m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
@@ -182,7 +182,7 @@ TEST_F(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVec
 
 TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 {
-    CallbackAwaiter awaiter(2);
+    CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignallingConnectionOpen([&]
     {
         ADD_FAILURE();
@@ -214,7 +214,7 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 
 TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConnection)
 {
-    CallbackAwaiter awaiter(2);
+    CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignallingConnectionOpen([&] { awaiter.done(); });
     m_client1->setOnRoomClientsChanged([&](const vector<RoomClient>& roomClients)
     {
@@ -259,7 +259,7 @@ TEST_F(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotR
     EXPECT_EQ(m_client3->getConnectedRoomClientIds().size(), 0);
 }
 
-TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrThrow)
+TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
 {
     EXPECT_EQ(m_client1->getRoomClient(m_client1->id()),
             RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
@@ -268,13 +268,13 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifi
     EXPECT_EQ(m_client1->getRoomClient(m_client3->id()),
             RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false));
 
-    EXPECT_THROW(m_client1->getRoomClient(""), out_of_range);
+    EXPECT_EQ(m_client1->getRoomClient(""), RoomClient());
 }
 
 TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClients)
 {
     auto roomClients1 = m_client1->getRoomClients();
-    EXPECT_NE(roomClients1.size(), 3);
+    ASSERT_EQ(roomClients1.size(), 3);
     EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(),
         RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)), 1);
     EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(),
@@ -283,7 +283,7 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
         RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)), 1);
 
     auto roomClients2 = m_client2->getRoomClients();
-    EXPECT_NE(roomClients2.size(), 3);
+    ASSERT_EQ(roomClients2.size(), 3);
     EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(),
                     RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)), 1);
     EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(),
@@ -292,11 +292,63 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
                     RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)), 1);
 
     auto roomClients3 = m_client3->getRoomClients();
-    EXPECT_NE(roomClients2.size(), 3);
+    ASSERT_EQ(roomClients3.size(), 3);
     EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
                     RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)), 1);
     EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
                     RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)), 1);
     EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
                     RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)), 1);
+}
+
+TEST_F(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
+{
+    CallbackAwaiter awaiter1(2, 60s);
+    CallbackAwaiter awaiter2(2, 60s);
+    CallbackAwaiter awaiter3(2, 60s);
+
+    m_client1->setOnDataChannelOpen([this, &awaiter1](const Client& client)
+    {
+        if (awaiter1.done())
+        {
+            EXPECT_TRUE(m_client1->isRtcConnected());
+            auto connectedRoomClientIds = m_client1->getConnectedRoomClientIds();
+            ASSERT_EQ(connectedRoomClientIds.size(), 2);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client2->id()), 1);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client3->id()), 1);
+        }
+    });
+    m_client2->setOnDataChannelOpen([this, &awaiter2](const Client& client)
+    {
+        if (awaiter2.done())
+        {
+            EXPECT_TRUE(m_client2->isRtcConnected());
+            auto connectedRoomClientIds = m_client2->getConnectedRoomClientIds();
+            ASSERT_EQ(connectedRoomClientIds.size(), 2);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client1->id()), 1);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client3->id()), 1);
+        }
+    });
+    m_client3->setOnDataChannelOpen([this, &awaiter3](const Client& client)
+    {
+        if (awaiter3.done())
+        {
+            EXPECT_TRUE(m_client3->isRtcConnected());
+            auto connectedRoomClientIds = m_client3->getConnectedRoomClientIds();
+            ASSERT_EQ(connectedRoomClientIds.size(), 2);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client1->id()), 1);
+            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_client2->id()), 1);
+        }
+    });
+
+    this_thread::sleep_for(10s);
+
+    m_client1->callAll();
+    awaiter1.wait();
+    awaiter2.wait();
+    awaiter3.wait();
+
+    m_client1->setOnDataChannelOpen([](const Client& client) {});
+    m_client2->setOnDataChannelOpen([](const Client& client) {});
+    m_client3->setOnDataChannelOpen([](const Client& client) {});
 }

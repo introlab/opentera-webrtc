@@ -69,35 +69,45 @@ namespace introlab
 
     inline void DataChannelClient::setOnDataChannelOpen(const std::function<void(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onDataChannelOpen = callback;
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onDataChannelOpen = callback;
+        });
     }
 
     inline void DataChannelClient::setOnDataChannelClosed(const std::function<void(const Client&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onDataChannelClosed = callback;
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onDataChannelClosed = callback;
+        });
     }
 
     inline void DataChannelClient::setOnDataChannelError(
             const std::function<void(const Client&, const std::string&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onDataChannelError = callback;
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onDataChannelError = callback;
+        });
     }
 
     inline void DataChannelClient::setOnDataChannelBinary(
             const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onDataChannelMessageBinary = callback;
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onDataChannelMessageBinary = callback;
+        });
     }
 
     inline void DataChannelClient::setOnDataChannelMessageString(
             const std::function<void(const Client&, const std::string&)>& callback)
     {
-        std::lock_guard<std::recursive_mutex> lock(m_callbackMutex);
-        m_onDataChannelMessageString = callback;
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onDataChannelMessageString = callback;
+        });
     }
 }
 

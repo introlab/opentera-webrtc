@@ -10,10 +10,11 @@ namespace introlab
     {
         std::atomic_int m_count;
         const int m_maxCount;
+        std::chrono::seconds m_timeout;
         std::chrono::steady_clock::time_point m_begin;
 
     public:
-        explicit CallbackAwaiter(int maxCount);
+        explicit CallbackAwaiter(int maxCount, std::chrono::seconds timeout);
 
         void wait();
         bool done();
