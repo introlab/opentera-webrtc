@@ -3,7 +3,7 @@
 using namespace introlab;
 using namespace std;
 
-WebrtcConfiguration::WebrtcConfiguration(const std::vector<IceServer>& iceServers) : m_iceServers(iceServers)
+WebrtcConfiguration::WebrtcConfiguration(const vector<IceServer>& iceServers) : m_iceServers(iceServers)
 {
 }
 

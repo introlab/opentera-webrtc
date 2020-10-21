@@ -10,8 +10,8 @@ TEST(DataChannelConfigurationTests, create_shouldSetTheAttributes)
     DataChannelConfiguration testee = DataChannelConfiguration::create();
 
     EXPECT_EQ(testee.ordered(), true);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "");
 }
 
@@ -20,8 +20,8 @@ TEST(DataChannelConfigurationTests, create_ordered_shouldSetTheAttributes)
     DataChannelConfiguration testee = DataChannelConfiguration::create(false);
 
     EXPECT_EQ(testee.ordered(), false);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "");
 }
 
@@ -30,8 +30,8 @@ TEST(DataChannelConfigurationTests, createProtocol_shouldSetTheAttributes)
     DataChannelConfiguration testee = DataChannelConfiguration::createProtocol("a");
 
     EXPECT_EQ(testee.ordered(), true);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "a");
 }
 
@@ -40,8 +40,8 @@ TEST(DataChannelConfigurationTests, create_orderedProtocol_shouldSetTheAttribute
     DataChannelConfiguration testee = DataChannelConfiguration::create(false, "a");
 
     EXPECT_EQ(testee.ordered(), false);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "a");
 }
 
@@ -51,7 +51,7 @@ TEST(DataChannelConfigurationTests, createMaxPacketLifeTime_shouldSetTheAttribut
 
     EXPECT_EQ(testee.ordered(), true);
     EXPECT_EQ(testee.maxPacketLifeTime(), 10);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "");
 }
 
@@ -61,7 +61,7 @@ TEST(DataChannelConfigurationTests, createMaxPacketLifeTime_ordered_shouldSetThe
 
     EXPECT_EQ(testee.ordered(), false);
     EXPECT_EQ(testee.maxPacketLifeTime(), 10);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "");
 }
 
@@ -71,7 +71,7 @@ TEST(DataChannelConfigurationTests, createMaxPacketLifeTime_protocol_shouldSetTh
 
     EXPECT_EQ(testee.ordered(), true);
     EXPECT_EQ(testee.maxPacketLifeTime(), 10);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "a");
 }
 
@@ -81,7 +81,7 @@ TEST(DataChannelConfigurationTests, createMaxPacketLifeTime_orderedProtocol_shou
 
     EXPECT_EQ(testee.ordered(), false);
     EXPECT_EQ(testee.maxPacketLifeTime(), 10);
-    EXPECT_EQ(testee.maxRetransmits(), nullopt);
+    EXPECT_EQ(testee.maxRetransmits(), absl::nullopt);
     EXPECT_EQ(testee.protocol(), "a");
 }
 
@@ -90,7 +90,7 @@ TEST(DataChannelConfigurationTests, createMaxRetransmits_shouldSetTheAttributes)
     DataChannelConfiguration testee = DataChannelConfiguration::createMaxRetransmits(10);
 
     EXPECT_EQ(testee.ordered(), true);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
     EXPECT_EQ(testee.maxRetransmits(), 10);
     EXPECT_EQ(testee.protocol(), "");
 }
@@ -100,7 +100,7 @@ TEST(DataChannelConfigurationTests, createMaxRetransmits_ordered_shouldSetTheAtt
     DataChannelConfiguration testee = DataChannelConfiguration::createMaxRetransmits(false, 10);
 
     EXPECT_EQ(testee.ordered(), false);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
     EXPECT_EQ(testee.maxRetransmits(), 10);
     EXPECT_EQ(testee.protocol(), "");
 }
@@ -110,7 +110,7 @@ TEST(DataChannelConfigurationTests, createMaxRetransmits_protocol_shouldSetTheAt
     DataChannelConfiguration testee = DataChannelConfiguration::createMaxRetransmits(10, "a");
 
     EXPECT_EQ(testee.ordered(), true);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
     EXPECT_EQ(testee.maxRetransmits(), 10);
     EXPECT_EQ(testee.protocol(), "a");
 }
@@ -120,7 +120,7 @@ TEST(DataChannelConfigurationTests, createMaxRetransmits_orderedProtocol_shouldS
     DataChannelConfiguration testee = DataChannelConfiguration::createMaxRetransmits(false, 10, "a");
 
     EXPECT_EQ(testee.ordered(), false);
-    EXPECT_EQ(testee.maxPacketLifeTime(), nullopt);
+    EXPECT_EQ(testee.maxPacketLifeTime(), absl::nullopt);
     EXPECT_EQ(testee.maxRetransmits(), 10);
     EXPECT_EQ(testee.protocol(), "a");
 }
@@ -133,17 +133,17 @@ TEST(DataChannelConfigurationTests, operator_webrtcDataChannelInit_shouldSetTheA
     auto testee3 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxRetransmits(false, 10, "a"));
 
     EXPECT_EQ(testee1.ordered, true);
-    EXPECT_EQ(testee1.maxRetransmitTime, nullopt);
-    EXPECT_EQ(testee1.maxRetransmits, nullopt);
+    EXPECT_EQ(testee1.maxRetransmitTime, absl::nullopt);
+    EXPECT_EQ(testee1.maxRetransmits, absl::nullopt);
     EXPECT_EQ(testee1.protocol, "");
 
     EXPECT_EQ(testee2.ordered, false);
     EXPECT_EQ(testee2.maxRetransmitTime, 10);
-    EXPECT_EQ(testee2.maxRetransmits, nullopt);
+    EXPECT_EQ(testee2.maxRetransmits, absl::nullopt);
     EXPECT_EQ(testee2.protocol, "a");
 
     EXPECT_EQ(testee3.ordered, false);
-    EXPECT_EQ(testee3.maxRetransmitTime, nullopt);
+    EXPECT_EQ(testee3.maxRetransmitTime, absl::nullopt);
     EXPECT_EQ(testee3.maxRetransmits, 10);
     EXPECT_EQ(testee3.protocol, "a");
 

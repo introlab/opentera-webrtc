@@ -36,7 +36,8 @@ namespace introlab
         void setOnDataChannelOpen(const std::function<void(const Client&)>& callback);
         void setOnDataChannelClosed(const std::function<void(const Client&)>& callback);
         void setOnDataChannelError(const std::function<void(const Client&, const std::string&)>& callback);
-        void setOnDataChannelBinary(const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback);
+        void setOnDataChannelMessageBinary(
+                const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback);
         void setOnDataChannelMessageString(const std::function<void(const Client&, const std::string&)>& callback);
 
     protected:
@@ -92,7 +93,7 @@ namespace introlab
         });
     }
 
-    inline void DataChannelClient::setOnDataChannelBinary(
+    inline void DataChannelClient::setOnDataChannelMessageBinary(
             const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback)
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()

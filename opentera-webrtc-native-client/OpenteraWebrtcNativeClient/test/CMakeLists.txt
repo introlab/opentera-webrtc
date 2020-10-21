@@ -21,10 +21,9 @@ add_executable(OpenteraWebrtcNativeClientTests
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
         OpenteraWebrtcNativeClient
-        ${webrtc_native_LIBRARY}
         gtest
         gmock)
 
-set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 17)
+set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 14)
 
 assign_source_group(${source_files})

@@ -12,7 +12,7 @@ using namespace std;
 class FunctionTaskTests : public ::testing::Test
 {
 protected:
-    std::unique_ptr<rtc::Thread> m_thread;
+    unique_ptr<rtc::Thread> m_thread;
 
     void SetUp() override
     {

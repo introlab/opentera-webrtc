@@ -5,5 +5,6 @@ if (POLICY CMP0048)
 endif (POLICY CMP0048)
 
 add_subdirectory(googletest)
+add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
 add_subdirectory(webrtc_native)

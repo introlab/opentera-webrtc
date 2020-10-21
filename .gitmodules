@@ -10,3 +10,6 @@
 [submodule "opentera-webrtc-native-client/3rdParty/depot_tools"]
 	path = opentera-webrtc-native-client/3rdParty/depot_tools
 	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git
+[submodule "opentera-webrtc-native-client/3rdParty/pybind11"]
+	path = opentera-webrtc-native-client/3rdParty/pybind11
+	url = https://github.com/pybind/pybind11.git

@@ -41,7 +41,6 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     if (m_isCaller)
     {
         auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
-        auto dummy = webrtc::DataChannelInit(); // Fix alignment problem
         m_dataChannel = m_peerConnection->CreateDataChannel(m_room, &configuration);
         if (m_dataChannel)
         {

@@ -8,7 +8,7 @@
 using namespace introlab;
 using namespace std;
 
-CallbackAwaiter::CallbackAwaiter(int maxCount, std::chrono::seconds timeout) :
+CallbackAwaiter::CallbackAwaiter(int maxCount, chrono::seconds timeout) :
         m_count(0), m_maxCount(maxCount), m_timeout(timeout), m_begin(chrono::steady_clock::now())
 {
 }

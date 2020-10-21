@@ -1,5 +1,5 @@
-#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_DATA_CHANNEL_CONFIGURATION_H
-#define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_DATA_CHANNEL_CONFIGURATION_H
+#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
+#define OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
 
 #include <sio_message.h>
 
@@ -13,12 +13,12 @@ namespace introlab
     class DataChannelConfiguration
     {
         bool m_ordered;
-        std::optional<int> m_maxPacketLifeTime; // It cannot be set with m_maxRetransmits
-        std::optional<int> m_maxRetransmits; // It cannot be set with m_maxPacketLifeTime
+        absl::optional<int> m_maxPacketLifeTime; // It cannot be set with m_maxRetransmits
+        absl::optional<int> m_maxRetransmits; // It cannot be set with m_maxPacketLifeTime
         std::string m_protocol;
 
-        DataChannelConfiguration(bool ordered, const std::optional<int>& maxPacketLifeTime,
-                const std::optional<int>& maxRetransmits, const std::string& protocol);
+        DataChannelConfiguration(bool ordered, const absl::optional<int>& maxPacketLifeTime,
+                const absl::optional<int>& maxRetransmits, const std::string& protocol);
 
     public:
         virtual ~DataChannelConfiguration() = default;
@@ -28,24 +28,21 @@ namespace introlab
         static DataChannelConfiguration createProtocol(const std::string& protocol);
         static DataChannelConfiguration create(bool ordered, const std::string& protocol);
 
-        static DataChannelConfiguration createMaxPacketLifeTime(const std::optional<int>& maxPacketLifeTime);
-        static DataChannelConfiguration createMaxPacketLifeTime(bool ordered,
-                const std::optional<int>& maxPacketLifeTime);
-        static DataChannelConfiguration createMaxPacketLifeTime(const std::optional<int>& maxPacketLifeTime,
+        static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime);
+        static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime);
+        static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime, const std::string& protocol);
+        static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime,
                 const std::string& protocol);
-        static DataChannelConfiguration createMaxPacketLifeTime(bool ordered,
-                const std::optional<int>& maxPacketLifeTime, const std::string& protocol);
 
-        static DataChannelConfiguration createMaxRetransmits(const std::optional<int>& maxRetransmits);
-        static DataChannelConfiguration createMaxRetransmits(bool ordered, const std::optional<int>& maxRetransmits);
-        static DataChannelConfiguration createMaxRetransmits(const std::optional<int>& maxRetransmits,
-                const std::string& protocol);
-        static DataChannelConfiguration createMaxRetransmits(bool ordered, const std::optional<int>& maxRetransmits,
+        static DataChannelConfiguration createMaxRetransmits(int maxRetransmits);
+        static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits);
+        static DataChannelConfiguration createMaxRetransmits(int maxRetransmits, const std::string& protocol);
+        static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits,
                 const std::string& protocol);
 
         bool ordered() const;
-        const std::optional<int>& maxPacketLifeTime() const;
-        const std::optional<int>& maxRetransmits() const;
+        const absl::optional<int>& maxPacketLifeTime() const;
+        const absl::optional<int>& maxRetransmits() const;
         const std::string& protocol() const;
 
         explicit operator webrtc::DataChannelInit() const;
@@ -53,71 +50,67 @@ namespace introlab
 
     inline DataChannelConfiguration DataChannelConfiguration::create()
     {
-        return DataChannelConfiguration(true, std::nullopt, std::nullopt, "");
+        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, "");
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered)
     {
-        return DataChannelConfiguration(ordered, std::nullopt, std::nullopt, "");
+        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, "");
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createProtocol(const std::string& protocol)
     {
-        return DataChannelConfiguration(true, std::nullopt, std::nullopt, protocol);
+        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, protocol);
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered, const std::string& protocol)
     {
-        return DataChannelConfiguration(ordered, std::nullopt, std::nullopt, protocol);
+        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, protocol);
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(
-            const std::optional<int>& maxPacketLifeTime)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime)
     {
-        return DataChannelConfiguration(true, maxPacketLifeTime, std::nullopt, "");
+        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, "");
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
-            const std::optional<int>& maxPacketLifeTime)
+            int maxPacketLifeTime)
     {
-        return DataChannelConfiguration(ordered, maxPacketLifeTime, std::nullopt, "");
+        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, "");
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(
-            const std::optional<int>& maxPacketLifeTime,
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime,
             const std::string& protocol)
     {
-        return DataChannelConfiguration(true, maxPacketLifeTime, std::nullopt, protocol);
+        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, protocol);
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
-            const std::optional<int>& maxPacketLifeTime, const std::string& protocol)
+            int maxPacketLifeTime, const std::string& protocol)
     {
-        return DataChannelConfiguration(ordered, maxPacketLifeTime, std::nullopt, protocol);
+        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, protocol);
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(
-            const std::optional<int>& maxRetransmits)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits)
     {
-        return DataChannelConfiguration(true, std::nullopt, maxRetransmits, "");
+        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, "");
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered,
-            const std::optional<int>& maxRetransmits)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits)
     {
-        return DataChannelConfiguration(ordered, std::nullopt, maxRetransmits, "");
+        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, "");
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(
-            const std::optional<int>& maxRetransmits, const std::string& protocol)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits( int maxRetransmits,
+            const std::string& protocol)
     {
-        return DataChannelConfiguration(true, std::nullopt, maxRetransmits, protocol);
+        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, protocol);
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered,
-            const std::optional<int>& maxRetransmits, const std::string& protocol)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits,
+            const std::string& protocol)
     {
-        return DataChannelConfiguration(ordered, std::nullopt, maxRetransmits, protocol);
+        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, protocol);
     }
 
     inline bool DataChannelConfiguration::ordered() const
@@ -125,12 +118,12 @@ namespace introlab
         return m_ordered;
     }
 
-    inline const std::optional<int>& DataChannelConfiguration::maxPacketLifeTime() const
+    inline const absl::optional<int>& DataChannelConfiguration::maxPacketLifeTime() const
     {
         return m_maxPacketLifeTime;
     }
 
-    inline const std::optional<int>& DataChannelConfiguration::maxRetransmits() const
+    inline const absl::optional<int>& DataChannelConfiguration::maxRetransmits() const
     {
         return m_maxRetransmits;
     }

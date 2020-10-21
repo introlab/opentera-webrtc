@@ -83,14 +83,7 @@ namespace introlab
 
         static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            if (thread->IsCurrent())
-            {
-                return function();
-            }
-            else
-            {
-                thread->PostTask(std::make_unique<FunctionTask>(function, true));
-            }
+            thread->PostTask(std::make_unique<FunctionTask>(function, true));
         }
     };
 }

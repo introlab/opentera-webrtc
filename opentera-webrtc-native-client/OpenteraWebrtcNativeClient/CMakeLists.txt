@@ -25,10 +25,11 @@ target_link_libraries(OpenteraWebrtcNativeClient
         sioclient_tls
         ${webrtc_native_LIBRARY})
 
-set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 17)
+set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 add_dependencies(OpenteraWebrtcNativeClient webrtc_native)
 
 
 assign_source_group(${source_files})
 
+add_subdirectory(python)
 add_subdirectory(test)
