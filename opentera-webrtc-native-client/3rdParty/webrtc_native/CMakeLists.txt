@@ -18,7 +18,7 @@ elseif (UNIX)
 
     if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/webrtc/src")
         execute_process(
-                COMMAND fetch --nohooks webrtc
+                COMMAND fetch webrtc
                 WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc"
                 RESULT_VARIABLE fetch_webrtc_result
         )
@@ -60,7 +60,7 @@ elseif (UNIX)
             RESULT_VARIABLE gn_webrtc_result
     )
     if(NOT ${gn_webrtc_result} EQUAL 0)
-        message(FATAL_ERROR "\"generate_ninja_files.bash out/Release\" failed (${gn_webrtc_result})")
+        message(FATAL_ERROR "\"generate_ninja_files.bash\" failed (${gn_webrtc_result})")
     endif()
 
     add_custom_target(

@@ -3,7 +3,7 @@
 	url = https://github.com/google/googletest.git
 [submodule "opentera-webrtc-native-client/3rdParty/socket.io-client-cpp"]
 	path = opentera-webrtc-native-client/3rdParty/socket.io-client-cpp
-	url = git@github.com:introlab/socket.io-client-cpp.git
+	url = https://github.com/introlab/socket.io-client-cpp.git
 [submodule "opentera-webrtc-native-client/3rdParty/cpp-subprocess"]
 	path = opentera-webrtc-native-client/3rdParty/cpp-subprocess
 	url = https://github.com/arun11299/cpp-subprocess.git

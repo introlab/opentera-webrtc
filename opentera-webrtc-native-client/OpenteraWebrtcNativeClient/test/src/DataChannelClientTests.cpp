@@ -218,7 +218,7 @@ TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConn
     m_client1->setOnSignallingConnectionOpen([&] { awaiter.done(); });
     m_client1->setOnRoomClientsChanged([&](const vector<RoomClient>& roomClients)
     {
-        EXPECT_NE(roomClients.size(), 1);
+        EXPECT_EQ(roomClients.size(), 1);
         EXPECT_EQ(count(roomClients.begin(), roomClients.end(),
                 RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)), 1);
         awaiter.done();
@@ -341,8 +341,6 @@ TEST_F(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
         }
     });
 
-    this_thread::sleep_for(10s);
-
     m_client1->callAll();
     awaiter1.wait();
     awaiter2.wait();
@@ -351,4 +349,111 @@ TEST_F(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
     m_client1->setOnDataChannelOpen([](const Client& client) {});
     m_client2->setOnDataChannelOpen([](const Client& client) {});
     m_client3->setOnDataChannelOpen([](const Client& client) {});
+}
+
+TEST_F(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient)
+{
+    CallbackAwaiter awaiter(2, 60s);
+
+    m_client1->setOnDataChannelOpen([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client2->id());
+        EXPECT_EQ(client.name(), "c2");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd2");
+    });
+    m_client2->setOnDataChannelOpen([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client1->id());
+        EXPECT_EQ(client.name(), "c1");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd1");
+    });
+    m_client3->setOnDataChannelOpen([](const Client& client)
+    {
+        ADD_FAILURE();
+    });
+
+    m_client1->callIds({m_client2->id()});
+    awaiter.wait();
+
+    m_client1->setOnDataChannelOpen([](const Client& client) {});
+    m_client2->setOnDataChannelOpen([](const Client& client) {});
+    m_client3->setOnDataChannelOpen([](const Client& client) {});
+}
+
+TEST_F(RightPasswordDataChannelClientTests, onClientConnect_shouldBeCalledAfterACall)
+{
+    CallbackAwaiter awaiter(1, 60s);
+    m_client1->setOnClientConnected([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client2->id());
+        EXPECT_EQ(client.name(), "c2");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd2");
+    });
+    m_client2->setOnClientConnected([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client1->id());
+        EXPECT_EQ(client.name(), "c1");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd1");
+    });
+    m_client3->setOnClientConnected([](const Client& client)
+    {
+        ADD_FAILURE();
+    });
+
+    m_client1->callIds({m_client2->id()});
+    awaiter.wait();
+
+    m_client1->setOnClientConnected([](const Client& client) {});
+    m_client2->setOnClientConnected([](const Client& client) {});
+    m_client3->setOnClientConnected([](const Client& client) {});
+}
+
+TEST_F(RightPasswordDataChannelClientTests, onClientDisconnect_shouldBeCalledAfterHangUpAllCall)
+{
+    CallbackAwaiter awaiter(1, 60s);
+    m_client1->setOnDataChannelOpen([this](const Client& client)
+    {
+        m_client1->hangUpAll();
+    });
+    m_client1->setOnClientDisconnected([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client2->id());
+        EXPECT_EQ(client.name(), "c2");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd2");
+    });
+    m_client2->setOnClientDisconnected([this, &awaiter](const Client& client)
+    {
+        awaiter.done();
+
+        EXPECT_EQ(client.id(), m_client1->id());
+        EXPECT_EQ(client.name(), "c1");
+        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+        EXPECT_EQ(client.data()->get_string(), "cd1");
+    });
+    m_client3->setOnClientDisconnected([](const Client& client)
+    {
+        ADD_FAILURE();
+    });
+
+    m_client1->callIds({m_client2->id()});
+    awaiter.wait();
+
+    m_client1->setOnClientConnected([](const Client& client) {});
+    m_client2->setOnClientConnected([](const Client& client) {});
+    m_client3->setOnClientConnected([](const Client& client) {});
 }
