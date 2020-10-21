@@ -19,7 +19,8 @@ pybind11_add_module(opentera_webrtc_native_client
 
 target_link_libraries(opentera_webrtc_native_client PRIVATE
         OpenteraWebrtcNativeClient
-        ${webrtc_native_LIBRARY})
+        ${webrtc_native_LIBRARY}
+        ${PYTHON_LIBRARIES})
 
 set_property(TARGET opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
 

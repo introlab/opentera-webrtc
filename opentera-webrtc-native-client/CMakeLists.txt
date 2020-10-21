@@ -50,6 +50,12 @@ elseif (UNIX)
     endif ()
 endif (WIN32)
 
+find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
+if (Python_FOUND)
+    set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
+else()
+    message(FATAL_ERROR "Python3 is not found")
+endif()
 
 add_compile_definitions(WEBRTC_POSIX)
 
