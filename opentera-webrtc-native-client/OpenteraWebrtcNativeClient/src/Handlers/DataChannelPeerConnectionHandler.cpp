@@ -15,13 +15,14 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(const string&
         const function<void(const Client&)>& onDataChannelOpen,
         const function<void(const Client&)>& onDataChannelClosed,
         const function<void(const Client&, const string&)>& onDataChannelError,
-        const function<void(const Client&, const uint8_t*, size_t)>& onDataChannelMessageBinary,
+        const function<void(const Client&, const webrtc::DataBuffer& buffer)>& onDataChannelMessageBinary,
         const function<void(const Client&, const string&)>& onDataChannelMessageString) :
         PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
         m_room(room), m_dataChannelConfiguration(dataChannelConfiguration),
         m_onDataChannelOpen(onDataChannelOpen), m_onDataChannelClosed(onDataChannelClosed),
         m_onDataChannelError(onDataChannelError), m_onDataChannelMessageBinary(onDataChannelMessageBinary),
-        m_onDataChannelMessageString(onDataChannelMessageString)
+        m_onDataChannelMessageString(onDataChannelMessageString),
+        m_onDataChannelClosedCalled(true)
 {
 }
 
@@ -31,6 +32,12 @@ DataChannelPeerConnectionHandler::~DataChannelPeerConnectionHandler()
     {
         m_dataChannel->UnregisterObserver();
         m_dataChannel->Close();
+
+        if (!m_onDataChannelClosedCalled)
+        {
+            m_onDataChannelClosedCalled = true;
+            m_onDataChannelClosed(m_peerClient);
+        }
     }
 }
 
@@ -78,6 +85,7 @@ void DataChannelPeerConnectionHandler::OnStateChange()
         {
             case webrtc::DataChannelInterface::kOpen:
                 m_onDataChannelOpen(m_peerClient);
+                m_onDataChannelClosedCalled = false;
                 break;
             case webrtc::DataChannelInterface::kClosed:
                 if (!m_dataChannel->error().ok())
@@ -85,6 +93,7 @@ void DataChannelPeerConnectionHandler::OnStateChange()
                     m_onDataChannelError(m_peerClient, m_dataChannel->error().message());
                 }
                 m_onDataChannelClosed(m_peerClient);
+                m_onDataChannelClosedCalled = true;
                 break;
             default:
                 break;
@@ -96,7 +105,7 @@ void DataChannelPeerConnectionHandler::OnMessage(const webrtc::DataBuffer& buffe
 {
     if (buffer.binary)
     {
-        m_onDataChannelMessageBinary(m_peerClient, buffer.data.data<uint8_t>(), buffer.size());
+        m_onDataChannelMessageBinary(m_peerClient, buffer);
     }
     else if (!buffer.binary)
     {

@@ -18,10 +18,12 @@ namespace introlab
         std::function<void(const Client&)> m_onDataChannelOpen;
         std::function<void(const Client&)> m_onDataChannelClosed;
         std::function<void(const Client&, const std::string&)> m_onDataChannelError;
-        std::function<void(const Client&, const uint8_t*, std::size_t)> m_onDataChannelMessageBinary;
+        std::function<void(const Client&, const webrtc::DataBuffer& buffer)> m_onDataChannelMessageBinary;
         std::function<void(const Client&, const std::string&)> m_onDataChannelMessageString;
 
         rtc::scoped_refptr<webrtc::DataChannelInterface> m_dataChannel;
+
+        bool m_onDataChannelClosedCalled;
 
     public:
         DataChannelPeerConnectionHandler(const std::string& id,
@@ -36,7 +38,7 @@ namespace introlab
                 const std::function<void(const Client&)>& onDataChannelOpen,
                 const std::function<void(const Client&)>& onDataChannelClosed,
                 const std::function<void(const Client&, const std::string&)>& onDataChannelError,
-                const std::function<void(const Client&, const uint8_t*, std::size_t)>& onDataChannelMessageBinary,
+                const std::function<void(const Client&, const webrtc::DataBuffer& buffer)>& onDataChannelMessageBinary,
                 const std::function<void(const Client&, const std::string&)>& onDataChannelMessageString);
 
         ~DataChannelPeerConnectionHandler() override;

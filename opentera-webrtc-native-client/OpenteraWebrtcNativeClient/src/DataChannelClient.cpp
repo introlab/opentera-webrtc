@@ -13,7 +13,7 @@ DataChannelClient::DataChannelClient(const SignallingServerConfiguration& signal
 
 void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<string>& ids)
 {
-    FunctionTask<void>::callSync(getInternalClientThread(), [this, &buffer, &ids]()
+    FunctionTask<void>::callAsync(getInternalClientThread(), [this, buffer, ids]()
     {
         for (const auto& id: ids)
         {
@@ -28,7 +28,7 @@ void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<st
 
 void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
 {
-    FunctionTask<void>::callSync(getInternalClientThread(), [this, &buffer]()
+    FunctionTask<void>::callAsync(getInternalClientThread(), [this, buffer]()
     {
         for (auto& pair : m_peerConnectionHandlersById)
         {
@@ -53,9 +53,16 @@ unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler
     {
         invokeIfCallable(m_onDataChannelError, client, error);
     };
-    auto onDataChannelMessageBinary = [this](const Client& client, const uint8_t* data, size_t size)
+    auto onDataChannelMessageBinary = [this](const Client& client, const webrtc::DataBuffer& buffer)
     {
-        invokeIfCallable(m_onDataChannelMessageBinary, client, data, size);
+        std::function<void()> callback = [this, client, buffer]()
+        {
+            if (m_onDataChannelMessageBinary)
+            {
+                m_onDataChannelMessageBinary(client, buffer.data.data<uint8_t>(), buffer.size());
+            }
+        };
+        invokeIfCallable(callback);
     };
     auto onDataChannelMessageString = [this](const Client& client, const string& message)
     {

@@ -30,5 +30,5 @@ void CallbackAwaiter::wait()
 
 bool CallbackAwaiter::done()
 {
-    return (++m_count) == m_count;
+    return (++m_count) == m_maxCount;
 }

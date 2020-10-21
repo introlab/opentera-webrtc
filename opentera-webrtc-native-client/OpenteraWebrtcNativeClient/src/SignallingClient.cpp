@@ -71,7 +71,7 @@ SignallingClient::~SignallingClient()
 
 void SignallingClient::connect()
 {
-    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         m_hasClosePending = false;
         connectSioEvents();
@@ -107,7 +107,7 @@ void SignallingClient::closeSync()
 
 void SignallingClient::callAll()
 {
-    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         m_alreadyAcceptedCalls.clear();
         for (const auto& pair : m_roomClientsById)
@@ -121,7 +121,7 @@ void SignallingClient::callAll()
 
 void SignallingClient::callIds(const vector<string>& ids)
 {
-    FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &ids]()
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, ids]()
     {
         m_alreadyAcceptedCalls = ids;
 
@@ -136,7 +136,7 @@ void SignallingClient::callIds(const vector<string>& ids)
 
 void SignallingClient::hangUpAll()
 {
-    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         closeAllConnections();
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
@@ -145,7 +145,7 @@ void SignallingClient::hangUpAll()
 
 void SignallingClient::closeAllRoomPeerConnections()
 {
-    FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         m_sio.socket()->emit("close-all-room-peer-connections");
     });
@@ -319,7 +319,11 @@ void SignallingClient::makePeerCall(const string& id)
         auto clientIt = m_roomClientsById.find(id);
         if (clientIt == m_roomClientsById.end()) { return; }
         if (m_peerConnectionHandlersById.find(id) != m_peerConnectionHandlersById.end()) { return; }
-        if (!getCallAcceptance(id)) { return; }
+        if (!getCallAcceptance(id))
+        {
+            invokeIfCallable(m_onCallRejected, clientIt->second);
+            return;
+        }
 
         m_peerConnectionHandlersById[id] = createConnection(id, clientIt->second, true);
         m_peerConnectionHandlersById[id]->makePeerCall();
@@ -334,19 +338,12 @@ void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
     auto fromIdIt = data.find("fromId");
     auto offerIt = data.find("offer");
 
-    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || fromIdIt->second->get_flag() != sio::message::flag_string,
-            "Invalid onPeerCallReceivedEvent message (fromId type)");
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || offerIt == data.end(),
+                             "Invalid onPeerCallReceivedEvent message (fromId or offer are missing)");
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt->second->get_flag() != sio::message::flag_string ||
+                                     offerIt->second->get_flag() != sio::message::flag_object,
+                             "Invalid onPeerCallReceivedEvent message (fromId or offer types)");
     auto fromId = fromIdIt->second->get_string();
-
-    if (offerIt == data.end() || offerIt->second->get_flag() != sio::message::flag_object)
-    {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId]()
-        {
-            auto clientIt = m_roomClientsById.find(fromId);
-            invokeIfCallable(m_onCallRejected, clientIt->second);
-        });
-        return;
-    }
     auto offer = offerIt->second->get_map();
     auto sdpIt = offer.find("sdp");
     auto typeIt = offer.find("type");
@@ -371,7 +368,13 @@ void SignallingClient::receivePeerCall(const string& fromId, const string& sdp)
         if (fromClientIt == m_roomClientsById.end()) { return; }
 
         if (m_peerConnectionHandlersById.find(fromId) != m_peerConnectionHandlersById.end()) { return; }
-        if (!getCallAcceptance(fromId)) { return; }
+        if (!getCallAcceptance(fromId))
+        {
+            auto data = sio::object_message::create();
+            data->get_map()["toId"] = sio::string_message::create(fromId);
+            m_sio.socket()->emit("make-peer-call-answer", data);
+            return;
+        }
 
         m_peerConnectionHandlersById[fromId] = createConnection(fromId, fromClientIt->second, false);
         m_peerConnectionHandlersById[fromId]->receivePeerCall(sdp);
@@ -386,12 +389,20 @@ void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
     auto fromIdIt = data.find("fromId");
     auto answerIt = data.find("answer");
 
-    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || answerIt == data.end(),
-            "Invalid onPeerCallAnswerReceivedEvent message (fromId or answer are missing)");
-    SIO_MESSAGE_CHECK_RETURN(fromIdIt->second->get_flag() != sio::message::flag_string ||
-            answerIt->second->get_flag() != sio::message::flag_object,
-            "Invalid onPeerCallAnswerReceivedEvent message (fromId or answer types)");
+    SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || fromIdIt->second->get_flag() != sio::message::flag_string,
+                             "Invalid onPeerCallAnswerReceivedEvent message (fromId type)");
     auto fromId = fromIdIt->second->get_string();
+
+    if (answerIt == data.end() || answerIt->second->get_flag() != sio::message::flag_object)
+    {
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId]()
+        {
+            removeConnection(fromId);
+            auto clientIt = m_roomClientsById.find(fromId);
+            invokeIfCallable(m_onCallRejected, clientIt->second);
+        });
+        return;
+    }
     auto answer = answerIt->second->get_map();
     auto sdpIt = answer.find("sdp");
     auto typeIt = answer.find("type");

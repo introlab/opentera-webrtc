@@ -47,6 +47,8 @@ namespace introlab
 
         rtc::scoped_refptr<webrtc::PeerConnectionInterface> m_peerConnection;
 
+        bool m_onClientDisconnectedCalled;
+
     public:
         PeerConnectionHandler(const std::string& id,
                 const Client& peerClient,

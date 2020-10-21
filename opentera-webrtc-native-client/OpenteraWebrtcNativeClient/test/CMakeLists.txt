@@ -21,6 +21,8 @@ add_executable(OpenteraWebrtcNativeClientTests
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
         OpenteraWebrtcNativeClient
+        boost_system
+        boost_filesystem
         gtest
         gmock)
 
