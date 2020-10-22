@@ -401,7 +401,7 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient1.callAll();
   });
 
-  it('closeAllRoomPeerConnections should all room peer connections', done => {
+  it('closeAllRoomPeerConnections should close all room peer connections', done => {
     let dataChannelOpenCounter = 0;
     let dataChannelCloseCounter = 0;
 
