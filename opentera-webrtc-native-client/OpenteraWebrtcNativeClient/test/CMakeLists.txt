@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.6.4)
 
-project(MusicBeatDetectorTests)
+project(OpenteraWebrtcNativeClientTests)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
@@ -17,7 +17,7 @@ file(GLOB_RECURSE
         include/*)
 
 add_executable(OpenteraWebrtcNativeClientTests
-        ${source_files} src/Configurations/DataChannelConfigurationTests.cpp)
+        ${source_files})
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
         OpenteraWebrtcNativeClient

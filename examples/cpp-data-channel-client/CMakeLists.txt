@@ -1,0 +1,46 @@
+cmake_minimum_required(VERSION 2.6.4)
+
+if (POLICY CMP0014)
+    cmake_policy(SET CMP0014 NEW)
+endif (POLICY CMP0014)
+
+if (POLICY CMP0048)
+    cmake_policy(SET CMP0048 NEW)
+endif (POLICY CMP0048)
+
+if (WIN32)
+    #TODO
+elseif (UNIX)
+    set(CMAKE_CXX_FLAGS "-fPIC")
+    add_compile_definitions(WEBRTC_POSIX)
+
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
+        list(APPEND linux_LIBRARY dl X11 expat pthread)
+    endif ()
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        list(APPEND linux_LIBRARY  dl X11 expat pthread)
+    endif ()
+endif (WIN32)
+
+add_subdirectory(../../opentera-webrtc-native-client ./opentera-webrtc-native-client)
+
+project(CppDataChannelClient)
+
+set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+
+include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/src)
+include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src)
+include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
+include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
+
+
+add_executable(CppDataChannelClient main.cpp)
+
+target_link_libraries(CppDataChannelClient
+        OpenteraWebrtcNativeClient
+        sioclient
+        sioclient_tls
+        ${linux_LIBRARY})
+
+set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)
+

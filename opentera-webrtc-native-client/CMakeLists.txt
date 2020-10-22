@@ -8,7 +8,7 @@ if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
-project(mixer)
+project(opentera-webrtc-native-client)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -42,6 +42,8 @@ if (WIN32)
     #TODO
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
+    add_compile_definitions(WEBRTC_POSIX)
+
     if (CMAKE_BUILD_TYPE MATCHES Debug)
         list(APPEND webrtc_native_LIBRARY "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/out/Debug/obj/libwebrtc.a" dl X11 expat)
     endif ()
@@ -56,8 +58,6 @@ if (Python_FOUND)
 else()
     message(FATAL_ERROR "Python3 is not found")
 endif()
-
-add_compile_definitions(WEBRTC_POSIX)
 
 add_subdirectory(3rdParty)
 add_subdirectory(OpenteraWebrtcNativeClient)
