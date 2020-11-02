@@ -10,6 +10,10 @@ endif (POLICY CMP0048)
 
 project(opentera-webrtc-native-client)
 
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif ()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
