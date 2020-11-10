@@ -3,6 +3,8 @@
 
 using namespace introlab;
 using namespace std;
+using namespace rtc;
+using namespace webrtc;
 
 VideoStreamClient::VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration) :
@@ -11,11 +13,12 @@ VideoStreamClient::VideoStreamClient(const SignallingServerConfiguration& signal
 
 }
 
-std::unique_ptr<PeerConnectionHandler> VideoStreamClient::createPeerConnectionHandler(const std::string& id,
+unique_ptr<PeerConnectionHandler> VideoStreamClient::createPeerConnectionHandler(const string& id,
         const Client& peerClient, bool isCaller)
 {
-    //m_peerConnectionFactory->CreateVideoTrack()
-    
+        VideoTrackSourceInterface* source;
+        auto videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", source);
+
     return make_unique<VideoStreamPeerConnectionHandler>(id, peerClient, isCaller, getSendEventFunction(),
             getOnErrorFunction(), getOnClientConnectedFunction(), getOnClientDisconnectedFunction());
 }
