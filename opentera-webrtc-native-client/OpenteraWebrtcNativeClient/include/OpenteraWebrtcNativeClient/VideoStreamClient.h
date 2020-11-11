@@ -2,11 +2,14 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_VIDEO_STREAM_CLIENT_H
 
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
+#include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
 
 namespace introlab
 {
     class VideoStreamClient: public SignallingClient
     {
+        rtc::scoped_refptr<VideoSource> m_videoSource;
+
     public:
         VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
                           const WebrtcConfiguration& webrtcConfiguration);

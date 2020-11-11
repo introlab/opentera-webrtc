@@ -10,15 +10,21 @@ VideoStreamClient::VideoStreamClient(const SignallingServerConfiguration& signal
         const WebrtcConfiguration& webrtcConfiguration) :
         SignallingClient(signallingServerConfiguration, webrtcConfiguration)
 {
-
+        m_videoSource = new VideoSource();
 }
 
 unique_ptr<PeerConnectionHandler> VideoStreamClient::createPeerConnectionHandler(const string& id,
         const Client& peerClient, bool isCaller)
 {
-        VideoTrackSourceInterface* source;
-        auto videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", source);
+    auto videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource);
 
-    return make_unique<VideoStreamPeerConnectionHandler>(id, peerClient, isCaller, getSendEventFunction(),
-            getOnErrorFunction(), getOnClientConnectedFunction(), getOnClientDisconnectedFunction());
+    return make_unique<VideoStreamPeerConnectionHandler>(
+            id,
+            peerClient,
+            isCaller,
+            getSendEventFunction(),
+            getOnErrorFunction(),
+            getOnClientConnectedFunction(),
+            getOnClientDisconnectedFunction(),
+            videoTrack);
 }
