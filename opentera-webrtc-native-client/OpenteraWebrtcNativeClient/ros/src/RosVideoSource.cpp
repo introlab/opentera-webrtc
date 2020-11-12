@@ -1,8 +1,7 @@
-#include <OpenteraWebrtcNativeClient/Sources/RosVideoSource.h>
+#include <RosVideoSource.h>
 #include <api/video/i420_buffer.h>
 
 // We use OpenCV for image buffer manipulation
-#include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/core/core.hpp>
 #include <cv_bridge/cv_bridge.h>

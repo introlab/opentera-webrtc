@@ -1,13 +1,12 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_ROS_VIDEO_SOURCE_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_ROS_VIDEO_SOURCE_H
 
-#include <media/base/adapted_video_track_source.h>
-#include <rtc_base/ref_counted_object.h>
+#include <OpenteraWebrtcNativeClient/RefCountedVideoSource.h>
 #include <sensor_msgs/Image.h>
 
 namespace introlab
 {
-    class RosVideoSource : public rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>
+    class RosVideoSource : public rtc::RefCountedVideoSource
     {
     public:
         void imageCallback(const sensor_msgs::ImageConstPtr& msg);
