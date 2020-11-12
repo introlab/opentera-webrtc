@@ -6,17 +6,20 @@ using namespace std;
 using namespace rtc;
 using namespace webrtc;
 
-VideoStreamClient::VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
-        const WebrtcConfiguration& webrtcConfiguration) :
-        SignallingClient(signallingServerConfiguration, webrtcConfiguration)
+VideoStreamClient::VideoStreamClient(
+        const SignallingServerConfiguration& signallingServerConfiguration,
+        const WebrtcConfiguration& webrtcConfiguration,
+        const rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> videoSource) :
+        SignallingClient(signallingServerConfiguration, webrtcConfiguration),
+        m_videoSource(videoSource)
 {
-        m_videoSource = new VideoSource();
+
 }
 
 unique_ptr<PeerConnectionHandler> VideoStreamClient::createPeerConnectionHandler(const string& id,
         const Client& peerClient, bool isCaller)
 {
-    auto videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource);
+    rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource);
 
     return make_unique<VideoStreamPeerConnectionHandler>(
             id,

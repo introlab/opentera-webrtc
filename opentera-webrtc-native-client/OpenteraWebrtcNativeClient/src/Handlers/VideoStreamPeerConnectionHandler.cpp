@@ -18,11 +18,6 @@ VideoStreamPeerConnectionHandler::VideoStreamPeerConnectionHandler(
 
 }
 
-VideoStreamPeerConnectionHandler::~VideoStreamPeerConnectionHandler()
-{
-
-}
-
 void VideoStreamPeerConnectionHandler::setPeerConnection(
         const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {

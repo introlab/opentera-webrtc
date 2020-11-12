@@ -19,7 +19,7 @@ namespace introlab
             const std::function<void(const Client&)>& onClientDisconnected,
             const rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack);
 
-        ~VideoStreamPeerConnectionHandler() override;
+        ~VideoStreamPeerConnectionHandler() override = default;
 
         void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
     };
