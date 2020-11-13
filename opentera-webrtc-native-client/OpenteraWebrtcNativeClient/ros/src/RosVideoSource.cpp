@@ -43,7 +43,13 @@ void RosVideoSource::imageCallback(const sensor_msgs::ImageConstPtr& msg)
     int64_t camera_time_us = msg->header.stamp.toNSec() / 1000;
     cv::Rect roi;
     int out_width, out_height;
-    int64_t translated_camera_time_us;
+
+    // We must insure the image size is even
+    int evenWidth = (bgr.cols / 2) * 2;
+    int evenHeigth = (bgr.rows / 2) * 2;
+    cv::Size evenSize(evenWidth, evenHeigth);
+    cv::resize(bgr, bgr, evenSize);
+
     if (AdaptFrame(bgr.cols, bgr.rows, camera_time_us, &out_width, &out_height, &roi.width, &roi.height, &roi.x, &roi.y)) {
         cv::Mat yuv;
         if (out_width == roi.width && out_height == roi.height) {
@@ -61,7 +67,7 @@ void RosVideoSource::imageCallback(const sensor_msgs::ImageConstPtr& msg)
         webrtc::VideoFrame frame(
                 webrtc::I420Buffer::Copy(out_width, out_height, y, out_width, u, out_width / 2, v, out_width / 2),
                 webrtc::kVideoRotation_0,
-                translated_camera_time_us
+                camera_time_us
         );
 
         OnFrame(frame);
