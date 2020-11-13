@@ -9,6 +9,7 @@ namespace introlab {
     {
         std::unique_ptr<VideoStreamClient> m_signallingClient;
         rtc::scoped_refptr<RosVideoSource> m_videoSource;
+        ros::Subscriber m_imageSubsriber;
 
     public:
         RosTopicStreamer();
