@@ -17,7 +17,6 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../include)
 include_directories(include)
 
-
 file(GLOB_RECURSE
         source_files
         src/*

@@ -6,6 +6,9 @@
 
 namespace introlab
 {
+    /**
+     * @brief a signaling client to join a webrtc room and stream a video source
+     */
     class VideoStreamClient: public SignallingClient
     {
         rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> m_videoSource;
@@ -13,7 +16,7 @@ namespace introlab
     public:
         VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
                           const WebrtcConfiguration& webrtcConfiguration,
-                          const rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> videoSource);
+                          rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> videoSource);
         ~VideoStreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(VideoStreamClient);

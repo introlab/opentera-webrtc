@@ -5,6 +5,9 @@
 
 namespace introlab
 {
+    /**
+     * @brief A peer connection handler that adds a single video track to the call
+     */
     class VideoStreamPeerConnectionHandler : public PeerConnectionHandler
     {
         rtc::scoped_refptr<webrtc::VideoTrackInterface> m_videoTrack;
@@ -17,7 +20,7 @@ namespace introlab
             const std::function<void(const std::string&)>& onError,
             const std::function<void(const Client&)>& onClientConnected,
             const std::function<void(const Client&)>& onClientDisconnected,
-            const rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack);
+            rtc::scoped_refptr<webrtc::VideoTrackInterface>  videoTrack);
 
         ~VideoStreamPeerConnectionHandler() override = default;
 
