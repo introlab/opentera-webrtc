@@ -2,9 +2,8 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(OpenteraWebrtcNativeClientRos)
 
-set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
-
 find_package(roscpp REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenCV REQUIRED core imgproc)
@@ -17,13 +16,10 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../include)
 include_directories(include)
 
-file(GLOB_RECURSE
-        source_files
-        src/*
-        include/*)
-
 add_executable(OpenteraWebrtcRosTopicStreamer
-        ${source_files})
+        src/RosVideoSource.cpp
+        src/RosSignalingServerConfiguration.cpp
+        src/RosTopicStreamer.cpp)
 
 target_link_libraries(OpenteraWebrtcRosTopicStreamer
         OpenteraWebrtcNativeClient
@@ -33,6 +29,12 @@ target_link_libraries(OpenteraWebrtcRosTopicStreamer
         ${cv_bridge_LIBRARIES}
         ${OpenCV_LIBRARIES})
 
-set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 14)
+add_executable(OpenTeraWebrtcRosDataChannelBridge
+        src/RosSignalingServerConfiguration.cpp
+        src/RosDataChannelBridge.cpp)
 
-assign_source_group(${source_files})
+target_link_libraries(OpenTeraWebrtcRosDataChannelBridge
+        OpenteraWebrtcNativeClient
+        ${webrtc_native_LIBRARY}
+        ${roscpp_LIBRARIES}
+        ${std_msgs_LIBRARIES})

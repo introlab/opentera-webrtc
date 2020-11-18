@@ -12,19 +12,16 @@ using namespace std;
 RosTopicStreamer::RosTopicStreamer()
 {
     NodeHandle nh;
-    string imageTopic;
     bool needsDenoising;
     bool isScreencast;
 
     // Load ROS parameters
-    loadStreamParams(imageTopic, needsDenoising, isScreencast);
-    SignallingServerConfiguration signalingConfig =
-            RosSignalingServerConfiguration::fromRosParam("streamer");
+    loadStreamParams(needsDenoising, isScreencast);
 
     // Create WebRTC video source and signalling client
     rtc::scoped_refptr<RosVideoSource> videoSource = new RosVideoSource(needsDenoising, isScreencast);
     m_signallingClient = make_unique<VideoStreamClient>(
-            signalingConfig,
+            RosSignalingServerConfiguration::fromRosParam("streamer"),
             WebrtcConfiguration::create(),
             videoSource);
 
@@ -32,7 +29,7 @@ RosTopicStreamer::RosTopicStreamer()
     m_signallingClient->setOnSignallingConnectionOpen([&]{
         ROS_INFO("Signaling connection opened, streaming topic...");
         m_imageSubsriber = nh.subscribe(
-                imageTopic,
+                "image_raw",
                 1,
                 &RosVideoSource::imageCallback,
                 videoSource.get());
@@ -40,7 +37,7 @@ RosTopicStreamer::RosTopicStreamer()
 
     // Shutdown ROS when signaling client disconnect
     m_signallingClient->setOnSignallingConnectionClosed([]{
-        ROS_INFO("Signaling connection closed, shutting down...");
+        ROS_WARN("Signaling connection closed, shutting down...");
         requestShutdown();
     });
 
@@ -68,16 +65,14 @@ RosTopicStreamer::~RosTopicStreamer()
 
 /**
  * @brief Load video stream parameters from ROS parameter server
- * 
- * @param topic image topic to subscribe to
+ *
  * @param denoise whether the images require denoising
  * @param screencast whether the images are a screen capture
  */
-void RosTopicStreamer::loadStreamParams(std::string &topic, bool &denoise, bool &screencast)
+void RosTopicStreamer::loadStreamParams(bool &denoise, bool &screencast)
 {
     NodeHandle pnh("~stream");
 
-    pnh.param<string>("topic", topic, "camera/image_raw");
     pnh.param("is_screen_cast", screencast, false);
     pnh.param("needs_denoising", denoise, false);
 }

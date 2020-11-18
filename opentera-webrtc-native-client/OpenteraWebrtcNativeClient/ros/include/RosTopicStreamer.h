@@ -16,7 +16,7 @@ namespace introlab {
         std::unique_ptr<VideoStreamClient> m_signallingClient;
         ros::Subscriber m_imageSubsriber;
 
-        static void loadStreamParams(std::string &topic, bool &denoise, bool &screencast);
+        static void loadStreamParams(bool &denoise, bool &screencast);
 
     public:
         RosTopicStreamer();
