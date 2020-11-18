@@ -1,5 +1,6 @@
 #include <ros/ros.h>
 #include <RosTopicStreamer.h>
+#include <RosSignalingServerconfiguration.h>
 
 using namespace introlab;
 using namespace ros;
@@ -17,7 +18,8 @@ RosTopicStreamer::RosTopicStreamer()
 
     // Load ROS parameters
     loadStreamParams(imageTopic, needsDenoising, isScreencast);
-    SignallingServerConfiguration signalingConfig = loadSignalingConfig();
+    SignallingServerConfiguration signalingConfig =
+            RosSignalingServerConfiguration::fromRosParam("streamer");
 
     // Create WebRTC video source and signalling client
     rtc::scoped_refptr<RosVideoSource> videoSource = new RosVideoSource(needsDenoising, isScreencast);
@@ -78,30 +80,6 @@ void RosTopicStreamer::loadStreamParams(std::string &topic, bool &denoise, bool 
     pnh.param<string>("topic", topic, "camera/image_raw");
     pnh.param("is_screen_cast", screencast, false);
     pnh.param("needs_denoising", denoise, false);
-}
-
-/**
- * @brief Load signaling server configuration from ROS parameter server
- *
- * @return the signaling server configuration object
- */
-SignallingServerConfiguration RosTopicStreamer::loadSignalingConfig()
-{
-    NodeHandle pnh("~signaling");
-
-    string server_url;
-    pnh.param<string>("server_url", server_url, "http://localhost:8080");
-
-    string client_name;
-    pnh.param<string>("client_name", client_name, "streamer");
-
-    string room;
-    pnh.param<string>("room_name", room, "chat");
-
-    string password;
-    pnh.param<string>("room_password", password, "abc");
-
-    return SignallingServerConfiguration::create(server_url, client_name, room, password);
 }
 
 /**

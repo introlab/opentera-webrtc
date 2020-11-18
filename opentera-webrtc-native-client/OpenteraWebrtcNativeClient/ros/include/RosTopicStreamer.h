@@ -17,7 +17,6 @@ namespace introlab {
         ros::Subscriber m_imageSubsriber;
 
         static void loadStreamParams(std::string &topic, bool &denoise, bool &screencast);
-        static SignallingServerConfiguration loadSignalingConfig();
 
     public:
         RosTopicStreamer();
