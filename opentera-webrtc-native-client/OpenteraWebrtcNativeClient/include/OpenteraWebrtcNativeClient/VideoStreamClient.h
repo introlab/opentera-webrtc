@@ -28,4 +28,4 @@ namespace introlab
     };
 }
 
-#endif // OPENTERA_WEBRTC_NATIVE_CLIENT_VIDEO_STREAM_CLIENT_H
+#endif

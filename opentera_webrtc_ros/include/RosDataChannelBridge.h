@@ -1,7 +1,3 @@
-//
-// Created by cedric on 20-11-18.
-//
-
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_ROS_DATA_CHANNEL_BRIDGE_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_ROS_DATA_CHANNEL_BRIDGE_H
 
@@ -31,4 +27,4 @@ namespace introlab {
     };
 }
 
-#endif //OPENTERA_WEBRTC_NATIVE_CLIENT_ROS_DATA_CHANNEL_BRIDGE_H
+#endif

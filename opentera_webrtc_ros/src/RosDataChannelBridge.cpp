@@ -1,7 +1,3 @@
-//
-// Created by cedric on 20-11-18.
-//
-
 #include <ros/ros.h>
 #include <RosDataChannelBridge.h>
 #include <RosSignalingServerconfiguration.h>

@@ -49,4 +49,4 @@ namespace introlab
     };
 }
 
-#endif // OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_ROS_VIDEO_SOURCE_H
+#endif

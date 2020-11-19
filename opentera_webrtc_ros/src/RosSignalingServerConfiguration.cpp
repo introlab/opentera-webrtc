@@ -1,7 +1,3 @@
-//
-// Created by cedric on 20-11-18.
-//
-
 #include <ros/node_handle.h>
 #include <RosSignalingServerconfiguration.h>
 

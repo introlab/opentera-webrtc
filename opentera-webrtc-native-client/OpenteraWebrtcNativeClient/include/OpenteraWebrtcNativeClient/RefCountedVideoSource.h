@@ -14,4 +14,4 @@ namespace rtc {
     typedef RefCountedObject<rtc::AdaptedVideoTrackSource> RefCountedVideoSource;
 }
 
-#endif //OPENTERA_WEBRTC_NATIVE_CLIENT_REF_COUNTED_VIDEO_SOURCE_H
+#endif
