@@ -17,7 +17,6 @@ namespace introlab {
 
         ros::Subscriber m_dataSubscriber;
         ros::Publisher m_dataPublisher;
-        bool m_dataChannelConnected;
 
         void onRosData(const std_msgs::StringConstPtr & msg);
 

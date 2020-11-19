@@ -33,23 +33,6 @@ RosDataChannelBridge::RosDataChannelBridge()
         m_dataPublisher.publish(msg);
     });
 
-    // Setup data channel open and close events
-    m_signallingClient->setOnDataChannelOpen([&](const Client&) {
-        ROS_INFO("Data channel connected.");
-        m_dataChannelConnected = true;
-    });
-    m_signallingClient->setOnDataChannelClosed([&](const Client&) {
-        ROS_INFO("Data channel disconnected.");
-        m_dataChannelConnected = false;
-    });
-    m_dataChannelConnected = false;
-
-    // Shutdown node if data channel encountered an error
-    m_signallingClient->setOnDataChannelError([&](const Client&, const string& error) {
-        ROS_ERROR("Data channel error %s.", error.c_str());
-        m_dataChannelConnected = false;
-    });
-
     // Shutdown ROS when signaling client disconnect
     m_signallingClient->setOnSignallingConnectionClosed([]{
         ROS_WARN("Signaling connection closed, shutting down...");
@@ -87,14 +70,7 @@ RosDataChannelBridge::~RosDataChannelBridge()
  */
 void RosDataChannelBridge::onRosData(const StringConstPtr& msg)
 {
-    if (m_dataChannelConnected)
-    {
-        m_signallingClient->sendToAll(msg->data);
-    }
-    else
-    {
-        ROS_INFO_THROTTLE(1, "Ignoring received data because data channel is closed.");
-    }
+    m_signallingClient->sendToAll(msg->data);
 }
 
 /**
