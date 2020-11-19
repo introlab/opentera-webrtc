@@ -32,4 +32,3 @@ assign_source_group(${source_files})
 
 add_subdirectory(python)
 add_subdirectory(test)
-add_subdirectory(ros)
