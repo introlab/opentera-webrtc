@@ -19,6 +19,7 @@ endif()
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   cv_bridge
+  message_generation
   std_msgs
   sensor_msgs
 )
@@ -36,11 +37,25 @@ if(NOT DEFINED ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_LIB})
 endif()
 
 
+##############################
+## Generate custom messages ##
+##############################
+
+# Declare the message files to be built
+add_message_files(FILES
+  Peer.msg
+  PeerData.msg
+)
+
+# Actually generate the language-specific message and service files
+generate_messages(DEPENDENCIES std_msgs)
+
+
 ###################################
 ## catkin specific configuration ##
 ###################################
 
-catkin_package()
+catkin_package(CATKIN_DEPENDS message_runtime)
 
 
 ###########
@@ -77,6 +92,7 @@ add_executable(${PROJECT_NAME}_data_channel_bridge
   src/RosSignalingServerConfiguration.cpp
   src/RosDataChannelBridge.cpp
 )
+add_dependencies(${PROJECT_NAME}_data_channel_bridge ${${PROJECT_NAME}_EXPORTED_TARGETS})
 
 ## Rename C++ executable without prefix
 

@@ -1,11 +1,13 @@
 #include <ros/ros.h>
 #include <RosDataChannelBridge.h>
 #include <RosSignalingServerconfiguration.h>
+#include <opentera_webrtc_ros/PeerData.h>
 
 using namespace introlab;
 using namespace ros;
 using namespace std_msgs;
 using namespace std;
+using namespace opentera_webrtc_ros;
 
 /**
  * @brief Construct a data channel bridge
@@ -21,13 +23,15 @@ RosDataChannelBridge::RosDataChannelBridge()
             DataChannelConfiguration::create());
 
     // Advertise topics
-    m_dataPublisher = nh.advertise<String>("webrtc_data", 10);
+    m_dataPublisher = nh.advertise<PeerData>("webrtc_data", 10);
     m_dataSubscriber = nh.subscribe("ros_data", 10, &RosDataChannelBridge::onRosData, this);
 
     // Setup data channel callback
     m_signallingClient->setOnDataChannelMessageString([&](const Client& client, const string& data) {
-        String msg;
+        PeerData msg;
         msg.data = data;
+        msg.sender.id = client.id();
+        msg.sender.name = client.name();
         m_dataPublisher.publish(msg);
     });
 

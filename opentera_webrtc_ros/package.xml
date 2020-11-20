@@ -10,10 +10,12 @@
   <author email="cedric.godin@usherbrooke.ca">Cédric Godin</author>
 
   <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>message_generation</build_depend>
   <depend>roscpp</depend>
   <depend>cv_bridge</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
+  <depend>message_runtime</depend>
 
   <export>
   </export>
