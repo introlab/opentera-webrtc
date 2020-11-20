@@ -5,9 +5,6 @@
 
 namespace introlab
 {
-    /**
-     * @brief A peer connection handler that adds a single video track to the call
-     */
     class VideoStreamPeerConnectionHandler : public PeerConnectionHandler
     {
         rtc::scoped_refptr<webrtc::VideoTrackInterface> m_videoTrack;

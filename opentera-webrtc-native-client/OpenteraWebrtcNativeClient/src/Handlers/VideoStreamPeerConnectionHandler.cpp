@@ -5,17 +5,6 @@
 using namespace introlab;
 using namespace std;
 
-/**
- * Construct a video stream peer connection handler
- * @param id this peer id
- * @param peerClient this peer client object
- * @param isCaller did this peer initiated the call
- * @param sendEvent function to send event on the signaling connection
- * @param onError function executed on signaling connection error
- * @param onClientConnected function executed when the signaling connection is opened
- * @param onClientDisconnected function executed when the signaling connection is closed
- * @param videoTrack the video track to add to the call
- */
 VideoStreamPeerConnectionHandler::VideoStreamPeerConnectionHandler(
     const string& id,
     const Client& peerClient,
@@ -31,13 +20,6 @@ VideoStreamPeerConnectionHandler::VideoStreamPeerConnectionHandler(
 
 }
 
-/**
- * @brief sets the peer connection that needs to be handled
- *
- * We add the video track to the peer connection then pass the connection to the base class
- *
- * @param peerConnection the peer connection to handle
- */
 void VideoStreamPeerConnectionHandler::setPeerConnection(
         const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {

@@ -16,7 +16,7 @@ using namespace webrtc;
 VideoStreamClient::VideoStreamClient(
         const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration,
-        const rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> videoSource) :
+        const scoped_refptr<VideoSource>& videoSource) :
         SignallingClient(signallingServerConfiguration, webrtcConfiguration),
         m_videoSource(videoSource)
 {

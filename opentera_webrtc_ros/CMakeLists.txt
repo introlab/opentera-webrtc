@@ -62,7 +62,7 @@ include_directories(
 ## Specify additional locations of library files
 
 link_directories(
-  $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../3rdParty/socket.io-client-cpp/build/lib/${CMAKE_BUILD_TYPE}
+  $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../3rdParty/socket.io-client-cpp/build/lib/Release
 )
 
 ## Declare a C++ executable
@@ -90,9 +90,7 @@ target_link_libraries(${PROJECT_NAME}_topic_streamer
   sioclient
   sioclient_tls
   $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../3rdParty/webrtc_native/webrtc/src/out/${CMAKE_BUILD_TYPE}/obj/libwebrtc.a dl X11 expat
-  ${roscpp_LIBRARIES}
-  ${sensor_msgs_LIBRARIES}
-  ${cv_bridge_LIBRARIES}
+  ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )
 
@@ -101,8 +99,7 @@ target_link_libraries(${PROJECT_NAME}_data_channel_bridge
   sioclient
   sioclient_tls
   $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../3rdParty/webrtc_native/webrtc/src/out/${CMAKE_BUILD_TYPE}/obj/libwebrtc.a dl X11 expat
-  ${roscpp_LIBRARIES}
-  ${std_msgs_LIBRARIES}
+  ${catkin_LIBRARIES}
 )
 
 

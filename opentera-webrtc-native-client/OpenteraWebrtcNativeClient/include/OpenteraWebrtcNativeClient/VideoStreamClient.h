@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_VIDEO_STREAM_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_VIDEO_STREAM_CLIENT_H
 
-#include <media/base/adapted_video_track_source.h>
+#include <OpenteraWebrtcNativeClient/VideoSource.h>
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
 
 namespace introlab
@@ -11,12 +11,12 @@ namespace introlab
      */
     class VideoStreamClient: public SignallingClient
     {
-        rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> m_videoSource;
+        rtc::scoped_refptr<VideoSource> m_videoSource;
 
     public:
         VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
                           const WebrtcConfiguration& webrtcConfiguration,
-                          rtc::scoped_refptr<rtc::RefCountedObject<rtc::AdaptedVideoTrackSource>> videoSource);
+                          const rtc::scoped_refptr<VideoSource>& videoSource);
         ~VideoStreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(VideoStreamClient);

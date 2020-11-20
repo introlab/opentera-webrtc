@@ -8,9 +8,7 @@ using namespace std_msgs;
 using namespace std;
 
 /**
- * @brief Construct a data channel bridge not and never returns
- *
- * This function includes a ros::spin() call to keep it from returning.
+ * @brief Construct a data channel bridge
  */
 RosDataChannelBridge::RosDataChannelBridge()
 {
@@ -44,10 +42,6 @@ RosDataChannelBridge::RosDataChannelBridge()
         ROS_ERROR("Signaling connection error %s, shutting down...", msg.c_str());
         requestShutdown();
     });
-
-    // Connect to the server
-    m_signallingClient->connect();
-    spin();
 }
 
 /**
@@ -74,6 +68,15 @@ void RosDataChannelBridge::onRosData(const StringConstPtr& msg)
 }
 
 /**
+ * @brief Connect to the server and forward data forever
+ */
+void RosDataChannelBridge::run()
+{
+    m_signallingClient->connect();
+    spin();
+}
+
+/**
  * @brief runs a ROS data channel bridge
  *
  * @param argc ROS argument count
@@ -83,5 +86,7 @@ void RosDataChannelBridge::onRosData(const StringConstPtr& msg)
 int main(int argc, char** argv)
 {
     init(argc, argv, "data_channel_bridge");
-    RosDataChannelBridge();
+
+    RosDataChannelBridge node;
+    node.run();
 }

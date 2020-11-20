@@ -1,6 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_ROS_TOPIC_STREAMER_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_ROS_TOPIC_STREAMER_H
 
+#include <ros/node_handle.h>
 #include <RosVideoSource.h>
 #include <OpenteraWebrtcNativeClient/VideoStreamClient.h>
 
@@ -13,6 +14,8 @@ namespace introlab {
      */
     class RosTopicStreamer
     {
+        ros::NodeHandle m_nh;
+        rtc::scoped_refptr<RosVideoSource> m_videoSource;
         std::unique_ptr<VideoStreamClient> m_signallingClient;
         ros::Subscriber m_imageSubsriber;
 
@@ -21,6 +24,8 @@ namespace introlab {
     public:
         RosTopicStreamer();
         virtual ~RosTopicStreamer();
+
+        void run();
     };
 
 }

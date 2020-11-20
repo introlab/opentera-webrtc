@@ -23,6 +23,8 @@ namespace introlab {
     public:
         RosDataChannelBridge();
         virtual ~RosDataChannelBridge();
+
+        void run();
     };
 }
 

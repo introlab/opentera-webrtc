@@ -11,7 +11,6 @@ using namespace std;
  */
 RosTopicStreamer::RosTopicStreamer()
 {
-    NodeHandle nh;
     bool needsDenoising;
     bool isScreencast;
 
@@ -19,20 +18,20 @@ RosTopicStreamer::RosTopicStreamer()
     loadStreamParams(needsDenoising, isScreencast);
 
     // Create WebRTC video source and signalling client
-    rtc::scoped_refptr<RosVideoSource> videoSource = new RosVideoSource(needsDenoising, isScreencast);
+    m_videoSource = new RosVideoSource(needsDenoising, isScreencast);
     m_signallingClient = make_unique<VideoStreamClient>(
             RosSignalingServerConfiguration::fromRosParam("streamer"),
             WebrtcConfiguration::create(),
-            videoSource);
+            m_videoSource);
 
     // Subscribe to image topic when signaling client connects
     m_signallingClient->setOnSignallingConnectionOpen([&]{
         ROS_INFO("Signaling connection opened, streaming topic...");
-        m_imageSubsriber = nh.subscribe(
+        m_imageSubsriber = m_nh.subscribe(
                 "image_raw",
                 1,
                 &RosVideoSource::imageCallback,
-                videoSource.get());
+                m_videoSource.get());
     });
 
     // Shutdown ROS when signaling client disconnect
@@ -46,11 +45,6 @@ RosTopicStreamer::RosTopicStreamer()
         ROS_ERROR("Signaling connection error %s, shutting down...", msg.c_str());
         requestShutdown();
     });
-
-    // Connect to server and process images forever
-    ROS_INFO("Connecting to signaling server at.");
-    m_signallingClient->connect();
-    spin();
 }
 
 /**
@@ -61,6 +55,16 @@ RosTopicStreamer::~RosTopicStreamer()
     ROS_INFO("ROS is shutting down, closing signaling client connection.");
     m_signallingClient->closeSync();
     ROS_INFO("Signaling client disconnected, goodbye.");
+}
+
+/**
+ * @brief Connect to server and process images forever
+ */
+void RosTopicStreamer::run()
+{
+    ROS_INFO("Connecting to signaling server at.");
+    m_signallingClient->connect();
+    spin();
 }
 
 /**
@@ -87,5 +91,7 @@ void RosTopicStreamer::loadStreamParams(bool &denoise, bool &screencast)
 int main(int argc, char** argv)
 {
     init(argc, argv, "topic_streamer");
-    RosTopicStreamer();
+
+    RosTopicStreamer node;
+    node.run();
 }
