@@ -17,5 +17,6 @@ cmake ..
 ### Linux - AMD64
 ```bash
 sudo apt install libboost-all-dev
+sudo apt install python-is-python3
 ./3rdParty/webrtc_native/webrtc/src/build/install-build-deps.sh
 ```
