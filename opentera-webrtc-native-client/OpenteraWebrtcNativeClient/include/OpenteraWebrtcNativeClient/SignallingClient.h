@@ -51,11 +51,11 @@ namespace introlab
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signallingThread;
-        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
 
     protected:
         SignallingServerConfiguration m_signallingServerConfiguration;
 
+        rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
     public:
