@@ -1,11 +1,11 @@
-#include <OpenteraWebrtcNativeClient/Handlers/VideoStreamPeerConnectionHandler.h>
+#include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
 #include <utility>
 
 using namespace introlab;
 using namespace std;
 
-VideoStreamPeerConnectionHandler::VideoStreamPeerConnectionHandler(
+StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     const string& id,
     const Client& peerClient,
     bool isCaller,
@@ -20,7 +20,7 @@ VideoStreamPeerConnectionHandler::VideoStreamPeerConnectionHandler(
 
 }
 
-void VideoStreamPeerConnectionHandler::setPeerConnection(
+void StreamPeerConnectionHandler::setPeerConnection(
         const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {
     peerConnection->AddTrack(m_videoTrack, vector<string>());

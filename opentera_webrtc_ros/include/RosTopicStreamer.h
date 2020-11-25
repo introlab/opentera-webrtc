@@ -3,7 +3,7 @@
 
 #include <ros/node_handle.h>
 #include <RosVideoSource.h>
-#include <OpenteraWebrtcNativeClient/VideoStreamClient.h>
+#include <OpenteraWebrtcNativeClient/StreamClient.h>
 
 namespace introlab {
 
@@ -16,7 +16,7 @@ namespace introlab {
     {
         ros::NodeHandle m_nh;
         std::shared_ptr<RosVideoSource> m_videoSource;
-        std::unique_ptr<VideoStreamClient> m_signallingClient;
+        std::unique_ptr<StreamClient> m_signallingClient;
         ros::Subscriber m_imageSubsriber;
 
         static void loadStreamParams(bool &denoise, bool &screencast);

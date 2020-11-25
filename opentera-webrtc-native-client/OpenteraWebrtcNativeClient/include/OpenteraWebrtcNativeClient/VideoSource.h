@@ -10,7 +10,7 @@ namespace introlab {
     /**
      * @brief Represent a video source that can be added to a WebRTC call
      *
-     * Pass a ref_ptr to an instance of this to the VideoStreamClient and call sendFrame for each of your frame
+     * Pass a ref_ptr to an instance of this to the StreamClient and call sendFrame for each of your frame
      */
     class VideoSource : public rtc::AdaptedVideoTrackSource
     {

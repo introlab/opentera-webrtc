@@ -1,5 +1,5 @@
-#include <OpenteraWebrtcNativeClient/VideoStreamClient.h>
-#include <OpenteraWebrtcNativeClient/Handlers/VideoStreamPeerConnectionHandler.h>
+#include <OpenteraWebrtcNativeClient/StreamClient.h>
+#include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
 using namespace introlab;
 using namespace std;
@@ -11,7 +11,7 @@ using namespace std;
  * @param webrtcConfiguration webrtc configuration
  * @param videoSource the video source that this client will add to the call
  */
-VideoStreamClient::VideoStreamClient(
+StreamClient::StreamClient(
         const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration,
         const shared_ptr<VideoSource>& videoSource) :
@@ -29,13 +29,13 @@ VideoStreamClient::VideoStreamClient(
  * @param isCaller indicate if this peer initiated the call
  * @return the peer connection handler
  */
-unique_ptr<PeerConnectionHandler> VideoStreamClient::createPeerConnectionHandler(const string& id,
-        const Client& peerClient, bool isCaller)
+unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(const string& id,
+                                                                            const Client& peerClient, bool isCaller)
 {
     rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack =
             m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource.get());
 
-    return make_unique<VideoStreamPeerConnectionHandler>(
+    return make_unique<StreamPeerConnectionHandler>(
             id,
             peerClient,
             isCaller,
