@@ -22,7 +22,7 @@ void sendFrame(const std::shared_ptr<VideoSource>& self, py::array_t<uint8_t>& b
         throw py::value_error("The channel count must be 3.");
     }
 
-    self->sendFrame(cv::Mat(height, width, CV_8UC3, bgrImg.mutable_data()), timestampUs);
+    self->sendFrame(cv::Mat(height, width, CV_8UC3, bgrImg.mutable_data(), bgrImg.strides(0)), timestampUs);
 }
 
 void introlab::initVideoSourcePython(pybind11::module& m)
