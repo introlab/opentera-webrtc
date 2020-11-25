@@ -1,0 +1,12 @@
+@using Services
+@inject WebrtcService webrtcClient
+
+<input type="url" value="@webrtcClient.SignalingConfig.url"/>
+<input type="text" value="@webrtcClient.SignalingConfig.name"/>
+<input type="room" value="@webrtcClient.SignalingConfig.room"/>
+<input type="password" value="@webrtcClient.SignalingConfig.password"/>
+
+<div style="display: flex;">
+    <button @onclick="webrtcClient.Connect">Connect</button>
+    <button @onclick="webrtcClient.Disconnect">Disconnect</button>
+</div>

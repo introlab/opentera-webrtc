@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using web_robot_teleop.Services;
 
 namespace web_robot_teleop
 {
@@ -18,6 +19,7 @@ namespace web_robot_teleop
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton<WebrtcService>();
 
             await builder.Build().RunAsync();
         }
