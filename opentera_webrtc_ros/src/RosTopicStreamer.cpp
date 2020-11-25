@@ -18,7 +18,7 @@ RosTopicStreamer::RosTopicStreamer()
     loadStreamParams(needsDenoising, isScreencast);
 
     // Create WebRTC video source and signalling client
-    m_videoSource = new RosVideoSource(needsDenoising, isScreencast);
+    m_videoSource = make_shared<RosVideoSource>(needsDenoising, isScreencast);
     m_signallingClient = make_unique<VideoStreamClient>(
             RosSignalingServerConfiguration::fromRosParam("streamer"),
             WebrtcConfiguration::create(),

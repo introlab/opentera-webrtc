@@ -8,6 +8,9 @@
 #include <OpenteraWebrtcNativeClientPython/SignallingClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
 
+#include <OpenteraWebrtcNativeClientPython/VideoSourcePython.h>
+#include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
+
 using namespace introlab;
 namespace py = pybind11;
 
@@ -22,4 +25,7 @@ PYBIND11_MODULE(opentera_webrtc_native_client, m)
 
     initSignallingClientPython(m);
     initDataChannelClientPython(m);
+
+    initVideoSourcePython(m);
+    initStreamClientPython(m);
 }

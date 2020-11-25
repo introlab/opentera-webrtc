@@ -6,7 +6,7 @@ using namespace introlab;
 using namespace std;
 namespace py = pybind11;
 
-sio::message::ptr introlab::pyObjectToSioMessage(py::object object)
+sio::message::ptr introlab::pyObjectToSioMessage(const py::object& object)
 {
     if (py::isinstance<py::bool_>(object))
     {
