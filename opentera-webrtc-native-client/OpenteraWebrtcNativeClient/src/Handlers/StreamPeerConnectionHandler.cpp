@@ -3,6 +3,8 @@
 #include <utility>
 
 using namespace introlab;
+using namespace rtc;
+using namespace webrtc;
 using namespace std;
 
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
@@ -13,16 +15,52 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     const function<void(const string&)>& onError,
     const function<void(const Client&)>& onClientConnected,
     const function<void(const Client&)>& onClientDisconnected,
-    rtc::scoped_refptr<webrtc::VideoTrackInterface>  videoTrack) :
+    scoped_refptr<VideoTrackInterface>  videoTrack,
+    shared_ptr<VideoSinkInterface<VideoFrame>>  videoSink,
+    const rtc::VideoSinkWants& videoSinkWants,
+    scoped_refptr<AudioTrackInterface> audioTrack,
+    shared_ptr<AudioTrackSinkInterface> audioSink) :
     PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
-    m_videoTrack(std::move(videoTrack))
+    m_videoTrack(move(videoTrack)),
+    m_videoSink(move(videoSink)),
+    m_videoSinkWants(videoSinkWants),
+    m_audioTrack(move(audioTrack)),
+    m_audioSink(move(audioSink))
 {
 
 }
 
 void StreamPeerConnectionHandler::setPeerConnection(
-        const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
+        const scoped_refptr<PeerConnectionInterface>& peerConnection)
 {
-    peerConnection->AddTrack(m_videoTrack, vector<string>());
+    if (m_videoTrack != nullptr)
+    {
+        peerConnection->AddTrack(m_videoTrack, vector<string>());
+    }
+    if (m_audioTrack != nullptr)
+    {
+        peerConnection->AddTrack(m_audioTrack, vector<string>());
+    }
+
     PeerConnectionHandler::setPeerConnection(peerConnection);
+}
+
+void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface> stream)
+{
+    VideoTrackVector videoTracks = stream->GetVideoTracks();
+    if (!videoTracks.empty() && m_videoSink != nullptr)
+    {
+        videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSinkWants);
+    }
+
+    AudioTrackVector audioTracks = stream->GetAudioTracks();
+    if (!audioTracks.empty() && m_audioSink != nullptr)
+    {
+        audioTracks.front()->AddSink(m_audioSink.get());
+    }
+}
+
+void StreamPeerConnectionHandler::OnRemoveStream(scoped_refptr<MediaStreamInterface> stream)
+{
+
 }
