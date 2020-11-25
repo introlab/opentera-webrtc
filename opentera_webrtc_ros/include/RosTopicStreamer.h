@@ -15,7 +15,7 @@ namespace introlab {
     class RosTopicStreamer
     {
         ros::NodeHandle m_nh;
-        rtc::scoped_refptr<RosVideoSource> m_videoSource;
+        std::shared_ptr<RosVideoSource> m_videoSource;
         std::unique_ptr<VideoStreamClient> m_signallingClient;
         ros::Subscriber m_imageSubsriber;
 

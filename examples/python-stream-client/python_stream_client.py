@@ -1,4 +1,8 @@
+import os
 import time
+
+import numpy as np
+import cv2
 
 import opentera_webrtc_native_client as webrtc
 
@@ -38,33 +42,15 @@ def on_error(error):
     print('\t{}\n'.format(error))
 
 
-def on_data_channel_open(client):
-    print('on_data_channel_open:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
-
-
-def on_data_channel_closed(client):
-    print('on_data_channel_closed:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
-
-
-def on_data_channel_error(client, error):
-    print('on_data_channel_error:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
-    print('\terror={}\n'.format(error))
-
-
-def on_data_channel_message_string(client, message):
-    print('on_data_channel_message_string:')
-    print('\tmessage={}\n'.format(message))
-
-
 if __name__ == '__main__':
+    frame = cv2.imread(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frame.png'))
+
     signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create()
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
-    client = webrtc.DataChannelClient(signalling_server_configuration, webrtc_configuration, data_channel_configuration)
+    video_source = webrtc.VideoSource(False, False)
+    client = webrtc.StreamClient(signalling_server_configuration, webrtc_configuration, video_source)
 
     client.on_signalling_connection_open = on_signalling_connection_open
     client.on_signalling_connection_closed = on_signalling_connection_closed
@@ -77,18 +63,15 @@ if __name__ == '__main__':
 
     client.on_error = on_error
 
-    client.on_data_channel_open = on_data_channel_open
-    client.on_data_channel_closed = on_data_channel_closed
-    client.on_data_channel_error = on_data_channel_error
-    client.on_data_channel_message_string = on_data_channel_message_string
-
     client.connect()
 
-    i = 0
+
+    start_time = time.time()
     while True:
-        if client.is_rtc_connected:
-            i += 1
-            client.send_to_all('Message {}'.format(i))
-        time.sleep(10)
+        frame_with_noise = frame + np.random.randint(0, 10, size=frame.shape, dtype=frame.dtype)
+        timestamp_us = int((time.time() - start_time) * 1e6)
+        video_source.send_frame(frame_with_noise, timestamp_us)
+
+        time.sleep(0.1)
 
     client.close_sync()

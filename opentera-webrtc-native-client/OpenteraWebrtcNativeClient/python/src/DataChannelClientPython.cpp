@@ -12,7 +12,8 @@ namespace py = pybind11;
 void introlab::initDataChannelClientPython(pybind11::module& m)
 {
     py::class_<DataChannelClient, SignallingClient>(m, "DataChannelClient")
-            .def(py::init<const SignallingServerConfiguration&, const WebrtcConfiguration&, const DataChannelConfiguration&>())
+            .def(py::init<const SignallingServerConfiguration&, const WebrtcConfiguration&, const DataChannelConfiguration&>(),
+                    py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"), py::arg("data_channel_configuration"))
 
             .def("send_to", [](DataChannelClient& self, py::bytes bytes, const std::vector<std::string>& ids)
             {

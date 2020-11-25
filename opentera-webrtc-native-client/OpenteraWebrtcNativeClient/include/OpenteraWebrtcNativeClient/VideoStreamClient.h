@@ -4,6 +4,8 @@
 #include <OpenteraWebrtcNativeClient/VideoSource.h>
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
 
+#include <memory>
+
 namespace introlab
 {
     /**
@@ -11,12 +13,12 @@ namespace introlab
      */
     class VideoStreamClient: public SignallingClient
     {
-        rtc::scoped_refptr<VideoSource> m_videoSource;
+        std::shared_ptr<VideoSource> m_videoSource;
 
     public:
         VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
                           const WebrtcConfiguration& webrtcConfiguration,
-                          const rtc::scoped_refptr<VideoSource>& videoSource);
+                          const std::shared_ptr<VideoSource>& videoSource);
         ~VideoStreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(VideoStreamClient);

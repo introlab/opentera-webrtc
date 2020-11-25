@@ -5,10 +5,6 @@
 #include <rtc_base/ref_counted_object.h>
 #include <opencv2/core/mat.hpp>
 
-namespace rtc {
-    typedef RefCountedObject<rtc::AdaptedVideoTrackSource> RefCountedVideoSource;
-}
-
 namespace introlab {
 
     /**
@@ -16,19 +12,23 @@ namespace introlab {
      *
      * Pass a ref_ptr to an instance of this to the VideoStreamClient and call sendFrame for each of your frame
      */
-    class VideoSource : public rtc::RefCountedVideoSource
+    class VideoSource : public rtc::AdaptedVideoTrackSource
     {
         bool m_needsDenoising;
         bool m_isScreenCast;
 
     public:
-        VideoSource(bool needsDenoising, bool isScreenCast);
-        void sendFrame(const cv::Mat& bgr_img, int64_t timestamp_us);
+        VideoSource(bool needsDenoising, bool isScreencast);
+        void sendFrame(const cv::Mat& bgrImg, int64_t timestampUs);
 
         bool is_screencast() const override;
         absl::optional<bool> needs_denoising() const override;
         bool remote() const override;
         webrtc::MediaSourceInterface::SourceState state() const override;
+
+        // Methods to fake a ref counted object, so the Python binding is easier to make because we can use a shared_ptr
+        void AddRef() const override;
+        rtc::RefCountReleaseStatus Release() const override;
     };
 
     /**
