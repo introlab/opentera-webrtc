@@ -10,13 +10,16 @@ using namespace std;
  * @param signallingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
  * @param videoSource the video source that this client will add to the call
+ * @param videoSink the video sink to attach to the received stream
  */
 StreamClient::StreamClient(
         const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration,
-        const shared_ptr<VideoSource>& videoSource) :
+        const shared_ptr<VideoSource>& videoSource,
+        const shared_ptr<VideoSink>& videoSink) :
         SignallingClient(signallingServerConfiguration, webrtcConfiguration),
-        m_videoSource(videoSource)
+        m_videoSource(videoSource),
+        m_videoSink(videoSink)
 {
 
 }
@@ -32,8 +35,12 @@ StreamClient::StreamClient(
 unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(const string& id,
                                                                             const Client& peerClient, bool isCaller)
 {
-    rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack =
-            m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource.get());
+    // Create a video track if a video source is provided
+    rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = nullptr;
+    if (m_videoSource != nullptr)
+    {
+        videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource.get());
+    }
 
     return make_unique<StreamPeerConnectionHandler>(
             id,
@@ -43,5 +50,6 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             getOnErrorFunction(),
             getOnClientConnectedFunction(),
             getOnClientDisconnectedFunction(),
-            videoTrack);
+            videoTrack,
+            m_videoSink);
 }

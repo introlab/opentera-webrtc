@@ -16,14 +16,12 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     const function<void(const Client&)>& onClientConnected,
     const function<void(const Client&)>& onClientDisconnected,
     scoped_refptr<VideoTrackInterface>  videoTrack,
-    shared_ptr<VideoSinkInterface<VideoFrame>>  videoSink,
-    const rtc::VideoSinkWants& videoSinkWants,
+    shared_ptr<VideoSink> videoSink,
     scoped_refptr<AudioTrackInterface> audioTrack,
     shared_ptr<AudioTrackSinkInterface> audioSink) :
     PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
     m_videoTrack(move(videoTrack)),
     m_videoSink(move(videoSink)),
-    m_videoSinkWants(videoSinkWants),
     m_audioTrack(move(audioTrack)),
     m_audioSink(move(audioSink))
 {
@@ -50,7 +48,7 @@ void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface
     VideoTrackVector videoTracks = stream->GetVideoTracks();
     if (!videoTracks.empty() && m_videoSink != nullptr)
     {
-        videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSinkWants);
+        videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSink->wants());
     }
 
     AudioTrackVector audioTracks = stream->GetAudioTracks();
