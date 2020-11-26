@@ -15,16 +15,22 @@ points to the instance of `libOpenteraWebrtcNativeClient.a` file to link against
 Finally the OpenTera WebRTC native client and its dependencies must have been built with same build type, Debug or
 Release as the desired build output.
 
-# RosTopicStreamer
+# RosStreamBridge
 
 ## Description
 
-Implement a ROS node `RosTopicStreamer` that subscribe to a `sensor_msgs::Image` topic and streams it to a WebRTC call.
-The node accepts all incoming calls and advertise its video stream.
+Implement a ROS node that publish received images as a WebRTC stream.
+It also forwards images received on the WebRTC stream to ROS.
+
+For now the node only handle a single video track in each direction and no audio.
 
 ### Subscribes
 
-* image_raw : `sensor_msgs::Image`
+* ros_image : `sensor_msgs::Image`
+
+### Advertises
+
+* webrtc_image : `sensor_msgs::Image`
 
 ## Default Parameters
 

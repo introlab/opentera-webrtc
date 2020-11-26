@@ -85,7 +85,7 @@ link_directories(
 add_executable(${PROJECT_NAME}_topic_streamer
   src/RosVideoSource.cpp
   src/RosSignalingServerConfiguration.cpp
-  src/RosTopicStreamer.cpp
+  src/RosStreamBridge.cpp
 )
 
 add_executable(${PROJECT_NAME}_data_channel_bridge

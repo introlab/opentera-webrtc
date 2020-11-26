@@ -2,7 +2,7 @@
 <package format="2">
   <name>opentera_webrtc_ros</name>
   <version>1.0.0</version>
-  <description>Provides Node to join a WebRTC call from ROS</description>
+  <description>Provides Nodes to join a WebRTC call from ROS</description>
 
   <maintainer email="cedric.godin@usherbrooke.ca">Cédric Godin</maintainer>
   <license>BSD</license>

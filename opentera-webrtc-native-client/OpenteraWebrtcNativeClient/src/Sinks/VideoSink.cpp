@@ -54,7 +54,7 @@ void VideoSink::OnFrame(const VideoFrame& frame)
 
     // Convert yuv color space to bgr
     cv::Mat bgrImg;
-    cv::cvtColor(yuvImg, bgrImg, cv::COLOR_YUV2BGR);
+    cv::cvtColor(yuvImg, bgrImg, cv::COLOR_YUV2BGR_I420);
 
     // Pass bgr frame to image callback
     m_onFrameReceived(bgrImg, frame.timestamp_us());
