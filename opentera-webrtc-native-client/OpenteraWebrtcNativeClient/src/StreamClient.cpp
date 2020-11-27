@@ -11,15 +11,18 @@ using namespace std;
  * @param webrtcConfiguration webrtc configuration
  * @param videoSource the video source that this client will add to the call
  * @param videoSink the video sink to attach to the received stream
+ * @param audioSink the audio sink to attach to the received stream
  */
 StreamClient::StreamClient(
         const SignallingServerConfiguration& signallingServerConfiguration,
         const WebrtcConfiguration& webrtcConfiguration,
         const shared_ptr<VideoSource>& videoSource,
-        const shared_ptr<VideoSink>& videoSink) :
+        const shared_ptr<VideoSink>& videoSink,
+        const shared_ptr<AudioSink>& audioSink) :
         SignallingClient(signallingServerConfiguration, webrtcConfiguration),
         m_videoSource(videoSource),
-        m_videoSink(videoSink)
+        m_videoSink(videoSink),
+        m_audioSink(audioSink)
 {
 
 }
@@ -42,6 +45,9 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
         videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource.get());
     }
 
+    rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack = nullptr;
+    // TODO: create the audio track if an audio source is provided
+
     return make_unique<StreamPeerConnectionHandler>(
             id,
             peerClient,
@@ -51,5 +57,7 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             getOnClientConnectedFunction(),
             getOnClientDisconnectedFunction(),
             videoTrack,
-            m_videoSink);
+            m_videoSink,
+            audioTrack,
+            m_audioSink);
 }

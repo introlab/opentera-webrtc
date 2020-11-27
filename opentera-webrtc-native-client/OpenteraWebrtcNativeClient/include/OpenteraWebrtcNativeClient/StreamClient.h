@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <OpenteraWebrtcNativeClient/Sinks/VideoSink.h>
+#include <OpenteraWebrtcNativeClient/Sinks/AudioSink.h>
 
 namespace introlab
 {
@@ -16,12 +17,17 @@ namespace introlab
     {
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<VideoSink> m_videoSink;
+        std::shared_ptr<AudioSink> m_audioSink;
+
+        // TODO: figure out what is the base class for an audio source
+        // std::shared_ptr<> m_audioSource;
 
     public:
         StreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
                      const WebrtcConfiguration& webrtcConfiguration,
                      const std::shared_ptr<VideoSource>& videoSource = nullptr,
-                     const std::shared_ptr<VideoSink>& videoSink = nullptr);
+                     const std::shared_ptr<VideoSink>& videoSink = nullptr,
+                     const std::shared_ptr<AudioSink>& audioSink = nullptr);
         ~StreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(StreamClient);
