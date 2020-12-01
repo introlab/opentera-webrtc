@@ -7,9 +7,15 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+    vector<IceServer> iceServers;
+    if (!IceServer::fetchFromServer("", "abc", iceServers))
+    {
+        iceServers.clear();
+    }
+
     auto signallingServerConfiguration =
             SignallingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
-    auto webrtcConfiguration = WebrtcConfiguration::create();
+    auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signallingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
 

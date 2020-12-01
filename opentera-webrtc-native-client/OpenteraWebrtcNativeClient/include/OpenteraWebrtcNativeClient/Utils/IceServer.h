@@ -26,6 +26,10 @@ namespace introlab
         const std::string& credential() const;
 
         explicit operator webrtc::PeerConnectionInterface::IceServer() const;
+
+        static bool fetchFromServer(const std::string& url, const std::string& password,
+                std::vector<IceServer>& iceServers);
+        static bool fromJson(const std::string& json, std::vector<IceServer>& iceServers);
     };
 
     inline const std::vector<std::string>& IceServer::urls() const
@@ -51,6 +55,8 @@ namespace introlab
         iceServer.password = m_credential;
         return iceServer;
     }
+
+
 }
 
 #endif

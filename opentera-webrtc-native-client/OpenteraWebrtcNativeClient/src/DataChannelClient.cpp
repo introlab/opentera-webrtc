@@ -55,7 +55,7 @@ unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler
     };
     auto onDataChannelMessageBinary = [this](const Client& client, const webrtc::DataBuffer& buffer)
     {
-        std::function<void()> callback = [this, client, buffer]()
+        function<void()> callback = [this, client, buffer]()
         {
             if (m_onDataChannelMessageBinary)
             {

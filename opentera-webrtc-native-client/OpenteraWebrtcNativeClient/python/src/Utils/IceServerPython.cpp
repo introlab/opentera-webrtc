@@ -20,5 +20,30 @@ void introlab::initIceServerPython(pybind11::module& m)
 
             .def_property_readonly("urls", &IceServer::urls)
             .def_property_readonly("username", &IceServer::username)
-            .def_property_readonly("credential", &IceServer::credential);
+            .def_property_readonly("credential", &IceServer::credential)
+
+            .def_static("fetch_from_server", [](const string& url, const string& password)
+            {
+                vector<IceServer> iceServers;
+                if (IceServer::fetchFromServer(url, password, iceServers))
+                {
+                    return iceServers;
+                }
+                else
+                {
+                    throw runtime_error("\"fetch_from_server\" failed");
+                }
+            }, py::arg("url"), py::arg("password"))
+            .def_static("from_json", [](const string& json)
+            {
+                vector<IceServer> iceServers;
+                if (IceServer::fromJson(json, iceServers))
+                {
+                    return iceServers;
+                }
+                else
+                {
+                    throw py::value_error("Invalid json");
+                }
+            }, py::arg("json"));
 }
