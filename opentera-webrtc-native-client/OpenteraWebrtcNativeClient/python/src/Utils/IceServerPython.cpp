@@ -11,11 +11,11 @@ namespace py = pybind11;
 void introlab::initIceServerPython(pybind11::module& m)
 {
     py::class_<IceServer>(m, "IceServer")
-            .def(py::init<const string&>(), py::arg("url"))
-            .def(py::init<const string&, const string&, const string&>(),
+            .def(py::init<string>(), py::arg("url"))
+            .def(py::init<string, string, string>(),
                     py::arg("url"), py::arg("username"), py::arg("credential"))
-            .def(py::init<const vector<string>&>(), py::arg("urls"))
-            .def(py::init<const vector<string>&, const string&, const string&>(),
+            .def(py::init<vector<string>>(), py::arg("urls"))
+            .def(py::init<vector<string>, string, string>(),
                     py::arg("urls"), py::arg("username"), py::arg("credential"))
 
             .def_property_readonly("urls", &IceServer::urls)

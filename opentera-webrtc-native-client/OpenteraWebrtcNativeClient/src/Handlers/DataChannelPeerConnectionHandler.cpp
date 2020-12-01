@@ -3,25 +3,26 @@
 using namespace introlab;
 using namespace std;
 
-DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(const string& id,
-        const Client& peerClient,
+DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(string id,
+        Client peerClient,
         bool isCaller,
-        const function<void(const string&, sio::message::ptr)>& sendEvent,
-        const function<void(const string&)>& onError,
-        const function<void(const Client&)>& onClientConnected,
-        const function<void(const Client&)>& onClientDisconnected,
-        const string& room,
-        const DataChannelConfiguration& dataChannelConfiguration,
-        const function<void(const Client&)>& onDataChannelOpen,
-        const function<void(const Client&)>& onDataChannelClosed,
-        const function<void(const Client&, const string&)>& onDataChannelError,
-        const function<void(const Client&, const webrtc::DataBuffer& buffer)>& onDataChannelMessageBinary,
-        const function<void(const Client&, const string&)>& onDataChannelMessageString) :
-        PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
-        m_room(room), m_dataChannelConfiguration(dataChannelConfiguration),
-        m_onDataChannelOpen(onDataChannelOpen), m_onDataChannelClosed(onDataChannelClosed),
-        m_onDataChannelError(onDataChannelError), m_onDataChannelMessageBinary(onDataChannelMessageBinary),
-        m_onDataChannelMessageString(onDataChannelMessageString),
+        function<void(const string&, const sio::message::ptr&)> sendEvent,
+        function<void(const string&)> onError,
+        function<void(const Client&)> onClientConnected,
+        function<void(const Client&)> onClientDisconnected,
+        string room,
+        DataChannelConfiguration dataChannelConfiguration,
+        function<void(const Client&)> onDataChannelOpen,
+        function<void(const Client&)> onDataChannelClosed,
+        function<void(const Client&, const string&)> onDataChannelError,
+        function<void(const Client&, const webrtc::DataBuffer& buffer)> onDataChannelMessageBinary,
+        function<void(const Client&, const string&)> onDataChannelMessageString) :
+        PeerConnectionHandler(move(id), move(peerClient), isCaller, move(sendEvent), move(onError),
+                move(onClientConnected), move(onClientDisconnected)),
+        m_room(move(room)), m_dataChannelConfiguration(move(dataChannelConfiguration)),
+        m_onDataChannelOpen(move(onDataChannelOpen)), m_onDataChannelClosed(move(onDataChannelClosed)),
+        m_onDataChannelError(move(onDataChannelError)), m_onDataChannelMessageBinary(move(onDataChannelMessageBinary)),
+        m_onDataChannelMessageString(move(onDataChannelMessageString)),
         m_onDataChannelClosedCalled(true)
 {
 }

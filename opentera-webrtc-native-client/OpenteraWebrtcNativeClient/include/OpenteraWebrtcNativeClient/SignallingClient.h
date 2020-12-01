@@ -59,8 +59,8 @@ namespace introlab
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
     public:
-        SignallingClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                         const WebrtcConfiguration& webrtcConfiguration);
+        SignallingClient(SignallingServerConfiguration&& signallingServerConfiguration,
+                         WebrtcConfiguration&& webrtcConfiguration);
         virtual ~SignallingClient();
 
         DECLARE_NOT_COPYABLE(SignallingClient);

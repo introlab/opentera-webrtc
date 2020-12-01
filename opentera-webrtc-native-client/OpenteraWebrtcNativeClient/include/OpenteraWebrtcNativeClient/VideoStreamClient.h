@@ -16,9 +16,9 @@ namespace introlab
         std::shared_ptr<VideoSource> m_videoSource;
 
     public:
-        VideoStreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                          const WebrtcConfiguration& webrtcConfiguration,
-                          const std::shared_ptr<VideoSource>& videoSource);
+        VideoStreamClient(SignallingServerConfiguration signallingServerConfiguration,
+                          WebrtcConfiguration webrtcConfiguration,
+                          std::shared_ptr<VideoSource> videoSource);
         ~VideoStreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(VideoStreamClient);

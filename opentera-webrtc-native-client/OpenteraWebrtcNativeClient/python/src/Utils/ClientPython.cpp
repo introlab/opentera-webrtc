@@ -3,20 +3,18 @@
 
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
-#include <pybind11/stl.h>
-
 using namespace introlab;
 using namespace std;
 namespace py = pybind11;
 
-Client clientConstructor(const string& id, const string& name, py::object data)
+Client clientConstructor(string id, string name, const py::object& data)
 {
-    return Client(id, name, pyObjectToSioMessage(data));
+    return Client(move(id), move(name), pyObjectToSioMessage(data));
 }
 
-RoomClient roomClientConstructor(const string& id, const string& name, py::object data, bool isConnected)
+RoomClient roomClientConstructor(string id, string name, const py::object& data, bool isConnected)
 {
-    return RoomClient(id, name, pyObjectToSioMessage(data), isConnected);
+    return RoomClient(move(id), move(name), pyObjectToSioMessage(data), isConnected);
 }
 
 void introlab::initClientPython(pybind11::module& m)

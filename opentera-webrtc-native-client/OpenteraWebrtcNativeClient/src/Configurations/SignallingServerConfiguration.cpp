@@ -3,8 +3,9 @@
 using namespace introlab;
 using namespace std;
 
-SignallingServerConfiguration::SignallingServerConfiguration(const string& url, const string& clientName,
-        sio::message::ptr clientData, const string& room, const string& password) :
-        m_url(url), m_clientName(clientName), m_clientData(clientData), m_room(room), m_password(password)
+SignallingServerConfiguration::SignallingServerConfiguration(string&& url, string&& clientName,
+        sio::message::ptr&& clientData, string&& room, string&& password) :
+        m_url(move(url)), m_clientName(move(clientName)), m_clientData(move(clientData)), m_room(move(room)),
+        m_password(move(password))
 {
 }

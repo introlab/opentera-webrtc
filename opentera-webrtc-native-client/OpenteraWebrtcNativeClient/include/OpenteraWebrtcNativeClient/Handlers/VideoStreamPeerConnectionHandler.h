@@ -10,14 +10,14 @@ namespace introlab
         rtc::scoped_refptr<webrtc::VideoTrackInterface> m_videoTrack;
 
     public:
-        VideoStreamPeerConnectionHandler(const std::string& id,
-            const Client& peerClient,
+        VideoStreamPeerConnectionHandler(std::string id,
+            Client peerClient,
             bool isCaller,
-            const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
-            const std::function<void(const std::string&)>& onError,
-            const std::function<void(const Client&)>& onClientConnected,
-            const std::function<void(const Client&)>& onClientDisconnected,
-            rtc::scoped_refptr<webrtc::VideoTrackInterface>  videoTrack);
+            std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+            std::function<void(const std::string&)> onError,
+            std::function<void(const Client&)> onClientConnected,
+            std::function<void(const Client&)> onClientDisconnected,
+            rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack);
 
         ~VideoStreamPeerConnectionHandler() override = default;
 
