@@ -18,8 +18,10 @@ namespace introlab
 
     public:
         Client() = default;
-        Client(const std::string& id, const std::string& name, const sio::message::ptr& data);
+        Client(std::string id, std::string name, sio::message::ptr data);
         Client(const sio::message::ptr& message);
+        Client(const Client& other) = default;
+        Client(Client&& other) = default;
         virtual ~Client() = default;
 
         const std::string& id() const;
@@ -27,6 +29,9 @@ namespace introlab
         const sio::message::ptr& data() const;
 
         static bool isValid(const sio::message::ptr& message);
+
+        Client& operator=(const Client& other) = default;
+        Client& operator=(Client&& other) = default;
 
         friend bool operator==(const Client& c1, const Client& c2);
     };
@@ -65,8 +70,10 @@ namespace introlab
 
     public:
         RoomClient() = default;
-        RoomClient(const std::string& id, const std::string& name, const sio::message::ptr& data, bool isConnected);
+        RoomClient(std::string id, std::string name, sio::message::ptr data, bool isConnected);
         RoomClient(const Client& client, bool isConnected);
+        RoomClient(const RoomClient& other) = default;
+        RoomClient(RoomClient&& other) = default;
         virtual ~RoomClient() = default;
 
         const std::string& id() const;
@@ -75,6 +82,9 @@ namespace introlab
         bool isConnected() const;
 
         explicit operator Client() const;
+
+        RoomClient& operator=(const RoomClient& other) = default;
+        RoomClient& operator=(RoomClient&& other) = default;
 
         friend bool operator==(const RoomClient& c1, const RoomClient& c2);
     };

@@ -74,8 +74,8 @@ bool introlab::operator!=(const sio::message& m1, const sio::message& m2)
     return !(m1 == m2);
 }
 
-Client::Client(const string& id, const string& name, const sio::message::ptr& data) :
-        m_id(id), m_name(name), m_data(data)
+Client::Client(string id, string name, sio::message::ptr data) :
+        m_id(move(id)), m_name(move(name)), m_data(move(data))
 {
 }
 
@@ -111,8 +111,8 @@ bool Client::isValid(const sio::message::ptr &message)
     return id->get_flag() == sio::message::flag_string && name->get_flag() == sio::message::flag_string;
 }
 
-RoomClient::RoomClient(const string& id, const string& name, const sio::message::ptr& data, bool isConnected) :
-        m_id(id), m_name(name), m_data(data), m_isConnected(isConnected)
+RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isConnected) :
+        m_id(move(id)), m_name(move(name)), m_data(move(data)), m_isConnected(isConnected)
 {
 }
 

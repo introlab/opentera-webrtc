@@ -16,13 +16,13 @@ namespace introlab
 
     public:
         StreamPeerConnectionHandler(
-                const std::string& id,
-                const Client& peerClient,
+                std::string id,
+                Client peerClient,
                 bool isCaller,
-                const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
-                const std::function<void(const std::string&)>& onError,
-                const std::function<void(const Client&)>& onClientConnected,
-                const std::function<void(const Client&)>& onClientDisconnected,
+                std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+                std::function<void(const std::string&)> onError,
+                std::function<void(const Client&)> onClientConnected,
+                std::function<void(const Client&)> onClientDisconnected,
                 rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = nullptr,
                 std::shared_ptr<VideoSink> videoSink = nullptr,
                 rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack = nullptr,

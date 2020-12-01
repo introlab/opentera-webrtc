@@ -40,7 +40,7 @@ namespace introlab
         std::string m_id;
         Client m_peerClient;
         bool m_isCaller;
-        std::function<void(const std::string&, sio::message::ptr)> m_sendEvent;
+        std::function<void(const std::string&, const sio::message::ptr&)> m_sendEvent;
         std::function<void(const std::string&)> m_onError;
         std::function<void(const Client&)> m_onClientConnected;
         std::function<void(const Client&)> m_onClientDisconnected;
@@ -50,13 +50,13 @@ namespace introlab
         bool m_onClientDisconnectedCalled;
 
     public:
-        PeerConnectionHandler(const std::string& id,
-                const Client& peerClient,
+        PeerConnectionHandler(std::string&& id,
+                Client&& peerClient,
                 bool isCaller,
-                const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
-                const std::function<void(const std::string&)>& onError,
-                const std::function<void(const Client&)>& onClientConnected,
-                const std::function<void(const Client&)>& onClientDisconnected);
+                std::function<void(const std::string&, const sio::message::ptr&)>&& sendEvent,
+                std::function<void(const std::string&)>&& onError,
+                std::function<void(const Client&)>&& onClientConnected,
+                std::function<void(const Client&)>&& onClientDisconnected);
         ~PeerConnectionHandler() override;
 
         virtual void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection);

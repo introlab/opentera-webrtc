@@ -8,18 +8,18 @@ using namespace webrtc;
 using namespace std;
 
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
-    const string& id,
-    const Client& peerClient,
+    string id,
+    Client peerClient,
     bool isCaller,
-    const function<void(const string&, sio::message::ptr)>& sendEvent,
-    const function<void(const string&)>& onError,
-    const function<void(const Client&)>& onClientConnected,
-    const function<void(const Client&)>& onClientDisconnected,
+    function<void(const string&, const sio::message::ptr&)> sendEvent,
+    function<void(const string&)> onError,
+    function<void(const Client&)> onClientConnected,
+    function<void(const Client&)> onClientDisconnected,
     scoped_refptr<VideoTrackInterface>  videoTrack,
     shared_ptr<VideoSink> videoSink,
     scoped_refptr<AudioTrackInterface> audioTrack,
     shared_ptr<AudioTrackSinkInterface> audioSink) :
-    PeerConnectionHandler(id, peerClient, isCaller, sendEvent, onError, onClientConnected, onClientDisconnected),
+    PeerConnectionHandler(move(id), move(peerClient), isCaller, move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
     m_videoTrack(move(videoTrack)),
     m_videoSink(move(videoSink)),
     m_audioTrack(move(audioTrack)),

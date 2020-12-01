@@ -14,15 +14,15 @@ using namespace std;
  * @param audioSink the audio sink to attach to the received stream
  */
 StreamClient::StreamClient(
-        const SignallingServerConfiguration& signallingServerConfiguration,
-        const WebrtcConfiguration& webrtcConfiguration,
-        const shared_ptr<VideoSource>& videoSource,
-        const shared_ptr<VideoSink>& videoSink,
-        const shared_ptr<AudioSink>& audioSink) :
-        SignallingClient(signallingServerConfiguration, webrtcConfiguration),
-        m_videoSource(videoSource),
-        m_videoSink(videoSink),
-        m_audioSink(audioSink)
+        SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration,
+        shared_ptr<VideoSource> videoSource,
+        shared_ptr<VideoSink> videoSink,
+        shared_ptr<AudioSink> audioSink) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        m_videoSource(move(videoSource)),
+        m_videoSink(move(videoSink)),
+        m_audioSink(move(audioSink))
 {
 
 }

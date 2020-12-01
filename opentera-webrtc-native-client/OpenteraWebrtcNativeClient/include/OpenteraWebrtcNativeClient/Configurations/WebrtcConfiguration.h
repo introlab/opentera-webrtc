@@ -11,17 +11,22 @@ namespace introlab
     {
         std::vector<IceServer> m_iceServers;
 
-        explicit WebrtcConfiguration(const std::vector<IceServer>& iceServers);
+        explicit WebrtcConfiguration(std::vector<IceServer>&& iceServers);
 
     public:
+        WebrtcConfiguration(const WebrtcConfiguration& other) = default;
+        WebrtcConfiguration(WebrtcConfiguration&& other) = default;
         virtual ~WebrtcConfiguration() = default;
 
         static WebrtcConfiguration create();
-        static WebrtcConfiguration create(const std::vector<IceServer>& iceServers);
+        static WebrtcConfiguration create(std::vector<IceServer> iceServers);
 
         const std::vector<IceServer>& iceServers() const;
 
         operator webrtc::PeerConnectionInterface::RTCConfiguration() const;
+
+        WebrtcConfiguration& operator=(const WebrtcConfiguration& other) = default;
+        WebrtcConfiguration& operator=(WebrtcConfiguration&& other) = default;
     };
 
     inline WebrtcConfiguration WebrtcConfiguration::create()
@@ -29,9 +34,9 @@ namespace introlab
         return WebrtcConfiguration({});
     }
 
-    inline WebrtcConfiguration WebrtcConfiguration::create(const std::vector<IceServer>& iceServers)
+    inline WebrtcConfiguration WebrtcConfiguration::create(std::vector<IceServer> iceServers)
     {
-        return WebrtcConfiguration(iceServers);
+        return WebrtcConfiguration(std::move(iceServers));
     }
 
     inline const std::vector<IceServer>& WebrtcConfiguration::iceServers() const

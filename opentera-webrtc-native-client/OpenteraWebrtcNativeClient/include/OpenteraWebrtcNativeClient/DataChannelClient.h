@@ -20,9 +20,9 @@ namespace introlab
         std::function<void(const Client&, const std::string&)> m_onDataChannelMessageString;
 
     public:
-        DataChannelClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                const WebrtcConfiguration& webrtcConfiguration,
-                const DataChannelConfiguration& dataChannelConfiguration);
+        DataChannelClient(SignallingServerConfiguration signallingServerConfiguration,
+                WebrtcConfiguration webrtcConfiguration,
+                DataChannelConfiguration dataChannelConfiguration);
         ~DataChannelClient() override = default;
 
         DECLARE_NOT_COPYABLE(DataChannelClient);

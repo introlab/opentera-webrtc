@@ -3,10 +3,10 @@
 using namespace introlab;
 using namespace std;
 
-DataChannelConfiguration::DataChannelConfiguration(bool ordered, const absl::optional<int>& maxPacketLifeTime,
-        const absl::optional<int>& maxRetransmits, const string& protocol) :
+DataChannelConfiguration::DataChannelConfiguration(bool ordered, absl::optional<int> maxPacketLifeTime,
+        absl::optional<int> maxRetransmits, string&& protocol) :
         m_ordered(ordered), m_maxPacketLifeTime(maxPacketLifeTime), m_maxRetransmits(maxRetransmits),
-        m_protocol(protocol)
+        m_protocol(std::move(protocol))
 {
 }
 

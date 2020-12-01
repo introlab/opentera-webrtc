@@ -23,11 +23,11 @@ namespace introlab
         // std::shared_ptr<> m_audioSource;
 
     public:
-        StreamClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                     const WebrtcConfiguration& webrtcConfiguration,
-                     const std::shared_ptr<VideoSource>& videoSource = nullptr,
-                     const std::shared_ptr<VideoSink>& videoSink = nullptr,
-                     const std::shared_ptr<AudioSink>& audioSink = nullptr);
+        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+                     WebrtcConfiguration webrtcConfiguration,
+                     std::shared_ptr<VideoSource> videoSource = nullptr,
+                     std::shared_ptr<VideoSink> videoSink = nullptr,
+                     std::shared_ptr<AudioSink> audioSink = nullptr);
         ~StreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(StreamClient);

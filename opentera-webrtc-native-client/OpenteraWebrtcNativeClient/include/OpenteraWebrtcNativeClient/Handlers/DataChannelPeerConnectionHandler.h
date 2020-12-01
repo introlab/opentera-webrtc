@@ -26,20 +26,20 @@ namespace introlab
         bool m_onDataChannelClosedCalled;
 
     public:
-        DataChannelPeerConnectionHandler(const std::string& id,
-                const Client& peerClient,
+        DataChannelPeerConnectionHandler(std::string id,
+                Client peerClient,
                 bool isCaller,
-                const std::function<void(const std::string&, sio::message::ptr)>& sendEvent,
-                const std::function<void(const std::string&)>& onError,
-                const std::function<void(const Client&)>& onClientConnected,
-                const std::function<void(const Client&)>& onClientDisconnected,
-                const std::string& room,
-                const DataChannelConfiguration& dataChannelConfiguration,
-                const std::function<void(const Client&)>& onDataChannelOpen,
-                const std::function<void(const Client&)>& onDataChannelClosed,
-                const std::function<void(const Client&, const std::string&)>& onDataChannelError,
-                const std::function<void(const Client&, const webrtc::DataBuffer& buffer)>& onDataChannelMessageBinary,
-                const std::function<void(const Client&, const std::string&)>& onDataChannelMessageString);
+                std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+                std::function<void(const std::string&)> onError,
+                std::function<void(const Client&)> onClientConnected,
+                std::function<void(const Client&)> onClientDisconnected,
+                std::string room,
+                DataChannelConfiguration dataChannelConfiguration,
+                std::function<void(const Client&)> onDataChannelOpen,
+                std::function<void(const Client&)> onDataChannelClosed,
+                std::function<void(const Client&, const std::string&)> onDataChannelError,
+                std::function<void(const Client&, const webrtc::DataBuffer& buffer)> onDataChannelMessageBinary,
+                std::function<void(const Client&, const std::string&)> onDataChannelMessageString);
 
         ~DataChannelPeerConnectionHandler() override;
 
