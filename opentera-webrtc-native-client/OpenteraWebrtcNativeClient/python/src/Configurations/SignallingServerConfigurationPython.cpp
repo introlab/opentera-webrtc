@@ -9,32 +9,33 @@ using namespace introlab;
 using namespace std;
 namespace py = pybind11;
 
-SignallingServerConfiguration create(const string& url, const string& clientName, const py::object& clientData,
-        const string& room)
+SignallingServerConfiguration create(string url, string clientName, const py::object& clientData, string room)
 {
-    return SignallingServerConfiguration::create(url, clientName, pyObjectToSioMessage(clientData), room);
+    return SignallingServerConfiguration::create(move(url), move(clientName), pyObjectToSioMessage(clientData),
+            move(room));
 }
 
-SignallingServerConfiguration create(const string& url, const string& clientName, const py::object& clientData,
-                                     const string& room, const string& password)
+SignallingServerConfiguration create(string url, string clientName, const py::object& clientData, string room,
+        string password)
 {
-    return SignallingServerConfiguration::create(url, clientName, pyObjectToSioMessage(clientData), room, password);
+    return SignallingServerConfiguration::create(move(url), move(clientName), pyObjectToSioMessage(clientData),
+            move(room), move(password));
 }
 
 void introlab::initSignallingServerConfigurationPython(pybind11::module &m)
 {
     py::class_<SignallingServerConfiguration>(m, "SignallingServerConfiguration")
             .def_static("create",
-                    py::overload_cast<const string&, const string&, const string&>(&SignallingServerConfiguration::create),
+                    py::overload_cast<string, string, string>(&SignallingServerConfiguration::create),
                     py::arg("url"), py::arg("client_name"), py::arg("room"))
             .def_static("create",
-                    py::overload_cast<const string&, const string&, const py::object&, const string&>(&create),
+                    py::overload_cast<string, string, const py::object&, string>(&create),
                     py::arg("url"), py::arg("client_name"), py::arg("client_data"), py::arg("room"))
             .def_static("create",
-                    py::overload_cast<const string&, const string&, const string&, const string&>(&SignallingServerConfiguration::create),
+                    py::overload_cast<string, string, string, string>(&SignallingServerConfiguration::create),
                     py::arg("url"), py::arg("client_name"), py::arg("room"), py::arg("password"))
             .def_static("create",
-                    py::overload_cast<const string&, const string&, const py::object&, const string&, const string&>(&create),
+                    py::overload_cast<string, string, const py::object&, string, string>(&create),
                     py::arg("url"), py::arg("client_name"), py::arg("client_data"), py::arg("room"), py::arg("password"))
 
             .def_property_readonly("url", &SignallingServerConfiguration::url)

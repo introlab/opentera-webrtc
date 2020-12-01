@@ -25,7 +25,7 @@ void introlab::initDataChannelConfigurationPython(py::module& m)
             .def_static("create", py::overload_cast<>(&DataChannelConfiguration::create))
             .def_static("create", py::overload_cast<bool>(&DataChannelConfiguration::create), py::arg("ordered"))
             .def_static("createProtocol", &DataChannelConfiguration::createProtocol, py::arg("protocol"))
-            .def_static("create", py::overload_cast<bool, const string&>(&DataChannelConfiguration::create),
+            .def_static("create", py::overload_cast<bool, string>(&DataChannelConfiguration::create),
                     py::arg("ordered"), py::arg("protocol"))
 
             .def_static("create_max_packet_life_time",
@@ -35,10 +35,10 @@ void introlab::initDataChannelConfigurationPython(py::module& m)
                     py::overload_cast<bool, int>(&DataChannelConfiguration::createMaxPacketLifeTime),
                     py::arg("ordered"), py::arg("max_packet_life_time"))
             .def_static("create_max_packet_life_time",
-                    py::overload_cast<int, const string&>(&DataChannelConfiguration::createMaxPacketLifeTime),
+                    py::overload_cast<int, string>(&DataChannelConfiguration::createMaxPacketLifeTime),
                     py::arg("max_packet_life_time"), py::arg("protocol"))
             .def_static("create_max_packet_life_time",
-                    py::overload_cast<bool, int, const string&>(&DataChannelConfiguration::createMaxPacketLifeTime),
+                    py::overload_cast<bool, int, string>(&DataChannelConfiguration::createMaxPacketLifeTime),
                     py::arg("ordered"), py::arg("max_packet_life_time"), py::arg("protocol"))
 
             .def_static("create_max_retransmits",
@@ -47,10 +47,10 @@ void introlab::initDataChannelConfigurationPython(py::module& m)
                     py::overload_cast<bool, int>(&DataChannelConfiguration::createMaxRetransmits),
                     py::arg("ordered"), py::arg("max_retransmits"))
             .def_static("create_max_retransmits",
-                    py::overload_cast<int, const string&>(&DataChannelConfiguration::createMaxRetransmits),
+                    py::overload_cast<int, string>(&DataChannelConfiguration::createMaxRetransmits),
                     py::arg("max_retransmits"), py::arg("protocol"))
             .def_static("create_max_retransmits",
-                    py::overload_cast<bool, int, const string&>(&DataChannelConfiguration::createMaxRetransmits),
+                    py::overload_cast<bool, int, string>(&DataChannelConfiguration::createMaxRetransmits),
                     py::arg("ordered"), py::arg("max_retransmits"), py::arg("protocol"))
 
             .def_property_readonly("ordered", &DataChannelConfiguration::ordered)

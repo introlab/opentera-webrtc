@@ -35,16 +35,16 @@ void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
     OnSetSessionDescriptionObserverFailure(error);
 }
 
-PeerConnectionHandler::PeerConnectionHandler(const string& id,
-        const Client& peerClient,
+PeerConnectionHandler::PeerConnectionHandler(string&& id,
+        Client&& peerClient,
         bool isCaller,
-        const function<void(const string&, sio::message::ptr)>& sendEvent,
-        const function<void(const string&)>& onError,
-        const function<void(const Client&)>& onClientConnected,
-        const function<void(const Client&)>& onClientDisconnected) :
-        m_id(id), m_peerClient(peerClient), m_isCaller(isCaller), m_sendEvent(sendEvent), m_onError(onError),
-        m_onClientConnected(onClientConnected), m_onClientDisconnected(onClientDisconnected),
-        m_onClientDisconnectedCalled(true)
+        function<void(const string&, const sio::message::ptr&)>&& sendEvent,
+        function<void(const string&)>&& onError,
+        function<void(const Client&)>&& onClientConnected,
+        function<void(const Client&)>&& onClientDisconnected) :
+        m_id(move(id)), m_peerClient(move(peerClient)), m_isCaller(isCaller), m_sendEvent(move(sendEvent)),
+        m_onError(move(onError)), m_onClientConnected(move(onClientConnected)),
+        m_onClientDisconnected(move(onClientDisconnected)), m_onClientDisconnectedCalled(true)
 {
 }
 
@@ -52,7 +52,7 @@ PeerConnectionHandler::~PeerConnectionHandler()
 {
     if (m_peerConnection)
     {
-        m_sendEvent = [](const string&, sio::message::ptr) {};
+        m_sendEvent = [](const string&, const sio::message::ptr&) {};
         m_onError = [](const string&) {};
         m_onClientConnected = [](const Client&) {};
         m_onClientDisconnected = [](const Client&) {};

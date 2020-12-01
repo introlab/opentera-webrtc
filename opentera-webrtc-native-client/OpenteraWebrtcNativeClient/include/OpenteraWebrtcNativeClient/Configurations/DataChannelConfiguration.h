@@ -17,28 +17,29 @@ namespace introlab
         absl::optional<int> m_maxRetransmits; // It cannot be set with m_maxPacketLifeTime
         std::string m_protocol;
 
-        DataChannelConfiguration(bool ordered, const absl::optional<int>& maxPacketLifeTime,
-                const absl::optional<int>& maxRetransmits, const std::string& protocol);
+        DataChannelConfiguration(bool ordered, absl::optional<int> maxPacketLifeTime,
+                absl::optional<int> maxRetransmits, std::string&& protocol);
 
     public:
+        DataChannelConfiguration(const DataChannelConfiguration& other) = default;
+        DataChannelConfiguration(DataChannelConfiguration&& other) = default;
         virtual ~DataChannelConfiguration() = default;
 
         static DataChannelConfiguration create();
         static DataChannelConfiguration create(bool ordered);
-        static DataChannelConfiguration createProtocol(const std::string& protocol);
-        static DataChannelConfiguration create(bool ordered, const std::string& protocol);
+        static DataChannelConfiguration createProtocol(std::string protocol);
+        static DataChannelConfiguration create(bool ordered, std::string protocol);
 
         static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime);
         static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime);
-        static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime, const std::string& protocol);
+        static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime, std::string protocol);
         static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime,
-                const std::string& protocol);
+                std::string protocol);
 
         static DataChannelConfiguration createMaxRetransmits(int maxRetransmits);
         static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits);
-        static DataChannelConfiguration createMaxRetransmits(int maxRetransmits, const std::string& protocol);
-        static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits,
-                const std::string& protocol);
+        static DataChannelConfiguration createMaxRetransmits(int maxRetransmits, std::string protocol);
+        static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits, std::string protocol);
 
         bool ordered() const;
         const absl::optional<int>& maxPacketLifeTime() const;
@@ -46,6 +47,9 @@ namespace introlab
         const std::string& protocol() const;
 
         explicit operator webrtc::DataChannelInit() const;
+
+        DataChannelConfiguration& operator=(const DataChannelConfiguration& other) = default;
+        DataChannelConfiguration& operator=(DataChannelConfiguration&& other) = default;
     };
 
     inline DataChannelConfiguration DataChannelConfiguration::create()
@@ -58,14 +62,14 @@ namespace introlab
         return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, "");
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createProtocol(const std::string& protocol)
+    inline DataChannelConfiguration DataChannelConfiguration::createProtocol(std::string protocol)
     {
-        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, protocol);
+        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, std::move(protocol));
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered, const std::string& protocol)
+    inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered, std::string protocol)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, protocol);
+        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, std::move(protocol));
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime)
@@ -80,15 +84,15 @@ namespace introlab
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime,
-            const std::string& protocol)
+            std::string protocol)
     {
-        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, protocol);
+        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
-            int maxPacketLifeTime, const std::string& protocol)
+            int maxPacketLifeTime, std::string protocol)
     {
-        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, protocol);
+        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits)
@@ -101,16 +105,16 @@ namespace introlab
         return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, "");
     }
 
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits( int maxRetransmits,
-            const std::string& protocol)
+    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits,
+            std::string protocol)
     {
-        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, protocol);
+        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, std::move(protocol));
     }
 
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits,
-            const std::string& protocol)
+            std::string protocol)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, protocol);
+        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, std::move(protocol));
     }
 
     inline bool DataChannelConfiguration::ordered() const

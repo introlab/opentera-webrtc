@@ -26,9 +26,10 @@ using namespace std;
         do {} while(false)
 
 
-SignallingClient::SignallingClient(const SignallingServerConfiguration& signallingServerConfiguration,
-                                   const WebrtcConfiguration& webrtcConfiguration) :
-        m_signallingServerConfiguration(signallingServerConfiguration), m_webrtcConfiguration(webrtcConfiguration),
+SignallingClient::SignallingClient(SignallingServerConfiguration&& signallingServerConfiguration,
+                                   WebrtcConfiguration&& webrtcConfiguration) :
+        m_signallingServerConfiguration(move(signallingServerConfiguration)),
+        m_webrtcConfiguration(move(webrtcConfiguration)),
         m_hasClosePending(false)
 {
     constexpr int ReconnectAttempts = 10;

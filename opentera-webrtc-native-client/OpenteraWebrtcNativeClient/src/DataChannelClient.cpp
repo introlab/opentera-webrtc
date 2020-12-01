@@ -4,10 +4,10 @@
 using namespace introlab;
 using namespace std;
 
-DataChannelClient::DataChannelClient(const SignallingServerConfiguration& signallingServerConfiguration,
-        const WebrtcConfiguration& webrtcConfiguration, const DataChannelConfiguration& dataChannelConfiguration) :
-        SignallingClient(signallingServerConfiguration, webrtcConfiguration),
-        m_dataChannelConfiguration(dataChannelConfiguration)
+DataChannelClient::DataChannelClient(SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration, DataChannelConfiguration dataChannelConfiguration) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        m_dataChannelConfiguration(move(dataChannelConfiguration))
 {
 }
 

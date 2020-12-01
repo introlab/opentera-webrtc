@@ -12,11 +12,11 @@ using namespace std;
  * @param videoSource the video source that this client will add to the call
  */
 VideoStreamClient::VideoStreamClient(
-        const SignallingServerConfiguration& signallingServerConfiguration,
-        const WebrtcConfiguration& webrtcConfiguration,
-        const shared_ptr<VideoSource>& videoSource) :
-        SignallingClient(signallingServerConfiguration, webrtcConfiguration),
-        m_videoSource(videoSource)
+        SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration,
+        shared_ptr<VideoSource> videoSource) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        m_videoSource(move(videoSource))
 {
 
 }
