@@ -7,10 +7,8 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 add_compile_definitions(WEBRTC_POSIX)
 
 find_package(OpenCV REQUIRED core imgproc)
-find_package(Boost COMPONENTS system REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
-#include_directories(${Boost_INCLUDE_DIR})
 include_directories(../3rdParty/socket.io-client-cpp/src)
 include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)
 include_directories(../3rdParty/webrtc_native/webrtc/src)
@@ -34,8 +32,7 @@ target_link_libraries(OpenteraWebrtcNativeClient
         sioclient
         sioclient_tls
         ${webrtc_native_LIBRARY}
-        ${OpenCV_LIBRARIES}
-        )
+        ${OpenCV_LIBRARIES})
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 add_dependencies(OpenteraWebrtcNativeClient webrtc_native)
