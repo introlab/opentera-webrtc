@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
 
-//#include <NetworkUtils/Http.h>
+#include <OpenteraWebrtcNativeClient/Utils/Http.h>
 
 #include <rapidjson/document.h>
 
@@ -28,18 +28,13 @@ IceServer::IceServer(vector<string> urls, string username, string credential) :
 
 bool IceServer::fetchFromServer(const string& url, const string& password, vector<IceServer>& iceServers)
 {
-    /*auto requestModifier = [&](boost::beast::http::request<boost::beast::http::string_body>& request)
-    {
-        request.set(boost::beast::http::field::authorization, password);
-    };
-
     string response;
-    if (!Http::get(url, response, requestModifier))
+    if (!Http::get(url, response, {{"Authorization", password.c_str()}}))
     {
         return false;
     }
 
-    return fromJson(response, iceServers);*/
+    return fromJson(response, iceServers);
 }
 
 bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& iceServers)

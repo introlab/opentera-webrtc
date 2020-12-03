@@ -13,3 +13,9 @@
 [submodule "opentera-webrtc-native-client/3rdParty/pybind11"]
 	path = opentera-webrtc-native-client/3rdParty/pybind11
 	url = https://github.com/pybind/pybind11.git
+[submodule "opentera-webrtc-native-client/3rdParty/--force"]
+	path = opentera-webrtc-native-client/3rdParty/--force
+	url = https://github.com/yhirose/cpp-httplib.git
+[submodule "opentera-webrtc-native-client/3rdParty/cpp-httplib"]
+	path = opentera-webrtc-native-client/3rdParty/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib.git
