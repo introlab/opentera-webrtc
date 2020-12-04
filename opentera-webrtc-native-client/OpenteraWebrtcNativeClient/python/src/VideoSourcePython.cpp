@@ -8,7 +8,7 @@ using namespace introlab;
 using namespace std;
 namespace py = pybind11;
 
-void sendFrame(const std::shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg, int64_t timestampUs)
+void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg, int64_t timestampUs)
 {
     if (bgrImg.ndim() != 3)
     {

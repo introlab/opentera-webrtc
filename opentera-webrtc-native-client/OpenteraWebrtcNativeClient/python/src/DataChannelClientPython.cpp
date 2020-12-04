@@ -15,20 +15,20 @@ void introlab::initDataChannelClientPython(pybind11::module& m)
             .def(py::init<SignallingServerConfiguration, WebrtcConfiguration, DataChannelConfiguration>(),
                     py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"), py::arg("data_channel_configuration"))
 
-            .def("send_to", [](DataChannelClient& self, py::bytes bytes, const std::vector<std::string>& ids)
+            .def("send_to", [](DataChannelClient& self, py::bytes bytes, const vector<string>& ids)
             {
                 auto data = py::bytes(bytes).cast<string>();
                 self.sendTo(reinterpret_cast<const uint8_t*>(data.data()), data.size(), ids);
             }, py::arg("bytes"), py::arg("ids"))
             .def("send_to",
-                    py::overload_cast<const std::string&, const std::vector<std::string>&>(&DataChannelClient::sendTo),
+                    py::overload_cast<const string&, const vector<string>&>(&DataChannelClient::sendTo),
                     py::arg("message"), py::arg("ids"))
             .def("send_to_all", [](DataChannelClient& self, py::bytes bytes)
             {
                 auto data = py::bytes(bytes).cast<string>();
                 self.sendToAll(reinterpret_cast<const uint8_t*>(data.data()), data.size());
             }, py::arg("bytes"))
-            .def("send_to_all", py::overload_cast<const std::string&>(&DataChannelClient::sendToAll),
+            .def("send_to_all", py::overload_cast<const string&>(&DataChannelClient::sendToAll),
                     py::arg("message"))
 
             .def_property("on_data_channel_open", nullptr, &DataChannelClient::setOnDataChannelOpen)

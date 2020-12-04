@@ -695,7 +695,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
     m_client3->setOnDataChannelOpen(onDataChannelOpen);
 
     m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -707,7 +707,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
         EXPECT_EQ(data[0], 103);
     });
     m_client2->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -719,7 +719,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
         EXPECT_EQ(data[0], 101);
     });
     m_client3->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -739,9 +739,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
     m_client2->setOnDataChannelOpen([](const Client& client) {});
     m_client3->setOnDataChannelOpen([](const Client& client) {});
 
-    m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
-    m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
-    m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
+    m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
+    m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
+    m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
 }
 
 TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToTheSpecifiedClients)
@@ -764,7 +764,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     m_client3->setOnDataChannelOpen(onDataChannelOpen);
 
     m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -775,7 +775,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
         EXPECT_EQ(data, "data3");
     });
     m_client2->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -786,7 +786,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
         EXPECT_EQ(data, "data1");
     });
     m_client3->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -805,9 +805,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     m_client2->setOnDataChannelOpen([](const Client& client) {});
     m_client3->setOnDataChannelOpen([](const Client& client) {});
 
-    m_client1->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
-    m_client2->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
-    m_client3->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
+    m_client1->setOnDataChannelMessageString([](const Client& client, const string& data) {});
+    m_client2->setOnDataChannelMessageString([](const Client& client, const string& data) {});
+    m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
 
 TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataToTheSpecifiedClients)
@@ -834,7 +834,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
     m_client3->setOnDataChannelOpen(onDataChannelOpen);
 
     m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -860,7 +860,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
         }
     });
     m_client2->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -886,7 +886,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
         }
     });
     m_client3->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, std::size_t size)
+            const uint8_t* data, size_t size)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -920,9 +920,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
     m_client2->setOnDataChannelOpen([](const Client& client) {});
     m_client3->setOnDataChannelOpen([](const Client& client) {});
 
-    m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
-    m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
-    m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, std::size_t size) {});
+    m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
+    m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
+    m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
 }
 
 TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataToTheSpecifiedClients)
@@ -945,7 +945,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     m_client3->setOnDataChannelOpen(onDataChannelOpen);
 
     m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -969,7 +969,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
         }
     });
     m_client2->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -993,7 +993,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
         }
     });
     m_client3->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const std::string& data)
+            const string& data)
     {
         onDataChannelMessageAwaiter.done();
 
@@ -1025,7 +1025,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     m_client2->setOnDataChannelOpen([](const Client& client) {});
     m_client3->setOnDataChannelOpen([](const Client& client) {});
 
-    m_client1->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
-    m_client2->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
-    m_client3->setOnDataChannelMessageString([](const Client& client, const std::string& data) {});
+    m_client1->setOnDataChannelMessageString([](const Client& client, const string& data) {});
+    m_client2->setOnDataChannelMessageString([](const Client& client, const string& data) {});
+    m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
