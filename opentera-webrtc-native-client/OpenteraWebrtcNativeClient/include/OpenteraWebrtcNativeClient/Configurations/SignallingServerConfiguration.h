@@ -3,7 +3,6 @@
 
 #include <sio_message.h>
 
-#include <optional>
 #include <string>
 
 namespace introlab

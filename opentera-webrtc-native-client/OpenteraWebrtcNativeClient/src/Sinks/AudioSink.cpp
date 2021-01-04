@@ -10,30 +10,29 @@ using namespace introlab;
  * @param onAudioDataReceived callback function to consume audio data received on the WebRTC transport layer
  */
 AudioSink::AudioSink(function<void(
-        const void* audio_data,
-        int bits_per_sample,
-        int sample_rate,
-        size_t number_of_channels,
-        size_t number_of_frames)> onAudioDataReceived) : m_onAudioDataReceived(move(onAudioDataReceived))
+        const void* audioData,
+        int bitsPerSample,
+        int sampleRate,
+        size_t numberOfChannels,
+        size_t numberOfFrames)> onAudioDataReceived) : m_onAudioFrameReceived(move(onAudioDataReceived))
 {
-
 }
 
 /**
  * @brief Called by the WebRTC transport layer when audio data is available
  *
- * @param audio_data audio data buffer
- * @param bits_per_sample number of bits per audio sample
- * @param sample_rate sample rate of the audio data
- * @param number_of_channels number of channel of the audio data
- * @param number_of_frames number of audio frame in the received data
+ * @param audioData audio data buffer
+ * @param bitsPerSample number of bits per audio sample
+ * @param sampleRate sample rate of the audio data
+ * @param numberOfChannels number of channel of the audio data
+ * @param numberOfFrames number of audio frame in the received data
  */
 void AudioSink::OnData(
-        const void* audio_data,
-        int bits_per_sample,
-        int sample_rate,
-        size_t number_of_channels,
-        size_t number_of_frames)
+        const void* audioData,
+        int bitsPerSample,
+        int sampleRate,
+        size_t numberOfChannels,
+        size_t numberOfFrames)
 {
-    m_onAudioDataReceived(audio_data, bits_per_sample, sample_rate, number_of_channels, number_of_frames);
+    m_onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
 }

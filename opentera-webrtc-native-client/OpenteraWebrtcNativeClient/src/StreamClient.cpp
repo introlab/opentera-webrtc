@@ -9,22 +9,63 @@ using namespace std;
  *
  * @param signallingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
- * @param videoSource the video source that this client will add to the call
- * @param videoSink the video sink to attach to the received stream
- * @param audioSink the audio sink to attach to the received stream
  */
-StreamClient::StreamClient(
-        SignallingServerConfiguration signallingServerConfiguration,
+StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration))
+{
+    initializeInternalStreamThread();
+}
+
+/**
+ * @brief construct a video stream client
+ *
+ * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param webrtcConfiguration webrtc configuration
+ * @param videoSource the video source that this client will add to the call
+ */
+StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration,
+        shared_ptr<VideoSource> videoSource) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        m_videoSource(move(videoSource))
+{
+    initializeInternalStreamThread();
+}
+
+/**
+ * @brief construct a video stream client
+ *
+ * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param webrtcConfiguration webrtc configuration
+ * @param audioSource the audio source that this client will add to the call
+ */
+StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+        WebrtcConfiguration webrtcConfiguration,
+        shared_ptr<AudioSource> audioSource) :
+        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        m_audioSource(move(audioSource))
+{
+    initializeInternalStreamThread();
+}
+
+/**
+ * @brief construct a video stream client
+ *
+ * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param webrtcConfiguration webrtc configuration
+ * @param videoSource the video source that this client will add to the call
+ * @param audioSource the audio source that this client will add to the call
+ */
+StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<VideoSource> videoSource,
-        shared_ptr<VideoSink> videoSink,
-        shared_ptr<AudioSink> audioSink) :
+        shared_ptr<AudioSource> audioSource) :
         SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource)),
-        m_videoSink(move(videoSink)),
-        m_audioSink(move(audioSink))
+        m_audioSource(move(audioSource))
 {
-
+    initializeInternalStreamThread();
 }
 
 /**
@@ -42,11 +83,23 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
     rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = nullptr;
     if (m_videoSource != nullptr)
     {
-        videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream", m_videoSource.get());
+        videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream_video", m_videoSource.get());
     }
 
     rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack = nullptr;
-    // TODO: create the audio track if an audio source is provided
+    if (m_audioSource != nullptr)
+    {
+        audioTrack = m_peerConnectionFactory->CreateAudioTrack("stream_audio", m_audioSource.get());
+    }
+
+    auto onAddRemoteStream = [this](const Client& client)
+    {
+        invokeIfCallable(m_onAddRemoteStream, client);
+    };
+    auto onRemoveRemoteStream = [this](const Client& client)
+    {
+        invokeIfCallable(m_onRemoveRemoteStream, client);
+    };
 
     return make_unique<StreamPeerConnectionHandler>(
             id,
@@ -57,7 +110,16 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             getOnClientConnectedFunction(),
             getOnClientDisconnectedFunction(),
             videoTrack,
-            m_videoSink,
             audioTrack,
-            m_audioSink);
+            onAddRemoteStream,
+            onRemoveRemoteStream,
+            m_onVideoFrameReceived,
+            m_onAudioFrameReceived);
+}
+
+void StreamClient::initializeInternalStreamThread()
+{
+    m_internalStreamThread = move(rtc::Thread::Create());
+    m_internalStreamThread->SetName(m_signallingServerConfiguration.clientName() + " - internal stream", nullptr);
+    m_internalStreamThread->Start();
 }

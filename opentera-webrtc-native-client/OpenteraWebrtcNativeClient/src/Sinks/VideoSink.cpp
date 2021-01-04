@@ -16,6 +16,8 @@ using namespace std;
 VideoSink::VideoSink(function<void(const cv::Mat&, uint64_t)>  onFrameReceived) :
         m_onFrameReceived(move(onFrameReceived))
 {
+    m_wants.rotation_applied = true;
+
     // Specify we want resolution to be multiple of 2 for I420
     m_wants.resolution_alignment = 2;
 }

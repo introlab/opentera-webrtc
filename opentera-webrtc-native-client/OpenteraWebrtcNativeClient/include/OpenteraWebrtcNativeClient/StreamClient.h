@@ -1,12 +1,12 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_STREAM_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_STREAM_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/VideoSource.h>
+#include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
+#include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
+
 #include <OpenteraWebrtcNativeClient/SignallingClient.h>
 
 #include <memory>
-#include <OpenteraWebrtcNativeClient/Sinks/VideoSink.h>
-#include <OpenteraWebrtcNativeClient/Sinks/AudioSink.h>
 
 namespace introlab
 {
@@ -15,28 +15,102 @@ namespace introlab
      */
     class StreamClient: public SignallingClient
     {
-        std::shared_ptr<VideoSource> m_videoSource;
-        std::shared_ptr<VideoSink> m_videoSink;
-        std::shared_ptr<AudioSink> m_audioSink;
+        std::unique_ptr<rtc::Thread> m_internalStreamThread;
 
-        // TODO: figure out what is the base class for an audio source
-        // std::shared_ptr<> m_audioSource;
+        std::shared_ptr<VideoSource> m_videoSource;
+        std::shared_ptr<AudioSource> m_audioSource;
+
+        std::function<void(const Client&)> m_onAddRemoteStream;
+        std::function<void(const Client&)> m_onRemoveRemoteStream;
+        std::function<void(const Client&, const cv::Mat&, uint64_t)> m_onVideoFrameReceived;
+        std::function<void(const Client& client,
+                const void* audioData,
+                int bitsPerSample,
+                int sampleRate,
+                size_t numberOfChannels,
+                size_t numberOfFrames)> m_onAudioFrameReceived;
 
     public:
         StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+                     WebrtcConfiguration webrtcConfiguration);
+        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
                      WebrtcConfiguration webrtcConfiguration,
-                     std::shared_ptr<VideoSource> videoSource = nullptr,
-                     std::shared_ptr<VideoSink> videoSink = nullptr,
-                     std::shared_ptr<AudioSink> audioSink = nullptr);
+                     std::shared_ptr<VideoSource> videoSource);
+        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+                     WebrtcConfiguration webrtcConfiguration,
+                     std::shared_ptr<AudioSource> audioSource);
+        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+                     WebrtcConfiguration webrtcConfiguration,
+                     std::shared_ptr<VideoSource> videoSource,
+                     std::shared_ptr<AudioSource> audioSource);
         ~StreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(StreamClient);
         DECLARE_NOT_MOVABLE(StreamClient);
 
+        void setOnAddRemoteStream(const std::function<void(const Client&)>& callback);
+        void setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback);
+        void setOnVideoFrameReceived(
+                const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback);
+        void setOnAudioFrameReceived(const std::function<void(
+                const Client& client,
+                const void* audioData,
+                int bitsPerSample,
+                int sampleRate,
+                size_t numberOfChannels,
+                size_t numberOfFrames)>& callback);
+
     protected:
         std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
                 const Client& peerClient, bool isCaller) override;
+    private:
+        void initializeInternalStreamThread();
     };
+
+    inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
+    {
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onAddRemoteStream = callback;
+        });
+    }
+
+    inline void StreamClient::setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback)
+    {
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onRemoveRemoteStream = callback;
+        });
+    }
+
+    inline void StreamClient::setOnVideoFrameReceived(
+            const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback)
+    {
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            FunctionTask<void>::callSync(m_internalStreamThread.get(), [this, &callback]()
+            {
+                m_onVideoFrameReceived = callback;
+            });
+        });
+    }
+
+    inline void StreamClient::setOnAudioFrameReceived(const std::function<void(
+            const Client& client,
+            const void* audioData,
+            int bitsPerSample,
+            int sampleRate,
+            size_t numberOfChannels,
+            size_t numberOfFrames)>& callback)
+    {
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            FunctionTask<void>::callSync(m_internalStreamThread.get(), [this, &callback]()
+            {
+                m_onAudioFrameReceived = callback;
+            });
+        });
+    }
 }
 
 #endif

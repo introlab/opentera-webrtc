@@ -49,7 +49,7 @@ if __name__ == '__main__':
     webrtc_configuration = webrtc.WebrtcConfiguration.create()
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
-    video_source = webrtc.VideoSource(False, False)
+    video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration(False, False))
     client = webrtc.StreamClient(signalling_server_configuration, webrtc_configuration, video_source)
 
     client.on_signalling_connection_open = on_signalling_connection_open

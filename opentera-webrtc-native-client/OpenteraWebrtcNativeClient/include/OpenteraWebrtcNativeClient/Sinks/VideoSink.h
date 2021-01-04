@@ -6,12 +6,11 @@
 #include <api/video/video_source_interface.h>
 #include <opencv2/core.hpp>
 
-namespace introlab {
+namespace introlab
+{
 
     /**
      * @brief Class that sinks frame from a webrtc stream
-     *
-     * Build this by passing a callback that process received frames and pass the instance to a stream client.
      */
     class VideoSink : public rtc::VideoSinkInterface<webrtc::VideoFrame>
     {
