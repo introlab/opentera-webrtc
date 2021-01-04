@@ -15,8 +15,6 @@ namespace introlab
      */
     class StreamClient: public SignallingClient
     {
-        std::unique_ptr<rtc::Thread> m_internalStreamThread;
-
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<AudioSource> m_audioSource;
 
@@ -63,8 +61,6 @@ namespace introlab
     protected:
         std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
                 const Client& peerClient, bool isCaller) override;
-    private:
-        void initializeInternalStreamThread();
     };
 
     inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
@@ -88,10 +84,7 @@ namespace introlab
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
-            FunctionTask<void>::callSync(m_internalStreamThread.get(), [this, &callback]()
-            {
-                m_onVideoFrameReceived = callback;
-            });
+            m_onVideoFrameReceived = callback;
         });
     }
 
@@ -105,10 +98,7 @@ namespace introlab
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
-            FunctionTask<void>::callSync(m_internalStreamThread.get(), [this, &callback]()
-            {
-                m_onAudioFrameReceived = callback;
-            });
+            m_onAudioFrameReceived = callback;
         });
     }
 }

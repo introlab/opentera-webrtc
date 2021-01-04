@@ -14,7 +14,6 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
         WebrtcConfiguration webrtcConfiguration) :
         SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration))
 {
-    initializeInternalStreamThread();
 }
 
 /**
@@ -30,7 +29,6 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
         SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource))
 {
-    initializeInternalStreamThread();
 }
 
 /**
@@ -46,7 +44,6 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
         SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
         m_audioSource(move(audioSource))
 {
-    initializeInternalStreamThread();
 }
 
 /**
@@ -65,7 +62,6 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
         m_videoSource(move(videoSource)),
         m_audioSource(move(audioSource))
 {
-    initializeInternalStreamThread();
 }
 
 /**
@@ -115,11 +111,4 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             onRemoveRemoteStream,
             m_onVideoFrameReceived,
             m_onAudioFrameReceived);
-}
-
-void StreamClient::initializeInternalStreamThread()
-{
-    m_internalStreamThread = move(rtc::Thread::Create());
-    m_internalStreamThread->SetName(m_signallingServerConfiguration.clientName() + " - internal stream", nullptr);
-    m_internalStreamThread->Start();
 }
