@@ -8,11 +8,11 @@ size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)
     switch (bitsPerSample)
     {
         case 8:
-            return numberOfChannels;
+            return sizeof(int8_t) * numberOfChannels;
         case 16:
-            return 2 * numberOfChannels;
+            return sizeof(int16_t) * numberOfChannels;
         case 32:
-            return 4 * numberOfChannels;
+            return sizeof(int32_t) * numberOfChannels;
         default:
             throw runtime_error("Invalid bitsPerSample");
     }
@@ -36,7 +36,8 @@ AudioSource::AudioSource(AudioSourceConfiguration configuration,
         m_numberOfChannels(numberOfChannels),
         m_bytesPerFrame(::bytesPerFrame(bitsPerSample, numberOfChannels)),
         m_dataIndex(0),
-        m_data(m_bytesPerFrame * sampleRate / 100, 0)
+        m_data(m_bytesPerFrame * sampleRate / 100, 0),
+        m_dataNumberOfFrames(m_data.size() / m_bytesPerFrame)
 {
 }
 
@@ -120,7 +121,7 @@ void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
 
         for (auto sinks : m_sinks)
         {
-            sinks->OnData(m_data.data(), m_bitsPerSample, m_sampleRate, m_numberOfChannels, numberOfFrames);
+            sinks->OnData(m_data.data(), m_bitsPerSample, m_sampleRate, m_numberOfChannels, m_dataNumberOfFrames);
         }
 
         size_t remainingNumberOfFrames = (dataSize - dataToCopySize) / m_bytesPerFrame;

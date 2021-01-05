@@ -2,6 +2,7 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_VIDEO_SOURCE_H
 
 #include <OpenteraWebrtcNativeClient/Configurations/VideoSourceConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 
 #include <media/base/adapted_video_track_source.h>
 #include <rtc_base/ref_counted_object.h>
@@ -21,6 +22,9 @@ namespace introlab {
     public:
         explicit VideoSource(VideoSourceConfiguration configuration);
         ~VideoSource() override = default;
+
+        DECLARE_NOT_COPYABLE(VideoSource);
+        DECLARE_NOT_MOVABLE(VideoSource);
 
         void sendFrame(const cv::Mat& bgrImg, int64_t timestampUs);
 

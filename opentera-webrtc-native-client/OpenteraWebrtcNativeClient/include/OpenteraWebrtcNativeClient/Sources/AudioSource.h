@@ -2,6 +2,7 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_AUDIO_SOURCE_H
 
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 
 #include <api/media_stream_interface.h>
 #include <api/notifier.h>
@@ -31,9 +32,13 @@ namespace introlab
 
         size_t m_dataIndex;
         std::vector<uint8_t> m_data; // 10 ms audio frame
+        size_t m_dataNumberOfFrames;
 
     public:
         AudioSource(AudioSourceConfiguration configuration, int bitsPerSample, int sampleRate, size_t numberOfChannels);
+
+        DECLARE_NOT_COPYABLE(AudioSource);
+        DECLARE_NOT_MOVABLE(AudioSource);
 
         void AddSink(webrtc::AudioTrackSinkInterface* sink) override;
         void RemoveSink(webrtc::AudioTrackSinkInterface* sink) override;

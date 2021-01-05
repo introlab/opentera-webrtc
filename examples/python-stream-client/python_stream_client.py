@@ -37,6 +37,27 @@ def on_client_disconnected(client):
     print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
 
 
+def on_add_remote_stream(client):
+    print('on_add_remote_stream:')
+    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+
+
+def on_remove_remote_stream(client):
+    print('on_remove_remote_stream:')
+    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+
+
+def on_video_frame_received(client, image, timestampUs):
+    cv2.imshow(client.id, image)
+    cv2.waitKey(1)
+
+
+def on_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
+    print('on_audio_frame_received:')
+    print('\tid={}, name={}, data={}'.format(client.id, client.name, client.data))
+    print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
+
+
 def on_error(error):
     print('error or warning:')
     print('\t{}\n'.format(error))
@@ -49,8 +70,10 @@ if __name__ == '__main__':
     webrtc_configuration = webrtc.WebrtcConfiguration.create()
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
-    video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration(False, False))
-    client = webrtc.StreamClient(signalling_server_configuration, webrtc_configuration, video_source)
+    video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))
+    fs = 48000
+    audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 16, fs, 1)
+    client = webrtc.StreamClient(signalling_server_configuration, webrtc_configuration, video_source, audio_source)
 
     client.on_signalling_connection_open = on_signalling_connection_open
     client.on_signalling_connection_closed = on_signalling_connection_closed
@@ -61,17 +84,25 @@ if __name__ == '__main__':
     client.on_client_connected = on_client_connected
     client.on_client_disconnected = on_client_disconnected
 
+    client.on_add_remote_stream = on_add_remote_stream
+    client.on_remove_remote_stream = on_remove_remote_stream
+    client.on_video_frame_received = on_video_frame_received
+    client.on_audio_frame_received = on_audio_frame_received
+
     client.on_error = on_error
 
     client.connect()
 
+    t = np.linspace(-np.pi, np.pi, fs // 200)
+    audio_frame = (15000 * np.sin(t)).astype(np.int16)
 
     start_time = time.time()
     while True:
         frame_with_noise = frame + np.random.randint(0, 10, size=frame.shape, dtype=frame.dtype)
         timestamp_us = int((time.time() - start_time) * 1e6)
         video_source.send_frame(frame_with_noise, timestamp_us)
+        audio_source.send_frame(audio_frame)
 
-        time.sleep(0.1)
+        time.sleep(0.005)
 
     client.close_sync()
