@@ -46,7 +46,7 @@ AudioSource::AudioSource(AudioSourceConfiguration configuration,
  */
 void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
 {
-    lock_guard<mutex> lock(m_sinkMutex);
+    lock_guard<recursive_mutex> lock(m_sinkMutex);
     m_sinks.insert(sink);
 }
 
@@ -56,7 +56,7 @@ void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
  */
 void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink)
 {
-    lock_guard<mutex> lock(m_sinkMutex);
+    lock_guard<recursive_mutex> lock(m_sinkMutex);
     m_sinks.erase(sink);
 }
 
@@ -109,12 +109,12 @@ size_t AudioSource::bytesPerFrame() const
  */
 void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
 {
-    lock_guard<mutex> lock(m_sinkMutex);
+    lock_guard<recursive_mutex> lock(m_sinkMutex);
 
     size_t dataSize = m_bytesPerFrame * numberOfFrames;
     if (m_dataIndex + dataSize >= m_data.size())
     {
-        size_t dataToCopySize = m_data.size() - (m_dataIndex + dataSize);
+        size_t dataToCopySize = m_data.size() - m_dataIndex;
         memcpy(m_data.data() + m_dataIndex, audioData, dataToCopySize);
         m_dataIndex = 0;
 

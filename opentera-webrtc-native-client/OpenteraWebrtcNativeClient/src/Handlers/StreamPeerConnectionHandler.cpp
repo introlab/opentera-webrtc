@@ -31,7 +31,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     {
         m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs)
         {
-            onVideoFrameReceived(peerClient, bgrImg, timestampUs);
+            onVideoFrameReceived(m_peerClient, bgrImg, timestampUs);
         });
     }
 
@@ -43,7 +43,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
                 size_t numberOfChannels,
                 size_t numberOfFrames)
         {
-            onAudioFrameReceived(peerClient, audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
+            onAudioFrameReceived(m_peerClient, audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
         });
     }
 }

@@ -26,7 +26,7 @@ namespace introlab
         size_t m_numberOfChannels;
         size_t m_bytesPerFrame;
 
-        std::mutex m_sinkMutex;
+        std::recursive_mutex m_sinkMutex;
         std::set<webrtc::AudioTrackSinkInterface*> m_sinks;
 
         size_t m_dataIndex;

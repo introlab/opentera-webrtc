@@ -2,6 +2,7 @@
 
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
 
+#include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
 using namespace introlab;
@@ -15,7 +16,7 @@ void setOnVideoFrameReceived(StreamClient& self,
     {
         size_t height = bgrImg.rows;
         size_t width = bgrImg.cols;
-        size_t channelCount = 3;
+        size_t channelCount = bgrImg.channels();
 
         py::buffer_info bufferInfo(bgrImg.data,
                 sizeof(uint8_t),
@@ -23,7 +24,10 @@ void setOnVideoFrameReceived(StreamClient& self,
                 3, // Number of dimensions
                 { height, width, channelCount }, // Buffer dimensions
                 // Strides (in bytes) for each index
-                { width * channelCount * sizeof(uint8_t), channelCount * sizeof(uint8_t), sizeof(uint8_t) });
+                { bgrImg.step[0], bgrImg.step[1], sizeof(uint8_t) },
+                true); // Readonly
+
+        py::gil_scoped_acquire acquire;
         py::array_t<uint8_t> numpyBgrImg(bufferInfo);
         pythonCallback(client, numpyBgrImg, timestampUs);
     };
@@ -47,35 +51,36 @@ void setOnAudioFrameReceived(StreamClient& self,
         {
             case 8:
                 bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(uint8_t),
-                        py::format_descriptor<uint8_t>::format(),
+                        sizeof(int8_t),
+                        py::format_descriptor<int8_t>::format(),
                         1, // Number of dimensions
                         { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(uint8_t) }); // Strides (in bytes) for each index
+                        { sizeof(int8_t) }); // Strides (in bytes) for each index
                 break;
 
             case 16:
                 bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(uint16_t),
-                        py::format_descriptor<uint16_t>::format(),
+                        sizeof(int16_t),
+                        py::format_descriptor<int16_t>::format(),
                         1, // Number of dimensions
                         { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(uint16_t) }); // Strides (in bytes) for each index
+                        { sizeof(int16_t) }); // Strides (in bytes) for each index
                 break;
 
             case 32:
                 bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(uint32_t),
-                        py::format_descriptor<uint32_t>::format(),
+                        sizeof(int32_t),
+                        py::format_descriptor<int32_t>::format(),
                         1, // Number of dimensions
                         { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(uint32_t) }); // Strides (in bytes) for each index
+                        { sizeof(int32_t) }); // Strides (in bytes) for each index
                 break;
 
             default:
                 break;
         }
 
+        py::gil_scoped_acquire acquire;
         pythonCallback(client, py::array(bufferInfo), sampleRate, numberOfChannels, numberOfFrames);
     };
 
