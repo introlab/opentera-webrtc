@@ -1,9 +1,9 @@
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
-bool introlab::operator==(const sio::message& m1, const sio::message& m2)
+bool opentera::operator==(const sio::message& m1, const sio::message& m2)
 {
     if (m1.get_flag() != m2.get_flag())
     {
@@ -69,7 +69,7 @@ bool introlab::operator==(const sio::message& m1, const sio::message& m2)
     return true;
 }
 
-bool introlab::operator!=(const sio::message& m1, const sio::message& m2)
+bool opentera::operator!=(const sio::message& m1, const sio::message& m2)
 {
     return !(m1 == m2);
 }

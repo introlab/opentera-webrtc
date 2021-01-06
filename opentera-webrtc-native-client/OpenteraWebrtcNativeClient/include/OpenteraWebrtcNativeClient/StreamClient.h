@@ -8,7 +8,7 @@
 
 #include <memory>
 
-namespace introlab
+namespace opentera
 {
     /**
      * @brief a signaling client to join a webrtc room and stream a video source

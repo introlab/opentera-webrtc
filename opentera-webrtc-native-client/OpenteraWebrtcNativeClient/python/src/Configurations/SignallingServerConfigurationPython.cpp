@@ -5,7 +5,7 @@
 
 #include <pybind11/stl.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -22,7 +22,7 @@ SignallingServerConfiguration create(string url, string clientName, const py::ob
             move(room), move(password));
 }
 
-void introlab::initSignallingServerConfigurationPython(pybind11::module &m)
+void opentera::initSignallingServerConfigurationPython(pybind11::module &m)
 {
     py::class_<SignallingServerConfiguration>(m, "SignallingServerConfiguration")
             .def_static("create",

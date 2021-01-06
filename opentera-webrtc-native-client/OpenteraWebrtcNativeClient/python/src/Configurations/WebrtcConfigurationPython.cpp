@@ -4,11 +4,11 @@
 
 #include <pybind11/stl.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initWebrtcConfigurationPython(pybind11::module &m)
+void opentera::initWebrtcConfigurationPython(pybind11::module &m)
 {
     py::class_<WebrtcConfiguration>(m, "WebrtcConfiguration")
             .def_static("create", py::overload_cast<>(&WebrtcConfiguration::create))

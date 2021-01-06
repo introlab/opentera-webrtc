@@ -11,7 +11,7 @@
 #include <memory>
 #include <thread>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace fs = boost::filesystem;
 

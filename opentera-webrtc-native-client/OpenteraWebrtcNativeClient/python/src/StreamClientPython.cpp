@@ -5,7 +5,7 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -87,7 +87,7 @@ void setOnAudioFrameReceived(StreamClient& self,
     self.setOnAudioFrameReceived(callback);
 }
 
-void introlab::initStreamClientPython(pybind11::module& m)
+void opentera::initStreamClientPython(pybind11::module& m)
 {
     py::class_<StreamClient, SignallingClient>(m, "StreamClient")
         .def(py::init<SignallingServerConfiguration, WebrtcConfiguration>(),

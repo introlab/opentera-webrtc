@@ -1,7 +1,7 @@
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 /**

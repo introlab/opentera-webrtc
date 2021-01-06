@@ -14,7 +14,7 @@
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
 
-using namespace introlab;
+using namespace opentera;
 namespace py = pybind11;
 
 PYBIND11_MODULE(opentera_webrtc_native_client, m)

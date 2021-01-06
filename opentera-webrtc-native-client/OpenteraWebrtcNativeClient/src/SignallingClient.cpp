@@ -7,7 +7,7 @@
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 #define SIO_MESSAGE_CHECK_RETURN(condition, message) \

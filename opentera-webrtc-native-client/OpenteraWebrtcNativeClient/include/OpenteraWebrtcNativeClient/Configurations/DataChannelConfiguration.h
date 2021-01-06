@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace introlab
+namespace opentera
 {
     class DataChannelConfiguration
     {

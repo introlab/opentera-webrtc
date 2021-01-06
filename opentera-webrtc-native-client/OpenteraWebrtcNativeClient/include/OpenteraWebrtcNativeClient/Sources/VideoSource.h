@@ -8,7 +8,7 @@
 #include <rtc_base/ref_counted_object.h>
 #include <opencv2/core/mat.hpp>
 
-namespace introlab {
+namespace opentera {
 
     /**
      * @brief Represent a video source that can be added to a WebRTC call

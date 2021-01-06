@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-namespace introlab
+namespace opentera
 {
     class SignallingClient
     {

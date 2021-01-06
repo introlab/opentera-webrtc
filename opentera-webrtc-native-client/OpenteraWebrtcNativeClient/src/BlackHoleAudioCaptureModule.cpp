@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/BlackHoleAudioCaptureModule.h>
 
-using namespace introlab;
+using namespace opentera;
 
 BlackHoleAudioCaptureModule::BlackHoleAudioCaptureModule() :
         m_isPlayoutInitialized(false),

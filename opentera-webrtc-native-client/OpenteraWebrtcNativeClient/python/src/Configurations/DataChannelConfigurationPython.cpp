@@ -3,11 +3,11 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initDataChannelConfigurationPython(py::module& m)
+void opentera::initDataChannelConfigurationPython(py::module& m)
 {
     py::class_<DataChannelConfiguration>(m, "DataChannelConfiguration")
             .def_static("create", py::overload_cast<>(&DataChannelConfiguration::create))

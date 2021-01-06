@@ -2,11 +2,11 @@
 
 #include <map>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-sio::message::ptr introlab::pyObjectToSioMessage(const py::object& object)
+sio::message::ptr opentera::pyObjectToSioMessage(const py::object& object)
 {
     if (py::isinstance<py::bool_>(object))
     {
@@ -57,7 +57,7 @@ sio::message::ptr introlab::pyObjectToSioMessage(const py::object& object)
     return sio::null_message::create();
 }
 
-py::object introlab::sioMessageToPyObject(sio::message::ptr message)
+py::object opentera::sioMessageToPyObject(sio::message::ptr message)
 {
     switch (message->get_flag())
     {

@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 AudioSourceConfiguration::AudioSourceConfiguration(absl::optional<bool> echoCancellation,

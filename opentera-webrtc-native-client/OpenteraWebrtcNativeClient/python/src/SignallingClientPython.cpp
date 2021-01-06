@@ -5,11 +5,11 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initSignallingClientPython(pybind11::module& m)
+void opentera::initSignallingClientPython(pybind11::module& m)
 {
     py::class_<SignallingClient>(m, "SignallingClient")
             .def("connect", &SignallingClient::connect)

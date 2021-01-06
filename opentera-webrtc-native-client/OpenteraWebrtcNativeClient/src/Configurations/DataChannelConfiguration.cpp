@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 DataChannelConfiguration::DataChannelConfiguration(bool ordered, absl::optional<int> maxPacketLifeTime,

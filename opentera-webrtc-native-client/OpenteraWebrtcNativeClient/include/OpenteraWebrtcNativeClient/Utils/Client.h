@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace introlab
+namespace opentera
 {
     bool operator==(const sio::message& m1, const sio::message& m2);
     bool operator!=(const sio::message& m1, const sio::message& m2);

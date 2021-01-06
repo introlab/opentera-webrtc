@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Handlers/DataChannelPeerConnectionHandler.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(string id,

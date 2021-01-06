@@ -11,7 +11,7 @@
 #include <set>
 #include <vector>
 
-namespace introlab
+namespace opentera
 {
 
     /**

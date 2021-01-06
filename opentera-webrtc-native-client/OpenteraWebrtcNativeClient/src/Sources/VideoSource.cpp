@@ -3,7 +3,7 @@
 #include <api/video/i420_buffer.h>
 #include <opencv2/imgproc/imgproc.hpp>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 using namespace cv;
 

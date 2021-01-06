@@ -3,7 +3,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 TEST(SignallingServerConfigurationTests, create_urlClientNameRoom_shouldSetTheAttributes)

@@ -7,7 +7,7 @@
 
 #include <api/data_channel_interface.h>
 
-namespace introlab
+namespace opentera
 {
     class DataChannelClient : public SignallingClient
     {

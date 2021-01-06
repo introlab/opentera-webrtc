@@ -3,7 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 using ::testing::HasSubstr;

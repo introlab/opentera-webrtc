@@ -1,7 +1,7 @@
 #include <OpenteraWebrtcNativeClient/DataChannelClient.h>
 #include <OpenteraWebrtcNativeClient/Handlers/DataChannelPeerConnectionHandler.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 DataChannelClient::DataChannelClient(SignallingServerConfiguration signallingServerConfiguration,

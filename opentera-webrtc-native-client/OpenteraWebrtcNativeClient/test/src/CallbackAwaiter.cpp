@@ -5,7 +5,7 @@
 #include <chrono>
 #include <thread>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 CallbackAwaiter::CallbackAwaiter(int maxCount, chrono::seconds timeout) :

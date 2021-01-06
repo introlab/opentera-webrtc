@@ -8,7 +8,7 @@
 #include <thread>
 #include <vector>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 constexpr chrono::milliseconds NoiseVideoSourceFrameDuration = 100ms;

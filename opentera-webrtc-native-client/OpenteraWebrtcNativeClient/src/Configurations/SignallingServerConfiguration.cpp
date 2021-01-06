@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Configurations/SignallingServerConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 SignallingServerConfiguration::SignallingServerConfiguration(string&& url, string&& clientName,

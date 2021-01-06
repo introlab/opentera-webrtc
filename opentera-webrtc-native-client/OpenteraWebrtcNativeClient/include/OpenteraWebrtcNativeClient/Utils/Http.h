@@ -6,7 +6,7 @@
 #include <string>
 #include <map>
 
-namespace introlab
+namespace opentera
 {
     class Http
     {

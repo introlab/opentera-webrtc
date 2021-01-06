@@ -8,7 +8,7 @@
 
 #include <functional>
 
-namespace introlab
+namespace opentera
 {
     class DataChannelPeerConnectionHandler : public PeerConnectionHandler, public webrtc::DataChannelObserver
     {

@@ -3,7 +3,7 @@
 #include <utility>
 
 using namespace std;
-using namespace introlab;
+using namespace opentera;
 
 /**
  * @brief Construct an AudioStream object

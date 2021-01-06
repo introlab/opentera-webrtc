@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 int main(int argc, char* argv[])

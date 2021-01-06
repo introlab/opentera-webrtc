@@ -4,7 +4,7 @@
 #include <atomic>
 #include <chrono>
 
-namespace introlab
+namespace opentera
 {
     class CallbackAwaiter
     {

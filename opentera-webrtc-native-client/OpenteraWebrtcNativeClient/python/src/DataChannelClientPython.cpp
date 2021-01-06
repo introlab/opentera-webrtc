@@ -5,11 +5,11 @@
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initDataChannelClientPython(pybind11::module& m)
+void opentera::initDataChannelClientPython(pybind11::module& m)
 {
     py::class_<DataChannelClient, SignallingClient>(m, "DataChannelClient")
             .def(py::init<SignallingServerConfiguration, WebrtcConfiguration, DataChannelConfiguration>(),

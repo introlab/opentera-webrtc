@@ -69,7 +69,6 @@ if __name__ == '__main__':
     signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
-    data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
     video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))
     fs = 48000
