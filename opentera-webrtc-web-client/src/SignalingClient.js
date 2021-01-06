@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 
+const SignalingProtocolVersion = 1;
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function' && Object.prototype.toString.call(obj) === '[object Promise]';
@@ -74,7 +75,8 @@ class SignalingClient {
       name: this._signalingServerConfiguration.name,
       data: this._signalingServerConfiguration.data,
       room: this._signalingServerConfiguration.room,
-      password: this._signalingServerConfiguration.password
+      password: this._signalingServerConfiguration.password,
+      protocolVersion: SignalingProtocolVersion
     };
     this._socket.emit('join-room', data, isJoined => {
       this._logger('SignalingServer join-room event, isJoined=', isJoined);
@@ -83,7 +85,7 @@ class SignalingClient {
       }
       else {
         this.close();
-        this._onSignalingConnectionError('Invalid password');
+        this._onSignalingConnectionError('Invalid password or invalid protocol version');
       }
     });
   }

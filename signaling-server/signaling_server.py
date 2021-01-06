@@ -10,6 +10,9 @@ import socketio
 from room_manager import RoomManager
 
 
+PROTOCOL_VERSION = 1
+
+
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
 sio.attach(app)
@@ -41,6 +44,8 @@ async def join_room(id, data):
     print('join_room ', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
+        return False
+    if (data['protocolVersion'] if 'protocolVersion' in data else 0) != PROTOCOL_VERSION:
         return False
 
     if 'data' not in data:
