@@ -1,6 +1,7 @@
 #include <ros/ros.h>
-#include <RosTopicStreamer.h>
+#include <RosStreamBridge.h>
 #include <RosSignalingServerconfiguration.h>
+#include <cv_bridge/cv_bridge.h>
 
 using namespace introlab;
 using namespace ros;
@@ -9,7 +10,7 @@ using namespace std;
 /**
  * @brief construct a topic streamer node
  */
-RosTopicStreamer::RosTopicStreamer()
+RosStreamBridge::RosStreamBridge()
 {
     bool needsDenoising;
     bool isScreencast;
@@ -17,18 +18,26 @@ RosTopicStreamer::RosTopicStreamer()
     // Load ROS parameters
     loadStreamParams(needsDenoising, isScreencast);
 
-    // Create WebRTC video source and signalling client
+    // WebRTC video stream interfaces
     m_videoSource = make_shared<RosVideoSource>(needsDenoising, isScreencast);
-    m_signallingClient = make_unique<VideoStreamClient>(
+    m_videoSink = make_shared<VideoSink>([&](const cv::Mat& bgrImg, uint64_t timestampUs){
+        onFrameReceived(bgrImg, timestampUs);
+    });
+
+    // Signaling client connection
+    m_signallingClient = make_unique<StreamClient>(
             RosSignalingServerConfiguration::fromRosParam("streamer"),
             WebrtcConfiguration::create(),
-            m_videoSource);
+            m_videoSource,
+            m_videoSink);
+
+    m_imagePublisher = m_nh.advertise<sensor_msgs::Image>("webrtc_image", 1, false);
 
     // Subscribe to image topic when signaling client connects
     m_signallingClient->setOnSignallingConnectionOpen([&]{
         ROS_INFO("Signaling connection opened, streaming topic...");
         m_imageSubsriber = m_nh.subscribe(
-                "image_raw",
+                "ros_image",
                 1,
                 &RosVideoSource::imageCallback,
                 m_videoSource.get());
@@ -48,9 +57,24 @@ RosTopicStreamer::RosTopicStreamer()
 }
 
 /**
+ * @brief publish an image using the node image publisher
+ *
+ * @param bgrImg BGR8 encoded image
+ * @param timestampUs image timestamp in microseconds
+ */
+void RosStreamBridge::onFrameReceived(const cv::Mat& bgrImg, uint64_t timestampUs)
+{
+    std_msgs::Header imgHeader;
+    imgHeader.stamp.fromNSec(1000 * timestampUs);
+
+    sensor_msgs::ImagePtr imgMsg = cv_bridge::CvImage(imgHeader, "bgr8", bgrImg).toImageMsg();
+    m_imagePublisher.publish(imgMsg);
+}
+
+/**
  * @brief Close signaling client connection when this object is destroyed
  */
-RosTopicStreamer::~RosTopicStreamer()
+RosStreamBridge::~RosStreamBridge()
 {
     ROS_INFO("ROS is shutting down, closing signaling client connection.");
     m_signallingClient->closeSync();
@@ -60,7 +84,7 @@ RosTopicStreamer::~RosTopicStreamer()
 /**
  * @brief Connect to server and process images forever
  */
-void RosTopicStreamer::run()
+void RosStreamBridge::run()
 {
     ROS_INFO("Connecting to signaling server at.");
     m_signallingClient->connect();
@@ -73,7 +97,7 @@ void RosTopicStreamer::run()
  * @param denoise whether the images require denoising
  * @param screencast whether the images are a screen capture
  */
-void RosTopicStreamer::loadStreamParams(bool &denoise, bool &screencast)
+void RosStreamBridge::loadStreamParams(bool &denoise, bool &screencast)
 {
     NodeHandle pnh("~stream");
 
@@ -90,8 +114,8 @@ void RosTopicStreamer::loadStreamParams(bool &denoise, bool &screencast)
  */
 int main(int argc, char** argv)
 {
-    init(argc, argv, "topic_streamer");
+    init(argc, argv, "stream_bridge");
 
-    RosTopicStreamer node;
+    RosStreamBridge node;
     node.run();
 }

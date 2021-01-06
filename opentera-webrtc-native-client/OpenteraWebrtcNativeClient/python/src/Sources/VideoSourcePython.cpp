@@ -1,6 +1,6 @@
-#include <OpenteraWebrtcNativeClientPython/VideoSourcePython.h>
+#include <OpenteraWebrtcNativeClientPython/Sources/VideoSourcePython.h>
 
-#include <OpenteraWebrtcNativeClient/VideoSource.h>
+#include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
 
 #include <pybind11/numpy.h>
 
@@ -16,8 +16,8 @@ void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg
     }
     int height = static_cast<int>(bgrImg.shape(0));
     int width = bgrImg.shape(1);
-    size_t channel_count = bgrImg.shape(2);
-    if (channel_count != 3)
+    size_t channelCount = bgrImg.shape(2);
+    if (channelCount != 3)
     {
         throw py::value_error("The channel count must be 3.");
     }
@@ -28,6 +28,6 @@ void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg
 void introlab::initVideoSourcePython(pybind11::module& m)
 {
     py::class_<VideoSource, shared_ptr<VideoSource>>(m, "VideoSource")
-        .def(py::init<bool, bool>(), py::arg("needs_denoising"), py::arg("is_screencast"))
+        .def(py::init<VideoSourceConfiguration>(), py::arg("configuration"))
         .def("send_frame", &sendFrame, py::arg("bgr_img"), py::arg("timestamp_us"));
 }

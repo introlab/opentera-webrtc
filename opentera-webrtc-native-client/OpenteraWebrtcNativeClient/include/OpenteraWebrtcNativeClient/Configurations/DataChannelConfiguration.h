@@ -1,11 +1,8 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
 
-#include <sio_message.h>
-
 #include <api/data_channel_interface.h>
 
-#include <optional>
 #include <string>
 
 namespace introlab

@@ -1,23 +1,11 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/DataChannelConfigurationPython.h>
+#include <OpenteraWebrtcNativeClientPython/PyBindAbslOptional.h>
 
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
-
-#include <pybind11/stl.h>
 
 using namespace introlab;
 using namespace std;
 namespace py = pybind11;
-
-namespace pybind11
-{
-    namespace detail
-    {
-        template<typename T>
-        struct type_caster<absl::optional<T>> : public optional_caster<absl::optional<T>>
-        {
-        };
-    }
-}
 
 void introlab::initDataChannelConfigurationPython(py::module& m)
 {

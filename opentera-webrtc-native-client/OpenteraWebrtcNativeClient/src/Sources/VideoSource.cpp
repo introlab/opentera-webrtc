@@ -1,20 +1,20 @@
-#include <OpenteraWebrtcNativeClient/VideoSource.h>
+#include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
+
 #include <api/video/i420_buffer.h>
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace introlab;
+using namespace std;
 using namespace cv;
 
 /**
  * @brief Construct a VideoSource
  *
- * @param needsDenoising denoising should be applied to the video stream by the image transport layer
- * @param isScreenCast the transport layer should be configured to stream a screen rather then a camera
+ * @param configuration the configuration applied to the video stream by the image transport layer
  */
-VideoSource::VideoSource(bool needsDenoising, bool isScreenCast):
-        m_needsDenoising(needsDenoising), m_isScreenCast(isScreenCast)
+VideoSource::VideoSource(VideoSourceConfiguration configuration):
+        m_configuration(move(configuration))
 {
-
 }
 
 /**

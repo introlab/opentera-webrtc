@@ -77,7 +77,7 @@ include_directories(
 ## Specify additional locations of library files
 
 link_directories(
-  $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../3rdParty/socket.io-client-cpp/build/lib/Release
+  $ENV{OPEN_TERA_WEBRTC_NATIVE_CLIENT_ROOT_DIR}/../build/3rdParty/socket.io-client-cpp/
 )
 
 ## Declare a C++ executable
@@ -85,7 +85,7 @@ link_directories(
 add_executable(${PROJECT_NAME}_topic_streamer
   src/RosVideoSource.cpp
   src/RosSignalingServerConfiguration.cpp
-  src/RosTopicStreamer.cpp
+  src/RosStreamBridge.cpp
 )
 
 add_executable(${PROJECT_NAME}_data_channel_bridge

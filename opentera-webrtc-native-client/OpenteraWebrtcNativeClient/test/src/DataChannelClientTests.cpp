@@ -16,7 +16,7 @@ using namespace std;
 namespace fs = boost::filesystem;
 
 
-const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguration::create(
+static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguration::create(
 {
     IceServer("stun:stun.l.google.com:19302")
 });
