@@ -26,6 +26,7 @@ using namespace std;
         } \
         do {} while(false)
 
+constexpr int SignalingProtocolVersion = 1;
 
 SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,
         WebrtcConfiguration&& webrtcConfiguration) :
@@ -249,6 +250,7 @@ void SignalingClient::onSioConnectEvent()
     data->get_map()["data"] = m_signalingServerConfiguration.clientData();
     data->get_map()["room"] = sio::string_message::create(m_signalingServerConfiguration.room());
     data->get_map()["password"] = sio::string_message::create(m_signalingServerConfiguration.password());
+    data->get_map()["protocolVersion"] = sio::int_message::create(SignalingProtocolVersion);
 
     m_sio.socket()->emit("join-room", data, [this](const sio::message::list& msg) { onJoinRoomCallback(msg); });
 }
@@ -274,7 +276,7 @@ void SignalingClient::onJoinRoomCallback(const sio::message::list& message)
         else
         {
             close();
-            invokeIfCallable(m_onSignalingConnectionError, "Invalid password");
+            invokeIfCallable(m_onSignalingConnectionError, "Invalid password or invalid protocol version");
         }
     }
     else
