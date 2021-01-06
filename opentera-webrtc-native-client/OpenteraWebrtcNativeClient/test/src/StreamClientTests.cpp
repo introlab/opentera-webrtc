@@ -62,28 +62,28 @@ static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguratio
 
 class StreamClientTests : public ::testing::Test
 {
-    static unique_ptr<subprocess::Popen> m_signallingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                / "signalling-server" / "signalling_server.py";
-        m_signallingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                / "signaling-server" / "signaling_server.py";
+        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc", subprocess::input(subprocess::PIPE));
     }
 
     static void TearDownTestSuite()
     {
-        if (m_signallingServerProcess)
+        if (m_signalingServerProcess)
         {
-            m_signallingServerProcess->kill(9);
-            m_signallingServerProcess->wait();
+            m_signalingServerProcess->kill(9);
+            m_signalingServerProcess->wait();
         }
     }
 };
-unique_ptr<subprocess::Popen> StreamClientTests::m_signallingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcess = nullptr;
 
 TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
 {
@@ -93,16 +93,16 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignallingServerConfiguration::create("http://localhost:8080", "c1",
+            SignalingServerConfiguration::create("http://localhost:8080", "c1",
                     sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignallingServerConfiguration::create("http://localhost:8080", "c2",
+            SignalingServerConfiguration::create("http://localhost:8080", "c2",
                     sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource2);
 
-    client1->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
-    client2->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
+    client1->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
 
     client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
@@ -112,8 +112,8 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
     client2->connect();
     setupAwaiter.wait();
 
-    client1->setOnSignallingConnectionOpen([] {});
-    client2->setOnSignallingConnectionOpen([] {});
+    client1->setOnSignalingConnectionOpen([] {});
+    client2->setOnSignalingConnectionOpen([] {});
 
     // Setup the callback
     CallbackAwaiter onVideoFrameAwaiter1(1, 15s);

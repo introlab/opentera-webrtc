@@ -1,4 +1,4 @@
-#include <OpenteraWebrtcNativeClient/Configurations/SignallingServerConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
 #include <gtest/gtest.h>
@@ -6,9 +6,9 @@
 using namespace opentera;
 using namespace std;
 
-TEST(SignallingServerConfigurationTests, create_urlClientNameRoom_shouldSetTheAttributes)
+TEST(SignalingServerConfigurationTests, create_urlClientNameRoom_shouldSetTheAttributes)
 {
-    SignallingServerConfiguration testee = SignallingServerConfiguration::create("url", "name", "room");
+    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name", "room");
 
     EXPECT_EQ(testee.url(), "url");
     EXPECT_EQ(testee.clientName(), "name");
@@ -17,9 +17,9 @@ TEST(SignallingServerConfigurationTests, create_urlClientNameRoom_shouldSetTheAt
     EXPECT_EQ(testee.password(), "");
 }
 
-TEST(SignallingServerConfigurationTests, create_urlClientNameClientDataRoom__shouldSetTheAttributes)
+TEST(SignalingServerConfigurationTests, create_urlClientNameClientDataRoom__shouldSetTheAttributes)
 {
-    SignallingServerConfiguration testee = SignallingServerConfiguration::create("url", "name",
+    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name",
             sio::int_message::create(10), "room");
 
     EXPECT_EQ(testee.url(), "url");
@@ -29,9 +29,9 @@ TEST(SignallingServerConfigurationTests, create_urlClientNameClientDataRoom__sho
     EXPECT_EQ(testee.password(), "");
 }
 
-TEST(SignallingServerConfigurationTests, create_urlClientNameRoomPassword_shouldSetTheAttributes)
+TEST(SignalingServerConfigurationTests, create_urlClientNameRoomPassword_shouldSetTheAttributes)
 {
-    SignallingServerConfiguration testee = SignallingServerConfiguration::create("url", "name", "room", "password");
+    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name", "room", "password");
 
     EXPECT_EQ(testee.url(), "url");
     EXPECT_EQ(testee.clientName(), "name");
@@ -40,10 +40,10 @@ TEST(SignallingServerConfigurationTests, create_urlClientNameRoomPassword_should
     EXPECT_EQ(testee.password(), "password");
 }
 
-TEST(SignallingServerConfigurationTests, create_urlClientNameClientDataRoomPassword_shouldSetTheAttributes)
+TEST(SignalingServerConfigurationTests, create_urlClientNameClientDataRoomPassword_shouldSetTheAttributes)
 {
-    SignallingServerConfiguration testee = SignallingServerConfiguration::create("url", "name",
-        sio::int_message::create(10), "room", "password");
+    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name",
+            sio::int_message::create(10), "room", "password");
 
     EXPECT_EQ(testee.url(), "url");
     EXPECT_EQ(testee.clientName(), "name");

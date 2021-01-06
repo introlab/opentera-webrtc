@@ -1,4 +1,4 @@
-#include <OpenteraWebrtcNativeClient/SignallingClient.h>
+#include <OpenteraWebrtcNativeClient/SignalingClient.h>
 #include <OpenteraWebrtcNativeClient/BlackHoleAudioCaptureModule.h>
 
 #include <api/create_peerconnection_factory.h>
@@ -27,9 +27,9 @@ using namespace std;
         do {} while(false)
 
 
-SignallingClient::SignallingClient(SignallingServerConfiguration&& signallingServerConfiguration,
-                                   WebrtcConfiguration&& webrtcConfiguration) :
-        m_signallingServerConfiguration(move(signallingServerConfiguration)),
+SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,
+        WebrtcConfiguration&& webrtcConfiguration) :
+        m_signalingServerConfiguration(move(signalingServerConfiguration)),
         m_webrtcConfiguration(move(webrtcConfiguration)),
         m_hasClosePending(false)
 {
@@ -37,22 +37,22 @@ SignallingClient::SignallingClient(SignallingServerConfiguration&& signallingSer
     m_sio.set_reconnect_attempts(ReconnectAttempts);
 
     m_internalClientThread = move(rtc::Thread::Create());
-    m_internalClientThread->SetName(m_signallingServerConfiguration.clientName() + " - internal client", nullptr);
+    m_internalClientThread->SetName(m_signalingServerConfiguration.clientName() + " - internal client", nullptr);
     m_internalClientThread->Start();
 
     m_networkThread = move(rtc::Thread::CreateWithSocketServer());
-    m_networkThread->SetName(m_signallingServerConfiguration.clientName() + " - network", nullptr);
+    m_networkThread->SetName(m_signalingServerConfiguration.clientName() + " - network", nullptr);
     m_networkThread->Start();
     m_workerThread = move(rtc::Thread::Create());
-    m_workerThread->SetName(m_signallingServerConfiguration.clientName() + " - worker", nullptr);
+    m_workerThread->SetName(m_signalingServerConfiguration.clientName() + " - worker", nullptr);
     m_workerThread->Start();
-    m_signallingThread = move(rtc::Thread::Create());
-    m_signallingThread->SetName(m_signallingServerConfiguration.clientName() + " - signalling", nullptr);
-    m_signallingThread->Start();
+    m_signalingThread = move(rtc::Thread::Create());
+    m_signalingThread->SetName(m_signalingServerConfiguration.clientName() + " - signaling", nullptr);
+    m_signalingThread->Start();
 
     m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(m_networkThread.get(),
             m_workerThread.get(),
-            m_signallingThread.get(),
+            m_signalingThread.get(),
             rtc::scoped_refptr<webrtc::AudioDeviceModule>(new rtc::RefCountedObject<BlackHoleAudioCaptureModule>),
             webrtc::CreateBuiltinAudioEncoderFactory(),
             webrtc::CreateBuiltinAudioDecoderFactory(),
@@ -67,21 +67,21 @@ SignallingClient::SignallingClient(SignallingServerConfiguration&& signallingSer
     }
 }
 
-SignallingClient::~SignallingClient()
+SignalingClient::~SignalingClient()
 {
 }
 
-void SignallingClient::connect()
+void SignalingClient::connect()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         m_hasClosePending = false;
         connectSioEvents();
-        m_sio.connect(m_signallingServerConfiguration.url());
+        m_sio.connect(m_signalingServerConfiguration.url());
     });
 }
 
-void SignallingClient::close()
+void SignalingClient::close()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
@@ -94,7 +94,7 @@ void SignallingClient::close()
     });
 }
 
-void SignallingClient::closeSync()
+void SignalingClient::closeSync()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
@@ -107,7 +107,7 @@ void SignallingClient::closeSync()
     });
 }
 
-void SignallingClient::callAll()
+void SignalingClient::callAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
@@ -121,7 +121,7 @@ void SignallingClient::callAll()
     });
 }
 
-void SignallingClient::callIds(const vector<string>& ids)
+void SignalingClient::callIds(const vector<string>& ids)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, ids]()
     {
@@ -136,7 +136,7 @@ void SignallingClient::callIds(const vector<string>& ids)
     });
 }
 
-void SignallingClient::hangUpAll()
+void SignalingClient::hangUpAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
@@ -145,7 +145,7 @@ void SignallingClient::hangUpAll()
     });
 }
 
-void SignallingClient::closeAllRoomPeerConnections()
+void SignalingClient::closeAllRoomPeerConnections()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
@@ -153,7 +153,7 @@ void SignallingClient::closeAllRoomPeerConnections()
     });
 }
 
-vector<string> SignallingClient::getConnectedRoomClientIds()
+vector<string> SignalingClient::getConnectedRoomClientIds()
 {
     return FunctionTask<vector<string>>::callSync(m_internalClientThread.get(), [this]()
     {
@@ -167,7 +167,7 @@ vector<string> SignallingClient::getConnectedRoomClientIds()
     });
 }
 
-vector<RoomClient> SignallingClient::getRoomClients()
+vector<RoomClient> SignalingClient::getRoomClients()
 {
     return FunctionTask<vector<RoomClient>>::callSync(m_internalClientThread.get(), [this]()
     {
@@ -185,7 +185,7 @@ vector<RoomClient> SignallingClient::getRoomClients()
     });
 }
 
-function<void(const string&, sio::message::ptr)> SignallingClient::getSendEventFunction()
+function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFunction()
 {
     return [this](const string& event, sio::message::ptr message)
     {
@@ -196,7 +196,7 @@ function<void(const string&, sio::message::ptr)> SignallingClient::getSendEventF
     };
 }
 
-function<void(const string&)> SignallingClient::getOnErrorFunction()
+function<void(const string&)> SignalingClient::getOnErrorFunction()
 {
     return [this](const string& message)
     {
@@ -204,7 +204,7 @@ function<void(const string&)> SignallingClient::getOnErrorFunction()
     };
 }
 
-function<void(const Client&)> SignallingClient::getOnClientConnectedFunction()
+function<void(const Client&)> SignalingClient::getOnClientConnectedFunction()
 {
     return [this](const Client& client)
     {
@@ -212,7 +212,7 @@ function<void(const Client&)> SignallingClient::getOnClientConnectedFunction()
     };
 }
 
-function<void(const Client&)> SignallingClient::getOnClientDisconnectedFunction()
+function<void(const Client&)> SignalingClient::getOnClientDisconnectedFunction()
 {
     return [this](const Client& client)
     {
@@ -224,7 +224,7 @@ function<void(const Client&)> SignallingClient::getOnClientDisconnectedFunction(
     };
 }
 
-void SignallingClient::connectSioEvents()
+void SignalingClient::connectSioEvents()
 {
     m_sio.set_open_listener([this] { onSioConnectEvent(); });
     m_sio.set_fail_listener([this] { onSioErrorEvent(); });
@@ -242,49 +242,49 @@ void SignallingClient::connectSioEvents()
     m_sio.socket()->on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
 }
 
-void SignallingClient::onSioConnectEvent()
+void SignalingClient::onSioConnectEvent()
 {
     auto data = sio::object_message::create();
-    data->get_map()["name"] = sio::string_message::create(m_signallingServerConfiguration.clientName());
-    data->get_map()["data"] = m_signallingServerConfiguration.clientData();
-    data->get_map()["room"] = sio::string_message::create(m_signallingServerConfiguration.room());
-    data->get_map()["password"] = sio::string_message::create(m_signallingServerConfiguration.password());
+    data->get_map()["name"] = sio::string_message::create(m_signalingServerConfiguration.clientName());
+    data->get_map()["data"] = m_signalingServerConfiguration.clientData();
+    data->get_map()["room"] = sio::string_message::create(m_signalingServerConfiguration.room());
+    data->get_map()["password"] = sio::string_message::create(m_signalingServerConfiguration.password());
 
     m_sio.socket()->emit("join-room", data, [this](const sio::message::list& msg) { onJoinRoomCallback(msg); });
 }
 
-void SignallingClient::onSioErrorEvent()
+void SignalingClient::onSioErrorEvent()
 {
-    invokeIfCallable(m_onSignallingConnectionError, "");
+    invokeIfCallable(m_onSignalingConnectionError, "");
 }
 
-void SignallingClient::onSioDisconnectEvent(const sio::client::close_reason& reason)
+void SignalingClient::onSioDisconnectEvent(const sio::client::close_reason& reason)
 {
-    invokeIfCallable(m_onSignallingConnectionClosed);
+    invokeIfCallable(m_onSignalingConnectionClosed);
 }
 
-void SignallingClient::onJoinRoomCallback(const sio::message::list& message)
+void SignalingClient::onJoinRoomCallback(const sio::message::list& message)
 {
     if (message.size() == 1 && message[0]->get_flag() == sio::message::flag_boolean)
     {
         if (message[0]->get_bool())
         {
-            invokeIfCallable(m_onSignallingConnectionOpen);
+            invokeIfCallable(m_onSignalingConnectionOpen);
         }
         else
         {
             close();
-            invokeIfCallable(m_onSignallingConnectionError, "Invalid password");
+            invokeIfCallable(m_onSignalingConnectionError, "Invalid password");
         }
     }
     else
     {
         close();
-        invokeIfCallable(m_onSignallingConnectionError, "Invalid join-room response");
+        invokeIfCallable(m_onSignalingConnectionError, "Invalid join-room response");
     }
 }
 
-void SignallingClient::onRoomClientsEvent(sio::event& event)
+void SignalingClient::onRoomClientsEvent(sio::event& event)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event]()
     {
@@ -301,7 +301,7 @@ void SignallingClient::onRoomClientsEvent(sio::event& event)
     });
 }
 
-void SignallingClient::onMakePeerCallEvent(sio::event& event)
+void SignalingClient::onMakePeerCallEvent(sio::event& event)
 {
     SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_array,
             "Invalid onMakePeerCallEvent message (global type)");
@@ -314,7 +314,7 @@ void SignallingClient::onMakePeerCallEvent(sio::event& event)
     }
 }
 
-void SignallingClient::makePeerCall(const string& id)
+void SignalingClient::makePeerCall(const string& id)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, id]()
     {
@@ -332,7 +332,7 @@ void SignallingClient::makePeerCall(const string& id)
     });
 }
 
-void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
+void SignalingClient::onPeerCallReceivedEvent(sio::event& event)
 {
     SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
             "Invalid onPeerCallReceivedEvent message (global type)");
@@ -362,7 +362,7 @@ void SignallingClient::onPeerCallReceivedEvent(sio::event& event)
     receivePeerCall(fromId, sdp);
 }
 
-void SignallingClient::receivePeerCall(const string& fromId, const string& sdp)
+void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
@@ -383,7 +383,7 @@ void SignallingClient::receivePeerCall(const string& fromId, const string& sdp)
     });
 }
 
-void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
+void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
 {
     SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
             "Invalid onPeerCallAnswerReceivedEvent message (global type)");
@@ -421,7 +421,7 @@ void SignallingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
     receivePeerCallAnswer(fromId, sdp);
 }
 
-void SignallingClient::receivePeerCallAnswer(const string& fromId, const string& sdp)
+void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& sdp)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
@@ -432,12 +432,12 @@ void SignallingClient::receivePeerCallAnswer(const string& fromId, const string&
     });
 }
 
-void SignallingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
+void SignalingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
 {
     hangUpAll();
 }
 
-void SignallingClient::onIceCandidateReceivedEvent(sio::event& event)
+void SignalingClient::onIceCandidateReceivedEvent(sio::event& event)
 {
     SIO_MESSAGE_CHECK_RETURN(event.get_message()->get_flag() != sio::message::flag_object,
             "Invalid onIceCandidateReceivedEvent message (global type)");
@@ -470,8 +470,8 @@ void SignallingClient::onIceCandidateReceivedEvent(sio::event& event)
     receiveIceCandidate(fromId, sdpMid, static_cast<int>(sdpMLineIndex), sdp);
 }
 
-void SignallingClient::receiveIceCandidate(const string& fromId, const string& sdpMid, int sdpMLineIndex,
-                                           const string& sdp)
+void SignalingClient::receiveIceCandidate(const string& fromId, const string& sdpMid, int sdpMLineIndex,
+                                          const string& sdp)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdpMid, sdpMLineIndex, sdp]()
     {
@@ -482,7 +482,7 @@ void SignallingClient::receiveIceCandidate(const string& fromId, const string& s
     });
 }
 
-void SignallingClient::closeAllConnections()
+void SignalingClient::closeAllConnections()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
@@ -499,7 +499,7 @@ void SignallingClient::closeAllConnections()
     });
 }
 
-bool SignallingClient::getCallAcceptance(const string& id)
+bool SignalingClient::getCallAcceptance(const string& id)
 {
     return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this, id]()
     {
@@ -520,8 +520,8 @@ bool SignallingClient::getCallAcceptance(const string& id)
     });
 }
 
-unique_ptr<PeerConnectionHandler> SignallingClient::createConnection(const string& peerId, const Client& peerClient,
-        bool isCaller)
+unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string& peerId, const Client& peerClient,
+                                                                    bool isCaller)
 {
     return FunctionTask<unique_ptr<PeerConnectionHandler>>::callSync(m_internalClientThread.get(), [&, this]()
     {
@@ -534,7 +534,7 @@ unique_ptr<PeerConnectionHandler> SignallingClient::createConnection(const strin
     });
 }
 
-void SignallingClient::removeConnection(const string& id)
+void SignalingClient::removeConnection(const string& id)
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &id]()
     {

@@ -1,9 +1,9 @@
-import SignallingClient from './SignallingClient';
+import SignalingClient from './SignalingClient';
 
 
-class DataChannelClient extends SignallingClient {
-  constructor(signallingServerConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
-    super(signallingServerConfiguration, logger);
+class DataChannelClient extends SignalingClient {
+  constructor(signalingServerConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
+    super(signalingServerConfiguration, logger);
 
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');
@@ -33,7 +33,7 @@ class DataChannelClient extends SignallingClient {
     let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
 
     if (isCaller) {
-      let dataChannel = rtcPeerConnection.createDataChannel(this._signallingServerConfiguration.room,
+      let dataChannel = rtcPeerConnection.createDataChannel(this._signalingServerConfiguration.room,
         this._dataChannelConfiguration);
       this._dataChannels[id] = dataChannel;
       this._connectDataChannelEvents(id, dataChannel);

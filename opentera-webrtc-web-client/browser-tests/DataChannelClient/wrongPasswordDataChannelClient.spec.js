@@ -1,5 +1,5 @@
 describe('Wrong password DataChannelClient', () => {
-  const SignallingServerConfiguration = {
+  const SignalingServerConfiguration = {
     url: 'http://localhost:8080',
     name: '',
     room: 'chat',
@@ -9,15 +9,15 @@ describe('Wrong password DataChannelClient', () => {
   const RtcConfiguration = {};
 
   it('connect should return an error', done => {
-    let dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration,
+    let dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignalingServerConfiguration,
       DataChannelConfiguration, RtcConfiguration);
 
-    dataChannelClient.onSignallingConnectionOpen = () => {
+    dataChannelClient.onSignalingConnectionOpen = () => {
       dataChannelClient.close();
       assert.fail();
       done();
     };
-    dataChannelClient.onSignallingConnectionError = () => {
+    dataChannelClient.onSignalingConnectionError = () => {
       expect(dataChannelClient.isConnected).to.eql(false);
       expect(dataChannelClient.isRtcConnected).to.eql(false);
       expect(dataChannelClient.id).to.eql(null);

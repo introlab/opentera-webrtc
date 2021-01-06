@@ -23,28 +23,28 @@ static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguratio
 
 class DataChannelClientTests : public ::testing::Test
 {
-    static unique_ptr<subprocess::Popen> m_signallingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                / "signalling-server" / "signalling_server.py";
-        m_signallingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                / "signaling-server" / "signaling_server.py";
+        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc", subprocess::input(subprocess::PIPE));
     }
 
     static void TearDownTestSuite()
     {
-        if (m_signallingServerProcess)
+        if (m_signalingServerProcess)
         {
-            m_signallingServerProcess->kill(9);
-            m_signallingServerProcess->wait();
+            m_signalingServerProcess->kill(9);
+            m_signalingServerProcess->wait();
         }
     }
 };
-unique_ptr<subprocess::Popen> DataChannelClientTests::m_signallingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> DataChannelClientTests::m_signalingServerProcess = nullptr;
 
 class DisconnectedDataChannelClientTests : public ::testing::Test
 {
@@ -53,7 +53,7 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"),"chat", ""),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
@@ -73,7 +73,7 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", ""),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
@@ -93,9 +93,9 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
-                DefaultWebrtcConfiguration,DataChannelConfiguration::create());
+                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
@@ -120,19 +120,19 @@ protected:
     void SetUp() override
     {
         CallbackAwaiter setupAwaiter(3, 15s);
-        m_client1 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c1",
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client2 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c2",
+        m_client2 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c2",
                 sio::string_message::create("cd2"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client3 = make_unique<DataChannelClient>(SignallingServerConfiguration::create("http://localhost:8080", "c3",
+        m_client3 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c3",
                 sio::string_message::create("cd3"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
-        m_client1->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
-        m_client2->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
-        m_client3->setOnSignallingConnectionOpen([&] { setupAwaiter.done(); });
+        m_client1->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
+        m_client2->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
+        m_client3->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
 
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
         m_client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
@@ -145,9 +145,9 @@ protected:
         m_client3->connect();
         setupAwaiter.wait();
 
-        m_client1->setOnSignallingConnectionOpen([] {});
-        m_client2->setOnSignallingConnectionOpen([] {});
-        m_client3->setOnSignallingConnectionOpen([] {});
+        m_client1->setOnSignalingConnectionOpen([] {});
+        m_client2->setOnSignalingConnectionOpen([] {});
+        m_client3->setOnSignalingConnectionOpen([] {});
 
         m_clientId1 = m_client1->id();
         m_clientId2 = m_client2->id();
@@ -192,14 +192,12 @@ TEST_F(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVec
 TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 {
     CallbackAwaiter awaiter(2, 15s);
-    m_client1->setOnSignallingConnectionOpen([&]
-    {
+    m_client1->setOnSignalingConnectionOpen([&] {
         ADD_FAILURE();
         awaiter.done();
         awaiter.done();
     });
-    m_client1->setOnSignallingConnectionError([&](const string& error)
-    {
+    m_client1->setOnSignalingConnectionError([&](const string &error) {
         EXPECT_EQ(m_client1->isConnected(), false);
         EXPECT_EQ(m_client1->isRtcConnected(), false);
         EXPECT_EQ(m_client1->id(), "");
@@ -207,24 +205,23 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
         EXPECT_EQ(m_client1->getRoomClients().size(), 0);
         awaiter.done();
     });
-    m_client1->setOnSignallingConnectionClosed([&]
-    {
+    m_client1->setOnSignalingConnectionClosed([&] {
         awaiter.done();
     });
 
     m_client1->connect();
     awaiter.wait();
 
-    m_client1->setOnSignallingConnectionOpen([] {});
-    m_client1->setOnSignallingConnectionError([](const string& error) {});
-    m_client1->setOnSignallingConnectionClosed([] {});
+    m_client1->setOnSignalingConnectionOpen([] {});
+    m_client1->setOnSignalingConnectionError([](const string &error) {});
+    m_client1->setOnSignalingConnectionClosed([] {});
 }
 
 
 TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConnection)
 {
     CallbackAwaiter awaiter(2, 15s);
-    m_client1->setOnSignallingConnectionOpen([&] { awaiter.done(); });
+    m_client1->setOnSignalingConnectionOpen([&] { awaiter.done(); });
     m_client1->setOnRoomClientsChanged([&](const vector<RoomClient>& roomClients)
     {
         EXPECT_EQ(roomClients.size(), 1);
@@ -236,7 +233,7 @@ TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConn
     m_client1->connect();
     awaiter.wait();
 
-    m_client1->setOnSignallingConnectionOpen([] {});
+    m_client1->setOnSignalingConnectionOpen([] {});
 }
 
 

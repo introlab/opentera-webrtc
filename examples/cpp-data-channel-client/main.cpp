@@ -13,23 +13,23 @@ int main(int argc, char* argv[])
         iceServers.clear();
     }
 
-    auto signallingServerConfiguration =
-            SignallingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
+    auto signalingServerConfiguration =
+            SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
-    DataChannelClient client(signallingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
+    DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
 
-    client.setOnSignallingConnectionOpen([]()
+    client.setOnSignalingConnectionOpen([]()
     {
-        cout << "OnSignallingConnectionOpen" << endl;
+        cout << "OnSignalingConnectionOpen" << endl;
     });
-    client.setOnSignallingConnectionClosed([]()
+    client.setOnSignalingConnectionClosed([]()
     {
-        cout << "OnSignallingConnectionClosed" << endl;
+        cout << "OnSignalingConnectionClosed" << endl;
     });
-    client.setOnSignallingConnectionError([](const string& error)
+    client.setOnSignalingConnectionError([](const string& error)
     {
-        cout << "OnSignallingConnectionClosed:" << endl << "\t" << error;
+        cout << "OnSignalingConnectionClosed:" << endl << "\t" << error;
     });
 
     client.setOnRoomClientsChanged([](const vector<RoomClient>& roomClients)

@@ -4,9 +4,9 @@
 using namespace opentera;
 using namespace std;
 
-DataChannelClient::DataChannelClient(SignallingServerConfiguration signallingServerConfiguration,
+DataChannelClient::DataChannelClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration, DataChannelConfiguration dataChannelConfiguration) :
-        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_dataChannelConfiguration(move(dataChannelConfiguration))
 {
 }
@@ -71,7 +71,7 @@ unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler
 
     return make_unique<DataChannelPeerConnectionHandler>(id, peerClient, isCaller, getSendEventFunction(),
             getOnErrorFunction(), getOnClientConnectedFunction(), getOnClientDisconnectedFunction(),
-            m_signallingServerConfiguration.room(), m_dataChannelConfiguration,
+            m_signalingServerConfiguration.room(), m_dataChannelConfiguration,
             onDataChannelOpen, onDataChannelClosed, onDataChannelError,
             onDataChannelMessageBinary, onDataChannelMessageString);
 }
