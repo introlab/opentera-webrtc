@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-namespace introlab
+namespace opentera
 {
     class IceServer
     {

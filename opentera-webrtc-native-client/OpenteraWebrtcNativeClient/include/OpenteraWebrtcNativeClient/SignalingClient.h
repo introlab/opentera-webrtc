@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/Configurations/SignallingServerConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
@@ -20,9 +20,9 @@
 #include <string>
 #include <vector>
 
-namespace introlab
+namespace opentera
 {
-    class SignallingClient
+    class SignalingClient
     {
         std::unique_ptr<rtc::Thread> m_internalClientThread;
 
@@ -34,9 +34,9 @@ namespace introlab
         std::map<std::string, Client> m_roomClientsById;
         std::vector<std::string> m_alreadyAcceptedCalls;
 
-        std::function<void()> m_onSignallingConnectionOpen;
-        std::function<void()> m_onSignallingConnectionClosed;
-        std::function<void(const std::string&)> m_onSignallingConnectionError;
+        std::function<void()> m_onSignalingConnectionOpen;
+        std::function<void()> m_onSignalingConnectionClosed;
+        std::function<void(const std::string&)> m_onSignalingConnectionError;
 
         std::function<void(const std::vector<RoomClient>&)> m_onRoomClientsChanged;
 
@@ -50,21 +50,21 @@ namespace introlab
 
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
-        std::unique_ptr<rtc::Thread> m_signallingThread;
+        std::unique_ptr<rtc::Thread> m_signalingThread;
 
     protected:
-        SignallingServerConfiguration m_signallingServerConfiguration;
+        SignalingServerConfiguration m_signalingServerConfiguration;
 
         rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
     public:
-        SignallingClient(SignallingServerConfiguration&& signallingServerConfiguration,
-                         WebrtcConfiguration&& webrtcConfiguration);
-        virtual ~SignallingClient();
+        SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,
+                WebrtcConfiguration&& webrtcConfiguration);
+        virtual ~SignalingClient();
 
-        DECLARE_NOT_COPYABLE(SignallingClient);
-        DECLARE_NOT_MOVABLE(SignallingClient);
+        DECLARE_NOT_COPYABLE(SignalingClient);
+        DECLARE_NOT_MOVABLE(SignalingClient);
 
         void connect();
         void close();
@@ -85,9 +85,9 @@ namespace introlab
         RoomClient getRoomClient(const std::string& id);
         std::vector<RoomClient> getRoomClients();
 
-        void setOnSignallingConnectionOpen(const std::function<void()>& callback);
-        void setOnSignallingConnectionClosed(const std::function<void()>& callback);
-        void setOnSignallingConnectionError(const std::function<void(const std::string&)>& callback);
+        void setOnSignalingConnectionOpen(const std::function<void()>& callback);
+        void setOnSignalingConnectionClosed(const std::function<void()>& callback);
+        void setOnSignalingConnectionError(const std::function<void(const std::string&)>& callback);
 
         void setOnRoomClientsChanged(const std::function<void(const std::vector<RoomClient>&)>& callback);
 
@@ -148,7 +148,7 @@ namespace introlab
         void removeConnection(const std::string& id);
     };
 
-    inline bool SignallingClient::isConnected()
+    inline bool SignalingClient::isConnected()
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
@@ -156,7 +156,7 @@ namespace introlab
         });
     }
 
-    inline bool SignallingClient::isRtcConnected()
+    inline bool SignalingClient::isRtcConnected()
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
@@ -164,7 +164,7 @@ namespace introlab
         });
     }
 
-    inline std::string SignallingClient::id()
+    inline std::string SignalingClient::id()
     {
         return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
         {
@@ -172,7 +172,7 @@ namespace introlab
         });
     }
 
-    inline RoomClient SignallingClient::getRoomClient(const std::string& id)
+    inline RoomClient SignalingClient::getRoomClient(const std::string& id)
     {
         return FunctionTask<RoomClient>::callSync(m_internalClientThread.get(), [this, &id]()
         {
@@ -192,32 +192,32 @@ namespace introlab
 
     }
 
-    inline void SignallingClient::setOnSignallingConnectionOpen(const std::function<void()>& callback)
+    inline void SignalingClient::setOnSignalingConnectionOpen(const std::function<void()>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            m_onSignallingConnectionOpen = callback;
+            m_onSignalingConnectionOpen = callback;
         });
     }
 
-    inline void SignallingClient::setOnSignallingConnectionClosed(const std::function<void()>& callback)
+    inline void SignalingClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            m_onSignallingConnectionClosed = callback;
+            m_onSignalingConnectionClosed = callback;
         });
     }
 
-    inline void SignallingClient::setOnSignallingConnectionError(
+    inline void SignalingClient::setOnSignalingConnectionError(
             const std::function<void(const std::string&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            m_onSignallingConnectionError = callback;
+            m_onSignalingConnectionError = callback;
         });
     }
 
-    inline void SignallingClient::setOnRoomClientsChanged(
+    inline void SignalingClient::setOnRoomClientsChanged(
             const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -226,7 +226,7 @@ namespace introlab
         });
     }
 
-    inline void SignallingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
+    inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
@@ -234,7 +234,7 @@ namespace introlab
         });
     }
 
-    inline void SignallingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
+    inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
@@ -242,7 +242,7 @@ namespace introlab
         });
     }
 
-    inline void SignallingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
+    inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
@@ -250,7 +250,7 @@ namespace introlab
         });
     }
 
-    inline void SignallingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
+    inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
@@ -258,7 +258,7 @@ namespace introlab
         });
     }
 
-    inline void SignallingClient::setOnError(const std::function<void(const std::string& error)>& callback)
+    inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
@@ -267,7 +267,7 @@ namespace introlab
     }
 
     template<class T, class ... Types>
-    void SignallingClient::invokeIfCallable(const std::function<T>& f, Types... args)
+    void SignalingClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [=]()
         {
@@ -278,7 +278,7 @@ namespace introlab
         });
     }
 
-    inline rtc::Thread* SignallingClient::getInternalClientThread()
+    inline rtc::Thread* SignalingClient::getInternalClientThread()
     {
         return m_internalClientThread.get();
     }

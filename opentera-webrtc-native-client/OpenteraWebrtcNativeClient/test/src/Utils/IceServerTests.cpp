@@ -6,21 +6,21 @@
 
 #include <boost/filesystem.hpp>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace fs = boost::filesystem;
 
-class IceServerTestsWithSignallingServer : public ::testing::Test
+class IceServerTestsWithSignalingServer : public ::testing::Test
 {
-    static unique_ptr<subprocess::Popen> m_signallingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                .parent_path() / "signalling-server" / "signalling_server.py";
-        m_signallingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                .parent_path() / "signaling-server" / "signaling_server.py";
+        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc --ice_servers resources/iceServers.json",
                 subprocess::input(subprocess::PIPE));
         this_thread::sleep_for(500ms);
@@ -28,14 +28,14 @@ protected:
 
     static void TearDownTestSuite()
     {
-        if (m_signallingServerProcess)
+        if (m_signalingServerProcess)
         {
-            m_signallingServerProcess->kill(9);
-            m_signallingServerProcess->wait();
+            m_signalingServerProcess->kill(9);
+            m_signalingServerProcess->wait();
         }
     }
 };
-unique_ptr<subprocess::Popen> IceServerTestsWithSignallingServer::m_signallingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> IceServerTestsWithSignalingServer::m_signalingServerProcess = nullptr;
 
 TEST(IceServerTests, constructor_url_shouldSetTheAttributes)
 {
@@ -89,14 +89,14 @@ TEST(IceServerTests, operator_webrtcIceServer_shouldSetTheAttributes)
     EXPECT_EQ(testee.password, "p");
 }
 
-TEST_F(IceServerTestsWithSignallingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
+TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;
     EXPECT_TRUE(IceServer::fetchFromServer("http://localhost:8080/iceservers", "", iceServers));
     ASSERT_EQ(iceServers.size(), 0);
 }
 
-TEST_F(IceServerTestsWithSignallingServer, fetchFromServer_rightPassword_shouldReturnTrueAndSetIceServers)
+TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_rightPassword_shouldReturnTrueAndSetIceServers)
 {
     vector<IceServer> iceServers;
     EXPECT_TRUE(IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers));

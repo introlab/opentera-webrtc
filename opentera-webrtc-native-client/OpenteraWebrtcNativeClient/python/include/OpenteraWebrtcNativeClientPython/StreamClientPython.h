@@ -3,7 +3,7 @@
 
 #include <pybind11/pybind11.h>
 
-namespace introlab
+namespace opentera
 {
     PYBIND11_EXPORT void initStreamClientPython(pybind11::module& m);
 }

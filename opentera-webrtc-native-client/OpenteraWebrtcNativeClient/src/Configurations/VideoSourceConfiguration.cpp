@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Configurations/VideoSourceConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 VideoSourceConfiguration::VideoSourceConfiguration(bool needsDenoising, bool isScreencast) :

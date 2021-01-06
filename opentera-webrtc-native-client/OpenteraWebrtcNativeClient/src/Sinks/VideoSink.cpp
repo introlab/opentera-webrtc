@@ -3,7 +3,7 @@
 #include <utility>
 #include <opencv2/imgproc.hpp>
 
-using namespace introlab;
+using namespace opentera;
 using namespace webrtc;
 using namespace rtc;
 using namespace std;

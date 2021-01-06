@@ -3,7 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -17,7 +17,7 @@ RoomClient roomClientConstructor(string id, string name, const py::object& data,
     return RoomClient(move(id), move(name), pyObjectToSioMessage(data), isConnected);
 }
 
-void introlab::initClientPython(pybind11::module& m)
+void opentera::initClientPython(pybind11::module& m)
 {
     py::class_<Client>(m, "Client")
             .def(py::init<>())

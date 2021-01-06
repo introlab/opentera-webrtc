@@ -5,7 +5,7 @@
 
 #include <vector>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 TEST(AudioSourceTests, constructor_shouldOnlySupportValidBitsPerSample)

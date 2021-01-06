@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace introlab
+namespace opentera
 {
     class WebrtcConfiguration
     {

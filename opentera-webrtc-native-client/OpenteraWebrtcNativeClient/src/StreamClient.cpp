@@ -1,32 +1,32 @@
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 /**
  * @brief construct a video stream client
  *
- * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param signalingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
  */
-StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration) :
-        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration))
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration))
 {
 }
 
 /**
  * @brief construct a video stream client
  *
- * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param signalingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
  * @param videoSource the video source that this client will add to the call
  */
-StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<VideoSource> videoSource) :
-        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource))
 {
 }
@@ -34,14 +34,14 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
 /**
  * @brief construct a video stream client
  *
- * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param signalingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
  * @param audioSource the audio source that this client will add to the call
  */
-StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<AudioSource> audioSource) :
-        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_audioSource(move(audioSource))
 {
 }
@@ -49,16 +49,16 @@ StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfigu
 /**
  * @brief construct a video stream client
  *
- * @param signallingServerConfiguration configuration to connect to the signaling server
+ * @param signalingServerConfiguration configuration to connect to the signaling server
  * @param webrtcConfiguration webrtc configuration
  * @param videoSource the video source that this client will add to the call
  * @param audioSource the audio source that this client will add to the call
  */
-StreamClient::StreamClient(SignallingServerConfiguration signallingServerConfiguration,
+StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<VideoSource> videoSource,
         shared_ptr<AudioSource> audioSource) :
-        SignallingClient(move(signallingServerConfiguration), move(webrtcConfiguration)),
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource)),
         m_audioSource(move(audioSource))
 {

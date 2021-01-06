@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 WebrtcConfiguration::WebrtcConfiguration(vector<IceServer>&& iceServers) : m_iceServers(move(iceServers))

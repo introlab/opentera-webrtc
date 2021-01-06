@@ -2,11 +2,11 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/VideoSourceConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initVideoSourceConfigurationPython(py::module& m)
+void opentera::initVideoSourceConfigurationPython(py::module& m)
 {
     py::class_<VideoSourceConfiguration>(m, "VideoSourceConfiguration")
             .def_static("create", py::overload_cast<bool, bool>(&VideoSourceConfiguration::create),

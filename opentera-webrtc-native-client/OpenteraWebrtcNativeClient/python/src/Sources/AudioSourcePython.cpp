@@ -4,7 +4,7 @@
 
 #include <pybind11/numpy.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -29,7 +29,7 @@ void sendFrame(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
     self->sendFrame(frame.data(), byteSize / self->bytesPerFrame());
 }
 
-void introlab::initAudioSourcePython(pybind11::module& m)
+void opentera::initAudioSourcePython(pybind11::module& m)
 {
     py::class_<AudioSource, shared_ptr<AudioSource>>(m, "AudioSource")
         .def(py::init<AudioSourceConfiguration, int, int, size_t>(),

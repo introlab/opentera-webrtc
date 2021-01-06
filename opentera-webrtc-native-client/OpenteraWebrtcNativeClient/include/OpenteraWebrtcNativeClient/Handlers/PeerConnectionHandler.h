@@ -9,7 +9,7 @@
 
 #include <functional>
 
-namespace introlab
+namespace opentera
 {
     class CreateSessionDescriptionObserverHelper : public webrtc::CreateSessionDescriptionObserver
     {

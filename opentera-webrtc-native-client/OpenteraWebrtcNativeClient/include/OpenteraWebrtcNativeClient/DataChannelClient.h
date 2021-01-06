@@ -1,15 +1,15 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/SignallingClient.h>
+#include <OpenteraWebrtcNativeClient/SignalingClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
 #include <api/data_channel_interface.h>
 
-namespace introlab
+namespace opentera
 {
-    class DataChannelClient : public SignallingClient
+    class DataChannelClient : public SignalingClient
     {
         DataChannelConfiguration m_dataChannelConfiguration;
 
@@ -20,7 +20,7 @@ namespace introlab
         std::function<void(const Client&, const std::string&)> m_onDataChannelMessageString;
 
     public:
-        DataChannelClient(SignallingServerConfiguration signallingServerConfiguration,
+        DataChannelClient(SignalingServerConfiguration signalingServerConfiguration,
                 WebrtcConfiguration webrtcConfiguration,
                 DataChannelConfiguration dataChannelConfiguration);
         ~DataChannelClient() override = default;

@@ -4,16 +4,16 @@
 #include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
 #include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
 
-#include <OpenteraWebrtcNativeClient/SignallingClient.h>
+#include <OpenteraWebrtcNativeClient/SignalingClient.h>
 
 #include <memory>
 
-namespace introlab
+namespace opentera
 {
     /**
      * @brief a signaling client to join a webrtc room and stream a video source
      */
-    class StreamClient: public SignallingClient
+    class StreamClient: public SignalingClient
     {
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<AudioSource> m_audioSource;
@@ -29,18 +29,18 @@ namespace introlab
                 size_t numberOfFrames)> m_onAudioFrameReceived;
 
     public:
-        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
-                     WebrtcConfiguration webrtcConfiguration);
-        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
-                     WebrtcConfiguration webrtcConfiguration,
-                     std::shared_ptr<VideoSource> videoSource);
-        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
-                     WebrtcConfiguration webrtcConfiguration,
-                     std::shared_ptr<AudioSource> audioSource);
-        StreamClient(SignallingServerConfiguration signallingServerConfiguration,
-                     WebrtcConfiguration webrtcConfiguration,
-                     std::shared_ptr<VideoSource> videoSource,
-                     std::shared_ptr<AudioSource> audioSource);
+        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
+                WebrtcConfiguration webrtcConfiguration);
+        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
+                WebrtcConfiguration webrtcConfiguration,
+                std::shared_ptr<VideoSource> videoSource);
+        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
+                WebrtcConfiguration webrtcConfiguration,
+                std::shared_ptr<AudioSource> audioSource);
+        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
+                WebrtcConfiguration webrtcConfiguration,
+                std::shared_ptr<VideoSource> videoSource,
+                std::shared_ptr<AudioSource> audioSource);
         ~StreamClient() override = default;
 
         DECLARE_NOT_COPYABLE(StreamClient);

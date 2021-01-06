@@ -3,7 +3,7 @@
 
 #include <modules/audio_device/include/audio_device.h>
 
-namespace introlab
+namespace opentera
 {
     /**
      * @brief This class is used to fake a AudioDeviceModule so we can use a custom AudioSource

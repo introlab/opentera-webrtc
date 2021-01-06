@@ -3,7 +3,7 @@
 
 #include <api/media_stream_interface.h>
 
-namespace introlab
+namespace opentera
 {
 
     /**

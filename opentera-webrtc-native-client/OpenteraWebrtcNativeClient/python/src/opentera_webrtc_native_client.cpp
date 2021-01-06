@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/AudioSourceConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/DataChannelConfigurationPython.h>
-#include <OpenteraWebrtcNativeClientPython/Configurations/SignallingServerConfigurationPython.h>
+#include <OpenteraWebrtcNativeClientPython/Configurations/SignalingServerConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/VideoSourceConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/WebrtcConfigurationPython.h>
 
@@ -10,18 +10,18 @@
 #include <OpenteraWebrtcNativeClientPython/Sources/AudioSourcePython.h>
 #include <OpenteraWebrtcNativeClientPython/Sources/VideoSourcePython.h>
 
-#include <OpenteraWebrtcNativeClientPython/SignallingClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
 
-using namespace introlab;
+using namespace opentera;
 namespace py = pybind11;
 
 PYBIND11_MODULE(opentera_webrtc_native_client, m)
 {
     initAudioSourceConfigurationPython(m);
     initDataChannelConfigurationPython(m);
-    initSignallingServerConfigurationPython(m);
+    initSignalingServerConfigurationPython(m);
     initVideoSourceConfigurationPython(m);
     initWebrtcConfigurationPython(m);
 
@@ -31,7 +31,7 @@ PYBIND11_MODULE(opentera_webrtc_native_client, m)
     initAudioSourcePython(m);
     initVideoSourcePython(m);
 
-    initSignallingClientPython(m);
+    initSignalingClientPython(m);
     initDataChannelClientPython(m);
     initStreamClientPython(m);
 }

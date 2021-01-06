@@ -1,9 +1,9 @@
-#include <OpenteraWebrtcNativeClient/Configurations/SignallingServerConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
-SignallingServerConfiguration::SignallingServerConfiguration(string&& url, string&& clientName,
+SignalingServerConfiguration::SignalingServerConfiguration(string&& url, string&& clientName,
         sio::message::ptr&& clientData, string&& room, string&& password) :
         m_url(move(url)), m_clientName(move(clientName)), m_clientData(move(clientData)), m_room(move(room)),
         m_password(move(password))

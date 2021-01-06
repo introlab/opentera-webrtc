@@ -4,7 +4,7 @@
 
 #include <pybind11/numpy.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -25,7 +25,7 @@ void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg
     self->sendFrame(cv::Mat(height, width, CV_8UC3, bgrImg.mutable_data(), bgrImg.strides(0)), timestampUs);
 }
 
-void introlab::initVideoSourcePython(pybind11::module& m)
+void opentera::initVideoSourcePython(pybind11::module& m)
 {
     py::class_<VideoSource, shared_ptr<VideoSource>>(m, "VideoSource")
         .def(py::init<VideoSourceConfiguration>(), py::arg("configuration"))

@@ -2,7 +2,7 @@
 
 #include <utility>
 
-using namespace introlab;
+using namespace opentera;
 using namespace rtc;
 using namespace webrtc;
 using namespace std;

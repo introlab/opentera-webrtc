@@ -142,7 +142,7 @@ def _isAuthorized(user_password):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='OpenTera WebRTC Signalling Server')
+    parser = argparse.ArgumentParser(description='OpenTera WebRTC Signaling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)

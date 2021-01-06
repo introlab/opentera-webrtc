@@ -1,9 +1,9 @@
-import SignallingClient from './SignallingClient';
+import SignalingClient from './SignalingClient';
 
 
-class StreamClient extends SignallingClient {
-  constructor(signallingServerConfiguration, streamConfiguration, rtcConfiguration, logger) {
-    super(signallingServerConfiguration, logger);
+class StreamClient extends SignalingClient {
+  constructor(signalingServerConfiguration, streamConfiguration, rtcConfiguration, logger) {
+    super(signalingServerConfiguration, logger);
 
     if (!window.RTCPeerConnection) {
       throw new Error('RTCPeerConnection is not supported.');

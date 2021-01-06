@@ -2,7 +2,7 @@
 
 #include <httplib.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 bool Http::get(const string& url, string& response, multimap<string, string> headers)

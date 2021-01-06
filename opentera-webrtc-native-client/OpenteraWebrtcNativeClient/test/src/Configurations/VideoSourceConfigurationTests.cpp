@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 TEST(VideoSourceConfigurationTests, create_shouldSetTheAttributes)

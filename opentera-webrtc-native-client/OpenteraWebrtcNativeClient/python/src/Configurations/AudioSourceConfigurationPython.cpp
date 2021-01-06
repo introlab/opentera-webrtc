@@ -3,11 +3,11 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initAudioSourceConfigurationPython(py::module& m)
+void opentera::initAudioSourceConfigurationPython(py::module& m)
 {
     py::class_<AudioSourceConfiguration>(m, "AudioSourceConfiguration")
             .def_static("create", py::overload_cast<>(&AudioSourceConfiguration::create))

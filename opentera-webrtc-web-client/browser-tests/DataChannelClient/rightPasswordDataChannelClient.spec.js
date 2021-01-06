@@ -4,21 +4,21 @@ describe('Right password DataChannelClient', done => {
   let dataChannelClient3;
 
   const BEFORE_AFTER_TIMEOUT_MS = 100;
-  const SignallingServerConfiguration1 = {
+  const SignalingServerConfiguration1 = {
     url: 'http://localhost:8080',
     name: 'c1',
     data:'cd1',
     room: 'chat',
     password: 'abc'
   };
-  const SignallingServerConfiguration2 = {
+  const SignalingServerConfiguration2 = {
     url: 'http://localhost:8080',
     name: 'c2',
     data:'cd2',
     room: 'chat',
     password: 'abc'
   };
-  const SignallingServerConfiguration3 = {
+  const SignalingServerConfiguration3 = {
     url: 'http://localhost:8080',
     name: 'c3',
     data:'cd3',
@@ -30,29 +30,29 @@ describe('Right password DataChannelClient', done => {
 
   beforeEach(done => {
     let counter = 0;
-    dataChannelClient1 = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration1,
+    dataChannelClient1 = new window.openteraWebrtcWebClient.DataChannelClient(SignalingServerConfiguration1,
       DataChannelConfiguration, RtcConfiguration);
-    dataChannelClient2 = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration2,
+    dataChannelClient2 = new window.openteraWebrtcWebClient.DataChannelClient(SignalingServerConfiguration2,
       DataChannelConfiguration, RtcConfiguration);
-    dataChannelClient3 = new window.openteraWebrtcWebClient.DataChannelClient(SignallingServerConfiguration3,
+    dataChannelClient3 = new window.openteraWebrtcWebClient.DataChannelClient(SignalingServerConfiguration3,
       DataChannelConfiguration, RtcConfiguration);
 
-    let onSignallingConnectionOpen = () => {
+    let onSignalingConnectionOpen = () => {
       counter++;
       if (counter >= 3) {
         setTimeout(done, BEFORE_AFTER_TIMEOUT_MS);
       }
     };
-    let onSignallingConnectionError = () => {
+    let onSignalingConnectionError = () => {
       expect.fail();
       done();
     };
-    dataChannelClient1.onSignallingConnectionOpen = onSignallingConnectionOpen;
-    dataChannelClient1.onSignallingConnectionError = onSignallingConnectionError;
-    dataChannelClient2.onSignallingConnectionOpen = onSignallingConnectionOpen;
-    dataChannelClient2.onSignallingConnectionError = onSignallingConnectionError;
-    dataChannelClient3.onSignallingConnectionOpen = onSignallingConnectionOpen;
-    dataChannelClient3.onSignallingConnectionError = onSignallingConnectionError;
+    dataChannelClient1.onSignalingConnectionOpen = onSignalingConnectionOpen;
+    dataChannelClient1.onSignalingConnectionError = onSignalingConnectionError;
+    dataChannelClient2.onSignalingConnectionOpen = onSignalingConnectionOpen;
+    dataChannelClient2.onSignalingConnectionError = onSignalingConnectionError;
+    dataChannelClient3.onSignalingConnectionOpen = onSignalingConnectionOpen;
+    dataChannelClient3.onSignalingConnectionError = onSignalingConnectionError;
 
     dataChannelClient1.connect();
     setTimeout(() => dataChannelClient2.connect(), BEFORE_AFTER_TIMEOUT_MS);

@@ -7,7 +7,7 @@
 
 #include <functional>
 
-namespace introlab
+namespace opentera
 {
     template<class T>
     class FunctionTask : public webrtc::QueuedTask

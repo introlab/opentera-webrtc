@@ -4,7 +4,7 @@
 
 #include <rapidjson/document.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace rapidjson;
 using namespace std;
 

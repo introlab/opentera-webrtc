@@ -5,7 +5,7 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
@@ -87,17 +87,17 @@ void setOnAudioFrameReceived(StreamClient& self,
     self.setOnAudioFrameReceived(callback);
 }
 
-void introlab::initStreamClientPython(pybind11::module& m)
+void opentera::initStreamClientPython(pybind11::module& m)
 {
-    py::class_<StreamClient, SignallingClient>(m, "StreamClient")
-        .def(py::init<SignallingServerConfiguration, WebrtcConfiguration>(),
-             py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"))
-        .def(py::init<SignallingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>>(),
-             py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"))
-        .def(py::init<SignallingServerConfiguration, WebrtcConfiguration, shared_ptr<AudioSource>>(),
-             py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"), py::arg("audio_source"))
-        .def(py::init<SignallingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>, shared_ptr<AudioSource>>(),
-             py::arg("signalling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
+    py::class_<StreamClient, SignalingClient>(m, "StreamClient")
+        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration>(),
+             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"))
+        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>>(),
+             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"))
+        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<AudioSource>>(),
+             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("audio_source"))
+        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>, shared_ptr<AudioSource>>(),
+             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
 
         .def_property("on_add_remote_stream", nullptr, &StreamClient::setOnAddRemoteStream)
         .def_property("on_remove_remote_stream", nullptr, &StreamClient::setOnRemoveRemoteStream)

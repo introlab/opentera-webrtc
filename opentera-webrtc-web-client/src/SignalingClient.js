@@ -6,10 +6,10 @@ function isPromise(obj) {
 }
 
 
-class SignallingClient {
-  constructor(signallingServerConfiguration, logger) {
-    if (this.constructor === SignallingClient) {
-      throw new TypeError('Abstract class "SignallingClient" cannot be instantiated directly.');
+class SignalingClient {
+  constructor(signalingServerConfiguration, logger) {
+    if (this.constructor === SignalingClient) {
+      throw new TypeError('Abstract class "SignalingClient" cannot be instantiated directly.');
     }
     if (this._createRtcPeerConnection === undefined) {
       throw new TypeError('_createRtcPeerConnection is missing.');
@@ -22,7 +22,7 @@ class SignallingClient {
       logger = () => {};
     }
 
-    this._signallingServerConfiguration = signallingServerConfiguration;
+    this._signalingServerConfiguration = signalingServerConfiguration;
     this._logger = logger;
 
     this._socket = null;
@@ -34,9 +34,9 @@ class SignallingClient {
 
     this._alreadyAcceptedCalls = [];
 
-    this._onSignallingConnectionOpen = () => {};
-    this._onSignallingConnectionClose = () => {};
-    this._onSignallingConnectionError = () => {};
+    this._onSignalingConnectionOpen = () => {};
+    this._onSignalingConnectionClose = () => {};
+    this._onSignalingConnectionError = () => {};
     this._onRoomClientsChange = () => {};
 
     this._callAcceptor = () => { return true; };
@@ -47,56 +47,56 @@ class SignallingClient {
   }
   
   async connect() {
-    this._logger('SignallingClient.connect method call');
+    this._logger('SignalingClient.connect method call');
 
-    this._socket = io(this._signallingServerConfiguration.url);
+    this._socket = io(this._signalingServerConfiguration.url);
     this._connectEvents();
 
     await new Promise((resolve, reject) => {
       this._socket.on('connect', () => {
-        this._logger('SignallingServer connect event');
+        this._logger('SignalingServer connect event');
 
         resolve();
       });
       this._socket.on('connect_error', error => {
-        this._logger('SignallingServer connect_error event');
+        this._logger('SignalingServer connect_error event');
 
         reject(error);
       });
       this._socket.on('connect_timeout', error => {
-        this._logger('SignallingServer connect_timeout event');
+        this._logger('SignalingServer connect_timeout event');
 
         reject(error);
       });
     });
     
     let data = {
-      name: this._signallingServerConfiguration.name,
-      data: this._signallingServerConfiguration.data,
-      room: this._signallingServerConfiguration.room,
-      password: this._signallingServerConfiguration.password
+      name: this._signalingServerConfiguration.name,
+      data: this._signalingServerConfiguration.data,
+      room: this._signalingServerConfiguration.room,
+      password: this._signalingServerConfiguration.password
     };
     this._socket.emit('join-room', data, isJoined => {
-      this._logger('SignallingServer join-room event, isJoined=', isJoined);
+      this._logger('SignalingServer join-room event, isJoined=', isJoined);
       if (isJoined) {
-        this._onSignallingConnectionOpen();
+        this._onSignalingConnectionOpen();
       }
       else {
         this.close();
-        this._onSignallingConnectionError('Invalid password');
+        this._onSignalingConnectionError('Invalid password');
       }
     });
   }
 
   _connectEvents() {
     this._socket.on('disconnect', () => {
-      this._logger('SignallingServer disconnect event');
+      this._logger('SignalingServer disconnect event');
 
       this._disconnect();
     });
 
     this._socket.on('room-clients', clients => {
-      this._logger('SignallingServer room-clients event, clients=', clients);
+      this._logger('SignalingServer room-clients event, clients=', clients);
 
       this._clients = clients;
       this._updateClientNamesById(clients);
@@ -108,7 +108,7 @@ class SignallingClient {
     this._socket.on('peer-call-received', async data => await this._peerCallReceived(data));
     this._socket.on('peer-call-answer-received', async data => await this._peerCallAnswerReceived(data));
     this._socket.on('close-all-peer-connections-request-received', () => {
-      this._logger('SignallingServer close-all-peer-connections-request-received event');
+      this._logger('SignalingServer close-all-peer-connections-request-received event');
 
       this.hangUpAll();
     });
@@ -139,11 +139,11 @@ class SignallingClient {
     this._clients = [];
     this._alreadyAcceptedCalls = [];
     this.close();
-    this._onSignallingConnectionClose();
+    this._onSignalingConnectionClose();
   }
 
   async _peerCallReceived(data) {
-    this._logger('SignallingServer peer-call-received event, data=', data);
+    this._logger('SignalingServer peer-call-received event, data=', data);
 
     if (await this._getCallAcceptance(data.fromId)) {
       let rtcPeerConnection = this._createRtcPeerConnection(data.fromId, false);
@@ -165,7 +165,7 @@ class SignallingClient {
   }
 
   async _peerCallAnswerReceived(data) {
-    this._logger('SignallingServer peer-call-answer-received event, data=', data);
+    this._logger('SignalingServer peer-call-answer-received event, data=', data);
 
     if ('answer' in data) {
       let rtcPeerConnection = this._rtcPeerConnections[data.fromId];
@@ -178,7 +178,7 @@ class SignallingClient {
   }
 
   async _addIceCandidate(data) {
-    this._logger('SignallingServer ice-candidate-received event, data=', data);
+    this._logger('SignalingServer ice-candidate-received event, data=', data);
 
     if (data && data.candidate && data.fromId in this._rtcPeerConnections) {
       this._rtcPeerConnections[data.fromId].addIceCandidate(data.candidate);
@@ -186,7 +186,7 @@ class SignallingClient {
   }
 
   async _makePeerCall(ids) {
-    this._logger('SignallingServer make-peer-call event, ids=', ids);
+    this._logger('SignalingServer make-peer-call event, ids=', ids);
 
     ids = ids.filter(id => id != this._socket.id);
     ids.forEach(async id => {
@@ -323,28 +323,28 @@ class SignallingClient {
   }
 
   callAll() {
-    this._logger('SignallingClient.callAll method call');
+    this._logger('SignalingClient.callAll method call');
 
     this._alreadyAcceptedCalls = this._clients.map(client => client.id);
     this._socket.emit('call-all');
   }
 
   callIds(ids) {
-    this._logger('SignallingClient.callIds method call, ids=', ids);
+    this._logger('SignalingClient.callIds method call, ids=', ids);
 
     this._alreadyAcceptedCalls = ids;
     this._socket.emit('call-ids', ids);
   }
 
   hangUpAll() {
-    this._logger('SignallingClient.hangUpAll method call');
+    this._logger('SignalingClient.hangUpAll method call');
 
     this._closeAllRtcPeerConnections();
     this.updateRoomClients();
   }
 
   closeAllRoomPeerConnections() {
-    this._logger('SignallingClient.closeAllRoomPeerConnections method call');
+    this._logger('SignalingClient.closeAllRoomPeerConnections method call');
 
     this._socket.emit('close-all-room-peer-connections');
   }
@@ -382,16 +382,16 @@ class SignallingClient {
     return this._addConnectionStateToClients(this._clients);
   }
 
-  set onSignallingConnectionOpen(onSignallingConnectionOpen) {
-    this._onSignallingConnectionOpen = onSignallingConnectionOpen;
+  set onSignalingConnectionOpen(onSignalingConnectionOpen) {
+    this._onSignalingConnectionOpen = onSignalingConnectionOpen;
   }
 
-  set onSignallingConnectionClose(onSignallingConnectionClose) {
-    this._onSignallingConnectionClose = onSignallingConnectionClose;
+  set onSignalingConnectionClose(onSignalingConnectionClose) {
+    this._onSignalingConnectionClose = onSignalingConnectionClose;
   }
 
-  set onSignallingConnectionError(onSignallingConnectionError) {
-    this._onSignallingConnectionError = onSignallingConnectionError;
+  set onSignalingConnectionError(onSignalingConnectionError) {
+    this._onSignalingConnectionError = onSignalingConnectionError;
   }
 
   set onRoomClientsChange(onRoomClientsChange) {
@@ -415,4 +415,4 @@ class SignallingClient {
   }
 }
 
-export default SignallingClient;
+export default SignalingClient;

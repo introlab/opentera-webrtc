@@ -5,7 +5,7 @@
 
 #include <pybind11/pybind11.h>
 
-namespace introlab
+namespace opentera
 {
     PYBIND11_EXPORT sio::message::ptr pyObjectToSioMessage(const pybind11::object& message);
     PYBIND11_EXPORT pybind11::object sioMessageToPyObject(sio::message::ptr message);

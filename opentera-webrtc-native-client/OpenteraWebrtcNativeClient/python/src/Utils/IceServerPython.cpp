@@ -4,11 +4,11 @@
 
 #include <pybind11/stl.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void introlab::initIceServerPython(pybind11::module& m)
+void opentera::initIceServerPython(pybind11::module& m)
 {
     py::class_<IceServer>(m, "IceServer")
             .def(py::init<string>(), py::arg("url"))

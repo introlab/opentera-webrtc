@@ -7,7 +7,7 @@
 
 #include <set>
 
-namespace introlab
+namespace opentera
 {
     class StreamPeerConnectionHandler : public PeerConnectionHandler
     {

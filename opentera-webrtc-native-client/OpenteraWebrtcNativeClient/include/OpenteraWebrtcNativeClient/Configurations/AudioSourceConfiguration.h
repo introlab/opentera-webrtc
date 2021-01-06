@@ -3,7 +3,7 @@
 
 #include <api/audio_options.h>
 
-namespace introlab
+namespace opentera
 {
     class AudioSourceConfiguration
     {

@@ -3,16 +3,16 @@ import time
 import opentera_webrtc_native_client as webrtc
 
 
-def on_signalling_connection_open():
-    print('on_signalling_connection_open')
+def on_signaling_connection_open():
+    print('on_signaling_connection_open')
 
 
-def on_signalling_connection_closed():
-    print('on_signalling_connection_closed')
+def on_signaling_connection_closed():
+    print('on_signaling_connection_closed')
 
 
-def on_signalling_connection_error(error):
-    print('on_signalling_connection_error:')
+def on_signaling_connection_error(error):
+    print('on_signaling_connection_error:')
     print('\terror={}\n'.format(error))
 
 
@@ -60,16 +60,16 @@ def on_data_channel_message_string(client, message):
 
 
 if __name__ == '__main__':
-    signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
+    signaling_server_configuration = webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
-    client = webrtc.DataChannelClient(signalling_server_configuration, webrtc_configuration, data_channel_configuration)
+    client = webrtc.DataChannelClient(signaling_server_configuration, webrtc_configuration, data_channel_configuration)
 
-    client.on_signalling_connection_open = on_signalling_connection_open
-    client.on_signalling_connection_closed = on_signalling_connection_closed
-    client.on_signalling_connection_error = on_signalling_connection_error
+    client.on_signaling_connection_open = on_signaling_connection_open
+    client.on_signaling_connection_closed = on_signaling_connection_closed
+    client.on_signaling_connection_error = on_signaling_connection_error
 
     client.on_room_clients_changed = on_room_clients_changed
 

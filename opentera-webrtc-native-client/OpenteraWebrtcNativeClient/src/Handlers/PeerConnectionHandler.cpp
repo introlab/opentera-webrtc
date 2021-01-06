@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver

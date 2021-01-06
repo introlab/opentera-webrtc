@@ -6,7 +6,7 @@
 #include <api/video/video_source_interface.h>
 #include <opencv2/core.hpp>
 
-namespace introlab
+namespace opentera
 {
 
     /**

@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)

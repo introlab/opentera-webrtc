@@ -8,7 +8,7 @@
 #include <thread>
 #include <vector>
 
-using namespace introlab;
+using namespace opentera;
 using namespace std;
 
 constexpr chrono::milliseconds NoiseVideoSourceFrameDuration = 100ms;
@@ -94,24 +94,24 @@ private:
 
 int main(int argc, char* argv[])
 {
-    auto signallingServerConfiguration =
-            SignallingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
+    auto signalingServerConfiguration =
+            SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create();
     auto videoSource = make_shared<NoiseVideoSource>();
     auto audioSource = make_shared<SinAudioSource>();
-    StreamClient client(signallingServerConfiguration, webrtcConfiguration, videoSource, audioSource);
+    StreamClient client(signalingServerConfiguration, webrtcConfiguration, videoSource, audioSource);
 
-    client.setOnSignallingConnectionOpen([]()
+    client.setOnSignalingConnectionOpen([]()
     {
-        cout << "OnSignallingConnectionOpen" << endl;
+        cout << "OnSignalingConnectionOpen" << endl;
     });
-    client.setOnSignallingConnectionClosed([]()
+    client.setOnSignalingConnectionClosed([]()
     {
-        cout << "OnSignallingConnectionClosed" << endl;
+        cout << "OnSignalingConnectionClosed" << endl;
     });
-    client.setOnSignallingConnectionError([](const string& error)
+    client.setOnSignalingConnectionError([](const string& error)
     {
-        cout << "OnSignallingConnectionClosed:" << endl << "\t" << error;
+        cout << "OnSignalingConnectionClosed:" << endl << "\t" << error;
     });
 
     client.setOnRoomClientsChanged([](const vector<RoomClient>& roomClients)

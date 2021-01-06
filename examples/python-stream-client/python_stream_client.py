@@ -7,16 +7,16 @@ import cv2
 import opentera_webrtc_native_client as webrtc
 
 
-def on_signalling_connection_open():
-    print('on_signalling_connection_open')
+def on_signaling_connection_open():
+    print('on_signaling_connection_open')
 
 
-def on_signalling_connection_closed():
-    print('on_signalling_connection_closed')
+def on_signaling_connection_closed():
+    print('on_signaling_connection_closed')
 
 
-def on_signalling_connection_error(error):
-    print('on_signalling_connection_error:')
+def on_signaling_connection_error(error):
+    print('on_signaling_connection_error:')
     print('\terror={}\n'.format(error))
 
 
@@ -66,19 +66,18 @@ def on_error(error):
 if __name__ == '__main__':
     frame = cv2.imread(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frame.png'))
 
-    signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
+    signaling_server_configuration = webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
-    data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
     video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))
     fs = 48000
     audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 16, fs, 1)
-    client = webrtc.StreamClient(signalling_server_configuration, webrtc_configuration, video_source, audio_source)
+    client = webrtc.StreamClient(signaling_server_configuration, webrtc_configuration, video_source, audio_source)
 
-    client.on_signalling_connection_open = on_signalling_connection_open
-    client.on_signalling_connection_closed = on_signalling_connection_closed
-    client.on_signalling_connection_error = on_signalling_connection_error
+    client.on_signaling_connection_open = on_signaling_connection_open
+    client.on_signaling_connection_closed = on_signaling_connection_closed
+    client.on_signaling_connection_error = on_signaling_connection_error
 
     client.on_room_clients_changed = on_room_clients_changed
 

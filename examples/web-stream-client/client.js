@@ -26,11 +26,11 @@
   });
 
   function connectStreamClientEvents() {
-    streamClient.onSignallingConnectionOpen = () => {
+    streamClient.onSignalingConnectionOpen = () => {
       connectButton.disabled = true;
       closeButton.disabled = false;
     };
-    streamClient.onSignallingConnectionClose = async () => {
+    streamClient.onSignalingConnectionClose = async () => {
       connectButton.disabled = false;
       closeButton.disabled = true;
       callAllButton.disabled = true;
@@ -38,7 +38,7 @@
       closeAllRoomPeerConnectionsButton.disabled = true;
       callOneButton.disabled = true;
     };
-    streamClient.onSignallingConnectionError = message => {
+    streamClient.onSignalingConnectionError = message => {
       alert(message);
     }
     streamClient.onRoomClientsChange = clients => {
@@ -85,7 +85,7 @@
 
 
   connectButton.onclick = async () => {
-    const SignallingServerConfiguration = {
+    const SignalingServerConfiguration = {
       url: 'http://localhost:8080',
       name: nameInput.value,
       data: {}, // Client custom data
@@ -101,7 +101,7 @@
     };
     let logger = (...args) => console.log(...args);
 
-    streamClient = new window.openteraWebrtcWebClient.StreamClient(SignallingServerConfiguration,
+    streamClient = new window.openteraWebrtcWebClient.StreamClient(SignalingServerConfiguration,
       StreamConfiguration, RtcConfiguration, logger);
     connectStreamClientEvents();
 
