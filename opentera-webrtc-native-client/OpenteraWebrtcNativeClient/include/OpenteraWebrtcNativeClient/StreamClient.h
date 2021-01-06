@@ -63,6 +63,18 @@ namespace opentera
                 const Client& peerClient, bool isCaller) override;
     };
 
+    /**
+     * @brief Sets the callback that is called when a stream is added.
+     *
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client of the stream
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
@@ -71,6 +83,18 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a stream is removed.
+     *
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client of the stream
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void StreamClient::setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
@@ -79,6 +103,20 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a video stream frame is received.
+     *
+     * The callback is called from a WebRTC processing thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client of the stream frame
+     * - bgrImg: The BGR frame image
+     * - timestampUs The timestamp in us
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void StreamClient::setOnVideoFrameReceived(
             const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback)
     {
@@ -88,6 +126,23 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when an audio stream frame is received.
+     *
+     * The callback is called from a WebRTC processing thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client of the stream frame
+     * - audioData: The audio data
+     * - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
+     * - sampleRate: The audio stream sample rate
+     * - numberOfChannels: The audio stream channel count
+     * - numberOfFrames: The number of frames
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void StreamClient::setOnAudioFrameReceived(const std::function<void(
             const Client& client,
             const void* audioData,

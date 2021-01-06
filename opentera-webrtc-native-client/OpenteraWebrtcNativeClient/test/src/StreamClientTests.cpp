@@ -101,8 +101,8 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
                     sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource2);
 
-    client1->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
-    client2->setOnSignalingConnectionOpen([&] { setupAwaiter.done(); });
+    client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
 
     client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
@@ -112,8 +112,8 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
     client2->connect();
     setupAwaiter.wait();
 
-    client1->setOnSignalingConnectionOpen([] {});
-    client2->setOnSignalingConnectionOpen([] {});
+    client1->setOnSignalingConnectionOpened([] {});
+    client2->setOnSignalingConnectionOpened([] {});
 
     // Setup the callback
     CallbackAwaiter onVideoFrameAwaiter1(1, 15s);

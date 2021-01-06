@@ -10,7 +10,7 @@ using namespace cv;
 /**
  * @brief Construct a VideoSource
  *
- * @param configuration the configuration applied to the video stream by the image transport layer
+ * @param configuration The configuration applied to the video stream by the image transport layer
  */
 VideoSource::VideoSource(VideoSourceConfiguration configuration):
         m_configuration(move(configuration))
@@ -24,7 +24,7 @@ VideoSource::VideoSource(VideoSourceConfiguration configuration):
  * Frame will be resized to match the transport layer request
  *
  * @param bgrImg BGR8 encoded frame data
- * @param timestampUs frame timestamp in microseconds
+ * @param timestampUs Frame timestamp in microseconds
  */
 void VideoSource::sendFrame(const Mat& bgrImg, int64_t timestampUs)
 {

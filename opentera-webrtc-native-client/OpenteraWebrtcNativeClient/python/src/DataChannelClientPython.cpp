@@ -31,7 +31,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
             .def("send_to_all", py::overload_cast<const string&>(&DataChannelClient::sendToAll),
                     py::arg("message"))
 
-            .def_property("on_data_channel_open", nullptr, &DataChannelClient::setOnDataChannelOpen)
+            .def_property("on_data_channel_opened", nullptr, &DataChannelClient::setOnDataChannelOpened)
             .def_property("on_data_channel_closed", nullptr, &DataChannelClient::setOnDataChannelClosed)
             .def_property("on_data_channel_error", nullptr, &DataChannelClient::setOnDataChannelError)
             .def_property("on_data_channel_message_binary", nullptr, &DataChannelClient::setOnDataChannelMessageBinary)

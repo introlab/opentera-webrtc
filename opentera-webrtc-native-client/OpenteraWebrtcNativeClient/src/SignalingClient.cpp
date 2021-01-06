@@ -72,6 +72,9 @@ SignalingClient::~SignalingClient()
 {
 }
 
+/**
+ * @brief Connects the client the signaling server.
+ */
 void SignalingClient::connect()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
@@ -82,6 +85,9 @@ void SignalingClient::connect()
     });
 }
 
+/**
+ * @brief Closes all client connections (asynchronous).
+ */
 void SignalingClient::close()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
@@ -95,6 +101,9 @@ void SignalingClient::close()
     });
 }
 
+/**
+ * @brief Closes all client connections (Synchronous).
+ */
 void SignalingClient::closeSync()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
@@ -108,6 +117,9 @@ void SignalingClient::closeSync()
     });
 }
 
+/**
+ * @brief Calls all room clients.
+ */
 void SignalingClient::callAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
@@ -122,6 +134,9 @@ void SignalingClient::callAll()
     });
 }
 
+/**
+ * @brief Calls the specified clients.
+ */
 void SignalingClient::callIds(const vector<string>& ids)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, ids]()
@@ -137,6 +152,9 @@ void SignalingClient::callIds(const vector<string>& ids)
     });
 }
 
+/**
+ * @brief hangs up all clients.
+ */
 void SignalingClient::hangUpAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
@@ -146,6 +164,9 @@ void SignalingClient::hangUpAll()
     });
 }
 
+/**
+ * @brief Closes all room peer connections.
+ */
 void SignalingClient::closeAllRoomPeerConnections()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
@@ -154,6 +175,10 @@ void SignalingClient::closeAllRoomPeerConnections()
     });
 }
 
+/**
+ * @brief Returns the connected room client ids.
+ * @return The connected room client ids
+ */
 vector<string> SignalingClient::getConnectedRoomClientIds()
 {
     return FunctionTask<vector<string>>::callSync(m_internalClientThread.get(), [this]()
@@ -168,6 +193,10 @@ vector<string> SignalingClient::getConnectedRoomClientIds()
     });
 }
 
+/**
+ * @brief Returns the room clients
+ * @return The room clients
+ */
 vector<RoomClient> SignalingClient::getRoomClients()
 {
     return FunctionTask<vector<RoomClient>>::callSync(m_internalClientThread.get(), [this]()
@@ -271,7 +300,7 @@ void SignalingClient::onJoinRoomCallback(const sio::message::list& message)
     {
         if (message[0]->get_bool())
         {
-            invokeIfCallable(m_onSignalingConnectionOpen);
+            invokeIfCallable(m_onSignalingConnectionOpened);
         }
         else
         {

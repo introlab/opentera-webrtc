@@ -31,7 +31,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def("get_room_client", &SignalingClient::getRoomClient, py::arg("id"))
             .def_property_readonly("room_clients", &SignalingClient::getRoomClients)
 
-            .def_property("on_signaling_connection_open", nullptr, &SignalingClient::setOnSignalingConnectionOpen)
+            .def_property("on_signaling_connection_opened", nullptr, &SignalingClient::setOnSignalingConnectionOpened)
             .def_property("on_signaling_connection_closed", nullptr, &SignalingClient::setOnSignalingConnectionClosed)
             .def_property("on_signaling_connection_error", nullptr, &SignalingClient::setOnSignalingConnectionError)
 

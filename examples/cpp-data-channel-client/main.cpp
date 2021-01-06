@@ -8,8 +8,9 @@ using namespace std;
 int main(int argc, char* argv[])
 {
     vector<IceServer> iceServers;
-    if (!IceServer::fetchFromServer("", "abc", iceServers))
+    if (!IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers))
     {
+        cout << "IceServer::fetchFromServer failed" << endl;
         iceServers.clear();
     }
 
@@ -19,21 +20,25 @@ int main(int argc, char* argv[])
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
 
-    client.setOnSignalingConnectionOpen([]()
+    client.setOnSignalingConnectionOpened([]()
     {
-        cout << "OnSignalingConnectionOpen" << endl;
+        // This callback is called from the internal client thread.
+        cout << "OnSignalingConnectionOpened" << endl;
     });
     client.setOnSignalingConnectionClosed([]()
     {
+        // This callback is called from the internal client thread.
         cout << "OnSignalingConnectionClosed" << endl;
     });
     client.setOnSignalingConnectionError([](const string& error)
     {
+        // This callback is called from the internal client thread.
         cout << "OnSignalingConnectionClosed:" << endl << "\t" << error;
     });
 
     client.setOnRoomClientsChanged([](const vector<RoomClient>& roomClients)
     {
+        // This callback is called from the internal client thread.
         cout << "OnRoomClientsChanged:" << endl;
         for (const auto& c : roomClients)
         {
@@ -43,39 +48,46 @@ int main(int argc, char* argv[])
 
     client.setOnClientConnected([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnClientConnected:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnClientDisconnected([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnClientDisconnected:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
 
     client.setOnError([](const string& error)
     {
+        // This callback is called from the internal client thread.
         cout << "error or warning:" << endl;
         cout << "\t" << error << endl;
     });
 
-    client.setOnDataChannelOpen([](const Client& client)
+    client.setOnDataChannelOpened([](const Client& client)
     {
-        cout << "OnDataChannelOpen:" << endl;
+        // This callback is called from the internal client thread.
+        cout << "OnDataChannelOpened:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnDataChannelClosed([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnDataChannelClosed:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnDataChannelError([](const Client& client, const string& error)
     {
+        // This callback is called from the internal client thread.
         cout << "OnDataChannelError:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         cout << "\t" << error << endl;
     });
     client.setOnDataChannelMessageString([](const Client& client, const string& message)
     {
+        // This callback is called from the internal client thread.
         cout << "OnDataChannelError:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         cout << "\t" << message << endl;
@@ -87,4 +99,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

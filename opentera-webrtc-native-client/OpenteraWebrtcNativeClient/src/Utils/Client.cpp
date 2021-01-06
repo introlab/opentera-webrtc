@@ -74,6 +74,13 @@ bool opentera::operator!=(const sio::message& m1, const sio::message& m2)
     return !(m1 == m2);
 }
 
+/**
+ * @brief Creates a client with the specified values.
+ *
+ * @param id The client id
+ * @param name The client name
+ * @param data The client data
+ */
 Client::Client(string id, string name, sio::message::ptr data) :
         m_id(move(id)), m_name(move(name)), m_data(move(data))
 {
@@ -111,6 +118,14 @@ bool Client::isValid(const sio::message::ptr &message)
     return id->get_flag() == sio::message::flag_string && name->get_flag() == sio::message::flag_string;
 }
 
+/**
+ * @brief Creates a client with the specified values.
+ *
+ * @param id The client id
+ * @param name The client name
+ * @param data The client data
+ * @param isConnected Indicates if the client is connected (RTCPeerConnection)
+ */
 RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isConnected) :
         m_id(move(id)), m_name(move(name)), m_data(move(data)), m_isConnected(isConnected)
 {

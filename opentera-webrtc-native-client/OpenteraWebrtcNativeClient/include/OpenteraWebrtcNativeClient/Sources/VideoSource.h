@@ -11,9 +11,9 @@
 namespace opentera {
 
     /**
-     * @brief Represent a video source that can be added to a WebRTC call
+     * @brief Represent a video source that can be added to a WebRTC call.
      *
-     * Pass a shared_ptr to an instance of this to the StreamClient and call sendFrame for each of your frame
+     * Pass a shared_ptr to an instance of this to the StreamClient and call sendFrame for each of your frame.
      */
     class VideoSource : public rtc::AdaptedVideoTrackSource
     {
@@ -39,7 +39,7 @@ namespace opentera {
     };
 
     /**
-     * @brief indicates if this source is screencast
+     * @brief Indicates if this source is screencast.
      * @return true if this source is a screencast
      */
     inline bool VideoSource::is_screencast() const
@@ -48,7 +48,7 @@ namespace opentera {
     }
 
     /**
-     * @brief indicates if this source needs denoising
+     * @brief Indicates if this source needs denoising.
      * @return true if this source needs denoising
      */
     inline absl::optional<bool> VideoSource::needs_denoising() const
@@ -57,8 +57,8 @@ namespace opentera {
     }
 
     /**
-     * @brief indicates if this source is remote
-     * @return always false, the source is local
+     * @brief Indicates if this source is remote.
+     * @return Always false, the source is local
      */
     inline bool VideoSource::remote() const
     {
@@ -66,8 +66,8 @@ namespace opentera {
     }
 
     /**
-     * @brief indicates if this source is live
-     * @return always kLive, the source is live
+     * @brief Indicates if this source is live.
+     * @return Always kLive, the source is live
      */
     inline webrtc::MediaSourceInterface::SourceState VideoSource::state() const
     {

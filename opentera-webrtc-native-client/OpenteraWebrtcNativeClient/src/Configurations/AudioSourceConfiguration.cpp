@@ -20,6 +20,10 @@ AudioSourceConfiguration::AudioSourceConfiguration(absl::optional<bool> echoCanc
 {
 }
 
+/**
+ * Converts a AudioSourceConfiguration to a cricket::AudioOptions.
+ * @return The converted cricket::AudioOptions
+ */
 AudioSourceConfiguration::operator cricket::AudioOptions() const
 {
     cricket::AudioOptions options;

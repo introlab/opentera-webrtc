@@ -94,28 +94,39 @@ private:
 
 int main(int argc, char* argv[])
 {
+    vector<IceServer> iceServers;
+    if (!IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers))
+    {
+        cout << "IceServer::fetchFromServer failed" << endl;
+        iceServers.clear();
+    }
+
     auto signalingServerConfiguration =
             SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
-    auto webrtcConfiguration = WebrtcConfiguration::create();
+    auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto videoSource = make_shared<NoiseVideoSource>();
     auto audioSource = make_shared<SinAudioSource>();
     StreamClient client(signalingServerConfiguration, webrtcConfiguration, videoSource, audioSource);
 
-    client.setOnSignalingConnectionOpen([]()
+    client.setOnSignalingConnectionOpened([]()
     {
-        cout << "OnSignalingConnectionOpen" << endl;
+        // This callback is called from the internal client thread.
+        cout << "OnSignalingConnectionOpened" << endl;
     });
     client.setOnSignalingConnectionClosed([]()
     {
+        // This callback is called from the internal client thread.
         cout << "OnSignalingConnectionClosed" << endl;
     });
     client.setOnSignalingConnectionError([](const string& error)
     {
+        // This callback is called from the internal client thread.
         cout << "OnSignalingConnectionClosed:" << endl << "\t" << error;
     });
 
     client.setOnRoomClientsChanged([](const vector<RoomClient>& roomClients)
     {
+        // This callback is called from the internal client thread.
         cout << "OnRoomClientsChanged:" << endl;
         for (const auto& c : roomClients)
         {
@@ -125,33 +136,39 @@ int main(int argc, char* argv[])
 
     client.setOnClientConnected([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnClientConnected:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnClientDisconnected([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnClientDisconnected:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
 
     client.setOnError([](const string& error)
     {
+        // This callback is called from the internal client thread.
         cout << "error or warning:" << endl;
         cout << "\t" << error << endl;
     });
 
     client.setOnAddRemoteStream([](const Client& client)
     {
-        cout << "OnDataChannelOpen:" << endl;
+        // This callback is called from the internal client thread.
+        cout << "OnAddRemoteStream:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnRemoveRemoteStream([](const Client& client)
     {
+        // This callback is called from the internal client thread.
         cout << "OnRemoveRemoteStream:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
     });
     client.setOnVideoFrameReceived([](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
     {
+        // This callback is called from a WebRTC processing thread.
         cv::imshow(client.id(), bgrImg);
         cv::waitKey(1);
     });
@@ -162,6 +179,7 @@ int main(int argc, char* argv[])
         size_t numberOfChannels,
         size_t numberOfFrames)
     {
+        // This callback is called from a WebRTC processing thread.
         cout << "OnAudioFrameReceived:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
@@ -174,4 +192,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

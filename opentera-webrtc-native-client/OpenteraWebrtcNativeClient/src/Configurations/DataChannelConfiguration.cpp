@@ -10,6 +10,10 @@ DataChannelConfiguration::DataChannelConfiguration(bool ordered, absl::optional<
 {
 }
 
+/**
+ * Converts a AudioSourceConfiguration to a webrtc::DataChannelInit.
+ * @return The converted webrtc::DataChannelInit
+ */
 DataChannelConfiguration::operator webrtc::DataChannelInit() const
 {
     webrtc::DataChannelInit configuration;

@@ -22,6 +22,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents the base class of DataChannelClient and StreamClient.
+     */
     class SignalingClient
     {
         std::unique_ptr<rtc::Thread> m_internalClientThread;
@@ -34,7 +37,7 @@ namespace opentera
         std::map<std::string, Client> m_roomClientsById;
         std::vector<std::string> m_alreadyAcceptedCalls;
 
-        std::function<void()> m_onSignalingConnectionOpen;
+        std::function<void()> m_onSignalingConnectionOpened;
         std::function<void()> m_onSignalingConnectionClosed;
         std::function<void(const std::string&)> m_onSignalingConnectionError;
 
@@ -85,7 +88,7 @@ namespace opentera
         RoomClient getRoomClient(const std::string& id);
         std::vector<RoomClient> getRoomClients();
 
-        void setOnSignalingConnectionOpen(const std::function<void()>& callback);
+        void setOnSignalingConnectionOpened(const std::function<void()>& callback);
         void setOnSignalingConnectionClosed(const std::function<void()>& callback);
         void setOnSignalingConnectionError(const std::function<void(const std::string&)>& callback);
 
@@ -148,6 +151,10 @@ namespace opentera
         void removeConnection(const std::string& id);
     };
 
+    /**
+     * @brief Indicates if the client is connected to the signaling server.
+     * @return true if the client is connected to the signaling server
+     */
     inline bool SignalingClient::isConnected()
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
@@ -156,6 +163,10 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Indicates if the client is connected to a least one client (RTCPeerConnection).
+     * @return true if the client is connected to a least one client (RTCPeerConnection)
+     */
     inline bool SignalingClient::isRtcConnected()
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
@@ -164,6 +175,10 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Returns the client id.
+     * @return The client id
+     */
     inline std::string SignalingClient::id()
     {
         return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
@@ -172,6 +187,13 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Returns the room client that matches with the specified id.
+     * If no room client matches with the id, a default room client is returned.
+     *
+     * @param id
+     * @return The room client that matches with the specified id
+     */
     inline RoomClient SignalingClient::getRoomClient(const std::string& id)
     {
         return FunctionTask<RoomClient>::callSync(m_internalClientThread.get(), [this, &id]()
@@ -180,8 +202,8 @@ namespace opentera
             if (clientIt != m_roomClientsById.end())
             {
                 const auto& client = clientIt->second;
-                bool isConnected = m_peerConnectionHandlersById.find(client.id()) != m_peerConnectionHandlersById.end() ||
-                                   client.id() == this->id();
+                bool isConnected = m_peerConnectionHandlersById.find(
+                        client.id()) != m_peerConnectionHandlersById.end() || client.id() == this->id();
                 return RoomClient(client, isConnected);
             }
             else
@@ -192,14 +214,28 @@ namespace opentera
 
     }
 
-    inline void SignalingClient::setOnSignalingConnectionOpen(const std::function<void()>& callback)
+    /**
+     * @brief Sets the callback that is called when the signaling connection opens.
+     *
+     * The callback is called from the internal client thread.
+     *
+     * @param callback The callback
+     */
+    inline void SignalingClient::setOnSignalingConnectionOpened(const std::function<void()>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            m_onSignalingConnectionOpen = callback;
+            m_onSignalingConnectionOpened = callback;
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when the signaling connection closes.
+     *
+     * The callback is called from the internal client thread.
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -208,6 +244,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a signaling connection error occurs.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - error: The error message
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnSignalingConnectionError(
             const std::function<void(const std::string&)>& callback)
     {
@@ -217,6 +264,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when the room client changes.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - roomClients: The room clients
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnRoomClientsChanged(
             const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
@@ -226,6 +284,20 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is used to accept or reject a call.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client the call is from
+     *
+     * Callback return value:
+     * - true to accept the call, false to reject the call
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -234,6 +306,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a call is rejected.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client that rejects the call
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -242,6 +325,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a client peer connection opens.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client that is connected
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -250,6 +344,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when a client peer connection closes.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client that is disconnected
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
@@ -258,6 +363,17 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is called when an error occurs.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - error: The error message
+     * @endparblock
+     *
+     * @param callback The callback
+     */
     inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
