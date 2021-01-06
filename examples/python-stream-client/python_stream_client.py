@@ -67,7 +67,8 @@ if __name__ == '__main__':
     frame = cv2.imread(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frame.png'))
 
     signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
-    webrtc_configuration = webrtc.WebrtcConfiguration.create()
+    ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
+    webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
     video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))

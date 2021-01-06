@@ -61,7 +61,8 @@ def on_data_channel_message_string(client, message):
 
 if __name__ == '__main__':
     signalling_server_configuration = webrtc.SignallingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
-    webrtc_configuration = webrtc.WebrtcConfiguration.create()
+    ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
+    webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
     client = webrtc.DataChannelClient(signalling_server_configuration, webrtc_configuration, data_channel_configuration)

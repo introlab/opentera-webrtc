@@ -10,9 +10,14 @@ find_package(OpenCV REQUIRED core imgproc)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../3rdParty/socket.io-client-cpp/src)
+include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)
 include_directories(../3rdParty/webrtc_native/webrtc/src)
 include_directories(../3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
+include_directories(../3rdParty/webrtc_native/webrtc/src/third_party/boringssl/src/include)
+include_directories(../3rdParty/cpp-httplib)
 include_directories(include)
+
+add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 
 file(GLOB_RECURSE
         source_files
