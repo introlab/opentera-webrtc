@@ -28,7 +28,7 @@ size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)
 }
 
 /**
- * @brief Construct an AudioSource
+ * @brief Creates an AudioSource
  *
  * @param configuration the configuration applied to the audio stream by the audio transport layer
  * @param bitsPerSample The audio stream sample size (8, 16 or 32 bits)

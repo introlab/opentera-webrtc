@@ -36,7 +36,7 @@ namespace opentera
     };
 
     /**
-     * Returns the ice server urls.
+     * @brief Returns the ice server urls.
      * @return The ice server urls
      */
     inline const std::vector<std::string>& IceServer::urls() const
@@ -45,7 +45,7 @@ namespace opentera
     }
 
     /**
-     * Returns the ice server username.
+     * @brief Returns the ice server username.
      * @return The ice server username
      */
     inline const std::string& IceServer::username() const
@@ -54,7 +54,7 @@ namespace opentera
     }
 
     /**
-     * Returns the ice server credential.
+     * @brief Returns the ice server credential.
      * @return The ice server credential
      */
     inline const std::string& IceServer::credential() const

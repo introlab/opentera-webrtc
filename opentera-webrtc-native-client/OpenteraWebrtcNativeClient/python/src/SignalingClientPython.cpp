@@ -12,36 +12,115 @@ namespace py = pybind11;
 void opentera::initSignalingClientPython(pybind11::module& m)
 {
     py::class_<SignalingClient>(m, "SignalingClient")
-            .def("connect", &SignalingClient::connect)
-            .def("close", &SignalingClient::close)
-            .def("close_sync", &SignalingClient::closeSync)
+            .def("connect", &SignalingClient::connect, "Connects the client the signaling server.")
+            .def("close", &SignalingClient::close, "Closes all client connections (asynchronous).")
+            .def("close_sync", &SignalingClient::closeSync, "Closes all client connections (synchronous).")
 
-            .def("call_all", &SignalingClient::callAll)
-            .def("call_ids", &SignalingClient::callIds, py::arg("ids"))
+            .def("call_all", &SignalingClient::callAll, "Calls all room clients.")
+            .def("call_ids", &SignalingClient::callIds, "Calls the specified clients.", py::arg("ids"))
 
-            .def("hang_up_all", &SignalingClient::hangUpAll)
-            .def("close_all_room_peer_connections", &SignalingClient::closeAllRoomPeerConnections)
+            .def("hang_up_all", &SignalingClient::hangUpAll, "Hangs up all clients.")
+            .def("close_all_room_peer_connections", &SignalingClient::closeAllRoomPeerConnections,
+                    "Closes all room peer connections.")
 
-            .def_property_readonly("is_connected", &SignalingClient::isConnected)
-            .def_property_readonly("is_rtc_connected", &SignalingClient::isRtcConnected)
-            .def_property_readonly("id", &SignalingClient::id)
+            .def_property_readonly("is_connected", &SignalingClient::isConnected,
+                    "Indicates if the client is connected to the signaling server.\n"
+                    ":return: True if the client is connected to the signaling server")
+            .def_property_readonly("is_rtc_connected", &SignalingClient::isRtcConnected,
+                    "Indicates if the client is connected to a least one client (RTCPeerConnection).\n"
+                    ":return: True if the client is connected to a least one client (RTCPeerConnection)")
+            .def_property_readonly("id", &SignalingClient::id,
+                    "Returns the client id.\n"
+                    ":return: The client id")
 
-            .def_property_readonly("connected_room_client_ids", &SignalingClient::getConnectedRoomClientIds)
+            .def_property_readonly("connected_room_client_ids", &SignalingClient::getConnectedRoomClientIds,
+                    "Returns the connected room client ids.\n"
+                    ":return: The connected room client ids")
 
-            .def("get_room_client", &SignalingClient::getRoomClient, py::arg("id"))
-            .def_property_readonly("room_clients", &SignalingClient::getRoomClients)
+            .def("get_room_client", &SignalingClient::getRoomClient,
+                    "Returns the room client that matches with the specified id.\n"
+                    "If no room client matches with the id, a default room client is returned.\n"
+                    "\n"
+                    ":param id: The room client id\n"
+                    ":return: The room client that matches with the specified id",
+                    py::arg("id"))
+            .def_property_readonly("room_clients", &SignalingClient::getRoomClients,
+                    "Returns the room clients\n"
+                    ":return: The room clients")
 
-            .def_property("on_signaling_connection_opened", nullptr, &SignalingClient::setOnSignalingConnectionOpened)
-            .def_property("on_signaling_connection_closed", nullptr, &SignalingClient::setOnSignalingConnectionClosed)
-            .def_property("on_signaling_connection_error", nullptr, &SignalingClient::setOnSignalingConnectionError)
+            .def_property("on_signaling_connection_opened", nullptr, &SignalingClient::setOnSignalingConnectionOpened,
+                    "Sets the callback that is called when the signaling connection opens.\n"
+                    "\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_signaling_connection_closed", nullptr, &SignalingClient::setOnSignalingConnectionClosed,
+                    "Sets the callback that is called when the signaling connection closes.\n"
+                    "\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_signaling_connection_error", nullptr, &SignalingClient::setOnSignalingConnectionError,
+                    "Sets the callback that is called when a signaling connection error occurs.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - error: The error message\n"
+                    "\n"
+                    ":param callback: The callback")
 
-            .def_property("on_room_clients_changed", nullptr, &SignalingClient::setOnRoomClientsChanged)
+            .def_property("on_room_clients_changed", nullptr, &SignalingClient::setOnRoomClientsChanged,
+                    "Sets the callback that is called when the room client changes.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - room_clients: The room clients\n"
+                    "\n"
+                    ":param callback: The callback")
 
-            .def_property("call_acceptor", nullptr, &SignalingClient::setCallAcceptor)
-            .def_property("on_call_rejected", nullptr, &SignalingClient::setOnCallRejected)
+            .def_property("call_acceptor", nullptr, &SignalingClient::setCallAcceptor,
+                    "Sets the callback that is used to accept or reject a call.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client the call is from\n"
+                    "\n"
+                    "Callback return value:\n"
+                    " - True to accept the call, False to reject the call\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_call_rejected", nullptr, &SignalingClient::setOnCallRejected,
+                    "Sets the callback that is called when a call is rejected.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client that rejects the call\n"
+                    "\n"
+                    ":param callback: The callback")
 
-            .def_property("on_client_connected", nullptr, &SignalingClient::setOnClientConnected)
-            .def_property("on_client_disconnected", nullptr, &SignalingClient::setOnClientDisconnected)
+            .def_property("on_client_connected", nullptr, &SignalingClient::setOnClientConnected,
+                    "Sets the callback that is called when a client peer connection opens.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client that is connected\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_client_disconnected", nullptr, &SignalingClient::setOnClientDisconnected,
+                    "Sets the callback that is called when a client peer connection closes.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client that is disconnected\n"
+                    "\n"
+                    ":param callback: The callback")
 
-            .def_property("on_error", nullptr, &SignalingClient::setOnError);
+            .def_property("on_error", nullptr, &SignalingClient::setOnError,
+                    "Sets the callback that is called when an error occurs.\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - error: The error message\n"
+                    "\n"
+                    ":param callback: The callback");
 }

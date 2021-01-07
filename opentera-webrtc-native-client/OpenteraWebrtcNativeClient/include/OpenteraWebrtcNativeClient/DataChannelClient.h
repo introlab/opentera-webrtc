@@ -165,8 +165,8 @@ namespace opentera
      * @parblock
      * Callback parameters:
      * - client: The client the binary data are from
-     * - data: The data
-     * - dataSize: The data size
+     * - data: The binary data
+     * - dataSize: The binary data size
      * @endparblock
      *
      * @param callback The callback

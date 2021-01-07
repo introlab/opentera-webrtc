@@ -119,7 +119,7 @@ bool Client::isValid(const sio::message::ptr &message)
 }
 
 /**
- * @brief Creates a client with the specified values.
+ * @brief Creates a room client with the specified values.
  *
  * @param id The client id
  * @param name The client name
@@ -131,6 +131,12 @@ RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isCo
 {
 }
 
+/**
+ * @brief Creates a room client from a client.
+ *
+ * @param client The client
+ * @param isConnected Indicates if the client is connected (RTCPeerConnection)
+ */
 RoomClient::RoomClient(const Client& client, bool isConnected) :
         m_id(client.id()), m_name(client.name()), m_data(client.data()), m_isConnected(isConnected)
 {

@@ -8,7 +8,7 @@ using namespace std;
 using namespace cv;
 
 /**
- * @brief Construct a VideoSource
+ * @brief Creates a VideoSource
  *
  * @param configuration The configuration applied to the video stream by the image transport layer
  */

@@ -22,7 +22,7 @@ namespace opentera
     public:
         Client() = default;
         Client(std::string id, std::string name, sio::message::ptr data);
-        Client(const sio::message::ptr& message);
+        explicit Client(const sio::message::ptr& message);
         Client(const Client& other) = default;
         Client(Client&& other) = default;
         virtual ~Client() = default;

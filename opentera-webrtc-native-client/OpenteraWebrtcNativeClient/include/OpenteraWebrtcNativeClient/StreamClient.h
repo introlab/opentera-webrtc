@@ -11,7 +11,7 @@
 namespace opentera
 {
     /**
-     * @brief a signaling client to join a webrtc room and stream a video source
+     * @brief A signaling client to join a WebRTC room and stream a video source.
      */
     class StreamClient: public SignalingClient
     {
@@ -112,7 +112,7 @@ namespace opentera
      * Callback parameters:
      * - client: The client of the stream frame
      * - bgrImg: The BGR frame image
-     * - timestampUs The timestamp in us
+     * - timestampUs The timestamp in microseconds
      * @endparblock
      *
      * @param callback The callback

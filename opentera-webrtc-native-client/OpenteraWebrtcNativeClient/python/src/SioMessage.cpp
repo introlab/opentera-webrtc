@@ -82,7 +82,8 @@ py::object opentera::sioMessageToPyObject(sio::message::ptr message)
         case sio::message::flag_array:
         {
             py::list list;
-            for (const auto &x : message->get_vector()) {
+            for (const auto &x : message->get_vector())
+            {
                 list.append(sioMessageToPyObject(x));
             }
             return list;

@@ -11,16 +11,40 @@ namespace py = pybind11;
 void opentera::initIceServerPython(pybind11::module& m)
 {
     py::class_<IceServer>(m, "IceServer")
-            .def(py::init<string>(), py::arg("url"))
+            .def(py::init<string>(),
+                    "Creates an ice server configuration with the specified value.\n"
+                    "\n"
+                    ":param url: The ice server url",
+                    py::arg("url"))
             .def(py::init<string, string, string>(),
+                    "Creates an ice server configuration with the specified values.\n"
+                    "\n"
+                    ":param url: The ice server url\n"
+                    ":param username: The ice server username\n"
+                    ":param credential: The ice server credential",
                     py::arg("url"), py::arg("username"), py::arg("credential"))
-            .def(py::init<vector<string>>(), py::arg("urls"))
+            .def(py::init<vector<string>>(),
+                    "Creates an ice server configuration with the specified value.\n"
+                    "\n"
+                    ":param urls: The ice server urls",
+                    py::arg("urls"))
             .def(py::init<vector<string>, string, string>(),
+                    "Creates an ice server configuration with the specified values.\n"
+                    "\n"
+                    ":param urls: The ice server urls\n"
+                    ":param username: The ice server username\n"
+                    ":param credential: The ice server credential",
                     py::arg("urls"), py::arg("username"), py::arg("credential"))
 
-            .def_property_readonly("urls", &IceServer::urls)
-            .def_property_readonly("username", &IceServer::username)
-            .def_property_readonly("credential", &IceServer::credential)
+            .def_property_readonly("urls", &IceServer::urls,
+                    "Returns the ice server urls.\n"
+                    ":return: The ice server urls")
+            .def_property_readonly("username", &IceServer::username,
+                    "Returns the ice server username.\n"
+                    ":return: The ice server username")
+            .def_property_readonly("credential", &IceServer::credential,
+                    "Returns the ice server credential.\n"
+                    ":return: The ice server credential")
 
             .def_static("fetch_from_server", [](const string& url, const string& password)
             {
@@ -33,7 +57,13 @@ void opentera::initIceServerPython(pybind11::module& m)
                 {
                     throw runtime_error("\"fetch_from_server\" failed");
                 }
-            }, py::arg("url"), py::arg("password"))
+            },
+            "Fetches the ice servers from the signaling server.\n"
+            " *\n"
+            ":param url: The signaling server url\n"
+            ":param password: The signaling server username\n"
+            ":return: The fetched ice servers",
+            py::arg("url"), py::arg("password"))
             .def_static("from_json", [](const string& json)
             {
                 vector<IceServer> iceServers;
@@ -45,5 +75,10 @@ void opentera::initIceServerPython(pybind11::module& m)
                 {
                     throw py::value_error("Invalid json");
                 }
-            }, py::arg("json"));
+            },
+            "Gets ice servers from a JSON\n"
+            "\n"
+            ":param json: The JSON to parse\n"
+            ":return The parsed ice servers",
+            py::arg("json"));
 }

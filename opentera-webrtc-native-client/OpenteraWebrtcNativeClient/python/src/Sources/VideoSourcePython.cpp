@@ -27,7 +27,22 @@ void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg
 
 void opentera::initVideoSourcePython(pybind11::module& m)
 {
-    py::class_<VideoSource, shared_ptr<VideoSource>>(m, "VideoSource")
-        .def(py::init<VideoSourceConfiguration>(), py::arg("configuration"))
-        .def("send_frame", &sendFrame, py::arg("bgr_img"), py::arg("timestamp_us"));
+    py::class_<VideoSource, shared_ptr<VideoSource>>(m, "VideoSource",
+            "Represents a video source that can be added to a WebRTC call.\n"
+            "\n"
+            "Pass an instance of this to the StreamClient and call sendFrame for each of your frame.")
+            .def(py::init<VideoSourceConfiguration>(),
+                    "Creates a VideoSource\n"
+                    "\n"
+                    ":param configuration: The configuration applied to the video stream by the image transport layer",
+                    py::arg("configuration"))
+            .def("send_frame", &sendFrame,
+                    "Sends a frame to the WebRTC transport layer\n"
+                    "\n"
+                    "The frame may or may not be sent depending of the transport layer state\n"
+                    "Frame will be resized to match the transport layer request\n"
+                    "\n"
+                    ":param bgr_img: BGR8 encoded frame data\n"
+                    ":param timestamp_us: Frame timestamp in microseconds",
+                    py::arg("bgr_img"), py::arg("timestamp_us"));
 }

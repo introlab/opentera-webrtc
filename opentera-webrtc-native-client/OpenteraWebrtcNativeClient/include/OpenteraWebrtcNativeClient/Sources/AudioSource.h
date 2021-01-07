@@ -15,7 +15,7 @@ namespace opentera
 {
 
     /**
-     * @brief Represent a audio source that can be added to a WebRTC call.
+     * @brief Represents a audio source that can be added to a WebRTC call.
      *
      * Pass a shared_ptr to an instance of this to the StreamClient and call sendFrame for each of your audio frame.
      */

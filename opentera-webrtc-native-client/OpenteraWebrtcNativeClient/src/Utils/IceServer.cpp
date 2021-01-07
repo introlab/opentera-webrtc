@@ -32,7 +32,7 @@ IceServer::IceServer(string url, string username, string credential) :
 /**
  * @brief Creates an ice server configuration with the specified value.
  *
- * @param url The ice server urls
+ * @param urls The ice server urls
  */
 IceServer::IceServer(vector<string> urls) : m_urls(move(urls))
 {
@@ -41,7 +41,7 @@ IceServer::IceServer(vector<string> urls) : m_urls(move(urls))
 /**
  * @brief Creates an ice server configuration with the specified values.
  *
- * @param url The ice server urls
+ * @param urls The ice server urls
  * @param username The ice server username
  * @param credential The ice server credential
  */
@@ -124,7 +124,7 @@ bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& 
  *
  * @param json The JSON to parse
  * @param iceServers The parsed ice servers
- * @return
+ * @return true if success
  */
 bool IceServer::fromJson(const string& json, vector<IceServer>& iceServers)
 {

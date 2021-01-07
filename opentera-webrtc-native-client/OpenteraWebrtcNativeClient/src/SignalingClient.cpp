@@ -102,7 +102,7 @@ void SignalingClient::close()
 }
 
 /**
- * @brief Closes all client connections (Synchronous).
+ * @brief Closes all client connections (synchronous).
  */
 void SignalingClient::closeSync()
 {
@@ -153,7 +153,7 @@ void SignalingClient::callIds(const vector<string>& ids)
 }
 
 /**
- * @brief hangs up all clients.
+ * @brief Hangs up all clients.
  */
 void SignalingClient::hangUpAll()
 {

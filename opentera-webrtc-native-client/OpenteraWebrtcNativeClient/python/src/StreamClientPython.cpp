@@ -89,18 +89,78 @@ void setOnAudioFrameReceived(StreamClient& self,
 
 void opentera::initStreamClientPython(pybind11::module& m)
 {
-    py::class_<StreamClient, SignalingClient>(m, "StreamClient")
-        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration>(),
-             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"))
-        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>>(),
-             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"))
-        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<AudioSource>>(),
-             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("audio_source"))
-        .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>, shared_ptr<AudioSource>>(),
-             py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
+    py::class_<StreamClient, SignalingClient>(m, "StreamClient",
+            "A signaling client to join a WebRTC room and stream a video source.")
+            .def(py::init<SignalingServerConfiguration, WebrtcConfiguration>(),
+                    "Creates a stream client\n"
+                    "\n"
+                    ":param signaling_server_configuration: The configuration to connect to the signaling server\n"
+                    ":param webrtc_configuration: The WebRTC configuration\n"
+                    " */",
+                    py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"))
+            .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>>(),
+                    "Creates a stream client\n"
+                    "\n"
+                    ":param signaling_server_configuration: The configuration to connect to the signaling server\n"
+                    ":param webrtc_configuration: The WebRTC configuration\n"
+                    ":param video_source: The video source that this client will add to the call",
+                    py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"))
+            .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<AudioSource>>(),
+                    "Creates a stream client\n"
+                    "\n"
+                    ":param signaling_server_configuration: The configuration to connect to the signaling server\n"
+                    ":param webrtc_configuration: The WebRTC configuration\n"
+                    ":param audio_source: The audio source that this client will add to the call",
+                    py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("audio_source"))
+            .def(py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>, shared_ptr<AudioSource>>(),
+                    "Creates a stream client\n"
+                    "\n"
+                    ":param signaling_server_configuration: The configuration to connect to the signaling server\n"
+                    ":param webrtc_configuration: The WebRTC configuration\n"
+                    ":param video_source: The video source that this client will add to the call\n"
+                    ":param audio_source: The audio source that this client will add to the call",
+                    py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
 
-        .def_property("on_add_remote_stream", nullptr, &StreamClient::setOnAddRemoteStream)
-        .def_property("on_remove_remote_stream", nullptr, &StreamClient::setOnRemoveRemoteStream)
-        .def_property("on_video_frame_received", nullptr, &setOnVideoFrameReceived)
-        .def_property("on_audio_frame_received", nullptr, &setOnAudioFrameReceived);
+            .def_property("on_add_remote_stream", nullptr, &StreamClient::setOnAddRemoteStream,
+                    "Sets the callback that is called when a stream is added.\n"
+                    "\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client of the stream\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_remove_remote_stream", nullptr, &StreamClient::setOnRemoveRemoteStream,
+                    "Sets the callback that is called when a stream is removed.\n"
+                    "\n"
+                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client of the stream\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_video_frame_received", nullptr, &setOnVideoFrameReceived,
+                    "Sets the callback that is called when a video stream frame is received.\n"
+                    "\n"
+                    "The callback is called from a WebRTC processing thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client of the stream frame\n"
+                    " - bgr_img: The BGR frame image (numpy.array[uint8])\n"
+                    " - timestamp_us The timestamp in microseconds\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_audio_frame_received", nullptr, &setOnAudioFrameReceived,
+                    "Sets the callback that is called when an audio stream frame is received.\n"
+                    "\n"
+                    "The callback is called from a WebRTC processing thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
+                    " - client: The client of the stream frame\n"
+                    " - audio_data: The audio data (numpy.array[int8], numpy.array[int16] or numpy.array[int32])\n"
+                    " - sample_rate: The audio stream sample rate\n"
+                    " - number_of_channels: The audio stream channel count\n"
+                    " - number_of_frames: The number of frames\n"
+                    "\n"
+                    ":param callback: The callback");
 }

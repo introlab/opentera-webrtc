@@ -191,7 +191,7 @@ namespace opentera
      * @brief Returns the room client that matches with the specified id.
      * If no room client matches with the id, a default room client is returned.
      *
-     * @param id
+     * @param id The room client id
      * @return The room client that matches with the specified id
      */
     inline RoomClient SignalingClient::getRoomClient(const std::string& id)
