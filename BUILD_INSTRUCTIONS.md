@@ -7,6 +7,9 @@ sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboo
 ```
 
 ## Build
+
+WARNING - This can take a long time and requires about 20Go of free space.
+
 ```
 mkdir build
 cd build
