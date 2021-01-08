@@ -8,6 +8,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents an ice server configuration.
+     */
     class IceServer
     {
         std::vector<std::string> m_urls;
@@ -32,16 +35,28 @@ namespace opentera
         static bool fromJson(const std::string& json, std::vector<IceServer>& iceServers);
     };
 
+    /**
+     * @brief Returns the ice server urls.
+     * @return The ice server urls
+     */
     inline const std::vector<std::string>& IceServer::urls() const
     {
         return m_urls;
     }
 
+    /**
+     * @brief Returns the ice server username.
+     * @return The ice server username
+     */
     inline const std::string& IceServer::username() const
     {
         return m_username;
     }
 
+    /**
+     * @brief Returns the ice server credential.
+     * @return The ice server credential
+     */
     inline const std::string& IceServer::credential() const
     {
         return m_credential;
@@ -55,8 +70,6 @@ namespace opentera
         iceServer.password = m_credential;
         return iceServer;
     }
-
-
 }
 
 #endif

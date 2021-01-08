@@ -7,20 +7,24 @@ import cv2
 import opentera_webrtc_native_client as webrtc
 
 
-def on_signaling_connection_open():
-    print('on_signaling_connection_open')
+def on_signaling_connection_opened():
+    # This callback is called from the internal client thread.
+    print('on_signaling_connection_opened')
 
 
 def on_signaling_connection_closed():
+    # This callback is called from the internal client thread.
     print('on_signaling_connection_closed')
 
 
 def on_signaling_connection_error(error):
+    # This callback is called from the internal client thread.
     print('on_signaling_connection_error:')
     print('\terror={}\n'.format(error))
 
 
 def on_room_clients_changed(room_clients):
+    # This callback is called from the internal client thread.
     print('on_room_clients_changed:')
     for c in room_clients:
         print('\tid={}, name={}, data={}, is_connected={}'.format(c.id, c.name, c.data, c.is_connected))
@@ -28,37 +32,44 @@ def on_room_clients_changed(room_clients):
 
 
 def on_client_connected(client):
+    # This callback is called from the internal client thread.
     print('on_client_connected:')
     print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
 
 
 def on_client_disconnected(client):
+    # This callback is called from the internal client thread.
     print('on_client_disconnected:')
     print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
 
 
 def on_add_remote_stream(client):
+    # This callback is called from the internal client thread.
     print('on_add_remote_stream:')
     print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
 
 
 def on_remove_remote_stream(client):
+    # This callback is called from the internal client thread.
     print('on_remove_remote_stream:')
     print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
 
 
 def on_video_frame_received(client, image, timestampUs):
+    # This callback is called from a WebRTC processing thread.
     cv2.imshow(client.id, image)
     cv2.waitKey(1)
 
 
 def on_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
+    # This callback is called from a WebRTC processing thread.
     print('on_audio_frame_received:')
     print('\tid={}, name={}, data={}'.format(client.id, client.name, client.data))
     print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
 
 
 def on_error(error):
+    # This callback is called from the internal client thread.
     print('error or warning:')
     print('\t{}\n'.format(error))
 
@@ -75,7 +86,7 @@ if __name__ == '__main__':
     audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 16, fs, 1)
     client = webrtc.StreamClient(signaling_server_configuration, webrtc_configuration, video_source, audio_source)
 
-    client.on_signaling_connection_open = on_signaling_connection_open
+    client.on_signaling_connection_opened = on_signaling_connection_opened
     client.on_signaling_connection_closed = on_signaling_connection_closed
     client.on_signaling_connection_error = on_signaling_connection_error
 

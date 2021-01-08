@@ -7,6 +7,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents a WebRTC peer connection configuration.
+     */
     class WebrtcConfiguration
     {
         std::vector<IceServer> m_iceServers;
@@ -29,16 +32,29 @@ namespace opentera
         WebrtcConfiguration& operator=(WebrtcConfiguration&& other) = default;
     };
 
+    /**
+     * @brief Creates a WebRTC peer connection configuration with default values.
+     * @return A WebRTC peer connection configuration with default values
+     */
     inline WebrtcConfiguration WebrtcConfiguration::create()
     {
         return WebrtcConfiguration({});
     }
 
+    /**
+     * @brief Creates a WebRTC peer connection configuration with the specified value.
+     * @param iceServers The ice servers
+     * @return A WebRTC peer connection configuration with the specified value
+     */
     inline WebrtcConfiguration WebrtcConfiguration::create(std::vector<IceServer> iceServers)
     {
         return WebrtcConfiguration(std::move(iceServers));
     }
 
+    /**
+     * Returns the ice servers.
+     * @return The ice servers
+     */
     inline const std::vector<IceServer>& WebrtcConfiguration::iceServers() const
     {
         return m_iceServers;

@@ -7,6 +7,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents a data channel configuration
+     */
     class DataChannelConfiguration
     {
         bool m_ordered;
@@ -49,86 +52,181 @@ namespace opentera
         DataChannelConfiguration& operator=(DataChannelConfiguration&& other) = default;
     };
 
+    /**
+     * @brief Creates a data channel configuration with default values.
+     * @return A data channel configuration with default values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::create()
     {
         return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified value.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @return A data channel configuration with the specified value
+     */
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered)
     {
         return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified value.
+     *
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified value
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createProtocol(std::string protocol)
     {
         return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, std::move(protocol));
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered, std::string protocol)
     {
         return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, std::move(protocol));
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified value.
+     *
+     * @param maxPacketLifeTime Indicates the amount of time a message can be retransmitted (ms)
+     * @return A data channel configuration with the specified value
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime)
     {
         return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @param maxPacketLifeTime Indicates the amount of time a message can be retransmitted (ms)
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
             int maxPacketLifeTime)
     {
         return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param maxPacketLifeTime Indicates the amount of time a message can be retransmitted (ms)
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime,
             std::string protocol)
     {
         return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @param maxPacketLifeTime Indicates the amount of time a message can be retransmitted (ms)
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
             int maxPacketLifeTime, std::string protocol)
     {
         return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified value.
+     *
+     * @param maxRetransmits Indicates the maximum number of time a message can be retransmitted
+     * @return A data channel configuration with the specified value
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits)
     {
         return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @param maxRetransmits Indicates the maximum number of time a message can be retransmitted
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits)
     {
         return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, "");
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param maxRetransmits Indicates the maximum number of time a message can be retransmitted
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits,
             std::string protocol)
     {
         return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, std::move(protocol));
     }
 
+    /**
+     * @brief Creates a data channel configuration with the specified values.
+     *
+     * @param ordered Indicates if the message order must be preserved
+     * @param maxRetransmits Indicates the maximum number of time a message can be retransmitted
+     * @param protocol The data channel protocol
+     * @return A data channel configuration with the specified values
+     */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits,
             std::string protocol)
     {
         return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, std::move(protocol));
     }
 
+    /**
+     * @brief Indicates if the message order must be preserved.
+     * @return true if the message order must be preserved
+     */
     inline bool DataChannelConfiguration::ordered() const
     {
         return m_ordered;
     }
 
+    /**
+     * @brief Returns the maximum number of time a message can be retransmitted.
+     * @return The maximum number of time a message can be retransmitted
+     */
     inline const absl::optional<int>& DataChannelConfiguration::maxPacketLifeTime() const
     {
         return m_maxPacketLifeTime;
     }
 
+    /**
+     * @brief Returns the maximum number of time a message can be retransmitted.
+     * @return The maximum number of time a message can be retransmitted
+     */
     inline const absl::optional<int>& DataChannelConfiguration::maxRetransmits() const
     {
         return m_maxRetransmits;
     }
 
+    /**
+     * @brief Returns the data channel protocol.
+     * @return The data channel protocol
+     */
     inline const std::string& DataChannelConfiguration::protocol() const
     {
         return m_protocol;

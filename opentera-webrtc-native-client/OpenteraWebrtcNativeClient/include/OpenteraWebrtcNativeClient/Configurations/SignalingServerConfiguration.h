@@ -7,6 +7,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents a signaling server configuration.
+     */
     class SignalingServerConfiguration
     {
         std::string m_url;
@@ -41,6 +44,14 @@ namespace opentera
         SignalingServerConfiguration& operator=(SignalingServerConfiguration&& other) = default;
     };
 
+    /**
+     * @brief Creates an signaling server configuration with the specified values.
+     *
+     * @param url The signaling server URL
+     * @param clientName The client name
+     * @param room The room name
+     * @return A signaling server configuration with the specified values
+     */
     inline SignalingServerConfiguration SignalingServerConfiguration::create(std::string url, std::string clientName,
             std::string room)
     {
@@ -48,6 +59,15 @@ namespace opentera
                 std::move(room), "");
     }
 
+    /**
+     * @brief Creates an signaling server configuration with the specified values.
+     *
+     * @param url The signaling server URL
+     * @param clientName The client name
+     * @param clientData The client data
+     * @param room The room name
+     * @return A signaling server configuration with the specified values
+     */
     inline SignalingServerConfiguration SignalingServerConfiguration::create(std::string url, std::string clientName,
             sio::message::ptr clientData, std::string room)
     {
@@ -55,6 +75,15 @@ namespace opentera
                 std::move(room), "");
     }
 
+    /**
+     * @brief Creates an signaling server configuration with the specified values.
+     *
+     * @param url The signaling server URL
+     * @param clientName The client name
+     * @param room The room name
+     * @param password The signaling server password
+     * @return A signaling server configuration with the specified values
+     */
     inline SignalingServerConfiguration SignalingServerConfiguration::create(std::string url, std::string clientName,
             std::string room, std::string password)
     {
@@ -62,6 +91,16 @@ namespace opentera
                 std::move(room), std::move(password));
     }
 
+    /**
+     * @brief Creates an signaling server configuration with the specified values.
+     *
+     * @param url The signaling server URL
+     * @param clientName The client name
+     * @param clientData The client data
+     * @param room The room name
+     * @param password The signaling server password
+     * @return A signaling server configuration with the specified values
+     */
     inline SignalingServerConfiguration SignalingServerConfiguration::create(std::string url,
             std::string clientName, sio::message::ptr clientData, std::string room, std::string password)
     {
@@ -69,26 +108,46 @@ namespace opentera
                 std::move(room), std::move(password));
     }
 
+    /**
+     * @brief Returns the signaling server URL.
+     * @return The signaling server URL
+     */
     inline const std::string& SignalingServerConfiguration::url() const
     {
         return m_url;
     }
 
+    /**
+     * @brief Returns the client name.
+     * @return The client name
+     */
     inline const std::string& SignalingServerConfiguration::clientName() const
     {
         return m_clientName;
     }
 
+    /**
+     * @brief Returns the client data.
+     * @return The client data
+     */
     inline sio::message::ptr SignalingServerConfiguration::clientData() const
     {
         return m_clientData;
     }
 
+    /**
+     * @brief Returns the room name.
+     * @return The room name
+     */
     inline const std::string& SignalingServerConfiguration::room() const
     {
         return m_room;
     }
 
+    /**
+     * @brief Returns the signaling server password.
+     * @return The signaling server password
+     */
     inline const std::string& SignalingServerConfiguration::password() const
     {
         return m_password;

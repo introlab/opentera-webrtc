@@ -7,7 +7,7 @@ namespace opentera
 {
 
     /**
-     * @brief Sinks audio data from the WebRTC transport layer and feeds it to the provided callback.
+     * @brief Class that sinks audio data from the WebRTC transport layer and feeds it to the provided callback.
      */
     class AudioSink : public webrtc::AudioTrackSinkInterface
     {

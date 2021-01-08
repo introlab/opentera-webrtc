@@ -7,6 +7,10 @@ WebrtcConfiguration::WebrtcConfiguration(vector<IceServer>&& iceServers) : m_ice
 {
 }
 
+/**
+ * Converts a AudioSourceConfiguration to a webrtc::PeerConnectionInterface::RTCConfiguration.
+ * @return The converted webrtc::PeerConnectionInterface::RTCConfiguration
+ */
 WebrtcConfiguration::operator webrtc::PeerConnectionInterface::RTCConfiguration() const
 {
     webrtc::PeerConnectionInterface::RTCConfiguration configuration;

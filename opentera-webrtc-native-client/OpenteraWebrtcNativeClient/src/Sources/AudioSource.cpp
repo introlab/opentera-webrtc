@@ -3,6 +3,15 @@
 using namespace opentera;
 using namespace std;
 
+/**
+ * @brief Calculate the frame size in bytes
+ *
+ * @param bitsPerSample the audio stream sample size (8, 16 or 32 bits)
+ * @param numberOfChannels Number of channels
+ * @return The frame size in bytes
+ *
+ * @throw runtime_error if bitsPerSample is invalid
+ */
 size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)
 {
     switch (bitsPerSample)
@@ -19,12 +28,12 @@ size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)
 }
 
 /**
- * @brief Construct an  AudioSource
+ * @brief Creates an AudioSource
  *
  * @param configuration the configuration applied to the audio stream by the audio transport layer
- * @param bitsPerSample the audio stream sample size (8, 16 or 32 bits)
- * @param sampleRate the audio stream sample rate
- * @param numberOfChannels the audio stream channel count
+ * @param bitsPerSample The audio stream sample size (8, 16 or 32 bits)
+ * @param sampleRate The audio stream sample rate
+ * @param numberOfChannels The audio stream channel count
  */
 AudioSource::AudioSource(AudioSourceConfiguration configuration,
         int bitsPerSample,
@@ -43,7 +52,7 @@ AudioSource::AudioSource(AudioSourceConfiguration configuration,
 
 /**
  * Add the specified sink to the source
- * @param sink
+ * @param sink The sink to add
  */
 void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
 {
@@ -52,8 +61,8 @@ void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
 }
 
 /**
- * Remove the specified sink from the source
- * @param sink
+ * Remove The specified sink from the source
+ * @param sink The sink to remove
  */
 void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink)
 {
@@ -62,8 +71,8 @@ void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink)
 }
 
 /**
- * @brief indicates if this source is remote
- * @return always false, the source is local
+ * @brief Indicates if this source is remote
+ * @return Always false, the source is local
  */
 bool AudioSource::remote() const
 {
@@ -71,8 +80,8 @@ bool AudioSource::remote() const
 }
 
 /**
- * @brief indicates if this source is live
- * @return always kLive, the source is live
+ * @brief Indicates if this source is live
+ * @return Always kLive, the source is live
  */
 webrtc::MediaSourceInterface::SourceState AudioSource::state() const
 {
@@ -80,7 +89,7 @@ webrtc::MediaSourceInterface::SourceState AudioSource::state() const
 }
 
 /**
- * @return the audio source options
+ * @return The audio source options
  */
 const cricket::AudioOptions AudioSource::options() const
 {
@@ -88,7 +97,7 @@ const cricket::AudioOptions AudioSource::options() const
 }
 
 /**
- * @return the sample size
+ * @return The sample size
  */
 size_t AudioSource::bytesPerSample() const
 {
@@ -96,7 +105,7 @@ size_t AudioSource::bytesPerSample() const
 }
 
 /**
- * @return the frame size
+ * @return The frame size
  */
 size_t AudioSource::bytesPerFrame() const
 {
@@ -105,8 +114,8 @@ size_t AudioSource::bytesPerFrame() const
 
 /**
  * Send an audio frame
- * @param audioData the audio data
- * @param numberOfFrames the number of frames
+ * @param audioData The audio data
+ * @param numberOfFrames The number of frames
  */
 void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
 {

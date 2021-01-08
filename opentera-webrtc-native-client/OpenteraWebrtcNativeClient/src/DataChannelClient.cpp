@@ -4,6 +4,13 @@
 using namespace opentera;
 using namespace std;
 
+/**
+ * @brief Creates a data channel client with the specified configurations.
+ *
+ * @param signalingServerConfiguration The signaling server configuration
+ * @param webrtcConfiguration The WebRTC configuration
+ * @param dataChannelConfiguration The data channel configuration
+ */
 DataChannelClient::DataChannelClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration, DataChannelConfiguration dataChannelConfiguration) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
@@ -42,7 +49,7 @@ unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler
 {
     auto onDataChannelOpen = [this](const Client& client)
     {
-        invokeIfCallable(m_onDataChannelOpen, client);
+        invokeIfCallable(m_onDataChannelOpened, client);
     };
     auto onDataChannelClosed = [this](const Client& client)
     {

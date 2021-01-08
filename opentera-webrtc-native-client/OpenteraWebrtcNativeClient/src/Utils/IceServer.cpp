@@ -8,24 +8,56 @@ using namespace opentera;
 using namespace rapidjson;
 using namespace std;
 
+/**
+ * @brief Creates an ice server configuration with the specified value.
+ *
+ * @param url The ice server url
+ */
 IceServer::IceServer(string url) : m_urls({move(url)})
 {
 }
 
+/**
+ * @brief Creates an ice server configuration with the specified values.
+ *
+ * @param url The ice server url
+ * @param username The ice server username
+ * @param credential The ice server credential
+ */
 IceServer::IceServer(string url, string username, string credential) :
         m_urls({move(url)}), m_username(move(username)), m_credential(move(credential))
 {
 }
 
+/**
+ * @brief Creates an ice server configuration with the specified value.
+ *
+ * @param urls The ice server urls
+ */
 IceServer::IceServer(vector<string> urls) : m_urls(move(urls))
 {
 }
 
+/**
+ * @brief Creates an ice server configuration with the specified values.
+ *
+ * @param urls The ice server urls
+ * @param username The ice server username
+ * @param credential The ice server credential
+ */
 IceServer::IceServer(vector<string> urls, string username, string credential) :
         m_urls(move(urls)), m_username(move(username)), m_credential(move(credential))
 {
 }
 
+/**
+ * @brief Fetches the ice servers from the signaling server.
+ *
+ * @param url The signaling server url
+ * @param password The signaling server username
+ * @param iceServers The fetched ice servers
+ * @return true if success
+ */
 bool IceServer::fetchFromServer(const string& url, const string& password, vector<IceServer>& iceServers)
 {
     string response;
@@ -87,6 +119,13 @@ bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& 
     return true;
 }
 
+/**
+ * @brief Gets ice servers from a JSON
+ *
+ * @param json The JSON to parse
+ * @param iceServers The parsed ice servers
+ * @return true if success
+ */
 bool IceServer::fromJson(const string& json, vector<IceServer>& iceServers)
 {
     Document jsonDocument;

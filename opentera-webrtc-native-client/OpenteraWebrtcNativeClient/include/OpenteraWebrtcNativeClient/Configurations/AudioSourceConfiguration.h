@@ -5,6 +5,9 @@
 
 namespace opentera
 {
+    /**
+     * @brief Represents a configuration of an audio source that can be added to a WebRTC call.
+     */
     class AudioSourceConfiguration
     {
         absl::optional<bool> m_echoCancellation;
@@ -51,12 +54,28 @@ namespace opentera
         AudioSourceConfiguration& operator=(AudioSourceConfiguration&& other) = default;
     };
 
+    /**
+     * @brief Creates an audio source configuration with default values.
+     * @return An audio source configuration with default values
+     */
     inline AudioSourceConfiguration AudioSourceConfiguration::create()
     {
         return AudioSourceConfiguration(absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt,
                 absl::nullopt, absl::nullopt);
     }
 
+    /**
+     * @brief Creates an audio source configuration with the specified values.
+     *
+     * @param echoCancellation Enable or disable the echo cancellation
+     * @param autoGainControl Enable or disable the auto gain control
+     * @param noiseSuppression Enable or disable the noise suppression
+     * @param highpassFilter Enable or disable the highpass filter
+     * @param stereoSwapping Enable or disable the stereo swapping
+     * @param typingDetection Enable or disable the typing detection
+     * @param residualEchoDetector Enable or disable the residual echo detector
+     * @return An audio source configuration with the specified values
+     */
     inline AudioSourceConfiguration AudioSourceConfiguration::create(absl::optional<bool> echoCancellation,
                                            absl::optional<bool> autoGainControl,
                                            absl::optional<bool> noiseSuppression,
@@ -69,36 +88,64 @@ namespace opentera
                 stereoSwapping, typingDetection, residualEchoDetector);
     }
 
+    /**
+     * @brief Indicates if the echo cancellation is enabled.
+     * @return true if the echo cancellation is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::echoCancellation() const
     {
         return m_echoCancellation;
     }
 
+    /**
+     * @brief Indicates if the auto gain control is enabled.
+     * @return true if the auto gain control is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::autoGainControl() const
     {
         return m_autoGainControl;
     }
 
+    /**
+     * @brief Indicates if the noise suppression is enabled.
+     * @return true if the noise suppression is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::noiseSuppression() const
     {
         return m_noiseSuppression;
     }
 
+    /**
+     * @brief Indicates if the highpass filter is enabled.
+     * @return true if the highpass filter is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::highpassFilter() const
     {
         return m_highpassFilter;
     }
 
+    /**
+     * @brief Indicates if the stereo swapping is enabled.
+     * @return true if the stereo swapping is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::stereoSwapping() const
     {
         return m_stereoSwapping;
     }
 
+    /**
+     * @brief Indicates if the typing detection is enabled.
+     * @return true if the typing detection is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::typingDetection() const
     {
         return m_typingDetection;
     }
 
+    /**
+     * @brief Indicates if the residual echo detector is enabled.
+     * @return true if the residual echo detector is enabled
+     */
     inline absl::optional<bool> AudioSourceConfiguration::residualEchoDetector() const
     {
         return m_residualEchoDetector;
