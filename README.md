@@ -15,7 +15,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 
 ## Build Instructions
 
-* Please see [Build Instructions](BUILD_INSTRUCTIONS.md)
+* Please see [Build Instructions](BUILD_INSTRUCTIONS.md).
 
 ## ROS
 
