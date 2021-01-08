@@ -13,6 +13,10 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 * Most dependencies are part of the project with git submodules in the [opentera-webrtc-native-client/3rdParty](opentera-webrtc-native-client/3rdParty) directory.
 * OpenCV needs to be installed on the system.
 
+## Build Instructions
+
+* Please see [Build Instructions](BUILD_INSTRUCTIONS.md)
+
 ## ROS
 
 * The C++ library and Python bindings are used in our [opentera_webrtc_ros ROS package](https://github.com/introlab/opentera-webrtc-ros). RGB images published in ROS topics can be easily used for streaming in a RTCPeerConnection using our signaling server.
