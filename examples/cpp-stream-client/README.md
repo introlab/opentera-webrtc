@@ -10,5 +10,5 @@ cd build
 cmake ..
 make
 
-./CppDataChannelClient
+./CppStreamClient
 ```
