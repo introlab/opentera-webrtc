@@ -19,7 +19,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 
 ## Frontend
 
-* The Javacript libary is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
+* The Javacript library is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
 
 ## Examples
 
@@ -33,7 +33,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 * [data-channel-client](examples/python-data-channel-client/README.md)
 * [stream-client](examples/python-stream-client/README.md)
 
-### Javascript (web browser)
+### Javascript
 
 * [data-channel-client](examples/web-data-channel-client/README.md)
 * [stream-client](examples/web-stream-client/README.md)
