@@ -6,7 +6,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 * [A signaling server](signaling-server) written in Python that can be used as a stand-alone server or embedded in our [OpenTera Teleoperation Micro-Service](https://github.com/introlab/opentera-teleop-service)
 * [A native libwebrtc wrapper](opentera-webrtc-native-client/OpenteraWebrtcNativeClient/src) that is used as a C++ base library for clients using our signaling server.
 * [Python 3 bindings](opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python) that are used as a Python module for clients using our signaling server.
-* [A Javascript library](opentera-webrtc-web-client) That is used for web client developement and teleoperation interface using our signaling server.
+* [A JavaScript library](opentera-webrtc-web-client) That is used for web client developement and teleoperation interface using our signaling server.
 
 ## Dependencies
 
@@ -23,7 +23,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 
 ## Frontend
 
-* The Javascript library is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
+* The JavaScript library is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
 
 ## Examples
 
