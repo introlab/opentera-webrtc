@@ -25,19 +25,19 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 
 ### C++
 
-* [data-channel-client](examples/cpp-data-channel-client/README.md)
-* [stream-client](examples/cpp-stream-client/README.md)
+* [data-channel-client](examples/cpp-data-channel-client)
+* [stream-client](examples/cpp-stream-client)
 
 ### Python
 
-* [data-channel-client](examples/python-data-channel-client/README.md)
-* [stream-client](examples/python-stream-client/README.md)
+* [data-channel-client](examples/python-data-channel-client)
+* [stream-client](examples/python-stream-client)
 
 ### Javascript
 
-* [data-channel-client](examples/web-data-channel-client/README.md)
-* [stream-client](examples/web-stream-client/README.md)
-* [stream-data-channel-client](examples/web-stream-data-channel-client/README.md)
+* [data-channel-client](examples/web-data-channel-client)
+* [stream-client](examples/web-stream-client)
+* [stream-data-channel-client](examples/web-stream-data-channel-client)
 
 ## Authors
 
