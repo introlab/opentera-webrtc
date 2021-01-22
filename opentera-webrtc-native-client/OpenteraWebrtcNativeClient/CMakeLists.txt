@@ -6,7 +6,17 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(WEBRTC_POSIX)
 
-find_package(OpenCV REQUIRED core imgproc)
+#Now building OpenCV from sources
+set(OpenCV_INCLUDE_DIRS 
+	../3rdParty/opencv/modules/core/include
+	../3rdParty/opencv/modules/imgproc/include
+	${CMAKE_CURRENT_BINARY_DIR}/../)
+	
+message(STATUS "******************* ${OpenCV_INCLUDE_DIRS}")	
+	
+set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
+
+#find_package(OpenCV REQUIRED core imgproc)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../3rdParty/socket.io-client-cpp/src)
@@ -35,7 +45,7 @@ target_link_libraries(OpenteraWebrtcNativeClient
         ${OpenCV_LIBRARIES})
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
-add_dependencies(OpenteraWebrtcNativeClient webrtc_native)
+add_dependencies(OpenteraWebrtcNativeClient webrtc_native ${OpenCV_LIBRARIES})
 
 assign_source_group(${source_files})
 
