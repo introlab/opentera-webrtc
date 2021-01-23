@@ -22,6 +22,16 @@ TEST(HttpTests, get_https_shouldReturnTrueAndSetResponse)
     EXPECT_THAT(response, HasSubstr("Vous Etes Perdus ?"));
 }
 
+TEST(HttpTests, get_invalidUrl_shouldReturnFalse)
+{
+    string response;
+    EXPECT_FALSE(Http::get("http://localhost:8080/iceservers", response, {}));
+    EXPECT_EQ(response, "");
+
+    EXPECT_FALSE(Http::get("https://localhost:8080/iceservers", response, {}));
+    EXPECT_EQ(response, "");
+}
+
 TEST(HttpTests, splitUrl_invalidUrl_shouldReturnFalse)
 {
     string host;
