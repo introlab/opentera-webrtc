@@ -44,8 +44,10 @@ async def join_room(id, data):
     print('join_room ', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
+        sio.disconnect(id)
         return False
     if (data['protocolVersion'] if 'protocolVersion' in data else 0) != PROTOCOL_VERSION:
+        sio.disconnect(id)
         return False
 
     if 'data' not in data:
