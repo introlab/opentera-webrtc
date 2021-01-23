@@ -19,7 +19,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
     {
         httplib::Client cli(host.c_str());
         auto res = cli.Get(target.c_str(), httplib::Headers(headers.begin(), headers.end()));
-        if (res->status != 200)
+        if (res == nullptr || res->status != 200)
         {
             return false;
         }
