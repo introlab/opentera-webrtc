@@ -22,6 +22,7 @@ elseif (UNIX)
     endif ()
 endif (WIN32)
 
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(../../opentera-webrtc-native-client ./opentera-webrtc-native-client)
 
 project(CppStreamClient)
@@ -35,7 +36,6 @@ include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-clien
 include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src)
 include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
 include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
-
 
 add_executable(CppStreamClient main.cpp)
 
