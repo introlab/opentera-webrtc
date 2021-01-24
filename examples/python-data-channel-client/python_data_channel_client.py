@@ -1,5 +1,7 @@
 import time
+
 import opentera_webrtc_native_client as webrtc
+
 
 def on_signaling_connection_opened():
     # This callback is called from the internal client thread.
@@ -93,7 +95,7 @@ if __name__ == '__main__':
     client.on_data_channel_message_string = on_data_channel_message_string
 
     client.connect()
- 
+
     i = 0
     while True:
         if client.is_rtc_connected:
