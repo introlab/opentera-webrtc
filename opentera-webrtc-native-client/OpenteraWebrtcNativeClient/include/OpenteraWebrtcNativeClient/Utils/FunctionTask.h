@@ -63,8 +63,10 @@ namespace opentera
         bool Run() override
         {
             m_function();
+            // Copy flag so it does not read the flag on a deleted object.
+            bool isAsync = m_isAsync;
             m_event.Set();
-            return m_isAsync;
+            return isAsync;
         }
 
         static void callSync(rtc::Thread* thread, const std::function<void()>& function)
