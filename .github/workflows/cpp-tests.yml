@@ -26,6 +26,7 @@ jobs:
         
     - name: Install system dependencies
       run: | 
+        sudo apt-get update
         sudo apt-get install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev 
         sudo apt-get install libopencv-dev python3-pip python3-venv python3 python-is-python3 libglib2.0-dev 
         sudo apt-get install libgtk-3-dev libpulse-dev libasound2-dev
