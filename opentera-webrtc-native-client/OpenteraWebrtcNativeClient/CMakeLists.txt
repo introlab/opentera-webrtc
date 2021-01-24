@@ -6,17 +6,12 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(WEBRTC_POSIX)
 
-#Now building OpenCV from sources instead
-#find_package(OpenCV REQUIRED core imgproc)
-
 set(OpenCV_INCLUDE_DIRS 
 	${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
 	${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
 	${CMAKE_CURRENT_BINARY_DIR}/../)
 		
 set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
-
-message(STATUS "CMAKE_CURRENT_BINARY_DIR: ${CMAKE_CURRENT_BINARY_DIR} OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../3rdParty/socket.io-client-cpp/src)

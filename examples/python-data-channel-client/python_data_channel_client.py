@@ -1,7 +1,5 @@
 import time
-print('About to import...')
 import opentera_webrtc_native_client as webrtc
-print('Imported!')
 
 def on_signaling_connection_opened():
     # This callback is called from the internal client thread.
@@ -71,7 +69,6 @@ def on_data_channel_message_string(client, message):
 
 
 if __name__ == '__main__':
-    print('Starting...')
     signaling_server_configuration = webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
@@ -96,7 +93,7 @@ if __name__ == '__main__':
     client.on_data_channel_message_string = on_data_channel_message_string
 
     client.connect()
-    print('connect...')
+ 
     i = 0
     while True:
         if client.is_rtc_connected:
