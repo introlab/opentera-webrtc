@@ -22,6 +22,8 @@ elseif (UNIX)
     endif ()
 endif (WIN32)
 
+
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_subdirectory(../../opentera-webrtc-native-client ./opentera-webrtc-native-client)
 
 project(CppDataChannelClient)
@@ -32,7 +34,7 @@ include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-clien
 include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src)
 include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
 include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
-
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 add_executable(CppDataChannelClient main.cpp)
 
@@ -40,7 +42,8 @@ target_link_libraries(CppDataChannelClient
         OpenteraWebrtcNativeClient
         sioclient
         sioclient_tls
-        ${linux_LIBRARY})
+        ${linux_LIBRARY}
+        ${OpenCV_LIBRARIES})
 
 set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)
 
