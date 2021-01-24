@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
     client.setOnError([](const string& error)
     {
         // This callback is called from the internal client thread.
-        cout << "error or warning:" << endl;
+        cout << "error:" << endl;
         cout << "\t" << error << endl;
     });
 
@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
     client.setOnDataChannelMessageString([](const Client& client, const string& message)
     {
         // This callback is called from the internal client thread.
-        cout << "OnDataChannelError:" << endl;
+        cout << "setOnDataChannelMessageString:" << endl;
         cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         cout << "\t" << message << endl;
     });

@@ -41,7 +41,7 @@ def on_client_disconnected(client):
 
 def on_error(error):
     # This callback is called from the internal client thread.
-    print('error or warning:')
+    print('error:')
     print('\t{}\n'.format(error))
 
 

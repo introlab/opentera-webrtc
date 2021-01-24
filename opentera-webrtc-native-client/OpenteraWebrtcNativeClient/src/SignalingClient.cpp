@@ -478,6 +478,8 @@ void SignalingClient::onIceCandidateReceivedEvent(sio::event& event)
 
     SIO_MESSAGE_CHECK_RETURN(fromIdIt == data.end() || candidateIt == data.end(),
             "Invalid onIceCandidateReceivedEvent message (fromId or candidate are missing)");
+
+    if (candidateIt->second->get_flag() == sio::message::flag_null) { return; }
     SIO_MESSAGE_CHECK_RETURN(fromIdIt->second->get_flag() != sio::message::flag_string ||
             candidateIt->second->get_flag() != sio::message::flag_object,
             "Invalid onIceCandidateReceivedEvent message (fromId or candidate wrong types)");

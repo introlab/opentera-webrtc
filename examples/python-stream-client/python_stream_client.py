@@ -70,7 +70,7 @@ def on_audio_frame_received(client, data, sample_rate, number_of_channels, numbe
 
 def on_error(error):
     # This callback is called from the internal client thread.
-    print('error or warning:')
+    print('error:')
     print('\t{}\n'.format(error))
 
 
