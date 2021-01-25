@@ -34,3 +34,6 @@ set(BUILD_opencv_videoio OFF)
 
 # Configure opencv 
 add_subdirectory(opencv)
+
+install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include 
+    	FILES_MATCHING PATTERN "*.h")
