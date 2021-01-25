@@ -13,6 +13,7 @@ set(OpenCV_INCLUDE_DIRS
 		
 set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
 
+
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(../3rdParty/socket.io-client-cpp/src)
 include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)
@@ -41,6 +42,10 @@ target_link_libraries(OpenteraWebrtcNativeClient
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 add_dependencies(OpenteraWebrtcNativeClient webrtc_native ${OpenCV_LIBRARIES})
+
+install(TARGETS OpenteraWebrtcNativeClient DESTINATION lib)
+install(DIRECTORY include/ DESTINATION include
+	FILES_MATCHING PATTERN "*.h")
 
 assign_source_group(${source_files})
 
