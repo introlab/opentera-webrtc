@@ -1,0 +1,24 @@
+import pathlib
+import subprocess
+import time
+
+signaling_server_path = pathlib.Path(__file__).parent.parent.parent.parent.parent.joinpath('signaling-server') \
+    .joinpath('signaling_server.py').absolute()
+ice_server_path = pathlib.Path(__file__).parent.joinpath('resources').joinpath('iceServers.json').absolute()
+
+
+class SignalingServerRunner:
+    def __init__(self):
+        self._process = subprocess.Popen(['python3', signaling_server_path, '--port', '8080', '--password', 'abc',
+                                          '--ice_servers', ice_server_path])
+        time.sleep(1)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.close()
+
+    def close(self):
+        self._process.kill()
+        self._process.wait()
