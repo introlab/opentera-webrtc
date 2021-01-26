@@ -218,7 +218,7 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 }
 
 
-TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConnection)
+TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheConnection)
 {
     CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignalingConnectionOpened([&] { awaiter.done(); });
@@ -234,6 +234,7 @@ TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_mustBeCallAfterTheConn
     awaiter.wait();
 
     m_client1->setOnSignalingConnectionOpened([] {});
+    m_client1->setOnRoomClientsChanged([](const vector<RoomClient>& roomClients) {});
 }
 
 
@@ -383,7 +384,7 @@ TEST_F(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient
     m_client3->setOnDataChannelOpened([](const Client &client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, onClientConnect_shouldBeCalledAfterACall)
+TEST_F(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfterACall)
 {
     CallbackAwaiter awaiter(1, 60s);
     m_client1->setOnClientConnected([this, &awaiter](const Client& client)
@@ -417,7 +418,7 @@ TEST_F(RightPasswordDataChannelClientTests, onClientConnect_shouldBeCalledAfterA
     m_client3->setOnClientConnected([](const Client& client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, onClientDisconnect_shouldBeCalledAfterHangUpAllCall)
+TEST_F(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledAfterHangUpAllCall)
 {
     CallbackAwaiter awaiter(2, 60s);
     m_client1->setOnDataChannelOpened([this](const Client &client) {
@@ -576,13 +577,13 @@ TEST_F(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
 
 TEST_F(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
 {
-    CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
+    CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter halfOnDataChannelClosedAwaiter(4, 60s);
     CallbackAwaiter onDataChannelClosedAwaiter(6, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenedAwaiter](const Client& client)
     {
-        if (onDataChannelOpenAwaiter.done())
+        if (onDataChannelOpenedAwaiter.done())
         {
             m_client1->hangUpAll();
         }
@@ -597,16 +598,16 @@ TEST_F(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
         onDataChannelClosedAwaiter.done();
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelClosed(onDataChannelClosed);
     m_client2->setOnDataChannelClosed(onDataChannelClosed);
     m_client3->setOnDataChannelClosed(onDataChannelClosed);
 
     m_client1->callAll();
-    onDataChannelOpenAwaiter.wait();
+    onDataChannelOpenedAwaiter.wait();
     halfOnDataChannelClosedAwaiter.wait();
     onDataChannelClosedAwaiter.wait();
 
@@ -621,12 +622,12 @@ TEST_F(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
 
 TEST_F(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCloseAllRoomPeerConnections)
 {
-    CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
+    CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelClosedAwaiter(6, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenedAwaiter](const Client& client)
     {
-        if (onDataChannelOpenAwaiter.done())
+        if (onDataChannelOpenedAwaiter.done())
         {
             m_client1->closeAllRoomPeerConnections();
         }
@@ -637,16 +638,16 @@ TEST_F(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCl
         onDataChannelClosedAwaiter.done();
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelClosed(onDataChannelClosed);
     m_client2->setOnDataChannelClosed(onDataChannelClosed);
     m_client3->setOnDataChannelClosed(onDataChannelClosed);
 
     m_client1->callAll();
-    onDataChannelOpenAwaiter.wait();
+    onDataChannelOpenedAwaiter.wait();
     onDataChannelClosedAwaiter.wait();
 
     m_client1->setOnDataChannelOpened([](const Client &client) {});
@@ -663,7 +664,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
     CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenAwaiter](const Client& client)
     {
         if (onDataChannelOpenAwaiter.done())
         {
@@ -677,9 +678,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
         }
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
             const uint8_t* data, size_t size)
@@ -733,12 +734,12 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
 
 TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToTheSpecifiedClients)
 {
-    CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
+    CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenedAwaiter](const Client& client)
     {
-        if (onDataChannelOpenAwaiter.done())
+        if (onDataChannelOpenedAwaiter.done())
         {
             m_client1->sendTo("data1", {m_clientId2});
             m_client2->sendTo("data2", {m_clientId3});
@@ -746,9 +747,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
         }
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
             const string& data)
@@ -785,7 +786,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     });
 
     m_client1->callAll();
-    onDataChannelOpenAwaiter.wait();
+    onDataChannelOpenedAwaiter.wait();
     onDataChannelMessageAwaiter.wait();
 
     m_client1->setOnDataChannelOpened([](const Client &client) {});
@@ -797,14 +798,14 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataToTheSpecifiedClients)
+TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataToAllClients)
 {
-    CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
+    CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(6, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenedAwaiter](const Client& client)
     {
-        if (onDataChannelOpenAwaiter.done())
+        if (onDataChannelOpenedAwaiter.done())
         {
             uint8_t data1 = 101;
             uint8_t data2 = 102;
@@ -816,9 +817,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
         }
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
             const uint8_t* data, size_t size)
@@ -900,7 +901,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
     });
 
     m_client1->callAll();
-    onDataChannelOpenAwaiter.wait();
+    onDataChannelOpenedAwaiter.wait();
     onDataChannelMessageAwaiter.wait();
 
     m_client1->setOnDataChannelOpened([](const Client &client) {});
@@ -914,12 +915,12 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
 
 TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataToTheSpecifiedClients)
 {
-    CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
+    CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
 
-    auto onDataChannelOpen = [this, &onDataChannelOpenAwaiter](const Client& client)
+    auto onDataChannelOpened = [this, &onDataChannelOpenedAwaiter](const Client& client)
     {
-        if (onDataChannelOpenAwaiter.done())
+        if (onDataChannelOpenedAwaiter.done())
         {
             m_client1->sendToAll("data1");
             m_client2->sendToAll("data2");
@@ -927,9 +928,9 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
         }
     };
 
-    m_client1->setOnDataChannelOpened(onDataChannelOpen);
-    m_client2->setOnDataChannelOpened(onDataChannelOpen);
-    m_client3->setOnDataChannelOpened(onDataChannelOpen);
+    m_client1->setOnDataChannelOpened(onDataChannelOpened);
+    m_client2->setOnDataChannelOpened(onDataChannelOpened);
+    m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
     m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
             const string& data)
@@ -1005,7 +1006,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     });
 
     m_client1->callAll();
-    onDataChannelOpenAwaiter.wait();
+    onDataChannelOpenedAwaiter.wait();
     onDataChannelMessageAwaiter.wait();
 
     m_client1->setOnDataChannelOpened([](const Client &client) {});

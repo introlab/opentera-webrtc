@@ -89,6 +89,13 @@ TEST(IceServerTests, operator_webrtcIceServer_shouldSetTheAttributes)
     EXPECT_EQ(testee.password, "p");
 }
 
+TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_invalidUrl_shouldReturnTrueAndNotSetIceServers)
+{
+    vector<IceServer> iceServers;
+    EXPECT_FALSE(IceServer::fetchFromServer("http://localhost:8080/ice", "", iceServers));
+    ASSERT_EQ(iceServers.size(), 0);
+}
+
 TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;

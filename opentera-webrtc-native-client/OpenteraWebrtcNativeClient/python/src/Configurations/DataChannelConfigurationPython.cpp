@@ -18,7 +18,7 @@ void opentera::initDataChannelConfigurationPython(py::module& m)
                     "\n"
                     ":param ordered: Indicates if the message order must be preserved\n"
                     ":return: A data channel configuration with the specified value")
-            .def_static("createProtocol", &DataChannelConfiguration::createProtocol, py::arg("protocol"),
+            .def_static("create_protocol", &DataChannelConfiguration::createProtocol, py::arg("protocol"),
                     "Creates a data channel configuration with the specified value.\n"
                     "\n"
                     ":param protocol: The data channel protocol\n"
