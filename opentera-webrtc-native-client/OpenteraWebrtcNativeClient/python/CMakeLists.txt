@@ -27,3 +27,5 @@ set_property(TARGET opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
 install(TARGETS opentera_webrtc_native_client DESTINATION python/lib)
 
 assign_source_group(${source_files})
+
+add_subdirectory(package)
