@@ -25,13 +25,13 @@ jobs:
         python-version: ${{ matrix.python-version }}
         
     - name: Generate Version Output
-        id: generate_version_output
-        run: echo "::set-output name=version::$(cat VERSION)"
-        shell: bash
+      id: generate_version_output
+      run: echo "::set-output name=version::$(cat VERSION)"
+      shell: bash
         
     - name: Print Version Information
-        run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
-        shell: bash
+      run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
+      shell: bash
         
     - name: Install system dependencies
       run: | 
