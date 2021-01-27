@@ -30,7 +30,7 @@ setup(
        "Operating System :: POSIX",
     ],
     distclass=BinaryDistribution,
-    # platforms=['linux_x86_64'],
+    platforms=['linux_x86_64'],
     # python_requires='==3.8',
     package_dir={'opentera_webrtc_native_client': '.'},
     package_data={'opentera_webrtc_native_client': ['opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so']},
