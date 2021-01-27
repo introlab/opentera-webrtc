@@ -27,11 +27,16 @@ jobs:
     - name: Install system dependencies
       run: | 
         sudo apt-get update
-        sudo apt-get install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev 
-        sudo apt-get install libopencv-dev python3-pip python3-venv python3 python-is-python3 libglib2.0-dev 
-        sudo apt-get install libgtk-3-dev libpulse-dev libasound2-dev
+        sudo apt-get install ninja-build cmake build-essential libssl-dev libboost-all-dev 
+        sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev 
         cat /proc/cpuinfo
         cat /proc/meminfo
+        
+    - name: Install python dependencies
+    	python3 -m pip install --user --upgrade setuptools wheel
+    	python3 -m pip install --user --upgrade twine
+    	python3 -m pip install --user --upgrade pydoc
+    	python3 -m pip install --user --upgrade unittest
         
     - name: Create build directory
       working-directory: opentera-webrtc-native-client
@@ -43,6 +48,7 @@ jobs:
       run: |
         cmake ../
         make -j2
+        make install
  
     - name: Install python dependencies for signaling-server
       working-directory: signaling-server
@@ -53,6 +59,12 @@ jobs:
       working-directory: opentera-webrtc-native-client/build/bin
       run: |
         ./OpenteraWebrtcNativeClientTests
+        
+    - name: Run Python Tests
+      working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
+      run : |
+	cp ../../../build/OpenteraWebrtcNativeClient/python/bin/Release/opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so .
+	python3 -m unittest discover . "*_test.py"
         
         
 
