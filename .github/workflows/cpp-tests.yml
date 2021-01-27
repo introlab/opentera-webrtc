@@ -63,8 +63,8 @@ jobs:
     - name: Run Python Tests
       working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
       run : |
-	cp ../../../build/OpenteraWebrtcNativeClient/python/bin/Release/opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so .
-	python3 -m unittest discover . "*_test.py"
+        cp ../../../build/OpenteraWebrtcNativeClient/python/bin/Release/opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so .
+        python3 -m unittest discover . "*_test.py"
         
         
 
