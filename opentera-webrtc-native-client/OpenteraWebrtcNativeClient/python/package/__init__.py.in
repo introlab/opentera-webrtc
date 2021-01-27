@@ -1,2 +1,3 @@
 # Init
-import opentera_webrtc_native_client
+from opentera_webrtc_native_client.opentera_webrtc_native_client import *
+from opentera_webrtc_native_client.opentera_webrtc_native_client import __version__
