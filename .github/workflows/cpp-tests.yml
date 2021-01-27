@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: CPP tests
+name: CPP-Python-tests
 
 on:
   workflow_dispatch:
@@ -48,6 +48,7 @@ jobs:
         cmake ../
         make -j2
         make install
+        make python-wheel-package
  
     - name: Install python dependencies for signaling-server
       working-directory: signaling-server
@@ -65,6 +66,36 @@ jobs:
         if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
         cp ../../../build/OpenteraWebrtcNativeClient/python/bin/Release/opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so .
         python3 -m unittest discover . "*_test.py"
+    
+    - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: latest
+          release_name: opentera-webrtc-native-client-latest
+          body: |
+            Latest build of opentera-webrtc-native-client
+            - This is a prerelease, use at your own risks.
+          draft: false
+          prerelease: true
+     
+    - name: Create Archive
+      working-directory: opentera-webrtc-native-client/dist/Release
+      run : |
+        tar cvzf opentera-webrtc-native-client-${{ github.ref }}.tar.gz opentera-webrtc-native-client*
+        
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: opentera-webrtc-native-client/dist/Release/opentera-webrtc-native-client-${{ github.ref }}.tar.gz
+        asset_name: opentera-webrtc-native-client-${{ github.ref }}.tar.gz
+        asset_content_type: application/x-gzip
         
         
 

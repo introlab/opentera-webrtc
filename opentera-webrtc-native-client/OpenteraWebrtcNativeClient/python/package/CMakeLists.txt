@@ -21,3 +21,7 @@ install(FILES ${LIBRARY_OUTPUT_PATH}/opentera_webrtc_native_client.html DESTINAT
 # Reinstall python library (could be better)
 install(TARGETS opentera_webrtc_native_client DESTINATION python/package)
 
+# Create python wheel package
+add_custom_target(python-wheel-package
+	COMMAND python3 setup.py bdist bdist_wheel sdist
+	WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/python/package)
