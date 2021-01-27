@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.10.0)
 
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/../VERSION VERSION_FROM_FILE)
 string(REPLACE "." ";" VERSION_LIST ${VERSION_FROM_FILE})
