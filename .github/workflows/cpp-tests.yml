@@ -24,6 +24,15 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         
+    - name: Generate Version Output
+        id: generate_version_output
+        run: echo "::set-output name=version::$(cat VERSION)"
+        shell: bash
+        
+    - name: Print Version Information
+        run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
+        shell: bash
+        
     - name: Install system dependencies
       run: | 
         sudo apt-get update
@@ -73,8 +82,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
-        tag_name: latest
-        release_name: opentera-webrtc-native-client-latest
+        tag_name: ${{ steps.generate_version_output.outputs.version }}
+        release_name: opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
         body: |
             Latest build of opentera-webrtc-native-client
             - This is a prerelease, use at your own risks.
@@ -84,7 +93,7 @@ jobs:
     - name: Create Archive
       working-directory: opentera-webrtc-native-client/dist/Release
       run : |
-        tar cvzf opentera-webrtc-native-client-${{ github.ref }}.tar.gz opentera-webrtc-native-client*
+        tar cvzf opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}.tar.gz opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
         
     - name: Upload Release Asset
       id: upload-release-asset 
@@ -93,8 +102,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: opentera-webrtc-native-client/dist/Release/opentera-webrtc-native-client-${{ github.ref }}.tar.gz
-        asset_name: opentera-webrtc-native-client-${{ github.ref }}.tar.gz
+        asset_path: opentera-webrtc-native-client/dist/Release/opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
+        asset_name: opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
         asset_content_type: application/x-gzip
         
         
