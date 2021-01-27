@@ -68,18 +68,18 @@ jobs:
         python3 -m unittest discover . "*_test.py"
     
     - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: latest
-          release_name: opentera-webrtc-native-client-latest
-          body: |
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: latest
+        release_name: opentera-webrtc-native-client-latest
+        body: |
             Latest build of opentera-webrtc-native-client
             - This is a prerelease, use at your own risks.
-          draft: false
-          prerelease: true
+        draft: false
+        prerelease: true
      
     - name: Create Archive
       working-directory: opentera-webrtc-native-client/dist/Release
