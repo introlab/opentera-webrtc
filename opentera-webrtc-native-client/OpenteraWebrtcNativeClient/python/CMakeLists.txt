@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(opentera_webrtc_native_client)
 
-set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+set(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../../3rdParty/pybind11/include)
 include_directories(../include)
