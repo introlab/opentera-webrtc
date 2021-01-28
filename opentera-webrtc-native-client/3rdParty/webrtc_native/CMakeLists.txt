@@ -74,22 +74,43 @@ elseif (UNIX)
     install(FILES ${webrtc_native_LIBRARY_only} DESTINATION lib)
     install(FILES ${boringssl_LIBRARY} DESTINATION lib)
     
+    
+    
+    
     install(DIRECTORY webrtc/src/api DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
     	
     install(DIRECTORY webrtc/src/rtc_base DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
 
-    install(DIRECTORY webrtc/src/media DESTINATION include 
+   install(DIRECTORY webrtc/src/media DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
     	
     install(DIRECTORY webrtc/src/modules DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
 
+    install(DIRECTORY webrtc/src/system_wrappers DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/common_video DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/common_audio DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/call DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/p2p DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/logging DESTINATION include
+        FILES_MATCHING PATTERN "*.h")
+
     install(DIRECTORY webrtc/src/third_party/abseil-cpp/absl DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
-    	
-   install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include 
+
+    install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
 
 endif (WIN32)
