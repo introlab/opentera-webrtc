@@ -25,3 +25,12 @@ install(TARGETS opentera_webrtc_native_client DESTINATION python/package)
 add_custom_target(python-wheel-package
 	COMMAND python3 setup.py bdist bdist_wheel sdist
 	WORKING_DIRECTORY ${CMAKE_INSTALL_PREFIX}/python/package)
+	
+# Signaling server files
+set(signaling_server_source_files
+    ../../../../signaling-server/signaling_server.py
+    ../../../../signaling-server/room_manager.py
+    ../../../../signaling-server/requirements.txt
+    ../../../../signaling-server/README.md)
+         
+install(FILES ${signaling_server_source_files} DESTINATION python/signaling-server)
