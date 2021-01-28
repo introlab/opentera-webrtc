@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: CPP-Python-tests
+name: CPP-Python-tests-and-release
 
 on:
   workflow_dispatch:
@@ -86,7 +86,10 @@ jobs:
         make -j2
         make install
         make python-wheel-package
- 
+        rm -rf ../dist/Release/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/python/package/build
+        rm -rf ../dist/Release/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/python/package/*.so
+        rm -rf ../dist/Release/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/python/package/opentera_webrtc_native_client.egg-info
+        
     - name: Install python dependencies for signaling-server
       working-directory: signaling-server
       run: |
