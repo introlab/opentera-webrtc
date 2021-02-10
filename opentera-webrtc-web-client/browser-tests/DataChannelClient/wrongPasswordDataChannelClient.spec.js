@@ -1,6 +1,6 @@
 describe('Wrong password DataChannelClient', () => {
   const SignalingServerConfiguration = {
-    url: 'http://localhost:8080',
+    url: 'http://localhost:8080/',
     name: '',
     room: 'chat',
     password: ''

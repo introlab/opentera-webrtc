@@ -50,7 +50,14 @@ class SignalingClient {
   async connect() {
     this._logger('SignalingClient.connect method call');
 
-    this._socket = io(this._signalingServerConfiguration.url);
+    let url = new URL(this._signalingServerConfiguration.url);
+    let path = url.pathname;
+    url = url.protocol + '//' + url.hostname + ':' + url.port;
+    if (path === '/') {
+      path = '/socket.io';
+    }
+
+    this._socket = io(url, {path: path});
     this._connectEvents();
 
     await new Promise((resolve, reject) => {

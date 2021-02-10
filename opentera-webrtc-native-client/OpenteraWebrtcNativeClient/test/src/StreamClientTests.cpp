@@ -71,7 +71,7 @@ protected:
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
                 / "signaling-server" / "signaling_server.py";
         m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc", subprocess::input(subprocess::PIPE));
+                " --port 8080 --password abc --socketio_path thepath", subprocess::input(subprocess::PIPE));
     }
 
     static void TearDownTestSuite()
@@ -93,11 +93,11 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create("http://localhost:8080", "c1",
+            SignalingServerConfiguration::create("http://localhost:8080/thepath", "c1",
                     sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create("http://localhost:8080", "c2",
+            SignalingServerConfiguration::create("http://localhost:8080/thepath/", "c2",
                     sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource2);
 

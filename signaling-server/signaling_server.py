@@ -15,7 +15,6 @@ PROTOCOL_VERSION = 1
 
 sio = socketio.AsyncServer(async_mode='aiohttp')
 app = web.Application()
-sio.attach(app)
 
 room_manager = RoomManager(sio)
 
@@ -154,6 +153,7 @@ if __name__ == '__main__':
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
+    parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
     args = parser.parse_args()
 
 
@@ -163,7 +163,7 @@ if __name__ == '__main__':
         with open(args.ice_servers) as file:
             ice_servers = json.load(file)
 
-
+    sio.attach(app, socketio_path=args.socketio_path)
     app.add_routes([web.get('/iceservers', get_ice_servers)])
     if args.static_folder is not None:
         app.add_routes([web.static('/', args.static_folder)])

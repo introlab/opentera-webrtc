@@ -12,14 +12,14 @@ describe('Right password DataChannelClient', done => {
     password: 'abc'
   };
   const SignalingServerConfiguration2 = {
-    url: 'http://localhost:8080',
+    url: 'http://localhost:8080/socket.io',
     name: 'c2',
     data:'cd2',
     room: 'chat',
     password: 'abc'
   };
   const SignalingServerConfiguration3 = {
-    url: 'http://localhost:8080',
+    url: 'http://localhost:8080/socket.io/',
     name: 'c3',
     data:'cd3',
     room: 'chat',
