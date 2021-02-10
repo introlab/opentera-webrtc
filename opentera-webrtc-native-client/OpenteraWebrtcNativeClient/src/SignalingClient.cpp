@@ -79,6 +79,7 @@ void SignalingClient::connect()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
+        closeAllConnections();
         m_hasClosePending = false;
         connectSioEvents();
         m_sio.connect(m_signalingServerConfiguration.url());
@@ -92,12 +93,9 @@ void SignalingClient::close()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        if (m_sio.opened())
-        {
-            m_sio.close();
-        }
-        m_hasClosePending = true;
         closeAllConnections();
+        m_sio.close();
+        m_hasClosePending = true;
     });
 }
 
@@ -108,12 +106,9 @@ void SignalingClient::closeSync()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        if (m_sio.opened())
-        {
-            m_sio.sync_close();
-        }
-        m_hasClosePending = true;
         closeAllConnections();
+        m_sio.sync_close();
+        m_hasClosePending = true;
     });
 }
 
