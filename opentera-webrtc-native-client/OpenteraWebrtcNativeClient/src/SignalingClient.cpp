@@ -73,6 +73,18 @@ SignalingClient::~SignalingClient()
 }
 
 /**
+ * Enable or disable the TLS verification. By default, the TLS verification is enabled.
+ * @param isEnabled
+ */
+void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
+{
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, isEnabled]()
+    {
+        m_sio.set_is_tls_verification_enabled(isEnabled);
+    });
+}
+
+/**
  * @brief Connects the client the signaling server.
  */
 void SignalingClient::connect()

@@ -69,6 +69,8 @@ namespace opentera
         DECLARE_NOT_COPYABLE(SignalingClient);
         DECLARE_NOT_MOVABLE(SignalingClient);
 
+        void setTlsVerificationEnabled(bool isEnabled);
+
         void connect();
         void close();
         void closeSync();
