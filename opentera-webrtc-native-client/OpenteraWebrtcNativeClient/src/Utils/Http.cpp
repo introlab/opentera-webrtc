@@ -18,6 +18,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
     try
     {
         httplib::Client cli(host.c_str());
+        cli.enable_server_certificate_verification(false);
         auto res = cli.Get(target.c_str(), httplib::Headers(headers.begin(), headers.end()));
         if (res == nullptr || res->status != 200)
         {
