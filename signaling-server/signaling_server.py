@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     # Run app
     if using_tls:
-        ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_context.load_cert_chain(args.certificate, args.key)
         web.run_app(app, port=args.port, ssl_context=ssl_context)
     else:
