@@ -155,14 +155,13 @@ if __name__ == '__main__':
     parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
     parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
-    parser.add_argument('--certificate', type=str, help='TLS certificate path', default='tools/cert.pem')
-    parser.add_argument('--key', type=str, help='TLS private key path', default='tools/key.pem')
-    # parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
-    # parser.add_argument('--key', type=str, help='TLS private key path', default=None)
+    parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
+    parser.add_argument('--key', type=str, help='TLS private key path', default=None)
 
     # Parse arguments
     args = parser.parse_args()
 
+    # Default = not using TLS
     using_tls = False
 
     # Test for certificates / key pair
