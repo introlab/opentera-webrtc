@@ -1,2 +1,5 @@
+.idea/
+venv/
+tools/*.pem
 *.cpy
 __pycache__
