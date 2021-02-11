@@ -64,6 +64,25 @@ void opentera::initIceServerPython(pybind11::module& m)
             ":param password: The signaling server username\n"
             ":return: The fetched ice servers",
             py::arg("url"), py::arg("password"))
+            .def_static("fetch_from_server", [](const string& url, const string& password, bool verifyCertificate)
+            {
+                vector<IceServer> iceServers;
+                if (IceServer::fetchFromServer(url, password, iceServers, verifyCertificate))
+                {
+                    return iceServers;
+                }
+                else
+                {
+                    throw runtime_error("\"fetch_from_server\" failed");
+                }
+            },
+            "Fetches the ice servers from the signaling server.\n"
+            " *\n"
+            ":param url: The signaling server url\n"
+            ":param password: The signaling server username\n"
+            ":param verify_certificate: Indicates to verify the certificate or not\n"
+            ":return: The fetched ice servers",
+            py::arg("url"), py::arg("password"), py::arg("verify_certificate"))
             .def_static("from_json", [](const string& json)
             {
                 vector<IceServer> iceServers;

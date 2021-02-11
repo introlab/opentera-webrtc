@@ -5,7 +5,7 @@
 using namespace opentera;
 using namespace std;
 
-bool Http::get(const string& url, string& response, multimap<string, string> headers)
+bool Http::get(const string& url, string& response, multimap<string, string> headers, bool verifyCertificate)
 {
     string host;
     string target;
@@ -18,7 +18,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
     try
     {
         httplib::Client cli(host.c_str());
-        cli.enable_server_certificate_verification(false);
+        cli.enable_server_certificate_verification(verifyCertificate);
         auto res = cli.Get(target.c_str(), httplib::Headers(headers.begin(), headers.end()));
         if (res == nullptr || res->status != 200)
         {

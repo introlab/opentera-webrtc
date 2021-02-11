@@ -10,6 +10,8 @@ using namespace opentera;
 using namespace std;
 namespace fs = boost::filesystem;
 
+constexpr bool VerifyCertificate = false;
+
 class IceServerTestsWithSignalingServer : public ::testing::TestWithParam<bool>
 {
 protected:
@@ -112,21 +114,21 @@ TEST(IceServerTests, operator_webrtcIceServer_shouldSetTheAttributes)
 TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_invalidUrl_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_FALSE(IceServer::fetchFromServer(m_baseUrl + "/ice", "", iceServers));
+    EXPECT_FALSE(IceServer::fetchFromServer(m_baseUrl + "/ice", "", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 0);
 }
 
 TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "", iceServers));
+    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 0);
 }
 
 TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_rightPassword_shouldReturnTrueAndSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "abc", iceServers));
+    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "abc", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 1);
     ASSERT_EQ(iceServers[0].urls().size(), 1);
     EXPECT_EQ(iceServers[0].urls()[0], "stun:stun.l.google.com:19302");
