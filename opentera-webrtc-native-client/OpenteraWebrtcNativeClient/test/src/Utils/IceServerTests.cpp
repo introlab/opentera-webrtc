@@ -199,7 +199,7 @@ TEST(IceServerTests, fromJson_valid_shouldReturnTrueAndSetIceServers)
     EXPECT_EQ(iceServers[0].credential(), "c");
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
     IceServerTestsWithSignalingServer,
     IceServerTestsWithSignalingServer,
     ::testing::Values(

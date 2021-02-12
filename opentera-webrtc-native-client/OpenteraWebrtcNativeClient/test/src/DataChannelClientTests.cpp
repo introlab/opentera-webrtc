@@ -420,7 +420,6 @@ TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
 
     m_client1->setOnDataChannelOpened([](const Client &client) {});
     m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
 }
 
 TEST_P(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient)
@@ -1089,7 +1088,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         WrongPasswordDataChannelClientTests,
         WrongPasswordDataChannelClientTests,
         ::testing::Values(
@@ -1097,21 +1096,21 @@ INSTANTIATE_TEST_CASE_P(
         ));
 
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         SingleDataChannelClientTests,
         SingleDataChannelClientTests,
         ::testing::Values(
                 false, true
         ));
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         RightPasswordDataChannelClientTests,
         RightPasswordDataChannelClientTests,
         ::testing::Values(
                 false, true
         ));
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         DisconnectedDataChannelClientTests,
         DisconnectedDataChannelClientTests,
         ::testing::Values(

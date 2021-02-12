@@ -212,7 +212,7 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[2], 255, MeanColorAbsError);
 }
 
-INSTANTIATE_TEST_CASE_P(
+INSTANTIATE_TEST_SUITE_P(
         StreamClientTests,
         StreamClientTests,
         ::testing::Values(
