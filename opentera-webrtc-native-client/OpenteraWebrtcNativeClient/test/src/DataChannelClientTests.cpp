@@ -21,42 +21,78 @@ static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguratio
     IceServer("stun:stun.l.google.com:19302")
 });
 
-class DataChannelClientTests : public ::testing::Test
+class DataChannelClientTests : public ::testing::TestWithParam<bool>
 {
-    static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
-    static void SetUpTestSuite()
+
+    unique_ptr<subprocess::Popen> m_signalingServerProcess;
+    bool m_tlsTestEnable;
+    string m_baseUrl;
+
+    void SetUp()
     {
+        m_tlsTestEnable = GetParam();
+
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
                 / "signaling-server" / "signaling_server.py";
-        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc", subprocess::input(subprocess::PIPE));
+
+
+        if(m_tlsTestEnable)
+        {
+            m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                                                                      " --port 8081 --password abc"
+                                                                      " --certificate resources/cert.pem"
+                                                                      " --key resources/key.pem",
+                                                                      subprocess::input(subprocess::PIPE));
+            m_baseUrl = "https://localhost:8081";
+        }
+        else
+        {
+            m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                                                                      " --port 8080 --password abc",
+                                                                      subprocess::input(subprocess::PIPE));
+            m_baseUrl = "http://localhost:8080";
+        }
+
+        this_thread::sleep_for(1s);
     }
 
-    static void TearDownTestSuite()
+    void TearDown()
     {
         if (m_signalingServerProcess)
         {
             m_signalingServerProcess->kill(9);
             m_signalingServerProcess->wait();
         }
+
+        //this_thread::sleep_for(1s);
     }
 };
-unique_ptr<subprocess::Popen> DataChannelClientTests::m_signalingServerProcess = nullptr;
 
-class DisconnectedDataChannelClientTests : public ::testing::Test
+class DisconnectedDataChannelClientTests : public ::testing::TestWithParam<bool>
 {
 protected:
     unique_ptr<DataChannelClient> m_client1;
+    bool m_tlsTestEnable;
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
-                sio::string_message::create("cd1"),"chat", ""),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        m_tlsTestEnable = GetParam();
 
+        if (m_tlsTestEnable)
+        {
+            m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("https://localhost:8081", "c1",
+                sio::string_message::create("cd1"),"chat", ""), DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        }
+        else
+        {
+            m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
+                sio::string_message::create("cd1"),"chat", ""), DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        }
+
+        m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
@@ -73,16 +109,21 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
+        DataChannelClientTests::SetUp();
+
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
                 sio::string_message::create("cd1"), "chat", ""),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
+        m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
     void TearDown() override
     {
         m_client1->closeSync();
+
+        DataChannelClientTests::TearDown();
     }
 };
 
@@ -93,16 +134,21 @@ protected:
 
     void SetUp() override
     {
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
+        DataChannelClientTests::SetUp();
+
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
 
+        m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
     void TearDown() override
     {
         m_client1->closeSync();
+
+        DataChannelClientTests::TearDown();
     }
 };
 
@@ -119,16 +165,22 @@ protected:
 
     void SetUp() override
     {
+        DataChannelClientTests::SetUp();
+
         CallbackAwaiter setupAwaiter(3, 15s);
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
+        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
                 sio::string_message::create("cd1"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client2 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c2",
+        m_client2 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c2",
                 sio::string_message::create("cd2"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client3 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c3",
+        m_client3 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c3",
                 sio::string_message::create("cd3"), "chat", "abc"),
                 DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+
+        m_client1->setTlsVerificationEnabled(false);
+        m_client2->setTlsVerificationEnabled(false);
+        m_client3->setTlsVerificationEnabled(false);
 
         m_client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
         m_client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
@@ -159,37 +211,39 @@ protected:
         m_client1->closeSync();
         m_client2->closeSync();
         m_client3->closeSync();
+
+        DataChannelClientTests::TearDown();
     }
 };
 
 
-TEST_F(DisconnectedDataChannelClientTests, isConnected_shouldReturnFalse)
+TEST_P(DisconnectedDataChannelClientTests, isConnected_shouldReturnFalse)
 {
     EXPECT_FALSE(m_client1->isConnected());
 }
 
-TEST_F(DisconnectedDataChannelClientTests, isRtcConnected_shouldReturnFalse)
+TEST_P(DisconnectedDataChannelClientTests, isRtcConnected_shouldReturnFalse)
 {
     EXPECT_FALSE(m_client1->isRtcConnected());
 }
 
-TEST_F(DisconnectedDataChannelClientTests, id_shouldReturnAnEmptyString)
+TEST_P(DisconnectedDataChannelClientTests, id_shouldReturnAnEmptyString)
 {
     EXPECT_EQ(m_client1->id(), "");
 }
 
-TEST_F(DisconnectedDataChannelClientTests, getConnectedRoomClientIds_shouldReturnAnEmptyVector)
+TEST_P(DisconnectedDataChannelClientTests, getConnectedRoomClientIds_shouldReturnAnEmptyVector)
 {
     EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
 }
 
-TEST_F(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVector)
+TEST_P(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVector)
 {
     EXPECT_EQ(m_client1->getRoomClients().size(), 0);
 }
 
 
-TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
+TEST_P(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 {
     CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignalingConnectionOpened([&] {
@@ -218,7 +272,7 @@ TEST_F(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 }
 
 
-TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheConnection)
+TEST_P(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheConnection)
 {
     CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignalingConnectionOpened([&] { awaiter.done(); });
@@ -238,35 +292,35 @@ TEST_F(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheCo
 }
 
 
-TEST_F(RightPasswordDataChannelClientTests, isConnected_shouldReturnTrue)
+TEST_P(RightPasswordDataChannelClientTests, isConnected_shouldReturnTrue)
 {
     EXPECT_TRUE(m_client1->isConnected());
     EXPECT_TRUE(m_client2->isConnected());
     EXPECT_TRUE(m_client3->isConnected());
 }
 
-TEST_F(RightPasswordDataChannelClientTests, isRtcConnected_shouldReturnFalse)
+TEST_P(RightPasswordDataChannelClientTests, isRtcConnected_shouldReturnFalse)
 {
     EXPECT_FALSE(m_client1->isRtcConnected());
     EXPECT_FALSE(m_client2->isRtcConnected());
     EXPECT_FALSE(m_client3->isRtcConnected());
 }
 
-TEST_F(RightPasswordDataChannelClientTests, id_shouldNotReturnAnEmptyString)
+TEST_P(RightPasswordDataChannelClientTests, id_shouldNotReturnAnEmptyString)
 {
     EXPECT_NE(m_client1->id(), "");
     EXPECT_NE(m_client2->id(), "");
     EXPECT_NE(m_client3->id(), "");
 }
 
-TEST_F(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotReturnAnEmptyVector)
+TEST_P(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotReturnAnEmptyVector)
 {
     EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
     EXPECT_EQ(m_client2->getConnectedRoomClientIds().size(), 0);
     EXPECT_EQ(m_client3->getConnectedRoomClientIds().size(), 0);
 }
 
-TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
+TEST_P(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
 {
     EXPECT_EQ(m_client1->getRoomClient(m_client1->id()),
             RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
@@ -278,7 +332,7 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifi
     EXPECT_EQ(m_client1->getRoomClient(""), RoomClient());
 }
 
-TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClients)
+TEST_P(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClients)
 {
     auto roomClients1 = m_client1->getRoomClients();
     ASSERT_EQ(roomClients1.size(), 3);
@@ -308,7 +362,7 @@ TEST_F(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
                     RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)), 1);
 }
 
-TEST_F(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
+TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
 {
     CallbackAwaiter awaiter1(2, 60s);
     CallbackAwaiter awaiter2(2, 60s);
@@ -352,7 +406,7 @@ TEST_F(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
     m_client3->setOnDataChannelOpened([](const Client &client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient)
+TEST_P(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient)
 {
     CallbackAwaiter awaiter(2, 60s);
 
@@ -384,7 +438,7 @@ TEST_F(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient
     m_client3->setOnDataChannelOpened([](const Client &client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfterACall)
+TEST_P(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfterACall)
 {
     CallbackAwaiter awaiter(1, 60s);
     m_client1->setOnClientConnected([this, &awaiter](const Client& client)
@@ -418,7 +472,7 @@ TEST_F(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfte
     m_client3->setOnClientConnected([](const Client& client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledAfterHangUpAllCall)
+TEST_P(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledAfterHangUpAllCall)
 {
     CallbackAwaiter awaiter(2, 60s);
     m_client1->setOnDataChannelOpened([this](const Client &client) {
@@ -455,7 +509,7 @@ TEST_F(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledA
     m_client3->setOnClientConnected([](const Client& client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACallAndOnCallRejectedShouldBeCalled)
+TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACallAndOnCallRejectedShouldBeCalled)
 {
     CallbackAwaiter awaiter(4, 60s);
     auto onFinish = [this, &awaiter]()
@@ -575,7 +629,7 @@ TEST_F(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
     m_client3->setCallAcceptor([](const Client& client) { return true; });
 }
 
-TEST_F(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
+TEST_P(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
 {
     CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter halfOnDataChannelClosedAwaiter(4, 60s);
@@ -620,7 +674,7 @@ TEST_F(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
     m_client3->setOnDataChannelClosed([](const Client& client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCloseAllRoomPeerConnections)
+TEST_P(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCloseAllRoomPeerConnections)
 {
     CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelClosedAwaiter(6, 60s);
@@ -659,7 +713,7 @@ TEST_F(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCl
     m_client3->setOnDataChannelClosed([](const Client& client) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToTheSpecifiedClients)
+TEST_P(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToTheSpecifiedClients)
 {
     CallbackAwaiter onDataChannelOpenAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
@@ -732,7 +786,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
     m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToTheSpecifiedClients)
+TEST_P(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToTheSpecifiedClients)
 {
     CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
@@ -798,7 +852,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataToAllClients)
+TEST_P(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataToAllClients)
 {
     CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(6, 60s);
@@ -913,7 +967,7 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
     m_client3->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
 }
 
-TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataToTheSpecifiedClients)
+TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataToTheSpecifiedClients)
 {
     CallbackAwaiter onDataChannelOpenedAwaiter(6, 60s);
     CallbackAwaiter onDataChannelMessageAwaiter(3, 60s);
@@ -1017,3 +1071,32 @@ TEST_F(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     m_client2->setOnDataChannelMessageString([](const Client& client, const string& data) {});
     m_client3->setOnDataChannelMessageString([](const Client& client, const string& data) {});
 }
+
+INSTANTIATE_TEST_CASE_P(
+        WrongPasswordDataChannelClientTests,
+        WrongPasswordDataChannelClientTests,
+        ::testing::Values(
+                false, true
+        ));
+
+INSTANTIATE_TEST_CASE_P(
+        SingleDataChannelClientTests,
+        SingleDataChannelClientTests,
+        ::testing::Values(
+                false, true
+        ));
+
+INSTANTIATE_TEST_CASE_P(
+        RightPasswordDataChannelClientTests,
+        RightPasswordDataChannelClientTests,
+        ::testing::Values(
+                false, true
+        ));
+
+INSTANTIATE_TEST_CASE_P(
+        DisconnectedDataChannelClientTests,
+        DisconnectedDataChannelClientTests,
+        ::testing::Values(
+                false, true
+        ));
+

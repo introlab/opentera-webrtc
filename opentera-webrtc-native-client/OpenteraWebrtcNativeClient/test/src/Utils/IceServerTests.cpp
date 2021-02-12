@@ -44,7 +44,7 @@ protected:
         }
 
 
-        this_thread::sleep_for(500ms);
+        this_thread::sleep_for(1s);
     }
 
     void TearDown()
@@ -55,7 +55,7 @@ protected:
             m_signalingServerProcess->wait();
         }
 
-        this_thread::sleep_for(500ms);
+        this_thread::sleep_for(1s);
     }
 };
 
