@@ -38,14 +38,14 @@ protected:
                                   / "signaling-server" / "signaling_server.py";
 
         m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                                                                  " --port 8081 --password abc"
-                                                                  " --certificate resources/cert.pem"
-                                                                  " --key resources/key.pem",
-                                                                  subprocess::input(subprocess::PIPE));
+                " --port 8081 --password abc"
+                " --certificate resources/cert.pem"
+                " --key resources/key.pem",
+                subprocess::input(subprocess::PIPE));
 
         m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                                                                  " --port 8080 --password abc",
-                                                                  subprocess::input(subprocess::PIPE));
+                " --port 8080 --password abc",
+                subprocess::input(subprocess::PIPE));
 
         this_thread::sleep_for(2s);
     }

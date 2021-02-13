@@ -14,40 +14,31 @@ constexpr bool VerifyCertificate = false;
 
 class IceServerTestsWithSignalingServer : public ::testing::TestWithParam<bool>
 {
+    static unique_ptr<subprocess::Popen> m_signalingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcessTLS;
+
 protected:
-    unique_ptr<subprocess::Popen> m_signalingServerProcess;
     bool m_tlsTestEnable;
     string m_baseUrl;
 
-    void SetUp()
+    static void SetUpTestSuite()
     {
-        m_tlsTestEnable = GetParam();
-
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
                 .parent_path() / "signaling-server" / "signaling_server.py";
 
-        if(m_tlsTestEnable)
-        {
-            m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc --ice_servers resources/iceServers.json"
-                " --certificate resources/cert.pem --key resources/key.pem",
-                subprocess::input(subprocess::PIPE));
-            m_baseUrl = "https://localhost:8080";
-        }
-        else
-        {
-            m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc --ice_servers resources/iceServers.json",
                 subprocess::input(subprocess::PIPE));
-            m_baseUrl = "http://localhost:8080";
-        }
 
+        m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                " --port 8081 --password abc --ice_servers resources/iceServers.json"
+                " --certificate resources/cert.pem --key resources/key.pem", subprocess::input(subprocess::PIPE));
 
-        this_thread::sleep_for(1s);
+        this_thread::sleep_for(2s);
     }
 
-    void TearDown()
+    static void TearDownTestSuite()
     {
         if (m_signalingServerProcess)
         {
@@ -55,9 +46,30 @@ protected:
             m_signalingServerProcess->wait();
         }
 
-        this_thread::sleep_for(1s);
+        if (m_signalingServerProcessTLS)
+        {
+            m_signalingServerProcessTLS->kill(9);
+            m_signalingServerProcessTLS->wait();
+        }
+    }
+
+    void SetUp()
+    {
+        m_tlsTestEnable = GetParam();
+
+        if(m_tlsTestEnable)
+        {
+            m_baseUrl = "https://localhost:8081";
+        }
+        else
+        {
+            m_baseUrl = "http://localhost:8080";
+        }
     }
 };
+
+unique_ptr<subprocess::Popen> IceServerTestsWithSignalingServer::m_signalingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> IceServerTestsWithSignalingServer::m_signalingServerProcessTLS = nullptr;
 
 TEST(IceServerTests, constructor_url_shouldSetTheAttributes)
 {
