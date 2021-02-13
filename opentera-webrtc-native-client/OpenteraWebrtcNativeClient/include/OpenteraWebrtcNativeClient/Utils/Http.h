@@ -11,7 +11,8 @@ namespace opentera
     class Http
     {
     public:
-        static bool get(const std::string& url, std::string& response, std::multimap<std::string, std::string> headers);
+        static bool get(const std::string& url, std::string& response, std::multimap<std::string, std::string> headers,
+                bool verifyCertificate = true);
         static bool splitUrl(const std::string& url, std::string& host, std::string& target);
     };
 }

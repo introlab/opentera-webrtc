@@ -73,12 +73,25 @@ SignalingClient::~SignalingClient()
 }
 
 /**
+ * Enable or disable the TLS verification. By default, the TLS verification is enabled.
+ * @param isEnabled
+ */
+void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
+{
+    FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, isEnabled]()
+    {
+        m_sio.set_is_tls_verification_enabled(isEnabled);
+    });
+}
+
+/**
  * @brief Connects the client the signaling server.
  */
 void SignalingClient::connect()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
+        closeAllConnections();
         m_hasClosePending = false;
         connectSioEvents();
         m_sio.connect(m_signalingServerConfiguration.url());
@@ -92,12 +105,9 @@ void SignalingClient::close()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        if (m_sio.opened())
-        {
-            m_sio.close();
-        }
-        m_hasClosePending = true;
         closeAllConnections();
+        m_sio.close();
+        m_hasClosePending = true;
     });
 }
 
@@ -108,12 +118,9 @@ void SignalingClient::closeSync()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        if (m_sio.opened())
-        {
-            m_sio.sync_close();
-        }
-        m_hasClosePending = true;
         closeAllConnections();
+        m_sio.sync_close();
+        m_hasClosePending = true;
     });
 }
 
@@ -260,16 +267,15 @@ void SignalingClient::connectSioEvents()
     m_sio.set_fail_listener([this] { onSioErrorEvent(); });
     m_sio.set_close_listener([this](const sio::client::close_reason& reason) { onSioDisconnectEvent(reason); });
 
-    m_sio.socket()->on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
+    m_sio.on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
 
-    m_sio.socket()->on("make-peer-call", [this] (sio::event& event) { onMakePeerCallEvent(event); });
-    m_sio.socket()->on("peer-call-received", [this] (sio::event& event) { onPeerCallReceivedEvent(event); });
-    m_sio.socket()->on("peer-call-answer-received",
-            [this] (sio::event& event) { onPeerCallAnswerReceivedEvent(event); });
-    m_sio.socket()->on("close-all-peer-connections-request-received",
+    m_sio.on("make-peer-call", [this] (sio::event& event) { onMakePeerCallEvent(event); });
+    m_sio.on("peer-call-received", [this] (sio::event& event) { onPeerCallReceivedEvent(event); });
+    m_sio.on("peer-call-answer-received",  [this] (sio::event& event) { onPeerCallAnswerReceivedEvent(event); });
+    m_sio.on("close-all-peer-connections-request-received",
         [this] (sio::event& event) { onCloseAllPeerConnectionsRequestReceivedEvent(event); });
 
-    m_sio.socket()->on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
+    m_sio.on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
 }
 
 void SignalingClient::onSioConnectEvent()

@@ -10,20 +10,32 @@ using namespace opentera;
 using namespace std;
 namespace fs = boost::filesystem;
 
-class IceServerTestsWithSignalingServer : public ::testing::Test
+constexpr bool VerifyCertificate = false;
+
+class IceServerTestsWithSignalingServer : public ::testing::TestWithParam<bool>
 {
     static unique_ptr<subprocess::Popen> m_signalingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcessTLS;
 
 protected:
+    bool m_tlsTestEnable;
+    string m_baseUrl;
+
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
                 .parent_path() / "signaling-server" / "signaling_server.py";
+
         m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc --ice_servers resources/iceServers.json",
                 subprocess::input(subprocess::PIPE));
-        this_thread::sleep_for(500ms);
+
+        m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                " --port 8081 --password abc --ice_servers resources/iceServers.json"
+                " --certificate resources/cert.pem --key resources/key.pem", subprocess::input(subprocess::PIPE));
+
+        this_thread::sleep_for(2s);
     }
 
     static void TearDownTestSuite()
@@ -33,9 +45,31 @@ protected:
             m_signalingServerProcess->kill(9);
             m_signalingServerProcess->wait();
         }
+
+        if (m_signalingServerProcessTLS)
+        {
+            m_signalingServerProcessTLS->kill(9);
+            m_signalingServerProcessTLS->wait();
+        }
+    }
+
+    void SetUp()
+    {
+        m_tlsTestEnable = GetParam();
+
+        if(m_tlsTestEnable)
+        {
+            m_baseUrl = "https://localhost:8081";
+        }
+        else
+        {
+            m_baseUrl = "http://localhost:8080";
+        }
     }
 };
+
 unique_ptr<subprocess::Popen> IceServerTestsWithSignalingServer::m_signalingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> IceServerTestsWithSignalingServer::m_signalingServerProcessTLS = nullptr;
 
 TEST(IceServerTests, constructor_url_shouldSetTheAttributes)
 {
@@ -89,24 +123,24 @@ TEST(IceServerTests, operator_webrtcIceServer_shouldSetTheAttributes)
     EXPECT_EQ(testee.password, "p");
 }
 
-TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_invalidUrl_shouldReturnTrueAndNotSetIceServers)
+TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_invalidUrl_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_FALSE(IceServer::fetchFromServer("http://localhost:8080/ice", "", iceServers));
+    EXPECT_FALSE(IceServer::fetchFromServer(m_baseUrl + "/ice", "", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 0);
 }
 
-TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
+TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_wrongPassword_shouldReturnTrueAndNotSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_TRUE(IceServer::fetchFromServer("http://localhost:8080/iceservers", "", iceServers));
+    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 0);
 }
 
-TEST_F(IceServerTestsWithSignalingServer, fetchFromServer_rightPassword_shouldReturnTrueAndSetIceServers)
+TEST_P(IceServerTestsWithSignalingServer, fetchFromServer_rightPassword_shouldReturnTrueAndSetIceServers)
 {
     vector<IceServer> iceServers;
-    EXPECT_TRUE(IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers));
+    EXPECT_TRUE(IceServer::fetchFromServer(m_baseUrl + "/iceservers", "abc", iceServers, VerifyCertificate));
     ASSERT_EQ(iceServers.size(), 1);
     ASSERT_EQ(iceServers[0].urls().size(), 1);
     EXPECT_EQ(iceServers[0].urls()[0], "stun:stun.l.google.com:19302");
@@ -176,3 +210,10 @@ TEST(IceServerTests, fromJson_valid_shouldReturnTrueAndSetIceServers)
     EXPECT_EQ(iceServers[0].username(), "u");
     EXPECT_EQ(iceServers[0].credential(), "c");
 }
+
+INSTANTIATE_TEST_SUITE_P(
+    IceServerTestsWithSignalingServer,
+    IceServerTestsWithSignalingServer,
+    ::testing::Values(
+        false, true
+));

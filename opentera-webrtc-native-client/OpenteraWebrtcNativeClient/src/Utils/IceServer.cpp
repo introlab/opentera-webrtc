@@ -56,12 +56,14 @@ IceServer::IceServer(vector<string> urls, string username, string credential) :
  * @param url The signaling server url
  * @param password The signaling server username
  * @param iceServers The fetched ice servers
+ * @param verifyCertificate Indicates to verify the certificate or not
  * @return true if success
  */
-bool IceServer::fetchFromServer(const string& url, const string& password, vector<IceServer>& iceServers)
+bool IceServer::fetchFromServer(const string& url, const string& password, vector<IceServer>& iceServers,
+        bool verifyCertificate)
 {
     string response;
-    if (!Http::get(url, response, {{"Authorization", password.c_str()}}))
+    if (!Http::get(url, response, {{"Authorization", password.c_str()}}, verifyCertificate))
     {
         return false;
     }

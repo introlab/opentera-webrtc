@@ -2,25 +2,30 @@ import argparse
 import asyncio
 import itertools
 import json
-
+import sys
 from aiohttp import web
 
 import socketio
+import ssl
 
 from room_manager import RoomManager
 
 
 PROTOCOL_VERSION = 1
+DISCONNECT_DELAY_S = 1
 
 
-sio = socketio.AsyncServer(async_mode='aiohttp')
+sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
 app = web.Application()
-sio.attach(app)
 
 room_manager = RoomManager(sio)
 
 password = None
 ice_servers = []
+
+async def disconnect_delayed(id):
+    await asyncio.sleep(DISCONNECT_DELAY_S)
+    await sio.disconnect(id)
 
 
 @sio.on('connect')
@@ -34,7 +39,7 @@ async def disconnect(id):
     room = await room_manager.get_room(id)
     await room_manager.remove_client(id)
     
-    if room != None:
+    if room is not None:
         clients = await room_manager.list_clients(room)
         await room_manager.send_to_all('room-clients', data=clients, room=room)
 
@@ -44,10 +49,10 @@ async def join_room(id, data):
     print('join_room ', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
-        sio.disconnect(id)
+        asyncio.create_task(disconnect_delayed(id))
         return False
     if (data['protocolVersion'] if 'protocolVersion' in data else 0) != PROTOCOL_VERSION:
-        sio.disconnect(id)
+        asyncio.create_task(disconnect_delayed(id))
         return False
 
     if 'data' not in data:
@@ -154,17 +159,48 @@ if __name__ == '__main__':
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
+    parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
+    parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
+    parser.add_argument('--key', type=str, help='TLS private key path', default=None)
+
+    # Parse arguments
     args = parser.parse_args()
 
+    # Default = not using TLS
+    using_tls = False
 
+    # Test for certificates / key pair
+    if args.certificate and args.key:
+        using_tls = True
+        print('Using certificate: ', args.certificate)
+        print('Using private key: ', args.key)
+    elif args.certificate or args.key:
+        sys.exit('You must specify both certificate and key.')
+    else:
+        using_tls = False
+
+    # Update global password
     password = args.password
 
+    # Look for ice servers file
     if args.ice_servers is not None:
         with open(args.ice_servers) as file:
             ice_servers = json.load(file)
 
+    # Make sure websocket path is defined
+    sio.attach(app, socketio_path=args.socketio_path)
 
+    # Create route to get iceservers
     app.add_routes([web.get('/iceservers', get_ice_servers)])
+
+    # Create static route if required
     if args.static_folder is not None:
         app.add_routes([web.static('/', args.static_folder)])
-    web.run_app(app, port=args.port)
+
+    # Run app
+    if using_tls:
+        ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_context.load_cert_chain(args.certificate, args.key)
+        web.run_app(app, port=args.port, ssl_context=ssl_context)
+    else:
+        web.run_app(app, port=args.port)

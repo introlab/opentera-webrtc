@@ -31,7 +31,7 @@ namespace opentera
         explicit operator webrtc::PeerConnectionInterface::IceServer() const;
 
         static bool fetchFromServer(const std::string& url, const std::string& password,
-                std::vector<IceServer>& iceServers);
+                std::vector<IceServer>& iceServers, bool verifyCertificate = true);
         static bool fromJson(const std::string& json, std::vector<IceServer>& iceServers);
     };
 

@@ -60,18 +60,30 @@ static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguratio
     IceServer("stun:stun.l.google.com:19302")
 });
 
-class StreamClientTests : public ::testing::Test
+class StreamClientTests : public ::testing::TestWithParam<bool>
 {
     static unique_ptr<subprocess::Popen> m_signalingServerProcess;
+    static unique_ptr<subprocess::Popen> m_signalingServerProcessTLS;
 
 protected:
+
+    bool m_tlsTestEnable;
+    string m_baseUrl;
+
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
                 / "signaling-server" / "signaling_server.py";
+
         m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc", subprocess::input(subprocess::PIPE));
+                " --port 8080 --password abc --socketio_path thepath", subprocess::input(subprocess::PIPE));
+
+        m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+                " --port 8081 --password abc --socketio_path thepath"
+                " --certificate resources/cert.pem --key resources/key.pem", subprocess::input(subprocess::PIPE));
+
+        this_thread::sleep_for(2s);
     }
 
     static void TearDownTestSuite()
@@ -81,11 +93,37 @@ protected:
             m_signalingServerProcess->kill(9);
             m_signalingServerProcess->wait();
         }
+
+        if (m_signalingServerProcessTLS)
+        {
+            m_signalingServerProcessTLS->kill(9);
+            m_signalingServerProcessTLS->wait();
+        }
+    }
+
+    void SetUp()
+    {
+        m_tlsTestEnable = GetParam();
+
+        if(m_tlsTestEnable)
+        {
+            m_baseUrl = "https://localhost:8081/thepath";
+        }
+        else
+        {
+            m_baseUrl = "http://localhost:8080/thepath";
+        }
+    }
+
+    void TearDown()
+    {
+
     }
 };
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcess = nullptr;
+unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcessTLS = nullptr;
 
-TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
+TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
 {
     // Initialize the clients
     shared_ptr<ConstantVideoSource> videoSource1 = make_shared<ConstantVideoSource>(cv::Scalar(0, 0, 255));
@@ -93,13 +131,16 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create("http://localhost:8080", "c1",
+            SignalingServerConfiguration::create(m_baseUrl, "c1",
                     sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create("http://localhost:8080", "c2",
+            SignalingServerConfiguration::create(m_baseUrl, "c2",
                     sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource2);
+
+    client1->setTlsVerificationEnabled(false);
+    client2->setTlsVerificationEnabled(false);
 
     client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
     client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
@@ -170,3 +211,10 @@ TEST_F(StreamClientTests, videoStream_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[1], 0, MeanColorAbsError);
     EXPECT_NEAR(meanColor2[2], 255, MeanColorAbsError);
 }
+
+INSTANTIATE_TEST_SUITE_P(
+        StreamClientTests,
+        StreamClientTests,
+        ::testing::Values(
+                false, true
+        ));
