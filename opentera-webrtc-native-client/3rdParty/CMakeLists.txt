@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+# cmake_minimum_required(VERSION 2.6.4)
 
 if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
@@ -32,5 +32,11 @@ set(BUILD_opencv_ts OFF)
 set(BUILD_opencv_video OFF)
 set(BUILD_opencv_videoio OFF)
 
+set(BUILD_JAVA OFF)
+set(BUILD_OBJC OFF)
+
 # Configure opencv 
 add_subdirectory(opencv)
+
+install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include 
+    	FILES_MATCHING PATTERN "*.h")
