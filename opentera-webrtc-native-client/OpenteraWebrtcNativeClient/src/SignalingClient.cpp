@@ -267,16 +267,15 @@ void SignalingClient::connectSioEvents()
     m_sio.set_fail_listener([this] { onSioErrorEvent(); });
     m_sio.set_close_listener([this](const sio::client::close_reason& reason) { onSioDisconnectEvent(reason); });
 
-    m_sio.socket()->on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
+    m_sio.on("room-clients", [this] (sio::event& event) { onRoomClientsEvent(event); });
 
-    m_sio.socket()->on("make-peer-call", [this] (sio::event& event) { onMakePeerCallEvent(event); });
-    m_sio.socket()->on("peer-call-received", [this] (sio::event& event) { onPeerCallReceivedEvent(event); });
-    m_sio.socket()->on("peer-call-answer-received",
-            [this] (sio::event& event) { onPeerCallAnswerReceivedEvent(event); });
-    m_sio.socket()->on("close-all-peer-connections-request-received",
+    m_sio.on("make-peer-call", [this] (sio::event& event) { onMakePeerCallEvent(event); });
+    m_sio.on("peer-call-received", [this] (sio::event& event) { onPeerCallReceivedEvent(event); });
+    m_sio.on("peer-call-answer-received",  [this] (sio::event& event) { onPeerCallAnswerReceivedEvent(event); });
+    m_sio.on("close-all-peer-connections-request-received",
         [this] (sio::event& event) { onCloseAllPeerConnectionsRequestReceivedEvent(event); });
 
-    m_sio.socket()->on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
+    m_sio.on("ice-candidate-received", [this] (sio::event& event) { onIceCandidateReceivedEvent(event); });
 }
 
 void SignalingClient::onSioConnectEvent()

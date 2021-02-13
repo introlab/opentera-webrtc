@@ -203,5 +203,5 @@ INSTANTIATE_TEST_SUITE_P(
     IceServerTestsWithSignalingServer,
     IceServerTestsWithSignalingServer,
     ::testing::Values(
-        true, false
+        false, true
 ));

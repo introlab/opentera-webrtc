@@ -12,6 +12,7 @@ from room_manager import RoomManager
 
 
 PROTOCOL_VERSION = 1
+DISCONNECT_DELAY_S = 1
 
 
 sio = socketio.AsyncServer(async_mode='aiohttp', logger=True, engineio_logger=True, cors_allowed_origins='*')
@@ -21,6 +22,10 @@ room_manager = RoomManager(sio)
 
 password = None
 ice_servers = []
+
+async def disconnect_delayed(id):
+    await asyncio.sleep(DISCONNECT_DELAY_S)
+    await sio.disconnect(id)
 
 
 @sio.on('connect')
@@ -44,10 +49,10 @@ async def join_room(id, data):
     print('join_room ', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
-        await sio.disconnect(id)
+        asyncio.create_task(disconnect_delayed(id))
         return False
     if (data['protocolVersion'] if 'protocolVersion' in data else 0) != PROTOCOL_VERSION:
-        await sio.disconnect(id)
+        asyncio.create_task(disconnect_delayed(id))
         return False
 
     if 'data' not in data:
