@@ -11,7 +11,6 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 ## Dependencies
 
 * Most dependencies are part of the project with git submodules in the [opentera-webrtc-native-client/3rdParty](opentera-webrtc-native-client/3rdParty) directory.
-* OpenCV needs to be installed on the system.
 
 ## Build Instructions
 

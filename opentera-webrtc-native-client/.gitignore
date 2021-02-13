@@ -3,3 +3,5 @@ cmake-build-release
 build
 dist
 .idea
+__pycache__
+dist/

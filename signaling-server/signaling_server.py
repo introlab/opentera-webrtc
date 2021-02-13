@@ -15,7 +15,7 @@ PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
 
 
-sio = socketio.AsyncServer(async_mode='aiohttp', logger=True, engineio_logger=True, cors_allowed_origins='*')
+sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
 app = web.Application()
 
 room_manager = RoomManager(sio)
