@@ -73,10 +73,7 @@ elseif (UNIX)
     list(GET webrtc_native_LIBRARY 0 webrtc_native_LIBRARY_only)
     install(FILES ${webrtc_native_LIBRARY_only} DESTINATION lib)
     install(FILES ${boringssl_LIBRARY} DESTINATION lib)
-    
-    
-    
-    
+       
     install(DIRECTORY webrtc/src/api DESTINATION include 
     	FILES_MATCHING PATTERN "*.h")
     	
