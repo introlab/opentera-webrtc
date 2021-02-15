@@ -12,11 +12,6 @@ namespace py = pybind11;
 void opentera::initSignalingClientPython(pybind11::module& m)
 {
     py::class_<SignalingClient>(m, "SignalingClient")
-            .def("set_tls_verification_enabled", &SignalingClient::setTlsVerificationEnabled,
-                    "Enable or disable the TLS verification. By default, the TLS verification is enabled.\n"
-                    ":param: is_enabled",
-                    py::arg("is_enabled"))
-
             .def("connect", &SignalingClient::connect, "Connects the client the signaling server.")
             .def("close", &SignalingClient::close, "Closes all client connections (asynchronous).")
             .def("close_sync", &SignalingClient::closeSync, "Closes all client connections (synchronous).")
@@ -128,7 +123,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     " - error: The error message\n"
                     "\n"
                     ":param callback: The callback")
-
+                               
             .def_property("tls_verification_enabled", nullptr, &SignalingClient::setTlsVerificationEnabled,
                  "Enable or disable the TLS verification. By default, the TLS verification is enabled.\n"
                  ":param: is_enabled");
