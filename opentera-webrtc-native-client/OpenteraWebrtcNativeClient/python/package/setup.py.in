@@ -1,0 +1,41 @@
+from setuptools import setup, dist, find_packages
+from setuptools.command.install import install
+import os
+
+
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+    
+    
+# force setuptools to recognize that this is
+# actually a binary distribution
+class BinaryDistribution(dist.Distribution):
+    def has_ext_modules(foo):
+        return True    
+
+setup(
+    name="opentera_webrtc_native_client", 
+    version="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}",
+    author="Marc-Antoine Maheux, Cedric Godin, Dominic Letourneau",
+    author_email="marc-antoine.maheux@usherbrooke.ca, cedric.godin@usherbrooke.ca, dominic.letourneau@usherbrooke.ca",
+    description="OpenTera WebRTC Client Library for Python",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/introlab/opentera-webrtc-teleop",
+    packages=['opentera_webrtc_native_client'],
+    classifiers=[
+       "Programming Language :: Python :: 3",
+       "Development Status :: 4 - Beta",
+       "License :: OSI Approved :: Apache Software License",
+       "Operating System :: POSIX",
+    ],
+    distclass=BinaryDistribution,
+    platforms=['linux_x86_64'],
+    # python_requires='==3.8',
+    package_dir={'opentera_webrtc_native_client': '.'},
+    package_data={'opentera_webrtc_native_client': ['opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so']},
+    include_package_data=True,
+    data_files=[('doc', ['opentera_webrtc_native_client.html'])],
+)
+
+

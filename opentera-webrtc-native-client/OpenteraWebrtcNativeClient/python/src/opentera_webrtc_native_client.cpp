@@ -34,4 +34,10 @@ PYBIND11_MODULE(opentera_webrtc_native_client, m)
     initSignalingClientPython(m);
     initDataChannelClientPython(m);
     initStreamClientPython(m);
+
+#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION
+    m.attr("__version__") = OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION;
+#else
+    m.attr("__version__") = "dev";
+#endif
 }
