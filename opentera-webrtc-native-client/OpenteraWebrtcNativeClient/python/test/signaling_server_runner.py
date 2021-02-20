@@ -1,6 +1,7 @@
 import pathlib
 import subprocess
 import time
+import sys
 
 signaling_server_path = pathlib.Path(__file__).parent.parent.parent.parent.parent.joinpath('signaling-server') \
     .joinpath('signaling_server.py').absolute()
@@ -9,7 +10,8 @@ ice_server_path = pathlib.Path(__file__).parent.joinpath('resources').joinpath('
 
 class SignalingServerRunner:
     def __init__(self):
-        self._process = subprocess.Popen(['python3', signaling_server_path, '--port', '8080', '--password', 'abc',
+        # Use same interpreter
+        self._process = subprocess.Popen([sys.executable, signaling_server_path, '--port', '8080', '--password', 'abc',
                                           '--ice_servers', ice_server_path])
         time.sleep(1)
 

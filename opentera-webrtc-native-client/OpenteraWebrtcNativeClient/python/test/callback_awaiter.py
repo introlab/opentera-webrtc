@@ -15,7 +15,7 @@ class CallbackAwaiter:
                 return self._count
 
         start_time = time.time()
-        while (get_count() < self._max_count):
+        while get_count() < self._max_count:
             time.sleep(0.05)
 
             if time.time() - start_time > self._timeout_seconds:
