@@ -24,7 +24,7 @@ class FailureTestCase(unittest.TestCase):
             self.add_failure('{} != True'.format(a))
 
     def add_failure_assert_false(self, a):
-        if a is not False:
+        if a:
             self.add_failure('{} != False'.format(a))
 
     def add_failure_assert_in(self, a, b):
