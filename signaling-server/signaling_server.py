@@ -21,7 +21,6 @@ app = web.Application()
 room_manager = RoomManager(sio)
 
 password = None
-port = None
 ice_servers = []
 
 
@@ -192,10 +191,9 @@ if __name__ == '__main__':
     else:
         using_tls = False
 
-    # Update global password and port
+    # Update global password
     password = args.password
-    port = args.port
-
+    
     # Look for ice servers file
     if args.ice_servers is not None:
         with open(args.ice_servers) as file:
