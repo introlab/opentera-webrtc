@@ -3,6 +3,7 @@ import asyncio
 import itertools
 import json
 import sys
+
 from aiohttp import web
 
 import socketio
@@ -10,10 +11,9 @@ import ssl
 
 from room_manager import RoomManager
 
-
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
-
+INACTIVE_DELAY_S = 5
 
 sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
 app = web.Application()
@@ -23,14 +23,26 @@ room_manager = RoomManager(sio)
 password = None
 ice_servers = []
 
+
 async def disconnect_delayed(id):
     await asyncio.sleep(DISCONNECT_DELAY_S)
     await sio.disconnect(id)
 
 
+async def disconnect_inactive_user(id):
+    await asyncio.sleep(INACTIVE_DELAY_S)
+    # Verify if id joined a room
+    room = await room_manager.get_room(id)
+    if room is None:
+        print('inactive: ', id)
+        await sio.disconnect(id)
+
+
 @sio.on('connect')
 async def connect(id, env):
     print('connect ', id)
+    # Launch task to verify if client joins a room (active), otherwise disconnect client.
+    asyncio.create_task(disconnect_inactive_user(id))
 
 
 @sio.on('disconnect')
@@ -142,7 +154,7 @@ async def close_all_peer_connections(from_id):
         await room_manager.send_to_all('close-all-peer-connections-request-received', room=room)
 
 
-async def get_ice_servers(request):
+async def get_ice_servers(request: web.Request):
     if 'Authorization' in request.headers and _isAuthorized(request.headers['Authorization']):
         return web.json_response(ice_servers)
     else:
@@ -181,7 +193,7 @@ if __name__ == '__main__':
 
     # Update global password
     password = args.password
-
+    
     # Look for ice servers file
     if args.ice_servers is not None:
         with open(args.ice_servers) as file:
