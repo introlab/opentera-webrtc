@@ -36,7 +36,7 @@ elseif (UNIX)
         endif()
 
         execute_process(
-                COMMAND git checkout 1f3ac1f8e0688f8eff467b7dedbdb3f202604aeb
+                COMMAND git checkout 742109a89d35d95bba055b036d8dbbe2ebcce6ee
                 WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc/src"
                 RESULT_VARIABLE git_checkout_webrtc_result
         )
