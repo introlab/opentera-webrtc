@@ -91,6 +91,10 @@ elseif (UNIX)
     install(FILES ${webrtc_native_LIBRARY_only} DESTINATION lib)
     install(FILES ${boringssl_LIBRARY} DESTINATION lib)
 
+    install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/${CMAKE_BUILD_TYPE}/obj/third_party/boringssl/boringssl DESTINATION lib)
+    install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/${CMAKE_BUILD_TYPE}/obj/third_party/boringssl/boringssl_asm DESTINATION lib)
+
+
     install(DIRECTORY webrtc/src/api DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
 
@@ -126,5 +130,6 @@ elseif (UNIX)
 
     install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
+
 
 endif (WIN32)
