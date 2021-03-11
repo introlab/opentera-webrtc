@@ -63,18 +63,10 @@ elseif (UNIX)
         message(FATAL_ERROR "\"generate_ninja_files.bash\" failed (${gn_webrtc_result})")
     endif()
 
-    if (CMAKE_BUILD_TYPE MATCHES Debug)
-        add_custom_target(
-                webrtc_native ALL
-                COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Debug
-        )
-    endif ()
-    if (CMAKE_BUILD_TYPE MATCHES Release)
-        add_custom_target(
-                webrtc_native ALL
-                COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Release
-        )
-    endif()
+    add_custom_target(
+            webrtc_native ALL
+            COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/${CMAKE_BUILD_TYPE}
+    )
 
     # Manual installation of all dependencies.
     list(GET webrtc_native_LIBRARY 0 webrtc_native_LIBRARY_only)
