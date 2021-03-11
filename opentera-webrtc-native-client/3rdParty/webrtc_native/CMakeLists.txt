@@ -63,27 +63,34 @@ elseif (UNIX)
         message(FATAL_ERROR "\"generate_ninja_files.bash\" failed (${gn_webrtc_result})")
     endif()
 
-    add_custom_target(
-            webrtc_native ALL
-            COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Debug
-            COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Release
-    )
-    
+    if (CMAKE_BUILD_TYPE MATCHES Debug)
+        add_custom_target(
+                webrtc_native ALL
+                COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Debug
+        )
+    endif ()
+    if (CMAKE_BUILD_TYPE MATCHES Release)
+        add_custom_target(
+                webrtc_native ALL
+                COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Release
+        )
+    endif()
+
     # Manual installation of all dependencies.
     list(GET webrtc_native_LIBRARY 0 webrtc_native_LIBRARY_only)
     install(FILES ${webrtc_native_LIBRARY_only} DESTINATION lib)
     install(FILES ${boringssl_LIBRARY} DESTINATION lib)
-       
-    install(DIRECTORY webrtc/src/api DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-    	
-    install(DIRECTORY webrtc/src/rtc_base DESTINATION include 
+
+    install(DIRECTORY webrtc/src/api DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
 
-   install(DIRECTORY webrtc/src/media DESTINATION include 
+    install(DIRECTORY webrtc/src/rtc_base DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
-    	
-    install(DIRECTORY webrtc/src/modules DESTINATION include 
+
+   install(DIRECTORY webrtc/src/media DESTINATION include
+    	FILES_MATCHING PATTERN "*.h")
+
+    install(DIRECTORY webrtc/src/modules DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
 
     install(DIRECTORY webrtc/src/system_wrappers DESTINATION include
@@ -104,10 +111,10 @@ elseif (UNIX)
     install(DIRECTORY webrtc/src/logging DESTINATION include
         FILES_MATCHING PATTERN "*.h")
 
-    install(DIRECTORY webrtc/src/third_party/abseil-cpp/absl DESTINATION include 
+    install(DIRECTORY webrtc/src/third_party/abseil-cpp/absl DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
 
-    install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include 
+    install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include
     	FILES_MATCHING PATTERN "*.h")
 
 endif (WIN32)
