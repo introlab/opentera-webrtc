@@ -1,5 +1,18 @@
 cmake_minimum_required(VERSION 3.10.0)
 
+set(CMAKE_SYSTEM_NAME Linux)
+set(CMAKE_SYSTEM_PROCESSOR arm64)
+
+
+SET(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM BOTH)
+SET(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
+set(CMAKE_SYSROOT ${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/webrtc_native/webrtc/src/build/linux/debian_sid_arm64-sysroot)
+
+set(CMAKE_C_COMPILER /usr/bin/aarch64-linux-gnu-gcc)
+set(CMAKE_CXX_COMPILER /usr/bin/aarch64-linux-gnu-g++)
+
+
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/../VERSION VERSION_FROM_FILE)
 string(REPLACE "." ";" VERSION_LIST ${VERSION_FROM_FILE})
 list(GET VERSION_LIST 0 OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR)
@@ -61,7 +74,7 @@ if (WIN32)
     #TODO
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
-    add_compile_definitions(WEBRTC_POSIX)
+    add_definitions(-DWEBRTC_POSIX)
 
     list(APPEND boringssl_INCLUDE "${CMAKE_CURRENT_LIST_DIR}/3rdParty/webrtc_native/webrtc/src/third_party/boringssl/src/include")
     if (CMAKE_BUILD_TYPE MATCHES Debug)
@@ -74,12 +87,12 @@ elseif (UNIX)
     endif ()
 endif (WIN32)
 
-find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
-if (Python_FOUND)
-    set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-else()
-    message(FATAL_ERROR "Python3 is not found")
-endif()
+#find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
+#if (Python_FOUND)
+#    set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
+#else()
+#    message(FATAL_ERROR "Python3 is not found")
+#endif()
 
 add_subdirectory(3rdParty)
 add_subdirectory(OpenteraWebrtcNativeClient)

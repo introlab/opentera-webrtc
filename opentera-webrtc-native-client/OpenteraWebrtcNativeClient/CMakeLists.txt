@@ -4,7 +4,7 @@ project(OpenteraWebrtcNativeClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
-add_compile_definitions(WEBRTC_POSIX)
+add_definitions(-DWEBRTC_POSIX)
 
 set(OpenCV_INCLUDE_DIRS
 	${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
@@ -48,5 +48,5 @@ install(DIRECTORY include/ DESTINATION include
 
 assign_source_group(${source_files})
 
-add_subdirectory(python)
+#add_subdirectory(python)
 add_subdirectory(test)

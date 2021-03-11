@@ -55,7 +55,17 @@ elseif (UNIX)
     endif()
 
     execute_process(
-            COMMAND "${CMAKE_CURRENT_LIST_DIR}/generate_ninja_files.bash"
+            COMMAND python2 install-sysroot.py --arch=arm64
+            WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc/src/build/linux/sysroot_scripts"
+            RESULT_VARIABLE build_sysroot_aarch64
+    )
+        
+    if(NOT ${build_sysroot_aarch64} EQUAL 0)
+        message(FATAL_ERROR "\"python install-sysroot.py --arch=arm64\" failed (${build_sysroot_aarch64})")
+    endif()
+
+    execute_process(
+            COMMAND "${CMAKE_CURRENT_LIST_DIR}/generate_ninja_files.bash" "${CMAKE_SYSROOT}"
             WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc/src"
             RESULT_VARIABLE gn_webrtc_result
     )
