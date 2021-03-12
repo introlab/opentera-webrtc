@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.14.0)
 
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/../VERSION VERSION_FROM_FILE)
 string(REPLACE "." ";" VERSION_LIST ${VERSION_FROM_FILE})
@@ -76,6 +76,7 @@ endif (WIN32)
 
 find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
 if (Python_FOUND)
+    set(PYBIND11_FINDPYTHON ON)
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
 else()
     message(FATAL_ERROR "Python3 is not found")
