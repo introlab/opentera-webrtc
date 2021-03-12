@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 2.6.4)
-
 project(OpenteraWebrtcNativeClientTests)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
