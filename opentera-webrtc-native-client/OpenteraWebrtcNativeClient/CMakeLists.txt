@@ -15,11 +15,9 @@ set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
 
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${webrtc_native_INCLUDE})
 include_directories(../3rdParty/socket.io-client-cpp/src)
 include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)
-include_directories(../3rdParty/webrtc_native/webrtc/src)
-include_directories(../3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
-include_directories(${boringssl_INCLUDE})
 include_directories(../3rdParty/cpp-httplib)
 include_directories(include)
 
@@ -37,10 +35,11 @@ add_library(OpenteraWebrtcNativeClient
 target_link_libraries(OpenteraWebrtcNativeClient
         sioclient
         ${webrtc_native_LIBRARY}
+        ${boringssl_LIBRARY}
         ${OpenCV_LIBRARIES})
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
-add_dependencies(OpenteraWebrtcNativeClient webrtc_native ${OpenCV_LIBRARIES})
+add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
 
 install(TARGETS OpenteraWebrtcNativeClient DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include
