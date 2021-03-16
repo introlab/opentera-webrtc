@@ -225,7 +225,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnSignalingConnectionOpened(const std::function<void()>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionOpened = callback;
         });
@@ -240,7 +240,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionClosed = callback;
         });
@@ -260,7 +260,7 @@ namespace opentera
     inline void SignalingClient::setOnSignalingConnectionError(
             const std::function<void(const std::string&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionError = callback;
         });
@@ -280,7 +280,7 @@ namespace opentera
     inline void SignalingClient::setOnRoomClientsChanged(
             const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onRoomClientsChanged = callback;
         });
@@ -302,7 +302,7 @@ namespace opentera
      */
     inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_callAcceptor = callback;
         });
@@ -321,7 +321,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onCallRejected = callback;
         });
@@ -340,7 +340,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onClientConnected = callback;
         });
@@ -359,7 +359,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onClientDisconnected = callback;
         });
@@ -378,7 +378,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
-        FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, callback]()
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onError = callback;
         });

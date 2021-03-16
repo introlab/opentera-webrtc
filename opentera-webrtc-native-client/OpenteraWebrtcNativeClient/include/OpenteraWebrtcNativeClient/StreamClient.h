@@ -77,7 +77,7 @@ namespace opentera
      */
     inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(getInternalClientThread(), [this, callback]()
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onAddRemoteStream = callback;
         });
@@ -97,7 +97,7 @@ namespace opentera
      */
     inline void StreamClient::setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callAsync(getInternalClientThread(), [this, callback]()
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onRemoveRemoteStream = callback;
         });
@@ -120,7 +120,7 @@ namespace opentera
     inline void StreamClient::setOnVideoFrameReceived(
             const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback)
     {
-        FunctionTask<void>::callAsync(getInternalClientThread(), [this, callback]()
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onVideoFrameReceived = callback;
         });
@@ -151,7 +151,7 @@ namespace opentera
             size_t numberOfChannels,
             size_t numberOfFrames)>& callback)
     {
-        FunctionTask<void>::callAsync(getInternalClientThread(), [this, callback]()
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onAudioFrameReceived = callback;
         });
