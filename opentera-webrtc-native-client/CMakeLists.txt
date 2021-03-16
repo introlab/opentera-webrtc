@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10.0)
+cmake_minimum_required(VERSION 3.14.0)
 
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/../VERSION VERSION_FROM_FILE)
 string(REPLACE "." ";" VERSION_LIST ${VERSION_FROM_FILE})
@@ -58,14 +58,17 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 if (WIN32)
-    #TODO
+    message(FATAL_ERROR "Windows is not supported yet.")
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
     add_compile_definitions(WEBRTC_POSIX)
+else()
+    message(FATAL_ERROR "Unsupported operating system.")
 endif (WIN32)
 
 find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
 if (Python_FOUND)
+    set(PYBIND11_FINDPYTHON ON)
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
 else()
     message(FATAL_ERROR "Python3 is not found")
