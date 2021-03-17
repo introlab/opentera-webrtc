@@ -2,10 +2,13 @@ if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
+# webrtc_native must be first
+add_subdirectory(webrtc_native)
+add_subdirectory(boost-cmake)
 add_subdirectory(googletest)
 add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
-add_subdirectory(webrtc_native)
+
 
 # Set OpenCV flags
 set(OPENCV_FORCE_3RDPARTY_BUILD ON)

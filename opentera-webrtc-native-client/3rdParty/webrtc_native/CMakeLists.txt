@@ -1,113 +1,75 @@
-cmake_minimum_required(VERSION 3.10.0)
+set(webrtc_native_build_version "4389.742109.0")
 
-if (WIN32)
-    #TODO
-elseif (UNIX)
-    set(ENV{PATH} $ENV{PATH}:${CMAKE_CURRENT_LIST_DIR}/../depot_tools/)
-
-    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/webrtc")
-        execute_process(
-                COMMAND mkdir webrtc
-                WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-                RESULT_VARIABLE mkdir_webrtc_result
-        )
-        if(NOT ${mkdir_webrtc_result} EQUAL 0)
-            message(FATAL_ERROR "\"mkdir webrtc\" failed (${mkdir_webrtc_result})")
+if(WIN32)
+    message(FATAL_ERROR "Windows is not supported yet.")
+elseif(UNIX)
+    # Taken from : https://stackoverflow.com/questions/26919334/detect-underlying-platform-flavour-in-cmake
+    function(get_linux_lsb_release_information)
+        find_program(LSB_RELEASE_EXEC lsb_release)
+        if(NOT LSB_RELEASE_EXEC)
+            message(FATAL_ERROR "Could not detect lsb_release executable, can not gather required information")
         endif()
+
+        execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --id OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+        execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --release OUTPUT_VARIABLE LSB_RELEASE_VERSION_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+        execute_process(COMMAND "${LSB_RELEASE_EXEC}" --short --codename OUTPUT_VARIABLE LSB_RELEASE_CODENAME_SHORT OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+
+        string(TOLOWER ${LSB_RELEASE_ID_SHORT} LSB_RELEASE_ID_SHORT)
+        set(LSB_RELEASE_ID_SHORT "${LSB_RELEASE_ID_SHORT}" PARENT_SCOPE)    
+        set(LSB_RELEASE_VERSION_SHORT "${LSB_RELEASE_VERSION_SHORT}" PARENT_SCOPE)
+        set(LSB_RELEASE_CODENAME_SHORT "${LSB_RELEASE_CODENAME_SHORT}" PARENT_SCOPE)
+    endfunction()
+
+    if (${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "aarch64")
+        set(architecture "arm64")
+    elseif(${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "armv*" OR ${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "armhf")
+        set(architecture "arm32")
+    elseif(${CMAKE_HOST_SYSTEM_PROCESSOR} MATCHES "x86_64")
+        set(architecture "amd64")
+    else()
+        message(FATAL_ERROR "Architecture not supported: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
 
-    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/webrtc/src")
-        execute_process(
-                COMMAND fetch webrtc
-                WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc"
-                RESULT_VARIABLE fetch_webrtc_result
-        )
-        if(NOT ${fetch_webrtc_result} EQUAL 0)
-            message(FATAL_ERROR "\"fetch webrtc\" failed (${fetch_webrtc_result})")
-        endif()
+    get_linux_lsb_release_information()
 
-        execute_process(
-                COMMAND gclient sync --with_branch_heads --with_tags
-                WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc"
-                RESULT_VARIABLE gclient_sync_webrtc_result
-        )
-        if(NOT ${gclient_sync_webrtc_result} EQUAL 0)
-            message(FATAL_ERROR "\"gclient sync --with_branch_heads --with_tags\" failed (${gclient_sync_webrtc_result})")
-        endif()
-
-        execute_process(
-                COMMAND git checkout 1f3ac1f8e0688f8eff467b7dedbdb3f202604aeb
-                WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc/src"
-                RESULT_VARIABLE git_checkout_webrtc_result
-        )
-        if(NOT ${git_checkout_webrtc_result} EQUAL 0)
-            message(FATAL_ERROR "\"git checkout\" failed (${git_checkout_webrtc_result})")
-        endif()
-
-        execute_process(
-                COMMAND gclient sync --with_branch_heads --with_tags
-                WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc"
-                RESULT_VARIABLE gclient_sync_webrtc_result
-        )
-        if(NOT ${gclient_sync_webrtc_result} EQUAL 0)
-            message(FATAL_ERROR "\"gclient sync --with_branch_heads --with_tags\" failed (${gclient_sync_webrtc_result})")
-        endif()
+    if (NOT ${LSB_RELEASE_ID_SHORT} MATCHES "ubuntu")
+        message(FATAL_ERROR "System not supported: ${LSB_RELEASE_ID_SHORT}, must be ubuntu")
     endif()
 
-    execute_process(
-            COMMAND "${CMAKE_CURRENT_LIST_DIR}/generate_ninja_files.bash"
-            WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/webrtc/src"
-            RESULT_VARIABLE gn_webrtc_result
-    )
-    if(NOT ${gn_webrtc_result} EQUAL 0)
-        message(FATAL_ERROR "\"generate_ninja_files.bash\" failed (${gn_webrtc_result})")
+    if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04")
+        message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04 or 20.04.")
     endif()
 
-    add_custom_target(
-            webrtc_native ALL
-            COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Debug
-            COMMAND ninja -C ${CMAKE_CURRENT_LIST_DIR}/webrtc/src/out/Release
-    )
+    set(archive_name webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version}.tar.gz)
+    set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
+
+
+    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
+        message(STATUS "Downloading : ${webrtc_native_build_archive_url}")
+        file(DOWNLOAD 
+            ${webrtc_native_build_archive_url}
+            ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+            TIMEOUT 60 #seconds
+            TLS_VERIFY ON
+            SHOW_PROGRESS)
+    endif()
+
+    set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}")
+
+    if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+        message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
+        execute_process(
+            COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+    endif()
+
+    set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "doc string")
+    set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "doc string")
+    set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "doc string")
+    set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "doc string")
     
-    # Manual installation of all dependencies.
-    list(GET webrtc_native_LIBRARY 0 webrtc_native_LIBRARY_only)
-    install(FILES ${webrtc_native_LIBRARY_only} DESTINATION lib)
-    install(FILES ${boringssl_LIBRARY} DESTINATION lib)
-       
-    install(DIRECTORY webrtc/src/api DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-    	
-    install(DIRECTORY webrtc/src/rtc_base DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
+else()
+    message(FATAL_ERROR "Unsupported operating system.")
+endif()
 
-   install(DIRECTORY webrtc/src/media DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-    	
-    install(DIRECTORY webrtc/src/modules DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/system_wrappers DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/common_video DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/common_audio DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/call DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/p2p DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/logging DESTINATION include
-        FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/third_party/abseil-cpp/absl DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-
-    install(DIRECTORY webrtc/src/third_party/boringssl/src/include/openssl DESTINATION include 
-    	FILES_MATCHING PATTERN "*.h")
-
-endif (WIN32)
