@@ -13,7 +13,7 @@ class SignalingServerRunner:
         # Use same interpreter
         self._process = subprocess.Popen([sys.executable, signaling_server_path, '--port', '8080', '--password', 'abc',
                                           '--ice_servers', ice_server_path])
-        time.sleep(1)
+        time.sleep(3)
 
     def __enter__(self):
         return self
