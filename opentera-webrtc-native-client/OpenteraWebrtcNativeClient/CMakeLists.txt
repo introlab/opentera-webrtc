@@ -6,13 +6,19 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(WEBRTC_POSIX)
 
-set(OpenCV_INCLUDE_DIRS
-	${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
-	${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-	${CMAKE_CURRENT_BINARY_DIR}/../)
+if (NOT USE_SYSTEM_OPENCV)
+    set(OpenCV_INCLUDE_DIRS
+	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
+	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+	    ${CMAKE_CURRENT_BINARY_DIR}/../)
 
-set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
-
+    set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
+    
+else()
+    set(OpenCV_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS})
+    set(OpenCV_LIBRARIES ${OpenCV_LIBS})
+    message(STATUS "*************************** ${OpenCV_INCLUDE_DIRS} ${OpenCV_LIBRARIES}")
+endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${webrtc_native_INCLUDE})
@@ -39,7 +45,11 @@ target_link_libraries(OpenteraWebrtcNativeClient
         ${OpenCV_LIBRARIES})
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
-add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
+
+if (NOT USE_SYSTEM_OPENCV)
+    add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
+endif()
+
 
 install(TARGETS OpenteraWebrtcNativeClient DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include
