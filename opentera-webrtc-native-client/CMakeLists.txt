@@ -12,6 +12,10 @@ message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT
 
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
+if (NOT USE_SYSTEM_OPENCV)
+    set(USE_SYSTEM_OPENCV OFF)
+endif()
+
 if (USE_SYSTEM_OPENCV)
     find_package(OpenCV REQUIRED core imgproc)
     message(STATUS "***************************** USE SYSTEM OPENCV")
