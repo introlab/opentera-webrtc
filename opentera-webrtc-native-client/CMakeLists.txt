@@ -17,7 +17,7 @@ if (NOT USE_SYSTEM_OPENCV)
     set(USE_SYSTEM_OPENCV OFF)
 endif()
 
-# If OpenCV not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
+# If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
 # Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
 
 if (USE_SYSTEM_OPENCV)
@@ -27,8 +27,6 @@ if (USE_SYSTEM_OPENCV)
     message(STATUS "    version: ${OpenCV_VERSION}")
     message(STATUS "    libraries: ${OpenCV_LIBS}")
     message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")  
-else()
-      set(USE_SYSTEM_OPENCV OFF)
 endif()
 
 if (POLICY CMP0014)
