@@ -12,8 +12,7 @@ message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT
 
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
-if (NOT USE_SYSTEM_OPENCV)
-    set(USE_SYSTEM_OPENCV ON)
+if (USE_SYSTEM_OPENCV)
     find_package(OpenCV REQUIRED core imgproc)
     message(STATUS "***************************** USE SYSTEM OPENCV")
     message(STATUS "OpenCV library status:")
@@ -21,7 +20,8 @@ if (NOT USE_SYSTEM_OPENCV)
     message(STATUS "    version: ${OpenCV_VERSION}")
     message(STATUS "    libraries: ${OpenCV_LIBS}")
     message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")  
-    
+else()
+      set(USE_SYSTEM_OPENCV OFF)
 endif()
 
 if (POLICY CMP0014)
