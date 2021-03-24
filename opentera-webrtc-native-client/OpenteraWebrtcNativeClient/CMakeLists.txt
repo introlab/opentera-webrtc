@@ -6,18 +6,17 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(WEBRTC_POSIX)
 
-if (NOT USE_SYSTEM_OPENCV)
+if (USE_SYSTEM_OPENCV)
+    # The first line is not required, put there as a reminder.
+    # set(OpenCV_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS})
+    set(OpenCV_LIBRARIES ${OpenCV_LIBS})
+else()
     set(OpenCV_INCLUDE_DIRS
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
 	    ${CMAKE_CURRENT_BINARY_DIR}/../)
 
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
-    
-else()
-    set(OpenCV_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS})
-    set(OpenCV_LIBRARIES ${OpenCV_LIBS})
-    message(STATUS "*************************** ${OpenCV_INCLUDE_DIRS} ${OpenCV_LIBRARIES}")
 endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
