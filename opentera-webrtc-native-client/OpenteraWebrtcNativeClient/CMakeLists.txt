@@ -7,8 +7,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 add_compile_definitions(WEBRTC_POSIX)
 
 if (USE_SYSTEM_OPENCV)
-    # The first line is not required, put there as a reminder.
-    # set(OpenCV_INCLUDE_DIRS ${OpenCV_INCLUDE_DIRS})
+    # OpenCV_INDLUE_DIRS already set in root CMake with find_package(OpenCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS})
 else()
     set(OpenCV_INCLUDE_DIRS
