@@ -2,6 +2,8 @@ if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
 
+set (BUILD_SHARED_LIBS OFF)
+
 # webrtc_native must be first
 add_subdirectory(webrtc_native)
 add_subdirectory(boost-cmake)

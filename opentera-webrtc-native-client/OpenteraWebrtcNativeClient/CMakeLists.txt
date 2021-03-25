@@ -58,6 +58,6 @@ assign_source_group(${source_files})
 add_subdirectory(python)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
-    add_subdirectory(test)
+	add_subdirectory(test)
 endif()
 
