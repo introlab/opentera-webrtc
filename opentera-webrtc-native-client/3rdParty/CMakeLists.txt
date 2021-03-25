@@ -5,11 +5,14 @@ endif (POLICY CMP0048)
 # webrtc_native must be first
 add_subdirectory(webrtc_native)
 add_subdirectory(boost-cmake)
-add_subdirectory(googletest)
 add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
 
-if(NOT USE_SYSTEM_OPENCV)
+if (OPENTERA_WEBRTC_ENABLE_TESTS)
+    add_subdirectory(googletest)
+endif()
+
+if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # Set OpenCV flags
     set(OPENCV_FORCE_3RDPARTY_BUILD ON)
     set(BUILD_SHARED_LIBS OFF)

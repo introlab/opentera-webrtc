@@ -6,7 +6,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 add_compile_definitions(WEBRTC_POSIX)
 
-if (USE_SYSTEM_OPENCV)
+if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # OpenCV_INCLUDE_DIRS already set in root CMake with find_package(OpenCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS})
 else()
@@ -44,7 +44,7 @@ target_link_libraries(OpenteraWebrtcNativeClient
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 
-if (NOT USE_SYSTEM_OPENCV)
+if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
 endif()
 
@@ -56,5 +56,8 @@ install(DIRECTORY include/ DESTINATION include
 assign_source_group(${source_files})
 
 add_subdirectory(python)
-add_subdirectory(test)
+
+if (OPENTERA_WEBRTC_ENABLE_TESTS)
+    add_subdirectory(test)
+endif()
 

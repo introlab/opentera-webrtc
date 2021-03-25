@@ -13,14 +13,19 @@ message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
 # Default behavior is not to use system OpenCV
-if (NOT USE_SYSTEM_OPENCV)
-    set(USE_SYSTEM_OPENCV OFF)
+if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
+    set(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV OFF)
+endif()
+
+# Default behavior is to enable tests
+if (NOT OPENTERA_WEBRTC_ENABLE_TESTS)
+    set(OPENTERA_WEBRTC_ENABLE_TESTS ON)
 endif()
 
 # If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
 # Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
 
-if (USE_SYSTEM_OPENCV)
+if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     find_package(OpenCV REQUIRED core imgproc)
     message(STATUS "OpenCV library status:")
     message(STATUS "    config: ${OpenCV_DIR}")
