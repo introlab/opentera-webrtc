@@ -23,6 +23,8 @@ option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking"
 # Default behavior is to enable tests
 option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 
+option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
+
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     find_package(OpenCV REQUIRED core imgproc)
