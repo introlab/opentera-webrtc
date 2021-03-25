@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "4389.742109.0")
+set(webrtc_native_build_version "4389.742109.0" CACHE INTERNAL "doc string")
 
 if(WIN32)
     message(FATAL_ERROR "Windows is not supported yet.")

@@ -6,11 +6,34 @@ list(GET VERSION_LIST 0 OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR)
 list(GET VERSION_LIST 1 OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MINOR)
 list(GET VERSION_LIST 2 OPENTERA_WEBRTC_NATIVE_CLIENT_PATCH)
 
-SET(OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MINOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_PATCH})
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MINOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_PATCH} 
+CACHE INTERNAL "doc string")
 
 message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
+
+# Default behavior is not to use system OpenCV
+option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking" OFF)
+
+# If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
+# Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
+
+
+# Default behavior is to enable tests
+option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
+
+option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
+
+
+if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
+    find_package(OpenCV REQUIRED core imgproc)
+    message(STATUS "OpenCV library status:")
+    message(STATUS "    config: ${OpenCV_DIR}")
+    message(STATUS "    version: ${OpenCV_VERSION}")
+    message(STATUS "    libraries: ${OpenCV_LIBS}")
+    message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")  
+endif()
 
 if (POLICY CMP0014)
     cmake_policy(SET CMP0014 NEW)

@@ -8,7 +8,7 @@ sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboo
 
 ## Build
 
-WARNING - This can take a long time and requires about 20Go of free space.
+Only Unbuntu 18.04 an 20.04 are supported using pre-built libwebrtc library for x86_64, aarch64 or armhf architecture.
 
 ### Initialize submodules
 ```bash
@@ -20,7 +20,7 @@ git submodule update --init --recursive
 cd opentera-webrtc-native-client
 mkdir build
 cd build
-cmake ..
+cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
 ```
 ### Build
 ```bash
