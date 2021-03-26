@@ -8,12 +8,12 @@ add_compile_definitions(WEBRTC_POSIX)
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # OpenCV_INCLUDE_DIRS already set in root CMake with find_package(OpenCV)
-    set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "doc string")
+    set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "")
 else()
     set(OpenCV_INCLUDE_DIRS
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-	    ${CMAKE_CURRENT_BINARY_DIR}/../ CACHE INTERNAL "doc string")
+	    ${CMAKE_CURRENT_BINARY_DIR}/../ CACHE INTERNAL "")
 
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
 endif()
