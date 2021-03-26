@@ -30,19 +30,20 @@ project(CppDataChannelClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
-include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/src)
-include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src)
-include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
-include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${webrtc_native_INCLUDE})
+include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/src)
+include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/lib/rapidjson/include)
+include_directories(../../opentera-webrtc-native-client/3rdParty/cpp-httplib)
+include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
 
 add_executable(CppDataChannelClient main.cpp)
 
 target_link_libraries(CppDataChannelClient
         OpenteraWebrtcNativeClient
         sioclient
-        sioclient_tls
-        ${linux_LIBRARY}
+        ${webrtc_native_LIBRARY}
+        ${boringssl_LIBRARY}
         ${OpenCV_LIBRARIES})
 
 set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)

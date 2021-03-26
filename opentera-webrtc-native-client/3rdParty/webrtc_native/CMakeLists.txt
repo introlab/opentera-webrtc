@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "4389.742109.0" CACHE INTERNAL "doc string")
+set(webrtc_native_build_version "4389.742109.0" CACHE INTERNAL "")
 
 if(WIN32)
     message(FATAL_ERROR "Windows is not supported yet.")
@@ -16,7 +16,7 @@ elseif(UNIX)
 
 
         string(TOLOWER ${LSB_RELEASE_ID_SHORT} LSB_RELEASE_ID_SHORT)
-        set(LSB_RELEASE_ID_SHORT "${LSB_RELEASE_ID_SHORT}" PARENT_SCOPE)    
+        set(LSB_RELEASE_ID_SHORT "${LSB_RELEASE_ID_SHORT}" PARENT_SCOPE)
         set(LSB_RELEASE_VERSION_SHORT "${LSB_RELEASE_VERSION_SHORT}" PARENT_SCOPE)
         set(LSB_RELEASE_CODENAME_SHORT "${LSB_RELEASE_CODENAME_SHORT}" PARENT_SCOPE)
     endfunction()
@@ -47,7 +47,7 @@ elseif(UNIX)
 
     if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
         message(STATUS "Downloading : ${webrtc_native_build_archive_url}")
-        file(DOWNLOAD 
+        file(DOWNLOAD
             ${webrtc_native_build_archive_url}
             ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
             TIMEOUT 60 #seconds
@@ -64,11 +64,11 @@ elseif(UNIX)
             WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
 
-    set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "doc string")
-    set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "doc string")
-    set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "doc string")
-    set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "doc string")
-    
+    set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+    set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "")
+    set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+    set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+
 else()
     message(FATAL_ERROR "Unsupported operating system.")
 endif()
