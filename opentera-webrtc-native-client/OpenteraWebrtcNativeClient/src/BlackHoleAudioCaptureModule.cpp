@@ -1,6 +1,7 @@
 #include <OpenteraWebrtcNativeClient/BlackHoleAudioCaptureModule.h>
 
 using namespace opentera;
+using namespace std;
 
 BlackHoleAudioCaptureModule::BlackHoleAudioCaptureModule() :
         m_isPlayoutInitialized(false),
@@ -8,8 +9,47 @@ BlackHoleAudioCaptureModule::BlackHoleAudioCaptureModule() :
         m_isSpeakerInitialized(false),
         m_isMicrophoneInitialized(false),
         m_isPlaying(false),
-        m_isRecording(false)
+        m_isRecording(false),
+        m_stopped(false),
+        m_thread(&BlackHoleAudioCaptureModule::run, this)
 {
+}
+
+BlackHoleAudioCaptureModule::~BlackHoleAudioCaptureModule()
+{
+    m_stopped.store(true);
+    m_thread.join();
+}
+
+void BlackHoleAudioCaptureModule::run()
+{
+    constexpr chrono::milliseconds FrameDuration = 10ms;
+    constexpr chrono::milliseconds SleepBuffer = 1ms;
+
+    constexpr size_t NSamples = 480;
+    constexpr size_t NBytesPerSample = 2;
+    constexpr size_t NChannels = 1;
+    constexpr uint32_t SamplesPerSec = 48000;
+    size_t nSamplesOut;
+    int64_t elapsedTimeMs;
+    int64_t ntpTimeMs;
+
+    vector<uint8_t> data(NSamples * NBytesPerSample * NChannels, 0);
+    while (!m_stopped.load())
+    {
+        auto start = chrono::steady_clock::now();
+        this_thread::sleep_for(FrameDuration - SleepBuffer);
+        while ((chrono::steady_clock::now() - start) < FrameDuration);
+
+        auto audioCallback = m_audioCallback.load();
+        if (audioCallback == nullptr)
+        {
+            continue;
+        }
+
+        audioCallback->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
+                &elapsedTimeMs, &ntpTimeMs);
+    }
 }
 
 int32_t BlackHoleAudioCaptureModule::ActiveAudioLayer(AudioLayer* audioLayer) const
@@ -19,6 +59,7 @@ int32_t BlackHoleAudioCaptureModule::ActiveAudioLayer(AudioLayer* audioLayer) co
 
 int32_t BlackHoleAudioCaptureModule::RegisterAudioCallback(webrtc::AudioTransport* audioCallback)
 {
+    m_audioCallback.store(audioCallback);
     return 0;
 }
 
@@ -34,12 +75,12 @@ int32_t BlackHoleAudioCaptureModule::Terminate()
 
 bool BlackHoleAudioCaptureModule::Initialized() const
 {
-    return false;
+    return true;
 }
 
 int16_t BlackHoleAudioCaptureModule::PlayoutDevices()
 {
-    return 0;
+    return 1;
 }
 
 int16_t BlackHoleAudioCaptureModule::RecordingDevices()
@@ -51,6 +92,8 @@ int32_t BlackHoleAudioCaptureModule::PlayoutDeviceName(uint16_t index,
         char name[webrtc::kAdmMaxDeviceNameSize],
         char guid[webrtc::kAdmMaxGuidSize])
 {
+    strcpy(name, "AudioSink");
+    strcpy(guid, "0");
     return 0;
 }
 

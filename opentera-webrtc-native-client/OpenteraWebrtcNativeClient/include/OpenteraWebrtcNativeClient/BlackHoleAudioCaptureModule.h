@@ -3,6 +3,9 @@
 
 #include <modules/audio_device/include/audio_device.h>
 
+#include <atomic>
+#include <thread>
+
 namespace opentera
 {
     /**
@@ -18,8 +21,15 @@ namespace opentera
         bool m_isPlaying;
         bool m_isRecording;
 
+        std::atomic_bool m_stopped;
+        std::thread m_thread;
+        std::atomic<webrtc::AudioTransport*> m_audioCallback;
+
     public:
         BlackHoleAudioCaptureModule();
+        ~BlackHoleAudioCaptureModule() override;
+
+        void run();
 
         // Retrieve the currently utilized audio layer
         int32_t ActiveAudioLayer(AudioLayer* audioLayer) const override;
