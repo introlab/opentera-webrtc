@@ -29,12 +29,12 @@ project(CppStreamClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
-find_package(OpenCV REQUIRED core highgui)
-
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(../../opentera-webrtc-native-client/3rdParty/opencv/modules/highgui/include)
+include_directories(${webrtc_native_INCLUDE})
 include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/src)
-include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src)
-include_directories(../../opentera-webrtc-native-client/3rdParty/webrtc_native/webrtc/src/third_party/abseil-cpp)
+include_directories(../../opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/lib/rapidjson/include)
+include_directories(../../opentera-webrtc-native-client/3rdParty/cpp-httplib)
 include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
 
 add_executable(CppStreamClient main.cpp)
@@ -42,9 +42,10 @@ add_executable(CppStreamClient main.cpp)
 target_link_libraries(CppStreamClient
         OpenteraWebrtcNativeClient
         sioclient
-        sioclient_tls
-        ${linux_LIBRARY}
-        ${OpenCV_LIBRARIES})
+        ${webrtc_native_LIBRARY}
+        ${boringssl_LIBRARY}
+        ${OpenCV_LIBRARIES}
+        opencv_highgui)
 
 set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 14)
 
