@@ -23,15 +23,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/introlab/opentera-webrtc-teleop"
+    "url": "git+https://github.com/introlab/opentera-webrtc"
   },
   "keywords": [],
   "author": "IntRoLab",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/introlab/opentera-webrtc-teleop/issues"
+    "url": "https://github.com/introlab/opentera-webrtc/issues"
   },
-  "homepage": "https://github.com/introlab/opentera-webrtc-teleop#readme",
+  "homepage": "https://github.com/introlab/opentera-webrtc#readme",
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/plugin-proposal-object-rest-spread": "^7.12.1",

@@ -21,7 +21,7 @@ setup(
     description="OpenTera WebRTC Client Library for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/introlab/opentera-webrtc-teleop",
+    url="https://github.com/introlab/opentera-webrtc",
     packages=['opentera_webrtc_native_client'],
     classifiers=[
        "Programming Language :: Python :: 3",
