@@ -30,9 +30,9 @@ void BlackHoleAudioCaptureModule::run()
     constexpr size_t NBytesPerSample = 2;
     constexpr size_t NChannels = 1;
     constexpr uint32_t SamplesPerSec = 48000;
-    size_t nSamplesOut;
-    int64_t elapsedTimeMs;
-    int64_t ntpTimeMs;
+    size_t nSamplesOut = 0;
+    int64_t elapsedTimeMs = -1;
+    int64_t ntpTimeMs = -1;
 
     vector<uint8_t> data(NSamples * NBytesPerSample * NChannels, 0);
     while (!m_stopped.load())
