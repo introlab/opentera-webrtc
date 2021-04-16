@@ -26,6 +26,11 @@ class StreamClient extends SignalingClient {
     this._remoteStreams = {};
     
     this._onAddRemoteStream = () => {};
+
+    this._offerOptions = {
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true
+    };
   }
 
   _createRtcPeerConnection() {

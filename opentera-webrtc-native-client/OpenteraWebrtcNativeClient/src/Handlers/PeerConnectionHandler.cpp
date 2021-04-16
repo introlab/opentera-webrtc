@@ -38,13 +38,16 @@ void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
 PeerConnectionHandler::PeerConnectionHandler(string&& id,
         Client&& peerClient,
         bool isCaller,
+        bool offerToReceiveVideo,
+        bool offerToReceiveAudio,
         function<void(const string&, const sio::message::ptr&)>&& sendEvent,
         function<void(const string&)>&& onError,
         function<void(const Client&)>&& onClientConnected,
         function<void(const Client&)>&& onClientDisconnected) :
         m_id(move(id)), m_peerClient(move(peerClient)), m_isCaller(isCaller), m_sendEvent(move(sendEvent)),
         m_onError(move(onError)), m_onClientConnected(move(onClientConnected)),
-        m_onClientDisconnected(move(onClientDisconnected)), m_onClientDisconnectedCalled(true)
+        m_onClientDisconnected(move(onClientDisconnected)), m_onClientDisconnectedCalled(true),
+        m_offerToReceiveVideo(offerToReceiveVideo), m_offerToReceiveAudio(offerToReceiveAudio)
 {
 }
 
@@ -74,6 +77,9 @@ void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::P
 void PeerConnectionHandler::makePeerCall()
 {
     webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+    options.offer_to_receive_video = m_offerToReceiveVideo;
+    options.offer_to_receive_audio = m_offerToReceiveAudio;
+
     m_peerConnection->CreateOffer(this, options);
 }
 
