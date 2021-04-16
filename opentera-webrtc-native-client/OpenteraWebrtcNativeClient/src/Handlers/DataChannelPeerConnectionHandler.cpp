@@ -3,6 +3,9 @@
 using namespace opentera;
 using namespace std;
 
+static constexpr bool OfferToReceiveVideo = false;
+static constexpr bool OfferToReceiveAudio = false;
+
 DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(string id,
         Client peerClient,
         bool isCaller,
@@ -17,8 +20,8 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(string id,
         function<void(const Client&, const string&)> onDataChannelError,
         function<void(const Client&, const webrtc::DataBuffer& buffer)> onDataChannelMessageBinary,
         function<void(const Client&, const string&)> onDataChannelMessageString) :
-        PeerConnectionHandler(move(id), move(peerClient), isCaller, move(sendEvent), move(onError),
-                move(onClientConnected), move(onClientDisconnected)),
+        PeerConnectionHandler(move(id), move(peerClient), isCaller, OfferToReceiveVideo, OfferToReceiveAudio,
+                move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
         m_room(move(room)), m_dataChannelConfiguration(move(dataChannelConfiguration)),
         m_onDataChannelOpen(move(onDataChannelOpen)), m_onDataChannelClosed(move(onDataChannelClosed)),
         m_onDataChannelError(move(onDataChannelError)), m_onDataChannelMessageBinary(move(onDataChannelMessageBinary)),

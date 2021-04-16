@@ -45,6 +45,8 @@ class SignalingClient {
 
     this._onClientConnect = () => {};
     this._onClientDisconnect = () => {};
+
+    this._offerOptions = {};
   }
   
   async connect() {
@@ -208,7 +210,7 @@ class SignalingClient {
         this._rtcPeerConnections[id] = rtcPeerConnection;
         this._connectRtcPeerConnectionEvents(id, rtcPeerConnection);
 
-        let offer = await rtcPeerConnection.createOffer();
+        let offer = await rtcPeerConnection.createOffer(this._offerOptions);
         await rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
 
         let data = { toId: id, offer: offer };

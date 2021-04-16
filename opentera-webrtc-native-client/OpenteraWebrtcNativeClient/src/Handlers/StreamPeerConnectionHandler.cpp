@@ -7,6 +7,9 @@ using namespace rtc;
 using namespace webrtc;
 using namespace std;
 
+static constexpr bool OfferToReceiveVideo = true;
+static constexpr bool OfferToReceiveAudio = true;
+
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     string id,
     Client peerClient,
@@ -21,7 +24,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     function<void(const Client&)> onRemoveRemoteStream,
     const function<void(const Client&, const cv::Mat&, uint64_t)>& onVideoFrameReceived,
     const function<void(const Client&, const void*, int, int, size_t, size_t)>& onAudioFrameReceived) :
-    PeerConnectionHandler(move(id), move(peerClient), isCaller, move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
+    PeerConnectionHandler(move(id), move(peerClient), isCaller, OfferToReceiveVideo, OfferToReceiveAudio,
+            move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
     m_videoTrack(move(videoTrack)),
     m_audioTrack(move(audioTrack)),
     m_onAddRemoteStream(move(onAddRemoteStream)),
