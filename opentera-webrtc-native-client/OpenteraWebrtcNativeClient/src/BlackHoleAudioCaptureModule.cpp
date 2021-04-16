@@ -11,7 +11,8 @@ BlackHoleAudioCaptureModule::BlackHoleAudioCaptureModule() :
         m_isPlaying(false),
         m_isRecording(false),
         m_stopped(false),
-        m_thread(&BlackHoleAudioCaptureModule::run, this)
+        m_thread(&BlackHoleAudioCaptureModule::run, this),
+        m_audioCallback(nullptr)
 {
 }
 
