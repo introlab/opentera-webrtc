@@ -217,7 +217,7 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t)
     {
         receivedBgrImage2 = bgrImg.clone();
@@ -285,14 +285,14 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
 
     unique_ptr<Client> onAddRemoteStreamClient;
 
-    client1->setOnAddRemoteStream([&](const Client& c) { ADD_FAILURE(); });
+    client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
-    client1->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
-    client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t)
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t)
     {
         onVideoFrameAwaiter.done();
     });
@@ -321,12 +321,10 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1",
-                                                 sio::string_message::create("cd1"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c2",
-                                                 sio::string_message::create("cd2"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, audioSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -354,7 +352,7 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
 
     client1->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient1 = make_unique<Client>(c); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
-    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived([&](const Client& client,
         const void* audioData,
         int bitsPerSample,
@@ -376,8 +374,8 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
-    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
     client2->setOnAudioFrameReceived([&](const Client& client,
          const void* audioData,
          int bitsPerSample,
@@ -462,28 +460,15 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
 
     unique_ptr<Client> onAddRemoteStreamClient;
 
-    client1->setOnAddRemoteStream([&](const Client& c) { ADD_FAILURE(); });
+    client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
-    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
-    client1->setOnAudioFrameReceived([&](const Client& client,
-        const void* audioData,
-        int bitsPerSample,
-        int sampleRate,
-        size_t numberOfChannels,
-        size_t numberOfFrames)
-    {
-        ADD_FAILURE();
-    });
+    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client1->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
-    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
-    client2->setOnAudioFrameReceived([&](const Client& client,
-         const void* audioData,
-         int bitsPerSample,
-         int sampleRate,
-         size_t numberOfChannels,
-         size_t numberOfFrames)
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client2->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t)
     {
         onAudioFrameAwaiter.done();
     });
