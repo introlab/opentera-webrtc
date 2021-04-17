@@ -170,7 +170,7 @@ protected:
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcess = nullptr;
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcessTLS = nullptr;
 
-TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
+TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
 {
     // Initialize the clients
     shared_ptr<ConstantVideoSource> videoSource1 = make_shared<ConstantVideoSource>(cv::Scalar(0, 0, 255));
@@ -178,12 +178,10 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1",
-                    sio::string_message::create("cd1"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c2",
-                    sio::string_message::create("cd2"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, videoSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -199,9 +197,6 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
     this_thread::sleep_for(250ms);
     client2->connect();
     setupAwaiter.wait();
-
-    client1->setOnSignalingConnectionOpened([] {});
-    client2->setOnSignalingConnectionOpened([] {});
 
     // Setup the callback
     CallbackAwaiter onVideoFrameAwaiter1(1, 15s);
@@ -222,7 +217,7 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
     client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t)
     {
         receivedBgrImage2 = bgrImg.clone();
@@ -235,7 +230,6 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
     onVideoFrameAwaiter1.wait();
     onVideoFrameAwaiter2.wait();
     client1->hangUpAll();
-    this_thread::sleep_for(250ms);
 
     client1->closeSync();
     client2->closeSync();
@@ -259,22 +253,78 @@ TEST_P(StreamClientTests, videoStream_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[2], 255, MeanColorAbsError);
 }
 
-TEST_P(StreamClientTests, audioStream_shouldBeSentAndReceived)
+TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
+{
+    // Initialize the clients
+    shared_ptr<ConstantVideoSource> videoSource = make_shared<ConstantVideoSource>(cv::Scalar(0, 0, 255));
+
+    CallbackAwaiter setupAwaiter(2, 15s);
+    unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration, videoSource);
+    unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            DefaultWebrtcConfiguration);
+
+    client1->setTlsVerificationEnabled(false);
+    client2->setTlsVerificationEnabled(false);
+
+    client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+
+    client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
+    client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
+
+    client1->connect();
+    this_thread::sleep_for(250ms);
+    client2->connect();
+    setupAwaiter.wait();
+
+    // Setup the callback
+    CallbackAwaiter onVideoFrameAwaiter(1, 15s);
+
+    unique_ptr<Client> onAddRemoteStreamClient;
+
+    client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
+    client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+
+    client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t)
+    {
+        onVideoFrameAwaiter.done();
+    });
+    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+
+    // Setup the call
+    client1->callAll();
+    onVideoFrameAwaiter.wait();
+    client1->hangUpAll();
+
+    client1->closeSync();
+    client2->closeSync();
+
+    // Asserts
+    ASSERT_NE(onAddRemoteStreamClient, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient->name(), "c1");
+}
+
+TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
 {
     // Initialize the clients
     constexpr int16_t Amplitude1 = 5000;
     constexpr int16_t Amplitude2 = 15000;
-    shared_ptr<SinAudioSource> audioSource1 = make_shared<SinAudioSource>(5000);
-    shared_ptr<SinAudioSource> audioSource2 = make_shared<SinAudioSource>(15000);
+    shared_ptr<SinAudioSource> audioSource1 = make_shared<SinAudioSource>(Amplitude1);
+    shared_ptr<SinAudioSource> audioSource2 = make_shared<SinAudioSource>(Amplitude2);
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1",
-                                                 sio::string_message::create("cd1"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
             DefaultWebrtcConfiguration, audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c2",
-                                                 sio::string_message::create("cd2"), "chat", "abc"),
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
             DefaultWebrtcConfiguration, audioSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -291,9 +341,6 @@ TEST_P(StreamClientTests, audioStream_shouldBeSentAndReceived)
     client2->connect();
     setupAwaiter.wait();
 
-    client1->setOnSignalingConnectionOpened([] {});
-    client2->setOnSignalingConnectionOpened([] {});
-
     // Setup the callback
     CallbackAwaiter onAudioFrameAwaiter1(5, 15s);
     CallbackAwaiter onAudioFrameAwaiter2(5, 15s);
@@ -305,7 +352,7 @@ TEST_P(StreamClientTests, audioStream_shouldBeSentAndReceived)
 
     client1->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient1 = make_unique<Client>(c); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
-    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived([&](const Client& client,
         const void* audioData,
         int bitsPerSample,
@@ -327,8 +374,8 @@ TEST_P(StreamClientTests, audioStream_shouldBeSentAndReceived)
     });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
-    client2->setOnRemoveRemoteStream([](const Client& c) { ADD_FAILURE(); });
-    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat& bgrImg, uint64_t) { ADD_FAILURE(); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
     client2->setOnAudioFrameReceived([&](const Client& client,
          const void* audioData,
          int bitsPerSample,
@@ -378,6 +425,65 @@ TEST_P(StreamClientTests, audioStream_shouldBeSentAndReceived)
     int16_t max2 = *max_element(receivedAudio2.begin(), receivedAudio2.end());
     EXPECT_NEAR(min2, -Amplitude1, AbsError);
     EXPECT_NEAR(max2, Amplitude1, AbsError);
+}
+
+TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
+{
+    // Initialize the clients
+    constexpr int16_t Amplitude = 5000;
+    shared_ptr<SinAudioSource> audioSource = make_shared<SinAudioSource>(Amplitude);
+
+    CallbackAwaiter setupAwaiter(2, 15s);
+    unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration, audioSource);
+    unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            DefaultWebrtcConfiguration);
+
+    client1->setTlsVerificationEnabled(false);
+    client2->setTlsVerificationEnabled(false);
+
+    client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+
+    client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
+    client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
+
+    client1->connect();
+    this_thread::sleep_for(250ms);
+    client2->connect();
+    setupAwaiter.wait();
+
+    // Setup the callback
+    CallbackAwaiter onAudioFrameAwaiter(5, 15s);
+
+    unique_ptr<Client> onAddRemoteStreamClient;
+
+    client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
+    client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client1->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+
+    client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client2->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t)
+    {
+        onAudioFrameAwaiter.done();
+    });
+
+    // Setup the call
+    client1->callAll();
+    onAudioFrameAwaiter.wait();
+    client1->hangUpAll();
+
+    client1->closeSync();
+    client2->closeSync();
+
+    // Asserts
+    ASSERT_NE(onAddRemoteStreamClient, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient->name(), "c1");
 }
 
 INSTANTIATE_TEST_SUITE_P(
