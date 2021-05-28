@@ -5,6 +5,7 @@ import json
 import sys
 
 from aiohttp import web
+from aiohttp_index import IndexMiddleware
 
 import socketio
 import ssl
@@ -16,7 +17,7 @@ DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
 
 sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
-app = web.Application()
+app = web.Application(middlewares=[IndexMiddleware()])
 
 room_manager = RoomManager(sio)
 
