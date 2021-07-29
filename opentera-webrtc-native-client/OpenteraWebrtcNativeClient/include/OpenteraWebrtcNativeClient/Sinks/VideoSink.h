@@ -16,6 +16,8 @@ namespace opentera
     {
         std::function<void(const cv::Mat&, uint64_t)> m_onFrameReceived;
         rtc::VideoSinkWants m_wants;
+        cv::Mat m_bgrImg;
+        
 
     public:
         explicit VideoSink(std::function<void(const cv::Mat&, uint64_t)>  onFrameReceived);

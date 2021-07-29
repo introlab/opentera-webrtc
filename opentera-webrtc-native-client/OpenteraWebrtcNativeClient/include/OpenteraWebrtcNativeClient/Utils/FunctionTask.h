@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 
-#include <api/proxy.h>
+#include <rtc_base/event.h>
 #include <api/task_queue/queued_task.h>
 #include <rtc_base/thread.h>
 

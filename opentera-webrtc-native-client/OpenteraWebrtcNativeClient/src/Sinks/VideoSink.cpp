@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <opencv2/imgproc.hpp>
+#include <libyuv.h>
 
 using namespace opentera;
 using namespace webrtc;
@@ -33,31 +34,24 @@ VideoSink::VideoSink(function<void(const cv::Mat&, uint64_t)>  onFrameReceived) 
 void VideoSink::OnFrame(const VideoFrame& frame)
 {
     // Transform data from 3 array in I420 buffer to one cv::Mat in yuv
-    int width = frame.width();
-    int height = frame.height();
+    m_bgrImg.create(frame.height(), frame.width(), CV_8UC3);
 
-    cv::Mat yuvImg;
-    yuvImg.create(height * 3 / 2, width, CV_8UC1);
+    int err = libyuv::ConvertFromI420(
+        frame.video_frame_buffer()->GetI420()->DataY(),
+        frame.video_frame_buffer()->GetI420()->StrideY(),
+        frame.video_frame_buffer()->GetI420()->DataU(),
+        frame.video_frame_buffer()->GetI420()->StrideU(),
+        frame.video_frame_buffer()->GetI420()->DataV(),
+        frame.video_frame_buffer()->GetI420()->StrideV(),
+        m_bgrImg.data,
+        m_bgrImg.step[0],
+        frame.width(),
+        frame.height(),
+        libyuv::FOURCC_24BG);
 
-    uint8_t* yData = const_cast<uint8_t *>(frame.video_frame_buffer()->GetI420()->DataY());
-    uint8_t* uData = const_cast<uint8_t *>(frame.video_frame_buffer()->GetI420()->DataU());
-    uint8_t* vData = const_cast<uint8_t *>(frame.video_frame_buffer()->GetI420()->DataV());
-
-    size_t yDataLength = width * height;
-    size_t uvDataLength = yDataLength / 4;
-
-    uint8_t* yDataStart = yuvImg.data;
-    uint8_t* uDataStart = yDataStart + yDataLength;
-    uint8_t* vDataStart = uDataStart + uvDataLength;
-
-    memcpy(yDataStart, yData, yDataLength);
-    memcpy(uDataStart, uData, uvDataLength);
-    memcpy(vDataStart, vData, uvDataLength);
-
-    // Convert yuv color space to bgr
-    cv::Mat bgrImg;
-    cv::cvtColor(yuvImg, bgrImg, cv::COLOR_YUV2BGR_I420);
-
-    // Pass bgr frame to image callback
-    m_onFrameReceived(bgrImg, frame.timestamp_us());
+    if (err == 0)
+    {
+        // Pass bgr frame to image callback if conversion worked
+        m_onFrameReceived(m_bgrImg, frame.timestamp_us());
+    }
 }
