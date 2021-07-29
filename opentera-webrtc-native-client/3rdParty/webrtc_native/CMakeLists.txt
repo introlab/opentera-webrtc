@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "4389.742109.0" CACHE INTERNAL "")
+set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
 
 if(WIN32)
     message(FATAL_ERROR "Windows is not supported yet.")
@@ -68,6 +68,8 @@ elseif(UNIX)
     set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "")
     set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
     set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+    set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+    set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.a CACHE INTERNAL "")
 
 else()
     message(FATAL_ERROR "Unsupported operating system.")

@@ -18,6 +18,7 @@ namespace opentera {
     class VideoSource : public rtc::AdaptedVideoTrackSource
     {
         VideoSourceConfiguration m_configuration;
+        cv::Mat m_resizedImg;
 
     public:
         explicit VideoSource(VideoSourceConfiguration configuration);

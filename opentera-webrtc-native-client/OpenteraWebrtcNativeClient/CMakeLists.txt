@@ -20,6 +20,8 @@ endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${webrtc_native_INCLUDE})
+include_directories(${boringssl_INCLUDE})
+include_directories(${libyuv_INCLUDE})
 include_directories(../3rdParty/socket.io-client-cpp/src)
 include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)
 include_directories(../3rdParty/cpp-httplib)
@@ -40,6 +42,7 @@ target_link_libraries(OpenteraWebrtcNativeClient
         sioclient
         ${webrtc_native_LIBRARY}
         ${boringssl_LIBRARY}
+        ${libyuv_LIBRARY}
         ${OpenCV_LIBRARIES})
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
@@ -60,4 +63,3 @@ add_subdirectory(python)
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
 	add_subdirectory(test)
 endif()
-
