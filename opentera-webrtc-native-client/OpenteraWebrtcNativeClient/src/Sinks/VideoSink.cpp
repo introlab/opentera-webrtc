@@ -1,7 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Sinks/VideoSink.h>
 
 #include <utility>
-#include <iostream>
 #include <opencv2/imgproc.hpp>
 #include <libyuv.h>
 
@@ -38,11 +37,11 @@ void VideoSink::OnFrame(const VideoFrame& frame)
     m_bgrImg.create(frame.height(), frame.width(), CV_8UC3);
 
     int err = libyuv::ConvertFromI420(
-        frame.video_frame_buffer()->GetI420()->DataY(), 
+        frame.video_frame_buffer()->GetI420()->DataY(),
         frame.video_frame_buffer()->GetI420()->StrideY(),
-        frame.video_frame_buffer()->GetI420()->DataU(), 
+        frame.video_frame_buffer()->GetI420()->DataU(),
         frame.video_frame_buffer()->GetI420()->StrideU(),
-        frame.video_frame_buffer()->GetI420()->DataV(), 
+        frame.video_frame_buffer()->GetI420()->DataV(),
         frame.video_frame_buffer()->GetI420()->StrideV(),
         m_bgrImg.data,
         m_bgrImg.step[0],
