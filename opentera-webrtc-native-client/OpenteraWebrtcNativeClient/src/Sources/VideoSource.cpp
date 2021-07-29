@@ -34,7 +34,7 @@ void VideoSource::sendFrame(const Mat& bgrImg, int64_t timestampUs)
     // AdaptFrame return true if the transport layer needs a frame
     // Desired resolution is set in out_width and out_height
     if (AdaptFrame(bgrImg.cols, bgrImg.rows, timestampUs, &outWidth, &outHeight,
-                   &roi.width, &roi.height, &roi.x, &roi.y))
+            &roi.width, &roi.height, &roi.x, &roi.y))
     {
 
         // I420 only support even resolution so we must make output resolution even!
@@ -42,20 +42,19 @@ void VideoSource::sendFrame(const Mat& bgrImg, int64_t timestampUs)
         outHeight = (outHeight / 2) * 2;
 
         // Convert color space from BGR to YUV
-        cv::Mat yuv;
         if (outWidth == roi.width && outHeight == roi.height)
         {
-            cv::cvtColor(bgrImg(roi), yuv, COLOR_BGR2YUV_I420);
+            cv::cvtColor(bgrImg(roi), m_yuvImg, COLOR_BGR2YUV_I420);
         }
         else
         {
             cv::resize(bgrImg(roi), m_resizedImg, cv::Size2i(outWidth, outHeight), 0, 0,
                        outWidth < roi.width ? cv::INTER_AREA : cv::INTER_LINEAR);
-            cv::cvtColor(m_resizedImg, yuv, COLOR_BGR2YUV_I420);
+            cv::cvtColor(m_resizedImg, m_yuvImg, COLOR_BGR2YUV_I420);
         }
 
         // Convert from OpenCV matrix to webrtc frame
-        uint8_t *y = yuv.data;
+        uint8_t *y = m_yuvImg.data;
         uint8_t *u = y + (outWidth * outHeight);
         uint8_t *v = u + (outWidth * outHeight) / 4;
         webrtc::VideoFrame frame(
