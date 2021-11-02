@@ -1,4 +1,5 @@
 #include <OpenteraWebrtcNativeClient/BlackHoleAudioCaptureModule.h>
+#include <OpenteraWebrtcNativeClient/Utils/thread.h>
 
 using namespace opentera;
 using namespace std;
@@ -14,6 +15,7 @@ BlackHoleAudioCaptureModule::BlackHoleAudioCaptureModule() :
         m_thread(&BlackHoleAudioCaptureModule::run, this),
         m_audioCallback(nullptr)
 {
+    setThreadPriority(m_thread, ThreadPriority::RealTime);
 }
 
 BlackHoleAudioCaptureModule::~BlackHoleAudioCaptureModule()
@@ -24,8 +26,7 @@ BlackHoleAudioCaptureModule::~BlackHoleAudioCaptureModule()
 
 void BlackHoleAudioCaptureModule::run()
 {
-    constexpr chrono::milliseconds FrameDuration = 10ms;
-    constexpr chrono::milliseconds SleepBuffer = 1ms;
+    constexpr chrono::milliseconds SleepDuration = 1ms;
 
     constexpr size_t NSamples = 480;
     constexpr size_t NBytesPerSample = 2;
@@ -39,8 +40,6 @@ void BlackHoleAudioCaptureModule::run()
     while (!m_stopped.load())
     {
         auto start = chrono::steady_clock::now();
-        this_thread::sleep_for(FrameDuration - SleepBuffer);
-        while ((chrono::steady_clock::now() - start) < FrameDuration);
 
         auto audioCallback = m_audioCallback.load();
         if (audioCallback == nullptr)
@@ -50,6 +49,7 @@ void BlackHoleAudioCaptureModule::run()
 
         audioCallback->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
                 &elapsedTimeMs, &ntpTimeMs);
+        this_thread::sleep_for(SleepDuration);
     }
 }
 
