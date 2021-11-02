@@ -1,5 +1,4 @@
 #include <OpenteraWebrtcNativeClient/SignalingClient.h>
-#include <OpenteraWebrtcNativeClient/BlackHoleAudioCaptureModule.h>
 
 #include <api/create_peerconnection_factory.h>
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
@@ -51,10 +50,11 @@ SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerC
     m_signalingThread->SetName(m_signalingServerConfiguration.clientName() + " - signaling", nullptr);
     m_signalingThread->Start();
 
+    m_audioDeviceModule = rtc::scoped_refptr<OpenteraAudioDeviceModule>(new rtc::RefCountedObject<OpenteraAudioDeviceModule>);
     m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(m_networkThread.get(),
             m_workerThread.get(),
             m_signalingThread.get(),
-            rtc::scoped_refptr<webrtc::AudioDeviceModule>(new rtc::RefCountedObject<BlackHoleAudioCaptureModule>),
+            m_audioDeviceModule,
             webrtc::CreateBuiltinAudioEncoderFactory(),
             webrtc::CreateBuiltinAudioDecoderFactory(),
             webrtc::CreateBuiltinVideoEncoderFactory(),
