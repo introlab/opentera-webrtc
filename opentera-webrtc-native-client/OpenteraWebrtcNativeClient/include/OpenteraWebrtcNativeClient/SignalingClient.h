@@ -67,7 +67,7 @@ namespace opentera
     public:
         SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,
                 WebrtcConfiguration&& webrtcConfiguration);
-        virtual ~SignalingClient();
+        virtual ~SignalingClient() = default;
 
         DECLARE_NOT_COPYABLE(SignalingClient);
         DECLARE_NOT_MOVABLE(SignalingClient);

@@ -6,6 +6,7 @@
 #include <modules/audio_device/include/audio_device.h>
 
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <thread>
 #include <functional>
@@ -22,7 +23,6 @@ namespace opentera
                 int sampleRate,
                 size_t numberOfChannels,
                 size_t numberOfFrames)> m_onMixedAudioFrameReceived;
-        std::mutex m_onMixedAudioFrameReceivedMutex;
 
         bool m_isPlayoutInitialized;
         bool m_isRecordingInitialized;
@@ -33,8 +33,10 @@ namespace opentera
         bool m_isRecording;
 
         std::atomic_bool m_stopped;
-        std::thread m_thread;
-        std::atomic<webrtc::AudioTransport*> m_audioTransport;
+        std::unique_ptr<std::thread> m_thread;
+        webrtc::AudioTransport* m_audioTransport;
+
+        std::mutex m_setCallbackMutex;
 
     public:
         OpenteraAudioDeviceModule();
@@ -140,6 +142,9 @@ namespace opentera
         int32_t EnableBuiltInNS(bool enable) override;
 
     private:
+        void stop();
+        void startIfStoppedAndTransportValid();
+
         void run();
     };
 }

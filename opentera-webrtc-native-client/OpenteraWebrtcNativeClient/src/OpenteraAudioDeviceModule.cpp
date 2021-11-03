@@ -11,24 +11,23 @@ OpenteraAudioDeviceModule::OpenteraAudioDeviceModule() :
         m_isMicrophoneInitialized(false),
         m_isPlaying(false),
         m_isRecording(false),
-        m_stopped(false),
-        m_thread(&OpenteraAudioDeviceModule::run, this),
+        m_stopped(true),
         m_audioTransport(nullptr)
 {
-    setThreadPriority(m_thread, ThreadPriority::RealTime);
 }
 
 OpenteraAudioDeviceModule::~OpenteraAudioDeviceModule()
 {
-    m_stopped.store(true);
-    m_thread.join();
+    stop();
 }
 
 void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(
     const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived)
 {
-    lock_guard<mutex> lock(m_onMixedAudioFrameReceivedMutex);
+    lock_guard<mutex> lock(m_setCallbackMutex);
+    stop();
     m_onMixedAudioFrameReceived = onMixedAudioFrameReceived;
+    startIfStoppedAndTransportValid();
 }
 
 int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) const
@@ -38,7 +37,10 @@ int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) cons
 
 int32_t OpenteraAudioDeviceModule::RegisterAudioCallback(webrtc::AudioTransport* audioTransport)
 {
-    m_audioTransport.store(audioTransport);
+    lock_guard<mutex> lock(m_setCallbackMutex);
+    stop();
+    m_audioTransport = audioTransport;
+    startIfStoppedAndTransportValid();
     return 0;
 }
 
@@ -372,6 +374,26 @@ int32_t OpenteraAudioDeviceModule::EnableBuiltInNS(bool enable)
     return -1;
 }
 
+void OpenteraAudioDeviceModule::stop()
+{
+    if (!m_stopped.load() && m_thread != nullptr)
+    {
+        m_stopped.store(true);
+        m_thread->join();
+        m_thread = nullptr;
+    }
+}
+
+void OpenteraAudioDeviceModule::startIfStoppedAndTransportValid()
+{
+    if (m_stopped.load() && m_audioTransport != nullptr)
+    {
+        m_stopped.store(false);
+        m_thread = make_unique<thread>(&OpenteraAudioDeviceModule::run, this);
+        setThreadPriority(*m_thread, ThreadPriority::RealTime);
+    }
+}
+
 void OpenteraAudioDeviceModule::run()
 {
     constexpr chrono::nanoseconds FrameDuration = 10ms;
@@ -389,23 +411,12 @@ void OpenteraAudioDeviceModule::run()
     {
         auto start = chrono::steady_clock::now();
 
-        auto audioTransport = m_audioTransport.load();
-        if (audioTransport == nullptr)
-        {
-            this_thread::sleep_for(FrameDuration);
-            continue;
-        }
-
-        int32_t result = audioTransport->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
+        int32_t result = m_audioTransport->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
                 &elapsedTimeMs, &ntpTimeMs);
 
-        if (result == 0 && elapsedTimeMs != -1)
+        if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
         {
-            lock_guard<mutex> lock(m_onMixedAudioFrameReceivedMutex);
-            if (m_onMixedAudioFrameReceived)
-            {
-                m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
-            }
+            m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
         }
 
         chrono::nanoseconds delta = chrono::steady_clock::now() - start;

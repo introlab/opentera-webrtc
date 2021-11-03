@@ -27,11 +27,6 @@ namespace opentera
                 int sampleRate,
                 size_t numberOfChannels,
                 size_t numberOfFrames)> m_onAudioFrameReceived;
-        std::function<void(const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)> m_onMixedAudioFrameReceived;
 
     public:
         StreamClient(SignalingServerConfiguration signalingServerConfiguration,

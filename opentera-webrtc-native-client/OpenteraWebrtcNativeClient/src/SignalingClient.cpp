@@ -68,10 +68,6 @@ SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerC
     }
 }
 
-SignalingClient::~SignalingClient()
-{
-}
-
 /**
  * Enable or disable the TLS verification. By default, the TLS verification is enabled.
  * @param isEnabled
