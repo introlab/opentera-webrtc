@@ -1,9 +1,12 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_BLACK_HOLE_AUDIO_CAPTURE_MODULE_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_BLACK_HOLE_AUDIO_CAPTURE_MODULE_H
 
+#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
+
 #include <modules/audio_device/include/audio_device.h>
 
 #include <atomic>
+#include <mutex>
 #include <thread>
 #include <functional>
 
@@ -19,12 +22,7 @@ namespace opentera
                 int sampleRate,
                 size_t numberOfChannels,
                 size_t numberOfFrames)> m_onMixedAudioFrameReceived;
-        std::function<void(const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)> m_pendingOnMixedAudioFrameReceived;
-        std::atomic_bool m_hasPendingOnMixedAudioFrameReceived;
+        std::mutex m_onMixedAudioFrameReceivedMutex;
 
         bool m_isPlayoutInitialized;
         bool m_isRecordingInitialized;
@@ -41,6 +39,9 @@ namespace opentera
     public:
         OpenteraAudioDeviceModule();
         ~OpenteraAudioDeviceModule() override;
+
+        DECLARE_NOT_COPYABLE(OpenteraAudioDeviceModule);
+        DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
 
         void setOnMixedAudioFrameReceived(const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
 
@@ -140,7 +141,6 @@ namespace opentera
 
     private:
         void run();
-        void updateOnMixedAudioFrameReceived();
     };
 }
 

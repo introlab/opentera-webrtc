@@ -5,7 +5,6 @@ using namespace opentera;
 using namespace std;
 
 OpenteraAudioDeviceModule::OpenteraAudioDeviceModule() :
-        m_hasPendingOnMixedAudioFrameReceived(false),
         m_isPlayoutInitialized(false),
         m_isRecordingInitialized(false),
         m_isSpeakerInitialized(false),
@@ -28,19 +27,8 @@ OpenteraAudioDeviceModule::~OpenteraAudioDeviceModule()
 void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(
     const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived)
 {
-    while (true)
-    {
-        if (!m_hasPendingOnMixedAudioFrameReceived.load())
-        {
-            m_pendingOnMixedAudioFrameReceived = onMixedAudioFrameReceived;
-            m_hasPendingOnMixedAudioFrameReceived.store(true);
-            break;
-        }
-        else
-        {
-            this_thread::yield();
-        }
-    }
+    lock_guard<mutex> lock(m_onMixedAudioFrameReceivedMutex);
+    m_onMixedAudioFrameReceived = onMixedAudioFrameReceived;
 }
 
 int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) const
@@ -400,7 +388,6 @@ void OpenteraAudioDeviceModule::run()
     while (!m_stopped.load())
     {
         auto start = chrono::steady_clock::now();
-        updateOnMixedAudioFrameReceived();
 
         auto audioTransport = m_audioTransport.load();
         if (audioTransport == nullptr)
@@ -412,21 +399,16 @@ void OpenteraAudioDeviceModule::run()
         int32_t result = audioTransport->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
                 &elapsedTimeMs, &ntpTimeMs);
 
-        if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
+        if (result == 0 && elapsedTimeMs != -1)
         {
-            m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
+            lock_guard<mutex> lock(m_onMixedAudioFrameReceivedMutex);
+            if (m_onMixedAudioFrameReceived)
+            {
+                m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
+            }
         }
 
         chrono::nanoseconds delta = chrono::steady_clock::now() - start;
         this_thread::sleep_for(FrameDuration - delta);
-    }
-}
-
-void OpenteraAudioDeviceModule::updateOnMixedAudioFrameReceived()
-{
-    if (m_hasPendingOnMixedAudioFrameReceived.load())
-    {
-        m_onMixedAudioFrameReceived = m_pendingOnMixedAudioFrameReceived;
-        m_hasPendingOnMixedAudioFrameReceived.store(false);
     }
 }

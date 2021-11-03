@@ -46,7 +46,7 @@ namespace opentera
                 WebrtcConfiguration webrtcConfiguration,
                 std::shared_ptr<VideoSource> videoSource,
                 std::shared_ptr<AudioSource> audioSource);
-        ~StreamClient() override = default;
+        ~StreamClient() override;
 
         DECLARE_NOT_COPYABLE(StreamClient);
         DECLARE_NOT_MOVABLE(StreamClient);
