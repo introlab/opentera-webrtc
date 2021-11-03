@@ -68,7 +68,7 @@ def on_audio_frame_received(client, data, sample_rate, number_of_channels, numbe
     print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
 
 
-def on_mixed_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
+def on_mixed_audio_frame_received(data, sample_rate, number_of_channels, number_of_frames):
     # This callback is called from the audio device module thread.
     print('on_mixed_audio_frame_received:')
     print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
