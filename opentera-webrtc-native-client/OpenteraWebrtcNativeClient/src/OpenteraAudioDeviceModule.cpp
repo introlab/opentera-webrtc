@@ -1,8 +1,6 @@
 #include <OpenteraWebrtcNativeClient/OpenteraAudioDeviceModule.h>
 #include <OpenteraWebrtcNativeClient/Utils/thread.h>
 
-#include <iostream>
-
 using namespace opentera;
 using namespace std;
 
@@ -407,12 +405,13 @@ void OpenteraAudioDeviceModule::run()
         auto audioTransport = m_audioTransport.load();
         if (audioTransport == nullptr)
         {
+            this_thread::sleep_for(FrameDuration);
             continue;
         }
 
         int32_t result = audioTransport->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
-                &elapsedTimeMs, &ntpTimeMs);  
-             
+                &elapsedTimeMs, &ntpTimeMs);
+
         if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
         {
             m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
