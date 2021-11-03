@@ -1,18 +1,29 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_BLACK_HOLE_AUDIO_CAPTURE_MODULE_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_BLACK_HOLE_AUDIO_CAPTURE_MODULE_H
 
+#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
+
 #include <modules/audio_device/include/audio_device.h>
 
 #include <atomic>
+#include <memory>
+#include <mutex>
 #include <thread>
+#include <functional>
 
 namespace opentera
 {
     /**
      * @brief This class is used to fake a AudioDeviceModule so we can use a custom AudioSource
      */
-    class BlackHoleAudioCaptureModule : public webrtc::AudioDeviceModule
+    class OpenteraAudioDeviceModule : public webrtc::AudioDeviceModule
     {
+        std::function<void(const void* audioData,
+                int bitsPerSample,
+                int sampleRate,
+                size_t numberOfChannels,
+                size_t numberOfFrames)> m_onMixedAudioFrameReceived;
+
         bool m_isPlayoutInitialized;
         bool m_isRecordingInitialized;
         bool m_isSpeakerInitialized;
@@ -22,20 +33,25 @@ namespace opentera
         bool m_isRecording;
 
         std::atomic_bool m_stopped;
-        std::thread m_thread;
-        std::atomic<webrtc::AudioTransport*> m_audioCallback;
+        std::unique_ptr<std::thread> m_thread;
+        webrtc::AudioTransport* m_audioTransport;
+
+        std::mutex m_setCallbackMutex;
 
     public:
-        BlackHoleAudioCaptureModule();
-        ~BlackHoleAudioCaptureModule() override;
+        OpenteraAudioDeviceModule();
+        ~OpenteraAudioDeviceModule() override;
 
-        void run();
+        DECLARE_NOT_COPYABLE(OpenteraAudioDeviceModule);
+        DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
+
+        void setOnMixedAudioFrameReceived(const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
 
         // Retrieve the currently utilized audio layer
         int32_t ActiveAudioLayer(AudioLayer* audioLayer) const override;
 
         // Full-duplex transportation of PCM audio
-        int32_t RegisterAudioCallback(webrtc::AudioTransport* audioCallback) override;
+        int32_t RegisterAudioCallback(webrtc::AudioTransport* audioTransport) override;
 
         // Main initialization and termination
         int32_t Init() override;
@@ -124,6 +140,12 @@ namespace opentera
         int32_t EnableBuiltInAEC(bool enable) override;
         int32_t EnableBuiltInAGC(bool enable) override;
         int32_t EnableBuiltInNS(bool enable) override;
+
+    private:
+        void stop();
+        void startIfStoppedAndTransportValid();
+
+        void run();
     };
 }
 

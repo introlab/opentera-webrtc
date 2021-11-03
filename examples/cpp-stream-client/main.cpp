@@ -185,6 +185,17 @@ int main(int argc, char* argv[])
         cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
         cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
     });
+    client.setOnMixedAudioFrameReceived([](const void* audioData,
+        int bitsPerSample,
+        int sampleRate,
+        size_t numberOfChannels,
+        size_t numberOfFrames)
+    {
+        // This callback is called from the audio device module thread.
+        cout << "OnMixedAudioFrameReceived:" << endl;
+        cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
+        cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
+    });
 
     client.connect();
 

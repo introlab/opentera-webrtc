@@ -8,6 +8,7 @@
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 #include <OpenteraWebrtcNativeClient/Utils/FunctionTask.h>
+#include <OpenteraWebrtcNativeClient/OpenteraAudioDeviceModule.h>
 
 #include <sio_client.h>
 
@@ -61,10 +62,12 @@ namespace opentera
         rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
+        rtc::scoped_refptr<OpenteraAudioDeviceModule> m_audioDeviceModule;
+
     public:
         SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,
                 WebrtcConfiguration&& webrtcConfiguration);
-        virtual ~SignalingClient();
+        virtual ~SignalingClient() = default;
 
         DECLARE_NOT_COPYABLE(SignalingClient);
         DECLARE_NOT_MOVABLE(SignalingClient);

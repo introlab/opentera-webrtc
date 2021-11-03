@@ -35,6 +35,46 @@ void setOnVideoFrameReceived(StreamClient& self,
     self.setOnVideoFrameReceived(callback);
 }
 
+py::buffer_info getAudioBufferInfo(const void* audioData,
+        int bitsPerSample, size_t numberOfChannels, size_t numberOfFrames)
+{
+    py::buffer_info bufferInfo;
+    switch (bitsPerSample)
+    {
+    case 8:
+    bufferInfo = py::buffer_info(const_cast<void*>(audioData),
+            sizeof(int8_t),
+            py::format_descriptor<int8_t>::format(),
+            1, // Number of dimensions
+            { numberOfFrames * numberOfChannels }, // Buffer dimensions
+            { sizeof(int8_t) }); // Strides (in bytes) for each index
+    break;
+
+    case 16:
+    bufferInfo = py::buffer_info(const_cast<void*>(audioData),
+            sizeof(int16_t),
+            py::format_descriptor<int16_t>::format(),
+            1, // Number of dimensions
+            { numberOfFrames * numberOfChannels }, // Buffer dimensions
+            { sizeof(int16_t) }); // Strides (in bytes) for each index
+    break;
+
+    case 32:
+    bufferInfo = py::buffer_info(const_cast<void*>(audioData),
+            sizeof(int32_t),
+            py::format_descriptor<int32_t>::format(),
+            1, // Number of dimensions
+            { numberOfFrames * numberOfChannels }, // Buffer dimensions
+            { sizeof(int32_t) }); // Strides (in bytes) for each index
+    break;
+
+    default:
+    break;
+    }
+
+    return bufferInfo;
+}
+
 void setOnAudioFrameReceived(StreamClient& self,
         const function<void(const Client&, const py::array&, int, size_t, size_t)>& pythonCallback)
 {
@@ -46,45 +86,30 @@ void setOnAudioFrameReceived(StreamClient& self,
             size_t numberOfChannels,
             size_t numberOfFrames)
     {
-        py::buffer_info bufferInfo;
-        switch (bitsPerSample)
-        {
-            case 8:
-                bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(int8_t),
-                        py::format_descriptor<int8_t>::format(),
-                        1, // Number of dimensions
-                        { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(int8_t) }); // Strides (in bytes) for each index
-                break;
-
-            case 16:
-                bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(int16_t),
-                        py::format_descriptor<int16_t>::format(),
-                        1, // Number of dimensions
-                        { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(int16_t) }); // Strides (in bytes) for each index
-                break;
-
-            case 32:
-                bufferInfo = py::buffer_info(const_cast<void*>(audioData),
-                        sizeof(int32_t),
-                        py::format_descriptor<int32_t>::format(),
-                        1, // Number of dimensions
-                        { numberOfFrames * numberOfChannels }, // Buffer dimensions
-                        { sizeof(int32_t) }); // Strides (in bytes) for each index
-                break;
-
-            default:
-                break;
-        }
-
+        py::buffer_info bufferInfo = getAudioBufferInfo(audioData, bitsPerSample, numberOfChannels, numberOfFrames);
         py::gil_scoped_acquire acquire;
         pythonCallback(client, py::array(bufferInfo), sampleRate, numberOfChannels, numberOfFrames);
     };
 
     self.setOnAudioFrameReceived(callback);
+}
+
+void setOnMixedAudioFrameReceived(StreamClient& self,
+        const function<void(const py::array&, int, size_t, size_t)>& pythonCallback)
+{
+    auto callback = [=](
+            const void* audioData,
+            int bitsPerSample,
+            int sampleRate,
+            size_t numberOfChannels,
+            size_t numberOfFrames)
+    {
+        py::buffer_info bufferInfo = getAudioBufferInfo(audioData, bitsPerSample, numberOfChannels, numberOfFrames);
+        py::gil_scoped_acquire acquire;
+        pythonCallback(py::array(bufferInfo), sampleRate, numberOfChannels, numberOfFrames);
+    };
+
+    self.setOnMixedAudioFrameReceived(callback);
 }
 
 void opentera::initStreamClientPython(pybind11::module& m)
@@ -157,6 +182,18 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client of the stream frame\n"
+                    " - audio_data: The audio data (numpy.array[int8], numpy.array[int16] or numpy.array[int32])\n"
+                    " - sample_rate: The audio stream sample rate\n"
+                    " - number_of_channels: The audio stream channel count\n"
+                    " - number_of_frames: The number of frames\n"
+                    "\n"
+                    ":param callback: The callback")
+            .def_property("on_mixed_audio_frame_received", nullptr, &setOnMixedAudioFrameReceived,
+                    "Sets the callback that is called when a mixed audio stream frame is received.\n"
+                    "\n"
+                    "The callback is called from a WebRTC processing thread.\n"
+                    "\n"
+                    "Callback parameters:\n"
                     " - audio_data: The audio data (numpy.array[int8], numpy.array[int16] or numpy.array[int32])\n"
                     " - sample_rate: The audio stream sample rate\n"
                     " - number_of_channels: The audio stream channel count\n"

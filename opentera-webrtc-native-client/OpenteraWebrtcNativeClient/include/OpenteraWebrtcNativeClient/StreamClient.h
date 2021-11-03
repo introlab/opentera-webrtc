@@ -41,7 +41,7 @@ namespace opentera
                 WebrtcConfiguration webrtcConfiguration,
                 std::shared_ptr<VideoSource> videoSource,
                 std::shared_ptr<AudioSource> audioSource);
-        ~StreamClient() override = default;
+        ~StreamClient() override;
 
         DECLARE_NOT_COPYABLE(StreamClient);
         DECLARE_NOT_MOVABLE(StreamClient);
@@ -52,6 +52,12 @@ namespace opentera
                 const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback);
         void setOnAudioFrameReceived(const std::function<void(
                 const Client& client,
+                const void* audioData,
+                int bitsPerSample,
+                int sampleRate,
+                size_t numberOfChannels,
+                size_t numberOfFrames)>& callback);
+        void setOnMixedAudioFrameReceived(const std::function<void(
                 const void* audioData,
                 int bitsPerSample,
                 int sampleRate,
@@ -155,6 +161,32 @@ namespace opentera
         {
             m_onAudioFrameReceived = callback;
         });
+    }
+
+    /**
+     * @brief Sets the callback that is called when a mixed audio stream frame is received.
+     *
+     * The callback is called from a WebRTC processing thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - audioData: The audio data
+     * - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
+     * - sampleRate: The audio stream sample rate
+     * - numberOfChannels: The audio stream channel count
+     * - numberOfFrames: The number of frames
+     * @endparblock
+     *
+     * @param callback The callback
+     */
+    inline void StreamClient::setOnMixedAudioFrameReceived(const std::function<void(
+            const void* audioData,
+            int bitsPerSample,
+            int sampleRate,
+            size_t numberOfChannels,
+            size_t numberOfFrames)>& callback)
+    {
+        m_audioDeviceModule->setOnMixedAudioFrameReceived(callback);
     }
 }
 

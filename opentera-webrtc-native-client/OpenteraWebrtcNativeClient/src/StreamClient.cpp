@@ -64,6 +64,12 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
 {
 }
 
+StreamClient::~StreamClient()
+{
+    // The Python callback must be destroyed on the Python thread.
+    m_audioDeviceModule->setOnMixedAudioFrameReceived(function<void(const void*, int, int, size_t, size_t)>());
+}
+
 /**
  * @brief Create the peer connection handler for this client
  *
