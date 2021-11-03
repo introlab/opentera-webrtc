@@ -5,6 +5,7 @@ import unittest
 class FailureTestCase(unittest.TestCase):
     def setUp(self):
         super(FailureTestCase, self).setUp()
+        print(self.__class__.__name__, self._testMethodName)
         self._failures = []
 
     def tearDown(self):
