@@ -51,23 +51,17 @@ AudioSource::AudioSource(AudioSourceConfiguration configuration,
 }
 
 /**
- * Add the specified sink to the source
- * @param sink The sink to add
+ * Do nothing.
  */
 void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
 {
-    lock_guard<recursive_mutex> lock(m_sinkMutex);
-    m_sinks.insert(sink);
 }
 
 /**
- * Remove The specified sink from the source
- * @param sink The sink to remove
+ * Do nothing.
  */
 void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink)
 {
-    lock_guard<recursive_mutex> lock(m_sinkMutex);
-    m_sinks.erase(sink);
 }
 
 /**
@@ -113,14 +107,23 @@ size_t AudioSource::bytesPerFrame() const
 }
 
 /**
+ * Internal use only.
+ * @param audioDeviceModule
+ */
+void AudioSource::setAudioDeviceModule(const rtc::scoped_refptr<OpenteraAudioDeviceModule>& audioDeviceModule)
+{
+    lock_guard<mutex> lock(m_audioDeviceModuleMutex);
+    m_audioDeviceModule = audioDeviceModule;
+}
+
+/**
  * Send an audio frame
  * @param audioData The audio data
  * @param numberOfFrames The number of frames
+ * @param isTyping Indicates if the frame contains typing sound. This is only useful with the typing detection option.
  */
-void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
+void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames, bool isTyping)
 {
-    lock_guard<recursive_mutex> lock(m_sinkMutex);
-
     size_t dataSize = m_bytesPerFrame * numberOfFrames;
     if (m_dataIndex + dataSize >= m_data.size())
     {
@@ -128,9 +131,13 @@ void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
         memcpy(m_data.data() + m_dataIndex, audioData, dataToCopySize);
         m_dataIndex = 0;
 
-        for (auto sinks : m_sinks)
         {
-            sinks->OnData(m_data.data(), m_bitsPerSample, m_sampleRate, m_numberOfChannels, m_dataNumberOfFrames);
+            lock_guard<mutex> lock(m_audioDeviceModuleMutex);
+            if (m_audioDeviceModule != nullptr)
+            {
+                m_audioDeviceModule->sendFrame(m_data.data(), m_bitsPerSample, m_sampleRate, m_numberOfChannels,
+                        m_dataNumberOfFrames, m_configuration.soundCardTotalDelayMs(), isTyping);
+            }
         }
 
         size_t remainingNumberOfFrames = (dataSize - dataToCopySize) / m_bytesPerFrame;

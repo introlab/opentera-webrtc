@@ -3,7 +3,8 @@
 using namespace opentera;
 using namespace std;
 
-AudioSourceConfiguration::AudioSourceConfiguration(absl::optional<bool> echoCancellation,
+AudioSourceConfiguration::AudioSourceConfiguration(uint32_t soundCardTotalDelayMs,
+        absl::optional<bool> echoCancellation,
         absl::optional<bool> autoGainControl,
         absl::optional<bool> noiseSuppression,
         absl::optional<bool> highpassFilter,
@@ -11,6 +12,7 @@ AudioSourceConfiguration::AudioSourceConfiguration(absl::optional<bool> echoCanc
         absl::optional<bool> typingDetection,
         absl::optional<bool> residualEchoDetector,
         absl::optional<bool> transientSuppression) :
+        m_soundCardTotalDelayMs(soundCardTotalDelayMs),
         m_echoCancellation(echoCancellation),
         m_autoGainControl(autoGainControl),
         m_noiseSuppression(noiseSuppression),

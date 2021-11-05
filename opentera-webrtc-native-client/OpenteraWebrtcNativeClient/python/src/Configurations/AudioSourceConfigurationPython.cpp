@@ -11,12 +11,15 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
 {
     py::class_<AudioSourceConfiguration>(m, "AudioSourceConfiguration",
             "Represents a configuration of an audio source that can be added to a WebRTC call")
-            .def_static("create", py::overload_cast<>(&AudioSourceConfiguration::create),
+            .def_static("create", py::overload_cast<uint32_t>(&AudioSourceConfiguration::create),
                     "Creates an audio source configuration with default values.\n"
-                    ":return: An audio source configuration with default values")
-            .def_static("create", py::overload_cast<absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>>(&AudioSourceConfiguration::create),
+                    ":param sound_card_total_delay_ms: The sum of the playback and recording delays\n"
+                    ":return: An audio source configuration with default values",
+                    py::arg("sound_card_total_delay_ms"))
+            .def_static("create", py::overload_cast<uint32_t, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>>(&AudioSourceConfiguration::create),
                     "Creates an audio source configuration with the specified values.\n"
                     "\n"
+                    ":param sound_card_total_delay_ms: The sum of the playback and recording delays\n"
                     ":param echo_cancellation: Enable or disable the echo cancellation\n"
                     ":param auto_gain_control: Enable or disable the auto gain control\n"
                     ":param noise_suppression: Enable or disable the noise suppression\n"
@@ -26,8 +29,11 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                     ":param residual_echo_detector: Enable or disable the residual echo detector\n"
                     ":param transient_suppression: Enable or disable the transient suppression\n"
                     ":return: An audio source configuration with the specified values",
-                    py::arg("echo_cancellation"), py::arg("auto_gain_control"), py::arg("noise_suppression"), py::arg("highpass_filter"), py::arg("stereo_swapping"), py::arg("typing_detection"), py::arg("residual_echo_detector"), py::arg("transient_suppression"))
+                    py::arg("sound_card_total_delay_ms"), py::arg("echo_cancellation"), py::arg("auto_gain_control"), py::arg("noise_suppression"), py::arg("highpass_filter"), py::arg("stereo_swapping"), py::arg("typing_detection"), py::arg("residual_echo_detector"), py::arg("transient_suppression"))
 
+            .def_property_readonly("sound_card_total_delay_ms", &AudioSourceConfiguration::soundCardTotalDelayMs,
+                    "Returns the sum of the playback and recording delays.\n"
+                    ":return: The sum of the playback and recording delays")
             .def_property_readonly("echo_cancellation", &AudioSourceConfiguration::echoCancellation,
                     "Indicates if the echo cancellation is enabled.\n"
                     ":return: True if the echo cancellation is enabled")

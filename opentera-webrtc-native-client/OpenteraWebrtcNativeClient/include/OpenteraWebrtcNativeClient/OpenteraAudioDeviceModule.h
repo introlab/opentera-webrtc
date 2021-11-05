@@ -35,6 +35,7 @@ namespace opentera
         std::atomic_bool m_stopped;
         std::unique_ptr<std::thread> m_thread;
         webrtc::AudioTransport* m_audioTransport;
+        std::mutex m_audioTransportCaptureMutex;
 
         std::mutex m_setCallbackMutex;
 
@@ -46,6 +47,13 @@ namespace opentera
         DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
 
         void setOnMixedAudioFrameReceived(const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
+        void sendFrame(const void* audioData,
+                int bitsPerSample,
+                int sampleRate,
+                size_t numberOfChannels,
+                size_t numberOfFrames,
+                uint32_t audioDelayMs,
+                bool isTyping);
 
         // Retrieve the currently utilized audio layer
         int32_t ActiveAudioLayer(AudioLayer* audioLayer) const override;

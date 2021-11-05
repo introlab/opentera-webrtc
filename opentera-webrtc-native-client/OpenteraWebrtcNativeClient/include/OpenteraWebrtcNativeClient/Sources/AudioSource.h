@@ -3,6 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
+#include <OpenteraWebrtcNativeClient/OpenteraAudioDeviceModule.h>
 
 #include <api/media_stream_interface.h>
 #include <api/notifier.h>
@@ -27,20 +28,18 @@ namespace opentera
         size_t m_numberOfChannels;
         size_t m_bytesPerFrame;
 
-        std::recursive_mutex m_sinkMutex;
-        std::set<webrtc::AudioTrackSinkInterface*> m_sinks;
-
         size_t m_dataIndex;
         std::vector<uint8_t> m_data; // 10 ms audio frame
         size_t m_dataNumberOfFrames;
+
+        std::mutex m_audioDeviceModuleMutex;
+        rtc::scoped_refptr<OpenteraAudioDeviceModule> m_audioDeviceModule;
 
     public:
         AudioSource(AudioSourceConfiguration configuration, int bitsPerSample, int sampleRate, size_t numberOfChannels);
 
         DECLARE_NOT_COPYABLE(AudioSource);
         DECLARE_NOT_MOVABLE(AudioSource);
-
-        AudioSourceConfiguration configuration() const;
 
         void AddSink(webrtc::AudioTrackSinkInterface* sink) override;
         void RemoveSink(webrtc::AudioTrackSinkInterface* sink) override;
@@ -49,9 +48,13 @@ namespace opentera
         SourceState state() const override;
         const cricket::AudioOptions options() const override;
 
+        AudioSourceConfiguration configuration() const;
         size_t bytesPerSample() const;
         size_t bytesPerFrame() const;
+
+        void setAudioDeviceModule(const rtc::scoped_refptr<OpenteraAudioDeviceModule>& audioDeviceModule);
         void sendFrame(const void* audioData, size_t numberOfFrames);
+        void sendFrame(const void* audioData, size_t numberOfFrames, bool isTyping);
 
         // Methods to fake a ref counted object, so the Python binding is easier to make because we can use a shared_ptr
         void AddRef() const override;
@@ -64,6 +67,16 @@ namespace opentera
     inline AudioSourceConfiguration AudioSource::configuration() const
     {
         return m_configuration;
+    }
+
+    /**
+     * Send an audio frame
+     * @param audioData The audio data
+     * @param numberOfFrames The number of frames
+     */
+    inline void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames)
+    {
+        sendFrame(audioData, numberOfFrames, false);
     }
 }
 

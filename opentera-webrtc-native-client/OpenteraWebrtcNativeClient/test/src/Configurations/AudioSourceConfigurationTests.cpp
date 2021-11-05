@@ -7,8 +7,9 @@ using namespace std;
 
 TEST(AudioSourceConfigurationTests, create_shouldSetNullOpt)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create();
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -20,9 +21,10 @@ TEST(AudioSourceConfigurationTests, create_shouldSetNullOpt)
 
 TEST(AudioSourceConfigurationTests, create_echoCancellation_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(true, absl::nullopt, absl::nullopt, absl::nullopt,
-            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, true, absl::nullopt, absl::nullopt,
+            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), true);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -52,9 +54,10 @@ TEST(AudioSourceConfigurationTests, create_echoCancellation_shouldSetTheAttribut
 
 TEST(AudioSourceConfigurationTests, create_autoGainControl_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, true, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, true, absl::nullopt,
             absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), true);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -84,9 +87,10 @@ TEST(AudioSourceConfigurationTests, create_autoGainControl_shouldSetTheAttribute
 
 TEST(AudioSourceConfigurationTests, create_noiseSuppression_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, true,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, true,
             absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), true);
@@ -116,9 +120,10 @@ TEST(AudioSourceConfigurationTests, create_noiseSuppression_shouldSetTheAttribut
 
 TEST(AudioSourceConfigurationTests, create_highpassFilter_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
             true, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -148,9 +153,10 @@ TEST(AudioSourceConfigurationTests, create_highpassFilter_shouldSetTheAttributes
 
 TEST(AudioSourceConfigurationTests, create_stereoSwapping_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
             absl::nullopt, true, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -180,9 +186,10 @@ TEST(AudioSourceConfigurationTests, create_stereoSwapping_shouldSetTheAttributes
 
 TEST(AudioSourceConfigurationTests, create_typingDetection_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
             absl::nullopt, absl::nullopt, true, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -212,9 +219,10 @@ TEST(AudioSourceConfigurationTests, create_typingDetection_shouldSetTheAttribute
 
 TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
             absl::nullopt, absl::nullopt, absl::nullopt, false, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -244,9 +252,10 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
 
 TEST(AudioSourceConfigurationTests, create_transientSuppression_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
             absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, true);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);

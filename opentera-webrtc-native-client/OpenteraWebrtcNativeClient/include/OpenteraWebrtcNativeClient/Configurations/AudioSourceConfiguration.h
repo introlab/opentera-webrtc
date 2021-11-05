@@ -11,6 +11,7 @@ namespace opentera
      */
     class AudioSourceConfiguration
     {
+        uint32_t m_soundCardTotalDelayMs;
         absl::optional<bool> m_echoCancellation;
         absl::optional<bool> m_autoGainControl;
         absl::optional<bool> m_noiseSuppression;
@@ -20,22 +21,8 @@ namespace opentera
         absl::optional<bool> m_residualEchoDetector;
         absl::optional<bool> m_transientSuppression;
 
-        AudioSourceConfiguration(absl::optional<bool> echoCancellation,
-                 absl::optional<bool> autoGainControl,
-                 absl::optional<bool> noiseSuppression,
-                 absl::optional<bool> highpassFilter,
-                 absl::optional<bool> stereoSwapping,
-                 absl::optional<bool> typingDetection,
-                 absl::optional<bool> residualEchoDetector,
-                 absl::optional<bool> transientSuppression);
-
-    public:
-        AudioSourceConfiguration(const AudioSourceConfiguration& other) = default;
-        AudioSourceConfiguration(AudioSourceConfiguration&& other) = default;
-        virtual ~AudioSourceConfiguration() = default;
-
-        static AudioSourceConfiguration create();
-        static AudioSourceConfiguration create(absl::optional<bool> echoCancellation,
+        AudioSourceConfiguration(uint32_t soundCardTotalDelayMs,
+                absl::optional<bool> echoCancellation,
                 absl::optional<bool> autoGainControl,
                 absl::optional<bool> noiseSuppression,
                 absl::optional<bool> highpassFilter,
@@ -44,6 +31,23 @@ namespace opentera
                 absl::optional<bool> residualEchoDetector,
                 absl::optional<bool> transientSuppression);
 
+    public:
+        AudioSourceConfiguration(const AudioSourceConfiguration& other) = default;
+        AudioSourceConfiguration(AudioSourceConfiguration&& other) = default;
+        virtual ~AudioSourceConfiguration() = default;
+
+        static AudioSourceConfiguration create(uint32_t soundCardTotalDelayMs);
+        static AudioSourceConfiguration create(uint32_t soundCardTotalDelayMs,
+                absl::optional<bool> echoCancellation,
+                absl::optional<bool> autoGainControl,
+                absl::optional<bool> noiseSuppression,
+                absl::optional<bool> highpassFilter,
+                absl::optional<bool> stereoSwapping,
+                absl::optional<bool> typingDetection,
+                absl::optional<bool> residualEchoDetector,
+                absl::optional<bool> transientSuppression);
+
+        uint32_t soundCardTotalDelayMs() const;
         absl::optional<bool> echoCancellation() const;
         absl::optional<bool> autoGainControl() const;
         absl::optional<bool> noiseSuppression() const;
@@ -62,17 +66,19 @@ namespace opentera
 
     /**
      * @brief Creates an audio source configuration with default values.
+     * @param soundCardTotalDelayMs The sum of the playback and recording delays.
      * @return An audio source configuration with default values
      */
-    inline AudioSourceConfiguration AudioSourceConfiguration::create()
+    inline AudioSourceConfiguration AudioSourceConfiguration::create(uint32_t soundCardTotalDelayMs)
     {
-        return AudioSourceConfiguration(absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt,
-                absl::nullopt, absl::nullopt, absl::nullopt);
+        return AudioSourceConfiguration(soundCardTotalDelayMs, absl::nullopt, absl::nullopt, absl::nullopt,
+                absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
     }
 
     /**
      * @brief Creates an audio source configuration with the specified values.
      *
+     * @param soundCardTotalDelayMs The sum of the playback and recording delays.
      * @param echoCancellation Enable or disable the echo cancellation
      * @param autoGainControl Enable or disable the auto gain control
      * @param noiseSuppression Enable or disable the noise suppression
@@ -83,17 +89,27 @@ namespace opentera
      * @param transientSuppression Enable or disable the transient suppression
      * @return An audio source configuration with the specified values
      */
-    inline AudioSourceConfiguration AudioSourceConfiguration::create(absl::optional<bool> echoCancellation,
-                                           absl::optional<bool> autoGainControl,
-                                           absl::optional<bool> noiseSuppression,
-                                           absl::optional<bool> highpassFilter,
-                                           absl::optional<bool> stereoSwapping,
-                                           absl::optional<bool> typingDetection,
-                                           absl::optional<bool> residualEchoDetector,
-                                           absl::optional<bool> transientSuppression)
+    inline AudioSourceConfiguration AudioSourceConfiguration::create(uint32_t soundCardTotalDelayMs,
+            absl::optional<bool> echoCancellation,
+            absl::optional<bool> autoGainControl,
+            absl::optional<bool> noiseSuppression,
+            absl::optional<bool> highpassFilter,
+            absl::optional<bool> stereoSwapping,
+            absl::optional<bool> typingDetection,
+            absl::optional<bool> residualEchoDetector,
+            absl::optional<bool> transientSuppression)
     {
-        return AudioSourceConfiguration(echoCancellation, autoGainControl, noiseSuppression, highpassFilter,
-                stereoSwapping, typingDetection, residualEchoDetector, transientSuppression);
+        return AudioSourceConfiguration(soundCardTotalDelayMs, echoCancellation, autoGainControl, noiseSuppression,
+                highpassFilter, stereoSwapping, typingDetection, residualEchoDetector, transientSuppression);
+    }
+
+    /**
+     * @brief Returns the sum of the playback and recording delays.
+     * @return The sum of the playback and recording delays
+     */
+    inline uint32_t AudioSourceConfiguration::soundCardTotalDelayMs() const
+    {
+        return m_soundCardTotalDelayMs;
     }
 
     /**
