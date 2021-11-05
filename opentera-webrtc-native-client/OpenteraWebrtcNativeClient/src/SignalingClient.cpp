@@ -51,6 +51,7 @@ SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerC
     m_signalingThread->Start();
 
     m_audioDeviceModule = rtc::scoped_refptr<OpenteraAudioDeviceModule>(new rtc::RefCountedObject<OpenteraAudioDeviceModule>);
+    m_audioProcessing = webrtc::AudioProcessingBuilder().Create();
     m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(m_networkThread.get(),
             m_workerThread.get(),
             m_signalingThread.get(),
@@ -60,7 +61,7 @@ SignalingClient::SignalingClient(SignalingServerConfiguration&& signalingServerC
             webrtc::CreateBuiltinVideoEncoderFactory(),
             webrtc::CreateBuiltinVideoDecoderFactory(),
             nullptr, // Audio mixer,
-            nullptr); // Audio processing
+            m_audioProcessing);
 
     if (!m_peerConnectionFactory)
     {

@@ -14,7 +14,7 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             .def_static("create", py::overload_cast<>(&AudioSourceConfiguration::create),
                     "Creates an audio source configuration with default values.\n"
                     ":return: An audio source configuration with default values")
-            .def_static("create", py::overload_cast<absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>>(&AudioSourceConfiguration::create),
+            .def_static("create", py::overload_cast<absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>, absl::optional<bool>>(&AudioSourceConfiguration::create),
                     "Creates an audio source configuration with the specified values.\n"
                     "\n"
                     ":param echo_cancellation: Enable or disable the echo cancellation\n"
@@ -24,8 +24,9 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                     ":param stereo_swapping: Enable or disable the stereo swapping\n"
                     ":param typing_detection: Enable or disable the typing detection\n"
                     ":param residual_echo_detector: Enable or disable the residual echo detector\n"
+                    ":param transient_suppression: Enable or disable the transient suppression\n"
                     ":return: An audio source configuration with the specified values",
-                    py::arg("echo_cancellation"), py::arg("auto_gain_control"), py::arg("noise_suppression"), py::arg("highpass_filter"), py::arg("stereo_swapping"), py::arg("typing_detection"), py::arg("residual_echo_detector"))
+                    py::arg("echo_cancellation"), py::arg("auto_gain_control"), py::arg("noise_suppression"), py::arg("highpass_filter"), py::arg("stereo_swapping"), py::arg("typing_detection"), py::arg("residual_echo_detector"), py::arg("transient_suppression"))
 
             .def_property_readonly("echo_cancellation", &AudioSourceConfiguration::echoCancellation,
                     "Indicates if the echo cancellation is enabled.\n"
@@ -47,5 +48,8 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                     ":return: True if the typing detection is enabled")
             .def_property_readonly("residual_echo_detector", &AudioSourceConfiguration::residualEchoDetector,
                     "Indicates if the residual echo detector is enabled.\n"
-                    ":return: True if the residual echo detector is enabled");
+                    ":return: True if the residual echo detector is enabled")
+            .def_property_readonly("transient_suppression", &AudioSourceConfiguration::transientSuppression,
+                                   "Indicates if the transient suppression is enabled.\n"
+                                   ":return: True if the transient suppression is enabled");
 }

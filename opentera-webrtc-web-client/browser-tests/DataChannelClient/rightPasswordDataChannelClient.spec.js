@@ -4,6 +4,7 @@ describe('Right password DataChannelClient', done => {
   let dataChannelClient3;
 
   const BEFORE_AFTER_TIMEOUT_MS = 100;
+  const TEST_TIMEOUT_MS = 15000;
   const SignalingServerConfiguration1 = {
     url: 'http://localhost:8080',
     name: 'c1',
@@ -70,22 +71,22 @@ describe('Right password DataChannelClient', done => {
     expect(dataChannelClient1.isConnected).to.eql(true);
     expect(dataChannelClient2.isConnected).to.eql(true);
     expect(dataChannelClient3.isConnected).to.eql(true);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
   it('isRtcConnected should return false', () => {
     expect(dataChannelClient1.isRtcConnected).to.eql(false);
     expect(dataChannelClient2.isRtcConnected).to.eql(false);
     expect(dataChannelClient3.isRtcConnected).to.eql(false);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
   it('id should not return null', () => {
     expect(dataChannelClient1.id).to.not.eql(null);
     expect(dataChannelClient2.id).to.not.eql(null);
     expect(dataChannelClient3.id).to.not.eql(null);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
   it('connectedRoomClientIds should return []', () => {
     expect(dataChannelClient1.connectedRoomClientIds).to.eql([]);
     expect(dataChannelClient2.connectedRoomClientIds).to.eql([]);
     expect(dataChannelClient3.connectedRoomClientIds).to.eql([]);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
   it('roomClients should return all clients', () => {
     expect(dataChannelClient1.roomClients.length).to.eql(3);
     expect(dataChannelClient1.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', data: 'cd1', isConnected: true});
@@ -101,7 +102,7 @@ describe('Right password DataChannelClient', done => {
     expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient1.id, name: 'c1', data: 'cd1', isConnected: false});
     expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient2.id, name: 'c2', data: 'cd2', isConnected: false});
     expect(dataChannelClient3.roomClients).to.include({ id: dataChannelClient3.id, name: 'c3', data: 'cd3', isConnected: true});
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('callAll should call all clients', done => {
     let clientCounter = 0;
@@ -148,7 +149,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('callIds should call the specified clients', done => {
     let clientCounter = 0;
@@ -186,7 +187,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callIds([dataChannelClient2.id]);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('onClientConnect should be called after a call', done => {
     let clientCounter = 0;
@@ -217,7 +218,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callIds([dataChannelClient2.id]);
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('onClientDisconnect should be called after the hangUpAll function call', done => {
     let clientCounter = 0;
@@ -252,7 +253,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callIds([dataChannelClient2.id]);
-  }).timeout(15000);
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('callAcceptor should be able to reject a call and onCallReject should be called', done => {
     let clientCallFinishCounter = 0;
@@ -359,7 +360,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('hangUpAll should hang up all clients', done => {
     let dataChannelOpenCounter = 0;
@@ -399,7 +400,7 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient3.onDataChannelClose = onDataChannelClose;
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('closeAllRoomPeerConnections should close all room peer connections', done => {
     let dataChannelOpenCounter = 0;
@@ -436,7 +437,7 @@ describe('Right password DataChannelClient', done => {
     dataChannelClient3.onDataChannelClose = onDataChannelClose;
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('sendTo should send the data to the specified clients', done => {
     let dataChannelOpenCounter = 0;
@@ -485,7 +486,7 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 
   it('sendToAll should send the data to all clients', done => {
     let dataChannelOpenCounter = 0;
@@ -564,5 +565,5 @@ describe('Right password DataChannelClient', done => {
     };
 
     dataChannelClient1.callAll();
-  });
+  }).timeout(TEST_TIMEOUT_MS);
 });

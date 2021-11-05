@@ -44,6 +44,7 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_audioSource(move(audioSource))
 {
+    m_audioProcessing->ApplyConfig(static_cast<webrtc::AudioProcessing::Config>(m_audioSource->configuration()));
 }
 
 /**
@@ -62,6 +63,7 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         m_videoSource(move(videoSource)),
         m_audioSource(move(audioSource))
 {
+    m_audioProcessing->ApplyConfig(static_cast<webrtc::AudioProcessing::Config>(m_audioSource->configuration()));
 }
 
 StreamClient::~StreamClient()

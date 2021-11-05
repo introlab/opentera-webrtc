@@ -40,6 +40,8 @@ namespace opentera
         DECLARE_NOT_COPYABLE(AudioSource);
         DECLARE_NOT_MOVABLE(AudioSource);
 
+        AudioSourceConfiguration configuration() const;
+
         void AddSink(webrtc::AudioTrackSinkInterface* sink) override;
         void RemoveSink(webrtc::AudioTrackSinkInterface* sink) override;
 
@@ -55,6 +57,14 @@ namespace opentera
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
     };
+
+    /**
+     * @return The audio source configuration
+     */
+    inline AudioSourceConfiguration AudioSource::configuration() const
+    {
+        return m_configuration;
+    }
 }
 
 #endif

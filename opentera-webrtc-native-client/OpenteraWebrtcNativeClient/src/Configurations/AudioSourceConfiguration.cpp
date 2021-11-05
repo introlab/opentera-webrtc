@@ -9,14 +9,16 @@ AudioSourceConfiguration::AudioSourceConfiguration(absl::optional<bool> echoCanc
         absl::optional<bool> highpassFilter,
         absl::optional<bool> stereoSwapping,
         absl::optional<bool> typingDetection,
-        absl::optional<bool> residualEchoDetector) :
+        absl::optional<bool> residualEchoDetector,
+        absl::optional<bool> transientSuppression) :
         m_echoCancellation(echoCancellation),
         m_autoGainControl(autoGainControl),
         m_noiseSuppression(noiseSuppression),
         m_highpassFilter(highpassFilter),
         m_stereoSwapping(stereoSwapping),
         m_typingDetection(typingDetection),
-        m_residualEchoDetector(residualEchoDetector)
+        m_residualEchoDetector(residualEchoDetector),
+        m_transientSuppression(transientSuppression)
 {
 }
 
@@ -36,4 +38,39 @@ AudioSourceConfiguration::operator cricket::AudioOptions() const
     options.residual_echo_detector = m_residualEchoDetector;
 
     return options;
+}
+
+/**
+ * Converts a AudioSourceConfiguration to a webrtc::AudioProcessing::Config.
+ * @return The converted webrtc::AudioProcessing::Config
+ */
+AudioSourceConfiguration::operator webrtc::AudioProcessing::Config() const
+{
+    webrtc::AudioProcessing::Config config;
+    if (m_echoCancellation.has_value())
+    {
+        config.echo_canceller.enabled = m_echoCancellation.value();
+    }
+    if (m_autoGainControl.has_value())
+    {
+        config.gain_controller2.enabled = m_autoGainControl.value();
+    }
+    if (m_noiseSuppression.has_value())
+    {
+        config.noise_suppression.enabled = m_noiseSuppression.value();
+    }
+    if (m_highpassFilter.has_value())
+    {
+        config.high_pass_filter.enabled = m_highpassFilter.value();
+    }
+    if (m_residualEchoDetector.has_value())
+    {
+        config.residual_echo_detector.enabled = m_residualEchoDetector.value();
+    }
+    if (m_transientSuppression.has_value())
+    {
+        config.transient_suppression.enabled = m_transientSuppression.value();
+    }
+
+    return config;
 }

@@ -68,7 +68,7 @@ class SinAudioSource : public AudioSource
 
 public:
     explicit SinAudioSource(uint16_t amplitude) :
-            AudioSource(AudioSourceConfiguration::create(false, false, false, false, false, false, false),
+            AudioSource(AudioSourceConfiguration::create(false, false, false, false, false, false, false, false),
                 BitsPerSample, SampleRate, NumberOfChannels),
             m_amplitude(amplitude),
             m_stopped(false),
