@@ -9,7 +9,7 @@ using namespace std;
 namespace py = pybind11;
 
 template <class T>
-void sendFrame(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
+size_t checkFrameAndReturnByteSize(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
 {
     if (self->bytesPerSample() != sizeof(T))
     {
@@ -25,8 +25,21 @@ void sendFrame(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
     {
         throw py::value_error("The frame size must be a multiple of (bytes_per_sample * number_of_channels).");
     }
+    return byteSize;
+}
 
+template <class T>
+void sendFrame(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
+{
+    size_t byteSize = checkFrameAndReturnByteSize(self, frame);
     self->sendFrame(frame.data(), byteSize / self->bytesPerFrame());
+}
+
+template <class T>
+void sendFrameWithIsTyping(const shared_ptr<AudioSource>& self, py::array_t<T>& frame, bool isTyping)
+{
+    size_t byteSize = checkFrameAndReturnByteSize(self, frame);
+    self->sendFrame(frame.data(), byteSize / self->bytesPerFrame(), isTyping);
 }
 
 void opentera::initAudioSourcePython(pybind11::module& m)
@@ -54,5 +67,23 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             .def("send_frame", &sendFrame<int32_t>,
                      "Send an audio frame\n"
                      ":param frame: The audio frame",
-                     py::arg("frame"));
+                     py::arg("frame"))
+            .def("send_frame", &sendFrameWithIsTyping<int8_t>,
+                 "Send an audio frame\n"
+                 ":param frame: The audio frame\n",
+                 ":param is_typing: Indicates if the frame contains typing sound."
+                 "This is only useful with the typing detection option.",
+                 py::arg("frame"), py::arg("is_typing"))
+            .def("send_frame", &sendFrameWithIsTyping<int16_t>,
+                 "Send an audio frame\n"
+                 ":param frame: The audio frame\n"
+                 ":param is_typing: Indicates if the frame contains typing sound."
+                 "This is only useful with the typing detection option.",
+                 py::arg("frame"), py::arg("is_typing"))
+            .def("send_frame", &sendFrameWithIsTyping<int32_t>,
+                 "Send an audio frame\n"
+                 ":param frame: The audio frame\n"
+                 ":param is_typing: Indicates if the frame contains typing sound."
+                 "This is only useful with the typing detection option.",
+                 py::arg("frame"), py::arg("is_typing"));
 }

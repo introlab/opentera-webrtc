@@ -63,6 +63,7 @@ namespace opentera
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
 
         rtc::scoped_refptr<OpenteraAudioDeviceModule> m_audioDeviceModule;
+        rtc::scoped_refptr<webrtc::AudioProcessing> m_audioProcessing;
 
     public:
         SignalingClient(SignalingServerConfiguration&& signalingServerConfiguration,

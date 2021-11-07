@@ -44,6 +44,11 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_audioSource(move(audioSource))
 {
+    if (m_audioSource != nullptr)
+    {
+        m_audioProcessing->ApplyConfig(static_cast<webrtc::AudioProcessing::Config>(m_audioSource->configuration()));
+        m_audioSource->setAudioDeviceModule(m_audioDeviceModule);
+    }
 }
 
 /**
@@ -62,6 +67,11 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         m_videoSource(move(videoSource)),
         m_audioSource(move(audioSource))
 {
+    if (m_audioSource != nullptr)
+    {
+        m_audioProcessing->ApplyConfig(static_cast<webrtc::AudioProcessing::Config>(m_audioSource->configuration()));
+        m_audioSource->setAudioDeviceModule(m_audioDeviceModule);
+    }
 }
 
 StreamClient::~StreamClient()

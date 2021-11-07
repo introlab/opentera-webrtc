@@ -7,8 +7,9 @@ using namespace std;
 
 TEST(AudioSourceConfigurationTests, create_shouldSetNullOpt)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create();
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
@@ -18,64 +19,152 @@ TEST(AudioSourceConfigurationTests, create_shouldSetNullOpt)
     EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
 }
 
-TEST(AudioSourceConfigurationTests, create_echoCancellationAutoGainControl_shouldSetTheAttributes)
+TEST(AudioSourceConfigurationTests, create_echoCancellation_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(true, false, absl::nullopt, absl::nullopt,
-            absl::nullopt, absl::nullopt, absl::nullopt);
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, true, absl::nullopt, absl::nullopt,
+            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), true);
-    EXPECT_EQ(testee.autoGainControl(), false);
+    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
     EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
     EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
     EXPECT_EQ(testee.typingDetection(), absl::nullopt);
     EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
 
     auto options = static_cast<cricket::AudioOptions>(testee);
     EXPECT_EQ(options.echo_cancellation, true);
-    EXPECT_EQ(options.auto_gain_control, false);
+    EXPECT_EQ(options.auto_gain_control, absl::nullopt);
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
     EXPECT_EQ(options.typing_detection, absl::nullopt);
     EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, true);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
-TEST(AudioSourceConfigurationTests, create_noiseSuppressionHighpassFilter_shouldSetTheAttributes)
+TEST(AudioSourceConfigurationTests, create_autoGainControl_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, true, false,
-            absl::nullopt, absl::nullopt, absl::nullopt);
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, true, absl::nullopt,
+            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
-    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
-    EXPECT_EQ(testee.noiseSuppression(), true);
-    EXPECT_EQ(testee.highpassFilter(), false);
+    EXPECT_EQ(testee.autoGainControl(), true);
+    EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
+    EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
     EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
     EXPECT_EQ(testee.typingDetection(), absl::nullopt);
     EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
+
+    auto options = static_cast<cricket::AudioOptions>(testee);
+    EXPECT_EQ(options.echo_cancellation, absl::nullopt);
+    EXPECT_EQ(options.auto_gain_control, true);
+    EXPECT_EQ(options.noise_suppression, absl::nullopt);
+    EXPECT_EQ(options.highpass_filter, absl::nullopt);
+    EXPECT_EQ(options.stereo_swapping, absl::nullopt);
+    EXPECT_EQ(options.typing_detection, absl::nullopt);
+    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, true);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
+}
+
+TEST(AudioSourceConfigurationTests, create_noiseSuppression_shouldSetTheAttributes)
+{
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, true,
+            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
+
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
+    EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
+    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
+    EXPECT_EQ(testee.noiseSuppression(), true);
+    EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
+    EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
+    EXPECT_EQ(testee.typingDetection(), absl::nullopt);
+    EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
 
     auto options = static_cast<cricket::AudioOptions>(testee);
     EXPECT_EQ(options.echo_cancellation, absl::nullopt);
     EXPECT_EQ(options.auto_gain_control, absl::nullopt);
     EXPECT_EQ(options.noise_suppression, true);
-    EXPECT_EQ(options.highpass_filter, false);
+    EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
     EXPECT_EQ(options.typing_detection, absl::nullopt);
     EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, true);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
-TEST(AudioSourceConfigurationTests, create_stereoSwappingTypingDetection_shouldSetTheAttributes)
+TEST(AudioSourceConfigurationTests, create_highpassFilter_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
-            absl::nullopt, true, false, absl::nullopt);
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
+            true, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
+    EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
+    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
+    EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
+    EXPECT_EQ(testee.highpassFilter(), true);
+    EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
+    EXPECT_EQ(testee.typingDetection(), absl::nullopt);
+    EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
+
+    auto options = static_cast<cricket::AudioOptions>(testee);
+    EXPECT_EQ(options.echo_cancellation, absl::nullopt);
+    EXPECT_EQ(options.auto_gain_control, absl::nullopt);
+    EXPECT_EQ(options.noise_suppression, absl::nullopt);
+    EXPECT_EQ(options.highpass_filter, true);
+    EXPECT_EQ(options.stereo_swapping, absl::nullopt);
+    EXPECT_EQ(options.typing_detection, absl::nullopt);
+    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
+}
+
+TEST(AudioSourceConfigurationTests, create_stereoSwapping_shouldSetTheAttributes)
+{
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
+            absl::nullopt, true, absl::nullopt, absl::nullopt, absl::nullopt);
+
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
     EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
     EXPECT_EQ(testee.stereoSwapping(), true);
-    EXPECT_EQ(testee.typingDetection(), false);
+    EXPECT_EQ(testee.typingDetection(), absl::nullopt);
     EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
 
     auto options = static_cast<cricket::AudioOptions>(testee);
     EXPECT_EQ(options.echo_cancellation, absl::nullopt);
@@ -83,22 +172,65 @@ TEST(AudioSourceConfigurationTests, create_stereoSwappingTypingDetection_shouldS
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, true);
-    EXPECT_EQ(options.typing_detection, false);
+    EXPECT_EQ(options.typing_detection, absl::nullopt);
     EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
+}
+
+TEST(AudioSourceConfigurationTests, create_typingDetection_shouldSetTheAttributes)
+{
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
+            absl::nullopt, absl::nullopt, true, absl::nullopt, absl::nullopt);
+
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
+    EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
+    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
+    EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
+    EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
+    EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
+    EXPECT_EQ(testee.typingDetection(), true);
+    EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
+
+    auto options = static_cast<cricket::AudioOptions>(testee);
+    EXPECT_EQ(options.echo_cancellation, absl::nullopt);
+    EXPECT_EQ(options.auto_gain_control, absl::nullopt);
+    EXPECT_EQ(options.noise_suppression, absl::nullopt);
+    EXPECT_EQ(options.highpass_filter, absl::nullopt);
+    EXPECT_EQ(options.stereo_swapping, absl::nullopt);
+    EXPECT_EQ(options.typing_detection, true);
+    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
 TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttributes)
 {
-    AudioSourceConfiguration testee = AudioSourceConfiguration::create(absl::nullopt, absl::nullopt, absl::nullopt,
-            absl::nullopt, absl::nullopt, absl::nullopt, true);
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
+            absl::nullopt, absl::nullopt, absl::nullopt, false, absl::nullopt);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
     EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
     EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
     EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
     EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
     EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
     EXPECT_EQ(testee.typingDetection(), absl::nullopt);
-    EXPECT_EQ(testee.residualEchoDetector(), true);
+    EXPECT_EQ(testee.residualEchoDetector(), false);
+    EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
 
     auto options = static_cast<cricket::AudioOptions>(testee);
     EXPECT_EQ(options.echo_cancellation, absl::nullopt);
@@ -107,7 +239,46 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
     EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, true);
+    EXPECT_EQ(options.residual_echo_detector, false);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
+    EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
+TEST(AudioSourceConfigurationTests, create_transientSuppression_shouldSetTheAttributes)
+{
+    AudioSourceConfiguration testee = AudioSourceConfiguration::create(10, absl::nullopt, absl::nullopt, absl::nullopt,
+            absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, true);
 
+    EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
+    EXPECT_EQ(testee.echoCancellation(), absl::nullopt);
+    EXPECT_EQ(testee.autoGainControl(), absl::nullopt);
+    EXPECT_EQ(testee.noiseSuppression(), absl::nullopt);
+    EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
+    EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
+    EXPECT_EQ(testee.typingDetection(), absl::nullopt);
+    EXPECT_EQ(testee.residualEchoDetector(), absl::nullopt);
+    EXPECT_EQ(testee.transientSuppression(), true);
+
+    auto options = static_cast<cricket::AudioOptions>(testee);
+    EXPECT_EQ(options.echo_cancellation, absl::nullopt);
+    EXPECT_EQ(options.auto_gain_control, absl::nullopt);
+    EXPECT_EQ(options.noise_suppression, absl::nullopt);
+    EXPECT_EQ(options.highpass_filter, absl::nullopt);
+    EXPECT_EQ(options.stereo_swapping, absl::nullopt);
+    EXPECT_EQ(options.typing_detection, absl::nullopt);
+    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
+
+    auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
+    EXPECT_EQ(config.echo_canceller.enabled, false);
+    EXPECT_EQ(config.gain_controller2.enabled, false);
+    EXPECT_EQ(config.noise_suppression.enabled, false);
+    EXPECT_EQ(config.high_pass_filter.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.transient_suppression.enabled, true);
+}

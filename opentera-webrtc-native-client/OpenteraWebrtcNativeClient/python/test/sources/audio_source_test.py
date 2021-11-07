@@ -6,15 +6,15 @@ import opentera_webrtc_native_client as webrtc
 
 class AudioSourceTestCase(unittest.TestCase):
     def test_constructor__should_only_support_valid_bits_per_sample(self):
-        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 8, 48000, 1)
-        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 16, 48000, 1)
-        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 32, 48000, 1)
+        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(10), 8, 48000, 1)
+        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(10), 16, 48000, 1)
+        webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(10), 32, 48000, 1)
 
         with self.assertRaises(RuntimeError):
-            webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 7, 48000, 1)
+            webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(10), 7, 48000, 1)
 
     def test_send_frame__should_only_support_valid_frame(self):
-        testee = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 8, 48000, 2)
+        testee = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(10), 8, 48000, 2)
 
         with self.assertRaises(ValueError) as cm:
             testee.send_frame(np.zeros(10, dtype=np.int16))

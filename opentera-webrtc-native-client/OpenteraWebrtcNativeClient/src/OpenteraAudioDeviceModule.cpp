@@ -30,6 +30,33 @@ void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(
     startIfStoppedAndTransportValid();
 }
 
+void OpenteraAudioDeviceModule::sendFrame(const void* audioData,
+        int bitsPerSample,
+        int sampleRate,
+        size_t numberOfChannels,
+        size_t numberOfFrames,
+        uint32_t audioDelayMs,
+        bool isTyping)
+{
+    lock_guard<mutex> audioTransportCaptureLock(m_audioTransportCaptureMutex);
+    if (m_audioTransport == nullptr)
+    {
+        return;
+    }
+
+    uint32_t newMicLevel = 0;
+    m_audioTransport->RecordedDataIsAvailable(audioData,
+            numberOfFrames,
+            bitsPerSample / 8,
+            numberOfChannels,
+            sampleRate,
+            audioDelayMs,
+            0, // Clock drift (not used)
+            0, // Volume (not used)
+            isTyping, // key_pressed
+            newMicLevel); // New mic volume (not used)
+}
+
 int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) const
 {
     return 0;
@@ -37,7 +64,8 @@ int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) cons
 
 int32_t OpenteraAudioDeviceModule::RegisterAudioCallback(webrtc::AudioTransport* audioTransport)
 {
-    lock_guard<mutex> lock(m_setCallbackMutex);
+    lock_guard<mutex> setCallbackLock(m_setCallbackMutex);
+    lock_guard<mutex> audioTransportCaptureLock(m_audioTransportCaptureMutex);
     stop();
     m_audioTransport = audioTransport;
     startIfStoppedAndTransportValid();
