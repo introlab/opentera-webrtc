@@ -88,8 +88,9 @@ if __name__ == '__main__':
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
 
     video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))
+    sound_card_total_delay_ms = 0
     fs = 48000
-    audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(), 16, fs, 1)
+    audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(sound_card_total_delay_ms), 16, fs, 1)
     client = webrtc.StreamClient(signaling_server_configuration, webrtc_configuration, video_source, audio_source)
 
     client.on_signaling_connection_opened = on_signaling_connection_opened

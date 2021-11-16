@@ -8,7 +8,7 @@ using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg, int64_t timestampUs)
+void sendFrame(const shared_ptr<VideoSource>& self, const py::array_t<uint8_t>& bgrImg, int64_t timestampUs)
 {
     if (bgrImg.ndim() != 3)
     {
@@ -22,7 +22,8 @@ void sendFrame(const shared_ptr<VideoSource>& self, py::array_t<uint8_t>& bgrImg
         throw py::value_error("The channel count must be 3.");
     }
 
-    self->sendFrame(cv::Mat(height, width, CV_8UC3, bgrImg.mutable_data(), bgrImg.strides(0)), timestampUs);
+    self->sendFrame(cv::Mat(height, width, CV_8UC3, const_cast<uint8_t*>(bgrImg.data()), bgrImg.strides(0)),
+            timestampUs);
 }
 
 void opentera::initVideoSourcePython(pybind11::module& m)
