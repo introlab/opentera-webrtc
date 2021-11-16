@@ -9,7 +9,7 @@ using namespace std;
 namespace py = pybind11;
 
 template <class T>
-size_t checkFrameAndReturnByteSize(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
+size_t checkFrameAndReturnByteSize(const shared_ptr<AudioSource>& self, const py::array_t<T>& frame)
 {
     if (self->bytesPerSample() != sizeof(T))
     {
@@ -29,14 +29,14 @@ size_t checkFrameAndReturnByteSize(const shared_ptr<AudioSource>& self, py::arra
 }
 
 template <class T>
-void sendFrame(const shared_ptr<AudioSource>& self, py::array_t<T>& frame)
+void sendFrame(const shared_ptr<AudioSource>& self, const py::array_t<T>& frame)
 {
     size_t byteSize = checkFrameAndReturnByteSize(self, frame);
     self->sendFrame(frame.data(), byteSize / self->bytesPerFrame());
 }
 
 template <class T>
-void sendFrameWithIsTyping(const shared_ptr<AudioSource>& self, py::array_t<T>& frame, bool isTyping)
+void sendFrameWithIsTyping(const shared_ptr<AudioSource>& self, const py::array_t<T>& frame, bool isTyping)
 {
     size_t byteSize = checkFrameAndReturnByteSize(self, frame);
     self->sendFrame(frame.data(), byteSize / self->bytesPerFrame(), isTyping);
