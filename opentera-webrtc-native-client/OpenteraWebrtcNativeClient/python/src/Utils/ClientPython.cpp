@@ -22,12 +22,12 @@ void opentera::initClientPython(pybind11::module& m)
     py::class_<Client>(m, "Client", "Represents a peer client.")
             .def(py::init<>(), "Creates a client with default values")
             .def(py::init(&clientConstructor),
-                 "Creates a client with the specified values.\n"
-                 "\n"
-                 ":param id: The client id\n"
-                 ":param name: The client name\n"
-                 ":param data: The client data",
-                 py::arg("id"), py::arg("name"), py::arg("data"))
+                     "Creates a client with the specified values.\n"
+                     "\n"
+                     ":param id: The client id\n"
+                     ":param name: The client name\n"
+                     ":param data: The client data",
+                     py::arg("id"), py::arg("name"), py::arg("data"))
 
             .def_property_readonly("id", &Client::id,
                     "Returns the client id.\n"
