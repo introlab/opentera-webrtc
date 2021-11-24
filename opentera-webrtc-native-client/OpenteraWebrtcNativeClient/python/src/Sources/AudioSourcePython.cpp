@@ -69,21 +69,21 @@ void opentera::initAudioSourcePython(pybind11::module& m)
                      ":param frame: The audio frame",
                      py::arg("frame"))
             .def("send_frame", &sendFrameWithIsTyping<int8_t>,
-                 "Send an audio frame\n"
-                 ":param frame: The audio frame\n",
-                 ":param is_typing: Indicates if the frame contains typing sound."
-                 "This is only useful with the typing detection option.",
-                 py::arg("frame"), py::arg("is_typing"))
+                     "Send an audio frame\n"
+                     ":param frame: The audio frame\n",
+                     ":param is_typing: Indicates if the frame contains typing sound."
+                     "This is only useful with the typing detection option.",
+                     py::arg("frame"), py::arg("is_typing"))
             .def("send_frame", &sendFrameWithIsTyping<int16_t>,
-                 "Send an audio frame\n"
-                 ":param frame: The audio frame\n"
-                 ":param is_typing: Indicates if the frame contains typing sound."
-                 "This is only useful with the typing detection option.",
-                 py::arg("frame"), py::arg("is_typing"))
+                     "Send an audio frame\n"
+                     ":param frame: The audio frame\n"
+                     ":param is_typing: Indicates if the frame contains typing sound."
+                     "This is only useful with the typing detection option.",
+                     py::arg("frame"), py::arg("is_typing"))
             .def("send_frame", &sendFrameWithIsTyping<int32_t>,
-                 "Send an audio frame\n"
-                 ":param frame: The audio frame\n"
-                 ":param is_typing: Indicates if the frame contains typing sound."
-                 "This is only useful with the typing detection option.",
-                 py::arg("frame"), py::arg("is_typing"));
+                     "Send an audio frame\n"
+                     ":param frame: The audio frame\n"
+                     ":param is_typing: Indicates if the frame contains typing sound."
+                     "This is only useful with the typing detection option.",
+                     py::arg("frame"), py::arg("is_typing"));
 }

@@ -56,6 +56,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                     "Indicates if the residual echo detector is enabled.\n"
                     ":return: True if the residual echo detector is enabled")
             .def_property_readonly("transient_suppression", &AudioSourceConfiguration::transientSuppression,
-                                   "Indicates if the transient suppression is enabled.\n"
-                                   ":return: True if the transient suppression is enabled");
+                    "Indicates if the transient suppression is enabled.\n"
+                    ":return: True if the transient suppression is enabled");
 }
