@@ -76,6 +76,11 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
 
 StreamClient::~StreamClient()
 {
+    if (m_audioSource != nullptr)
+    {
+        m_audioSource->setAudioDeviceModule(nullptr);
+    }
+
     // The Python callback must be destroyed on the Python thread.
     m_audioDeviceModule->setOnMixedAudioFrameReceived(function<void(const void*, int, int, size_t, size_t)>());
 }
