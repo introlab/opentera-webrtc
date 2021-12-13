@@ -124,3 +124,35 @@ class StreamClientTestCase(FailureTestCase):
         self.assertAlmostEqual(self._mean_color_2[0], 0, delta=15)
         self.assertAlmostEqual(self._mean_color_2[1], 0, delta=15)
         self.assertAlmostEqual(self._mean_color_2[2], 255, delta=15)
+
+    def mute_methods__should_set_the_flag_accordingly(self):
+        client = webrtc.StreamClient(
+            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.WebrtcConfiguration.create())
+
+        self.assertFalse(client.is_local_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.mute_local_audio()
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.mute_local_video()
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_local_video_muted)
+
+        client.unmute_local_audio()
+        self.assertFalse(client.is_local_audio_muted)
+        self.assertTrue(client.is_local_video_muted)
+
+        client.unmute_local_video()
+        self.assertFalse(client.is_local_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.is_local_audio_muted = True
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.is_local_video_muted = True
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_local_video_muted)

@@ -49,7 +49,7 @@ void VideoSink::OnFrame(const VideoFrame& frame)
         frame.height(),
         libyuv::FOURCC_24BG);
 
-    if (err == 0)
+    if (err == 0 && m_onFrameReceived)
     {
         // Pass bgr frame to image callback if conversion worked
         m_onFrameReceived(m_bgrImg, frame.timestamp_us());

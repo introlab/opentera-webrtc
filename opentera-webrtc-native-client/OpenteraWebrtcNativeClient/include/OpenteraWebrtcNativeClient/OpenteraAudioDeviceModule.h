@@ -46,7 +46,8 @@ namespace opentera
         DECLARE_NOT_COPYABLE(OpenteraAudioDeviceModule);
         DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
 
-        void setOnMixedAudioFrameReceived(const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
+        void setOnMixedAudioFrameReceived(
+                const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
         void sendFrame(const void* audioData,
                 int bitsPerSample,
                 int sampleRate,

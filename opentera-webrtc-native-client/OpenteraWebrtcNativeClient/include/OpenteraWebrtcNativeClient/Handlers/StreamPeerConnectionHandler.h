@@ -42,9 +42,15 @@ namespace opentera
 
         void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
 
+        void setAllAudioTracksEnabled(bool enabled);
+        void setAllVideoTracksEnabled(bool enabled);
+
         // Observer methods
         void OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
         void OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
+
+    private:
+        void setAllTracksEnabled(const char* kind, bool enabled);
     };
 }
 
