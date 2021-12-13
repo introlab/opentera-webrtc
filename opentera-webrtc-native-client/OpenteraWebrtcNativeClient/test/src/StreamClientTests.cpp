@@ -199,7 +199,7 @@ TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
     EXPECT_TRUE(client->isLocalAudioMuted());
     EXPECT_FALSE(client->isLocalVideoMuted());
 
-    client->setLocalAudioMuted(true);
+    client->setLocalVideoMuted(true);
     EXPECT_TRUE(client->isLocalAudioMuted());
     EXPECT_TRUE(client->isLocalVideoMuted());
 }
@@ -502,10 +502,10 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     setupAwaiter.wait();
 
     // Setup the callback
-    CallbackAwaiter onAudioFrameAwaiter1(10, 15s);
-    CallbackAwaiter onAudioFrameAwaiter2(10, 15s);
-    CallbackAwaiter onMixedAudioFrameAwaiter1(10, 15s);
-    CallbackAwaiter onMixedAudioFrameAwaiter2(10, 15s);
+    CallbackAwaiter onAudioFrameAwaiter1(50, 15s);
+    CallbackAwaiter onAudioFrameAwaiter2(50, 15s);
+    CallbackAwaiter onMixedAudioFrameAwaiter1(50, 15s);
+    CallbackAwaiter onMixedAudioFrameAwaiter2(50, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient1;
     unique_ptr<Client> onAddRemoteStreamClient2;
