@@ -567,11 +567,8 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     onAudioFrameAwaiter2.wait();
     onMixedAudioFrameAwaiter2.wait();
     client1->hangUpAll();
-
-    // Disable the audio frame to prevent receiving zeros.
-    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client2->hangUpAll();
     client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
-    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
     client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
 
     this_thread::sleep_for(250ms);
@@ -688,11 +685,8 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
     onAudioFrameAwaiter2.wait();
     onMixedAudioFrameAwaiter2.wait();
     client1->hangUpAll();
-
-    // Disable the audio frame to prevent receiving zeros.
-    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client2->hangUpAll();
     client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
-    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
     client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
 
     this_thread::sleep_for(250ms);
