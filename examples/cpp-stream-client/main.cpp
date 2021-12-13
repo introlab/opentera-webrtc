@@ -58,7 +58,7 @@ class SinAudioSource : public AudioSource
     thread m_thread;
 
 public:
-    SinAudioSource() : AudioSource(AudioSourceConfiguration::create(), BitsPerSample, SampleRate, NumberOfChannels),
+    SinAudioSource() : AudioSource(AudioSourceConfiguration::create(0), BitsPerSample, SampleRate, NumberOfChannels),
             m_stopped(false),
             m_thread(&SinAudioSource::run, this)
     {

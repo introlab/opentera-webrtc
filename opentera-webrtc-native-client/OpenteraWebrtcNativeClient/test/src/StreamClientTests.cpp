@@ -170,6 +170,40 @@ protected:
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcess = nullptr;
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcessTLS = nullptr;
 
+TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
+{
+    unique_ptr<StreamClient> client = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration);
+
+    EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->muteLocalAudio();
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->muteLocalVideo();
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isLocalVideoMuted());
+
+    client->unmuteLocalAudio();
+    EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isLocalVideoMuted());
+
+    client->unmuteLocalVideo();
+    EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->setLocalAudioMuted(true);
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->setLocalAudioMuted(true);
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isLocalVideoMuted());
+}
+
 TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
 {
     // Initialize the clients
@@ -255,6 +289,96 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[2], 255, MeanColorAbsError);
 }
 
+TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
+{
+    // Initialize the clients
+    shared_ptr<ConstantVideoSource> videoSource1 = make_shared<ConstantVideoSource>(cv::Scalar(0, 0, 255));
+    shared_ptr<ConstantVideoSource> videoSource2 = make_shared<ConstantVideoSource>(cv::Scalar(255, 0, 0));
+
+    CallbackAwaiter setupAwaiter(2, 15s);
+    unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration, videoSource1);
+    unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            DefaultWebrtcConfiguration, videoSource2);
+
+    client1->setTlsVerificationEnabled(false);
+    client2->setTlsVerificationEnabled(false);
+
+    client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+
+    client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
+    client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
+
+    client1->connect();
+    this_thread::sleep_for(250ms);
+    client2->connect();
+    setupAwaiter.wait();
+
+    // Setup the callback
+    CallbackAwaiter onVideoFrameAwaiter1(10, 15s);
+    CallbackAwaiter onVideoFrameAwaiter2(10, 15s);
+
+    unique_ptr<Client> onAddRemoteStreamClient1;
+    unique_ptr<Client> onAddRemoteStreamClient2;
+    cv::Mat receivedBgrImage1;
+    cv::Mat receivedBgrImage2;
+
+    client1->muteLocalVideo(); // Muted before the call
+    client1->setOnAddRemoteStream([&](const Client& c)
+    {
+        onAddRemoteStreamClient1 = make_unique<Client>(c);
+    });
+    client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t)
+    {
+        client2->muteLocalVideo();  // Muted during the call
+        receivedBgrImage1 = bgrImg.clone();
+        onVideoFrameAwaiter1.done();
+    });
+    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+    client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+
+    client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat& bgrImg, uint64_t)
+    {
+        receivedBgrImage2 = bgrImg.clone();
+        onVideoFrameAwaiter2.done();
+    });
+    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+    client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
+
+    // Setup the call
+    client1->callAll();
+    onVideoFrameAwaiter1.wait();
+    onVideoFrameAwaiter2.wait();
+    client1->hangUpAll();
+
+    client1->closeSync();
+    client2->closeSync();
+
+    // Asserts
+    ASSERT_NE(onAddRemoteStreamClient1, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient1->name(), "c2");
+    ASSERT_NE(onAddRemoteStreamClient2, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient2->name(), "c1");
+
+    constexpr int MeanColorAbsError = 15;
+
+    cv::Scalar meanColor1 = cv::mean(receivedBgrImage1);
+    EXPECT_NEAR(meanColor1[0], 0, MeanColorAbsError);
+    EXPECT_NEAR(meanColor1[1], 0, MeanColorAbsError);
+    EXPECT_NEAR(meanColor1[2], 0, MeanColorAbsError);
+
+    cv::Scalar meanColor2 = cv::mean(receivedBgrImage2);
+    EXPECT_NEAR(meanColor2[0], 0, MeanColorAbsError);
+    EXPECT_NEAR(meanColor2[1], 0, MeanColorAbsError);
+    EXPECT_NEAR(meanColor2[2], 0, MeanColorAbsError);
+}
+
 TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
 {
     // Initialize the clients
@@ -331,7 +455,7 @@ void onAudioFrameReceived(const void* audioData,
     {
         const int16_t* begin = reinterpret_cast<const int16_t*>(audioData);
         const int16_t* end = begin + numberOfChannels * numberOfFrames;
-        receivedAudio.insert(receivedAudio.begin(), begin, end);
+        receivedAudio.insert(receivedAudio.end(), begin, end);
     }
     awaiter.done();
 }
@@ -341,8 +465,8 @@ void checkReceivedAudio(const vector<int16_t>& receivedAudio, int16_t amplitude)
     constexpr int AbsError = 1000;
 
     ASSERT_FALSE(receivedAudio.empty());
-    int16_t min1 = *min_element(receivedAudio.begin(), receivedAudio.end());
-    int16_t max1 = *max_element(receivedAudio.begin(), receivedAudio.end());
+    int16_t min1 = *min_element(receivedAudio.begin() + receivedAudio.size() / 2, receivedAudio.end());
+    int16_t max1 = *max_element(receivedAudio.begin() + receivedAudio.size() / 2, receivedAudio.end());
     EXPECT_NEAR(min1, -amplitude, AbsError);
     EXPECT_NEAR(max1, amplitude, AbsError);
 }
@@ -378,10 +502,10 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     setupAwaiter.wait();
 
     // Setup the callback
-    CallbackAwaiter onAudioFrameAwaiter1(5, 15s);
-    CallbackAwaiter onAudioFrameAwaiter2(5, 15s);
-    CallbackAwaiter onMixedAudioFrameAwaiter1(5, 15s);
-    CallbackAwaiter onMixedAudioFrameAwaiter2(5, 15s);
+    CallbackAwaiter onAudioFrameAwaiter1(10, 15s);
+    CallbackAwaiter onAudioFrameAwaiter2(10, 15s);
+    CallbackAwaiter onMixedAudioFrameAwaiter1(10, 15s);
+    CallbackAwaiter onMixedAudioFrameAwaiter2(10, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient1;
     unique_ptr<Client> onAddRemoteStreamClient2;
@@ -443,8 +567,14 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     onAudioFrameAwaiter2.wait();
     onMixedAudioFrameAwaiter2.wait();
     client1->hangUpAll();
-    this_thread::sleep_for(250ms);
 
+    // Disable the audio frame to prevent receiving zeros.
+    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
+    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
+
+    this_thread::sleep_for(250ms);
     client1->closeSync();
     client2->closeSync();
 
@@ -458,6 +588,127 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     checkReceivedAudio(receivedMixedAudio1, Amplitude2);
     checkReceivedAudio(receivedAudio2, Amplitude1);
     checkReceivedAudio(receivedMixedAudio2, Amplitude1);
+}
+
+TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
+{
+    // Initialize the clients
+    constexpr int16_t Amplitude1 = 5000;
+    constexpr int16_t Amplitude2 = 15000;
+    shared_ptr<SinAudioSource> audioSource1 = make_shared<SinAudioSource>(Amplitude1);
+    shared_ptr<SinAudioSource> audioSource2 = make_shared<SinAudioSource>(Amplitude2);
+
+    CallbackAwaiter setupAwaiter(2, 15s);
+    unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration, audioSource1);
+    unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            DefaultWebrtcConfiguration, audioSource2);
+
+    client1->setTlsVerificationEnabled(false);
+    client2->setTlsVerificationEnabled(false);
+
+    client1->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+    client2->setOnSignalingConnectionOpened([&] { setupAwaiter.done(); });
+
+    client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
+    client2->setOnError([](const string& error) { ADD_FAILURE() << error; });
+
+    client1->connect();
+    this_thread::sleep_for(250ms);
+    client2->connect();
+    setupAwaiter.wait();
+
+    // Setup the callback
+    CallbackAwaiter onAudioFrameAwaiter1(50, 60s);
+    CallbackAwaiter onAudioFrameAwaiter2(50, 60s);
+    CallbackAwaiter onMixedAudioFrameAwaiter1(50, 60s);
+    CallbackAwaiter onMixedAudioFrameAwaiter2(50, 60s);
+
+    unique_ptr<Client> onAddRemoteStreamClient1;
+    unique_ptr<Client> onAddRemoteStreamClient2;
+    vector<int16_t> receivedAudio1;
+    vector<int16_t> receivedAudio2;
+    vector<int16_t> receivedMixedAudio1;
+    vector<int16_t> receivedMixedAudio2;
+
+    client1->muteLocalAudio(); // Muted before the call
+    client1->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient1 = make_unique<Client>(c); });
+    client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client1->setOnAudioFrameReceived([&](const Client& client,
+                                         const void* audioData,
+                                         int bitsPerSample,
+                                         int sampleRate,
+                                         size_t numberOfChannels,
+                                         size_t numberOfFrames)
+    {
+        client2->muteLocalAudio();  // Muted during the call
+        onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames,
+                receivedAudio1, onAudioFrameAwaiter1);
+    });
+    client1->setOnMixedAudioFrameReceived([&](const void* audioData,
+                                              int bitsPerSample,
+                                              int sampleRate,
+                                              size_t numberOfChannels,
+                                              size_t numberOfFrames)
+    {
+        onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames,
+                receivedMixedAudio1, onMixedAudioFrameAwaiter1);
+    });
+
+    client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
+    client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
+    client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
+    client2->setOnAudioFrameReceived([&](const Client& client,
+                                         const void* audioData,
+                                         int bitsPerSample,
+                                         int sampleRate,
+                                         size_t numberOfChannels,
+                                         size_t numberOfFrames)
+    {
+        onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames,
+                receivedAudio2, onAudioFrameAwaiter2);
+    });
+    client2->setOnMixedAudioFrameReceived([&](const void* audioData,
+                                              int bitsPerSample,
+                                              int sampleRate,
+                                              size_t numberOfChannels,
+                                              size_t numberOfFrames)
+    {
+        onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames,
+                receivedMixedAudio2, onMixedAudioFrameAwaiter2);
+    });
+
+    // Setup the call
+    client1->callAll();
+    onAudioFrameAwaiter1.wait();
+    onMixedAudioFrameAwaiter1.wait();
+    onAudioFrameAwaiter2.wait();
+    onMixedAudioFrameAwaiter2.wait();
+    client1->hangUpAll();
+
+    // Disable the audio frame to prevent receiving zeros.
+    client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
+    client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) {});
+    client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { });
+
+    this_thread::sleep_for(250ms);
+    client1->closeSync();
+    client2->closeSync();
+
+    // Asserts
+    ASSERT_NE(onAddRemoteStreamClient1, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient1->name(), "c2");
+    ASSERT_NE(onAddRemoteStreamClient2, nullptr);
+    EXPECT_EQ(onAddRemoteStreamClient2->name(), "c1");
+
+    checkReceivedAudio(receivedAudio1, 0);
+    checkReceivedAudio(receivedMixedAudio1, 0);
+    checkReceivedAudio(receivedAudio2, 0);
+    checkReceivedAudio(receivedMixedAudio2, 0);
 }
 
 TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
@@ -489,8 +740,8 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
     setupAwaiter.wait();
 
     // Setup the callback
-    CallbackAwaiter onAudioFrameAwaiter(5, 15s);
-    CallbackAwaiter onMixedAudioFrameAwaiter(5, 15s);
+    CallbackAwaiter onAudioFrameAwaiter(10, 15s);
+    CallbackAwaiter onMixedAudioFrameAwaiter(10, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient;
 

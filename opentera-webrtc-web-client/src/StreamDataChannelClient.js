@@ -38,6 +38,14 @@ class StreamDataChannelClient extends SignalingClient {
     };
 
     this._onAddRemoteStream = () => {};
+
+    this._offerOptions = {
+      offerToReceiveAudio: true,
+      offerToReceiveVideo: true
+    };
+
+    this._isLocalAudioMuted = false;
+    this._isLocalVideoMuted = false;
   }
 
   _createRtcPeerConnection(id, isCaller) {
@@ -52,6 +60,12 @@ class StreamDataChannelClient extends SignalingClient {
 
     if (this._streamConfiguration.localStream) {
       this._streamConfiguration.localStream.getTracks().forEach(track => {
+        if (track.kind == 'audio') {
+          track.enabled = !this._isLocalAudioMuted;
+        }
+        else if (track.kind == 'video') {
+          track.enabled = !this._isLocalVideoMuted;
+        }
         rtcPeerConnection.addTrack(track, this._streamConfiguration.localStream);
       });
     }
@@ -170,6 +184,51 @@ class StreamDataChannelClient extends SignalingClient {
     super.close();
   }
 
+  get isLocalAudioMuted() {
+    return this._isLocalAudioMuted;
+  }
+
+  get isLocalVideoMuted() {
+    return this._isLocalVideoMuted;
+  }
+
+  muteLocalAudio() {
+    this.setLocalAudioMuted(true);
+  }
+
+  unmuteLocalAudio() {
+    this.setLocalAudioMuted(false);
+  }
+
+  setLocalAudioMuted(muted) {
+    this._isLocalAudioMuted = muted;
+    this._setAllLocalTracksEnabled('audio', !muted);
+  }
+
+  muteLocalVideo() {
+    this.setLocalVideoMuted(true);
+  }
+
+  unmuteLocalVideo() {
+    this.setLocalVideoMuted(false);
+  }
+
+  setLocalVideoMuted(muted) {
+    this._isLocalVideoMuted = muted;
+    this._setAllLocalTracksEnabled('video', !muted);
+  }
+
+  _setAllLocalTracksEnabled(kind, enabled) {
+    this._getAllRtcPeerConnection().forEach(rtcPeerConnection => {
+      let senders = rtcPeerConnection.getSenders();
+      senders.forEach(sender => {
+        if (sender.track.kind == kind) {
+          sender.track.enabled = enabled;
+        }
+      });
+    });
+  }
+
   sendTo(data, ids) {
     ids.forEach(id => this._dataChannels[id].send(data));
   }
@@ -195,7 +254,7 @@ class StreamDataChannelClient extends SignalingClient {
   set onDataChannelError(onDataChannelError) {
     this._onDataChannelError = onDataChannelError;
   }
-  
+
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;
   }

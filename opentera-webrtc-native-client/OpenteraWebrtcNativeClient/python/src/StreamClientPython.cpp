@@ -146,6 +146,16 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     ":param audio_source: The audio source that this client will add to the call",
                     py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
 
+            .def_property("is_local_audio_muted", &StreamClient::isLocalAudioMuted, &StreamClient::setLocalAudioMuted,
+                    "Indicates if the local audio is muted.")
+            .def("mute_local_audio", &StreamClient::muteLocalAudio, "Mutes the local audio.")
+            .def("unmute_local_audio", &StreamClient::unmuteLocalAudio, "Unmutes the local audio.")
+
+            .def_property("is_local_video_muted", &StreamClient::isLocalVideoMuted, &StreamClient::setLocalVideoMuted,
+                          "Indicates if the local video is muted.")
+            .def("mute_local_video", &StreamClient::muteLocalVideo, "Mutes the local video.")
+            .def("unmute_local_video", &StreamClient::unmuteLocalVideo, "Unmutes the local video.")
+
             .def_property("on_add_remote_stream", nullptr, &StreamClient::setOnAddRemoteStream,
                     "Sets the callback that is called when a stream is added.\n"
                     "\n"

@@ -12,7 +12,9 @@ using namespace std;
  */
 StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration) :
-        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration))
+        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+        m_isLocalAudioMuted(false),
+        m_isLocalVideoMuted(false)
 {
 }
 
@@ -27,7 +29,9 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<VideoSource> videoSource) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_videoSource(move(videoSource))
+        m_videoSource(move(videoSource)),
+        m_isLocalAudioMuted(false),
+        m_isLocalVideoMuted(false)
 {
 }
 
@@ -42,7 +46,9 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         WebrtcConfiguration webrtcConfiguration,
         shared_ptr<AudioSource> audioSource) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_audioSource(move(audioSource))
+        m_audioSource(move(audioSource)),
+        m_isLocalAudioMuted(false),
+        m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
     {
@@ -65,7 +71,9 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         shared_ptr<AudioSource> audioSource) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource)),
-        m_audioSource(move(audioSource))
+        m_audioSource(move(audioSource)),
+        m_isLocalAudioMuted(false),
+        m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
     {
@@ -86,11 +94,43 @@ StreamClient::~StreamClient()
 }
 
 /**
- * @brief Create the peer connection handler for this client
+ * @brief Mutes or unmutes the local audio.
+ * @param muted indicates if the local audio is muted or not
+ */
+void StreamClient::setLocalAudioMuted(bool muted)
+{
+    FunctionTask<void>::callSync(getInternalClientThread(), [this, muted]()
+    {
+        this->m_isLocalAudioMuted = muted;
+        for (auto& pair : m_peerConnectionHandlersById)
+        {
+            dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
+        }
+    });
+}
+
+/**
+ * @brief Mutes or unmutes the local video.
+ * @param muted indicates if the local video is muted or not
+ */
+void StreamClient::setLocalVideoMuted(bool muted)
+{
+    FunctionTask<void>::callSync(getInternalClientThread(), [this, muted]()
+    {
+        this->m_isLocalVideoMuted = muted;
+        for (auto& pair : m_peerConnectionHandlersById)
+        {
+            dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllVideoTracksEnabled(!muted);
+        }
+    });
+}
+
+/**
+ * @brief Creates the peer connection handler for this client
  *
  * @param id this peer id
  * @param peerClient this peer client object
- * @param isCaller indicate if this peer initiated the call
+ * @param isCaller indicates if this peer initiated the call
  * @return the peer connection handler
  */
 unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(const string& id,
@@ -101,12 +141,14 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
     if (m_videoSource != nullptr)
     {
         videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream_video", m_videoSource.get());
+        videoTrack->set_enabled(!m_isLocalVideoMuted);
     }
 
     rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack = nullptr;
     if (m_audioSource != nullptr)
     {
         audioTrack = m_peerConnectionFactory->CreateAudioTrack("stream_audio", m_audioSource.get());
+        audioTrack->set_enabled(!m_isLocalAudioMuted);
     }
 
     auto onAddRemoteStream = [this](const Client& client)

@@ -1,5 +1,9 @@
 (function() {
   let localVideo = document.getElementById('local_video');
+  let muteAudioButton = document.getElementById('mute_audio_button');
+  let unmuteAudioButton = document.getElementById('unmute_audio_button');
+  let muteVideoButton = document.getElementById('mute_video_button');
+  let unmuteVideoButton = document.getElementById('unmute_video_button');
   let nameInput = document.getElementById('name_input');
   let passwordInput = document.getElementById('password_input');
   let connectButton = document.getElementById('connect_button');
@@ -12,6 +16,10 @@
   let callOneButton = document.getElementById('call_one_button');
   let remoteVideos = document.getElementById('remote_videos');
 
+  muteAudioButton.disabled = true;
+  unmuteAudioButton.disabled = true;
+  muteVideoButton.disabled = true;
+  unmuteVideoButton.disabled = true;
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
@@ -83,7 +91,29 @@
     };
   }
 
+  function updateMuteButtons() {
+    muteAudioButton.disabled = streamClient.isLocalAudioMuted;
+    unmuteAudioButton.disabled = !streamClient.isLocalAudioMuted;
+    muteVideoButton.disabled = streamClient.isLocalVideoMuted;
+    unmuteVideoButton.disabled = !streamClient.isLocalVideoMuted;
+  }
 
+  muteAudioButton.onclick = () => {
+    streamClient.muteLocalAudio();
+    updateMuteButtons();
+  };
+  unmuteAudioButton.onclick = () => {
+    streamClient.unmuteLocalAudio();
+    updateMuteButtons();
+  };
+  muteVideoButton.onclick = () => {
+    streamClient.muteLocalVideo();
+    updateMuteButtons();
+  };
+  unmuteVideoButton.onclick = () => {
+    streamClient.unmuteLocalVideo();
+    updateMuteButtons();
+  };
   connectButton.onclick = async () => {
     const SignalingServerConfiguration = {
       url: 'http://localhost:8080',
@@ -106,6 +136,7 @@
     connectStreamClientEvents();
 
     await streamClient.connect();
+    updateMuteButtons();
   };
   closeButton.onclick = () => {
     streamClient.close();

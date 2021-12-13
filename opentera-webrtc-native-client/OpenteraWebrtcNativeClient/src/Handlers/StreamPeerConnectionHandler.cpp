@@ -85,6 +85,16 @@ void StreamPeerConnectionHandler::setPeerConnection(
     PeerConnectionHandler::setPeerConnection(peerConnection);
 }
 
+void StreamPeerConnectionHandler::setAllAudioTracksEnabled(bool enabled)
+{
+    setAllTracksEnabled(MediaStreamTrackInterface::kAudioKind, enabled);
+}
+
+void StreamPeerConnectionHandler::setAllVideoTracksEnabled(bool enabled)
+{
+    setAllTracksEnabled(MediaStreamTrackInterface::kVideoKind, enabled);
+}
+
 void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface> stream)
 {
     m_onAddRemoteStream(m_peerClient);
@@ -118,5 +128,17 @@ void StreamPeerConnectionHandler::OnRemoveStream(scoped_refptr<MediaStreamInterf
     if (!audioTracks.empty() && m_audioSink != nullptr)
     {
         audioTracks.front()->RemoveSink(m_audioSink.get());
+    }
+}
+
+void StreamPeerConnectionHandler::setAllTracksEnabled(const char* kind, bool enabled)
+{
+    for (auto& sender : m_peerConnection->GetSenders())
+    {
+        auto track = sender->track();
+        if (track && track->kind() == kind)
+        {
+            track->set_enabled(enabled);
+        }
     }
 }

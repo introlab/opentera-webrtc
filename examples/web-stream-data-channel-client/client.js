@@ -1,5 +1,9 @@
 (function() {
   let localVideo = document.getElementById('local_video');
+  let muteAudioButton = document.getElementById('mute_audio_button');
+  let unmuteAudioButton = document.getElementById('unmute_audio_button');
+  let muteVideoButton = document.getElementById('mute_video_button');
+  let unmuteVideoButton = document.getElementById('unmute_video_button');
   let nameInput = document.getElementById('name_input');
   let passwordInput = document.getElementById('password_input');
   let connectButton = document.getElementById('connect_button');
@@ -15,6 +19,10 @@
   let chatTextArea = document.getElementById('chat_text_area');
   let remoteVideos = document.getElementById('remote_videos');
 
+  muteAudioButton.disabled = true;
+  unmuteAudioButton.disabled = true;
+  muteVideoButton.disabled = true;
+  unmuteVideoButton.disabled = true;
   closeButton.disabled = true;
   callAllButton.disabled = true;
   hangUpAllButton.disabled = true;
@@ -110,7 +118,29 @@
     };
   }
 
+  function updateMuteButtons() {
+    muteAudioButton.disabled = streamDataChannelClient.isLocalAudioMuted;
+    unmuteAudioButton.disabled = !streamDataChannelClient.isLocalAudioMuted;
+    muteVideoButton.disabled = streamDataChannelClient.isLocalVideoMuted;
+    unmuteVideoButton.disabled = !streamDataChannelClient.isLocalVideoMuted;
+  }
 
+  muteAudioButton.onclick = () => {
+    streamDataChannelClient.muteLocalAudio();
+    updateMuteButtons();
+  };
+  unmuteAudioButton.onclick = () => {
+    streamDataChannelClient.unmuteLocalAudio();
+    updateMuteButtons();
+  };
+  muteVideoButton.onclick = () => {
+    streamDataChannelClient.muteLocalVideo();
+    updateMuteButtons();
+  };
+  unmuteVideoButton.onclick = () => {
+    streamDataChannelClient.unmuteLocalVideo();
+    updateMuteButtons();
+  };
   connectButton.onclick = async () => {
     const SignalingServerConfiguration = {
       url: 'http://localhost:8080',
@@ -134,6 +164,7 @@
     connectStreamClientEvents();
 
     await streamDataChannelClient.connect();
+    updateMuteButtons();
   };
   closeButton.onclick = () => {
     streamDataChannelClient.close();

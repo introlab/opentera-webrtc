@@ -24,13 +24,16 @@ class StreamClient extends SignalingClient {
 
     this._rtcPeerConnections = {};
     this._remoteStreams = {};
-    
+
     this._onAddRemoteStream = () => {};
 
     this._offerOptions = {
       offerToReceiveAudio: true,
       offerToReceiveVideo: true
     };
+
+    this._isLocalAudioMuted = false;
+    this._isLocalVideoMuted = false;
   }
 
   _createRtcPeerConnection() {
@@ -38,13 +41,19 @@ class StreamClient extends SignalingClient {
 
     if (this._streamConfiguration.localStream) {
       this._streamConfiguration.localStream.getTracks().forEach(track => {
+        if (track.kind == 'audio') {
+          track.enabled = !this._isLocalAudioMuted;
+        }
+        else if (track.kind == 'video') {
+          track.enabled = !this._isLocalVideoMuted;
+        }
         rtcPeerConnection.addTrack(track, this._streamConfiguration.localStream);
       });
     }
 
     return rtcPeerConnection;
   }
-  
+
   _connectRtcPeerConnectionEvents(id, rtcPeerConnection) {
     super._connectRtcPeerConnectionEvents(id, rtcPeerConnection);
 
@@ -92,11 +101,56 @@ class StreamClient extends SignalingClient {
     this._closeAllRemoteStreams();
   }
 
-  close () {
+  close() {
     this._closeAllRemoteStreams();
     super.close();
   }
-  
+
+  get isLocalAudioMuted() {
+    return this._isLocalAudioMuted;
+  }
+
+  get isLocalVideoMuted() {
+    return this._isLocalVideoMuted;
+  }
+
+  muteLocalAudio() {
+    this.setLocalAudioMuted(true);
+  }
+
+  unmuteLocalAudio() {
+    this.setLocalAudioMuted(false);
+  }
+
+  setLocalAudioMuted(muted) {
+    this._isLocalAudioMuted = muted;
+    this._setAllLocalTracksEnabled('audio', !muted);
+  }
+
+  muteLocalVideo() {
+    this.setLocalVideoMuted(true);
+  }
+
+  unmuteLocalVideo() {
+    this.setLocalVideoMuted(false);
+  }
+
+  setLocalVideoMuted(muted) {
+    this._isLocalVideoMuted = muted;
+    this._setAllLocalTracksEnabled('video', !muted);
+  }
+
+  _setAllLocalTracksEnabled(kind, enabled) {
+    this._getAllRtcPeerConnection().forEach(rtcPeerConnection => {
+      let senders = rtcPeerConnection.getSenders();
+      senders.forEach(sender => {
+        if (sender.track.kind == kind) {
+          sender.track.enabled = enabled;
+        }
+      });
+    });
+  }
+
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;
   }

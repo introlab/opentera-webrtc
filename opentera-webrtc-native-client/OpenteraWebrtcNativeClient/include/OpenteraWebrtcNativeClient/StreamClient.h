@@ -28,6 +28,9 @@ namespace opentera
                 size_t numberOfChannels,
                 size_t numberOfFrames)> m_onAudioFrameReceived;
 
+        bool m_isLocalAudioMuted;
+        bool m_isLocalVideoMuted;
+
     public:
         StreamClient(SignalingServerConfiguration signalingServerConfiguration,
                 WebrtcConfiguration webrtcConfiguration);
@@ -45,6 +48,16 @@ namespace opentera
 
         DECLARE_NOT_COPYABLE(StreamClient);
         DECLARE_NOT_MOVABLE(StreamClient);
+
+        bool isLocalAudioMuted();
+        void muteLocalAudio();
+        void unmuteLocalAudio();
+        void setLocalAudioMuted(bool muted);
+
+        bool isLocalVideoMuted();
+        void muteLocalVideo();
+        void unmuteLocalVideo();
+        void setLocalVideoMuted(bool muted);
 
         void setOnAddRemoteStream(const std::function<void(const Client&)>& callback);
         void setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback);
@@ -68,6 +81,63 @@ namespace opentera
         std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
                 const Client& peerClient, bool isCaller) override;
     };
+
+    /**
+     * @brief Indicates if the local audio is muted.
+     * @return true if the local audio is muted.
+     */
+    inline bool StreamClient::isLocalAudioMuted()
+    {
+        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
+        {
+            return m_isLocalAudioMuted;
+        });
+    }
+
+
+    /**
+     * @brief Mutes the local audio.
+     */
+    inline void StreamClient::muteLocalAudio()
+    {
+        setLocalAudioMuted(true);
+    }
+
+    /**
+     * @brief Unmutes the local audio.
+     */
+    inline void StreamClient::unmuteLocalAudio()
+    {
+        setLocalAudioMuted(false);
+    }
+
+    /**
+     * @brief Indicates if the local video is muted.
+     * @return true if the local audio is muted.
+     */
+    inline bool StreamClient::isLocalVideoMuted()
+    {
+        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
+        {
+            return m_isLocalVideoMuted;
+        });
+    }
+
+    /**
+     * @brief Mutes the local video.
+     */
+    inline void StreamClient::muteLocalVideo()
+    {
+        setLocalVideoMuted(true);
+    }
+
+    /**
+     * @brief Unmutes the local video.
+     */
+    inline void StreamClient::unmuteLocalVideo()
+    {
+        setLocalVideoMuted(false);
+    }
 
     /**
      * @brief Sets the callback that is called when a stream is added.

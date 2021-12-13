@@ -8,14 +8,14 @@ using namespace std;
 int main(int argc, char* argv[])
 {
     vector<IceServer> iceServers;
-    if (!IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers))
+    if (!IceServer::fetchFromServer("https://telesante.3it.usherbrooke.ca:40075/webrtc_dance/8080/iceservers", "abc", iceServers))
     {
         cout << "IceServer::fetchFromServer failed" << endl;
         iceServers.clear();
     }
 
     auto signalingServerConfiguration =
-            SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
+            SignalingServerConfiguration::create("https://telesante.3it.usherbrooke.ca:40075/webrtc_dance/8080/socket.io", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
