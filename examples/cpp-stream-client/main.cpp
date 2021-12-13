@@ -45,6 +45,7 @@ private:
     }
 };
 
+constexpr uint32_t SoundCardTotalDelayMs = 0;
 constexpr int BitsPerSample = 16;
 constexpr int SampleRate = 48000;
 constexpr size_t NumberOfChannels = 1;
@@ -58,7 +59,8 @@ class SinAudioSource : public AudioSource
     thread m_thread;
 
 public:
-    SinAudioSource() : AudioSource(AudioSourceConfiguration::create(0), BitsPerSample, SampleRate, NumberOfChannels),
+    SinAudioSource() : AudioSource(AudioSourceConfiguration::create(SoundCardTotalDelayMs),
+                    BitsPerSample, SampleRate, NumberOfChannels),
             m_stopped(false),
             m_thread(&SinAudioSource::run, this)
     {
