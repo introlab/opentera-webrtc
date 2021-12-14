@@ -73,6 +73,15 @@ class TestRoomManager(unittest.TestCase):
         self.assertTrue({'event': 'event2', 'data': 'data2', 'to': 'id2'} in self._sio_mock.messages)
         self.assertTrue({'event': 'event3', 'data': 'data3', 'to': 'id2'} in self._sio_mock.messages)
 
+    def test_get_client_name(self):
+        _run_async(self._room_manager.add_client('id1', 'name1', 'data1', 'room1'))
+        _run_async(self._room_manager.add_client('id2', 'name2', 'data2', 'room1'))
+        _run_async(self._room_manager.add_client('id3', 'name3', 'data3', 'room2'))
+
+        self.assertEqual(_run_async(self._room_manager.get_client_name('id1')), 'name1')
+        self.assertEqual(_run_async(self._room_manager.get_client_name('id2')), 'name2')
+        self.assertEqual(_run_async(self._room_manager.get_client_name('id3')), 'name3')
+        self.assertEqual(_run_async(self._room_manager.get_client_name('id4')), None)
 
 if __name__ == '__main__':
     unittest.main()
