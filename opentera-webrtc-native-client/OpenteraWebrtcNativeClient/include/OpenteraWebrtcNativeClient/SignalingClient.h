@@ -449,12 +449,12 @@ namespace opentera
     {
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [=]()
         {
-            log("****** callAsync - invokeIfCallable");
+            log(std::string("****** callAsync - invokeIfCallable (") + typeid(f).name() + ")");
             if (f)
             {
                 f(args...);
             }
-            log("------ callAsync - invokeIfCallable");
+            log(std::string("------ callAsync - invokeIfCallable (") + typeid(f).name() + ")");
         });
     }
 
