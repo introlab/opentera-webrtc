@@ -52,6 +52,8 @@ namespace opentera
 
         std::function<void(const std::string& error)> m_onError;
 
+        std::function<void(const std::string& log)> m_logger;
+
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signalingThread;
@@ -108,9 +110,13 @@ namespace opentera
 
         void setOnError(const std::function<void(const std::string& error)>& callback);
 
+        void setLogger(const std::function<void(const std::string& message)>& callback);
+
     protected:
         template<class T, class ... Types>
         void invokeIfCallable(const std::function<T>& f, Types... args);
+
+        void log(const std::string& message);
 
         virtual std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
                 const Client& peerClient, bool isCaller) = 0;
@@ -388,6 +394,25 @@ namespace opentera
         });
     }
 
+    /**
+     * @brief Sets the callback that is used to log information.
+     * The callback is called from the internal client thread.
+     *
+     * @parblock
+     * Callback parameters:
+     * - message: The message
+     * @endparblock
+     *
+     * @param callback The callback
+     */
+    inline void SignalingClient::setLogger(const std::function<void(const std::string& message)>& callback)
+    {
+        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
+        {
+            m_logger = callback;
+        });
+    }
+
     template<class T, class ... Types>
     void SignalingClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
@@ -396,6 +421,17 @@ namespace opentera
             if (f)
             {
                 f(args...);
+            }
+        });
+    }
+
+    inline void SignalingClient::log(const std::string& message)
+    {
+        FunctionTask<void>::callAsync(m_internalClientThread.get(), [=]()
+        {
+            if (m_logger)
+            {
+                m_logger(message);
             }
         });
     }

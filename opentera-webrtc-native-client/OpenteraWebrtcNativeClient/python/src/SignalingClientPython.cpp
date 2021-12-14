@@ -124,6 +124,15 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
+            .def_property("logger", nullptr, &SignalingClient::setLogger,
+                          "Sets the callback that is used to log information.\n"
+                          "The callback is called from the internal client thread.\n"
+                          "\n"
+                          "Callback parameters:\n"
+                          " - message: The message\n"
+                          "\n"
+                          ":param callback: The callback")
+
             .def_property("tls_verification_enabled", nullptr, &SignalingClient::setTlsVerificationEnabled,
                     "Enable or disable the TLS verification. By default, the TLS verification is enabled.\n"
                     ":param: is_enabled");

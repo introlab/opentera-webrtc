@@ -85,7 +85,14 @@ namespace opentera
 
         static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            thread->PostTask(std::make_unique<FunctionTask>(function, true));
+            if (thread->IsCurrent())
+            {
+                return function();
+            }
+            else
+            {
+                thread->PostTask(std::make_unique<FunctionTask>(function, true));
+            }
         }
     };
 }
