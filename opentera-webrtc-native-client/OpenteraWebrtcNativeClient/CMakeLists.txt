@@ -20,7 +20,7 @@ endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${webrtc_native_INCLUDE})
-include_directories(${boringssl_INCLUDE})
+include_directories(BEFORE SYSTEM ${boringssl_INCLUDE})
 include_directories(${libyuv_INCLUDE})
 include_directories(../3rdParty/socket.io-client-cpp/src)
 include_directories(../3rdParty/socket.io-client-cpp/lib/rapidjson/include)

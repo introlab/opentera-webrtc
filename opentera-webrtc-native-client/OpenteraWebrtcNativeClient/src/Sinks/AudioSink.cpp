@@ -34,5 +34,8 @@ void AudioSink::OnData(
         size_t numberOfChannels,
         size_t numberOfFrames)
 {
-    m_onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
+    if (m_onAudioFrameReceived)
+    {
+        m_onAudioFrameReceived(audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
+    }
 }
