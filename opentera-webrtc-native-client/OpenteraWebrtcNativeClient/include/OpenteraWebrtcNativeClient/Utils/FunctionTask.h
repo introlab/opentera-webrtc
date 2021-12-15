@@ -73,7 +73,7 @@ namespace opentera
         {
             if (thread->IsCurrent())
             {
-                return function();
+                function();
             }
             else
             {

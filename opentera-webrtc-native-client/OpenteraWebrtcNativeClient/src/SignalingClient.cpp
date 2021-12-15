@@ -352,9 +352,19 @@ void SignalingClient::makePeerCall(const string& id)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, id]()
     {
+        log("makePeerCall (to_id=" + id + ")");
         auto clientIt = m_roomClientsById.find(id);
-        if (clientIt == m_roomClientsById.end()) { return; }
-        if (m_peerConnectionHandlersById.find(id) != m_peerConnectionHandlersById.end()) { return; }
+        if (clientIt == m_roomClientsById.end())
+        {
+            log("makePeerCall failed because " + id + " is not in the room.");
+            return;
+        }
+        if (m_peerConnectionHandlersById.find(id) != m_peerConnectionHandlersById.end())
+        {
+            log("makePeerCall failed because " + id + " is already connected.");
+            return;
+        }
+
         if (!getCallAcceptance(id))
         {
             invokeIfCallable(m_onCallRejected, clientIt->second);
@@ -400,10 +410,15 @@ void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
+        log("receivePeerCall (from_id=" + fromId + ")");
         auto fromClientIt = m_roomClientsById.find(fromId);
         if (fromClientIt == m_roomClientsById.end()) { return; }
 
-        if (m_peerConnectionHandlersById.find(fromId) != m_peerConnectionHandlersById.end()) { return; }
+        if (m_peerConnectionHandlersById.find(fromId) != m_peerConnectionHandlersById.end())
+        {
+            log("receivePeerCall failed because " + fromId + " is already connected.");
+            return;
+        }
         if (!getCallAcceptance(fromId))
         {
             auto data = sio::object_message::create();
@@ -459,8 +474,13 @@ void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& 
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
+        log("receivePeerCallAnswer (from_id=" + fromId + ")");
         auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
-        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end()) { return; }
+        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end())
+        {
+            log("receivePeerCallAnswer failed because " + fromId + " is not found.");
+            return;
+        }
 
         peerConnectionsHandlerIt->second->receivePeerCallAnswer(sdp);
     });
@@ -468,6 +488,7 @@ void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& 
 
 void SignalingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
 {
+    log("onCloseAllPeerConnectionsRequestReceivedEvent");
     hangUpAll();
 }
 
@@ -511,8 +532,13 @@ void SignalingClient::receiveIceCandidate(const string& fromId, const string& sd
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdpMid, sdpMLineIndex, sdp]()
     {
+        log("receiveIceCandidate (from_id=" + fromId + ")");
         auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
-        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end()) { return; }
+        if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end())
+        {
+            log("receivePeerCallAnswer failed because " + fromId + " is already connected.");
+            return;
+        }
 
         peerConnectionsHandlerIt->second->receiveIceCandidate(sdpMid, sdpMLineIndex, sdp);
     });
@@ -541,17 +567,30 @@ bool SignalingClient::getCallAcceptance(const string& id)
     {
         if (find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id) != m_alreadyAcceptedCalls.end())
         {
+            log("The call is already accepted (id=" + id + ").");
             return true;
         }
 
         auto clientIt = m_roomClientsById.find(id);
         if (clientIt == m_roomClientsById.end())
         {
+            log("The call is rejected because " + id + " is not in the room.");
             return false;
+        }
+        else if (!m_callAcceptor)
+        {
+            log("The call is accepted by default (id=" + id + ").");
+            return true;
+        }
+        else if (m_callAcceptor(clientIt->second))
+        {
+            log("The call is accepted by the user (id=" + id + ").");
+            return true;
         }
         else
         {
-            return m_callAcceptor ? m_callAcceptor(clientIt->second) : true;
+            log("The call is rejected by the user (id=" + id + ").");
+            return false;
         }
     });
 }
@@ -574,6 +613,8 @@ void SignalingClient::removeConnection(const string& id)
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &id]()
     {
+        log("removeConnection (" + id + ")");
+
         auto it = find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id);
         if (it != m_alreadyAcceptedCalls.end())
         {

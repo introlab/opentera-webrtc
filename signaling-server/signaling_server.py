@@ -3,6 +3,7 @@ import asyncio
 import itertools
 import json
 import sys
+import logging
 
 from aiohttp import web
 from aiohttp_index import IndexMiddleware
@@ -15,6 +16,9 @@ from room_manager import RoomManager
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
+
+logging.basicConfig(format='[%(asctime)s] -- %(message)s')
+logger = logging.getLogger('signaling_server')
 
 sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
 app = web.Application(middlewares=[IndexMiddleware()])
@@ -35,23 +39,23 @@ async def disconnect_inactive_user(id):
     # Verify if id joined a room
     room = await room_manager.get_room(id)
     if room is None:
-        print('inactive: ', id)
+        logger.info('inactive: %s', id)
         await sio.disconnect(id)
 
 
 @sio.on('connect')
 async def connect(id, env):
-    print('connect ', id)
+    logger.info('connect %s', id)
     # Launch task to verify if client joins a room (active), otherwise disconnect client.
     asyncio.create_task(disconnect_inactive_user(id))
 
 
 @sio.on('disconnect')
 async def disconnect(id):
-    print('disconnect ', id)
+    logger.info('disconnect %s (%s)', id, await room_manager.get_client_name(id))
     room = await room_manager.get_room(id)
     await room_manager.remove_client(id)
-    
+
     if room is not None:
         clients = await room_manager.list_clients(room)
         await room_manager.send_to_all('room-clients', data=clients, room=room)
@@ -59,7 +63,7 @@ async def disconnect(id):
 
 @sio.on('join-room')
 async def join_room(id, data):
-    print('join_room ', id, data)
+    logger.info('join_room %s (%s)', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
         asyncio.create_task(disconnect_delayed(id))
@@ -81,7 +85,9 @@ async def join_room(id, data):
 
 @sio.on('send-ice-candidate')
 async def ice_candidate(from_id, data):
-    print('send-ice-candidate ', from_id, 'to', data['toId'])
+    from_name = await room_manager.get_client_name(from_id)
+    to_name = await room_manager.get_client_name(data['toId'])
+    logger.info('send-ice-candidate %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
     room1 = await room_manager.get_room(from_id)
     room2 = await room_manager.get_room(data['toId'])
 
@@ -92,7 +98,9 @@ async def ice_candidate(from_id, data):
 
 @sio.on('call-peer')
 async def call_peer(from_id, data):
-    print('call ', from_id, 'to', data['toId'])
+    from_name = await room_manager.get_client_name(from_id)
+    to_name = await room_manager.get_client_name(data['toId'])
+    logger.info('call %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
     room1 = await room_manager.get_room(from_id)
     room2 = await room_manager.get_room(data['toId'])
 
@@ -103,7 +111,9 @@ async def call_peer(from_id, data):
 
 @sio.on('make-peer-call-answer')
 async def make_call_answer(from_id, data):
-    print('make-peer-call-answer ', from_id, 'to', data['toId'])
+    from_name = await room_manager.get_client_name(from_id)
+    to_name = await room_manager.get_client_name(data['toId'])
+    logger.info('make-peer-call-answer %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
     room1 = await room_manager.get_room(from_id)
     room2 = await room_manager.get_room(data['toId'])
 
@@ -114,7 +124,7 @@ async def make_call_answer(from_id, data):
 
 @sio.on('call-all')
 async def call_all(from_id):
-    print('call-all', from_id)
+    logger.info('call-all %s (%s)', from_id, await room_manager.get_client_name(from_id))
     room = await room_manager.get_room(from_id)
 
     if room is not None:
@@ -125,7 +135,8 @@ async def call_all(from_id):
 
 @sio.on('call-ids')
 async def call_ids(from_id, ids):
-    print('call-ids', from_id, ids)
+    names = [(id, await room_manager.get_client_name(id)) for id in ids]
+    logger.info('call-ids %s (%s) %s', from_id, await room_manager.get_client_name(from_id), names)
     room = await room_manager.get_room(from_id)
 
     if room is not None:
@@ -137,7 +148,7 @@ async def call_ids(from_id, ids):
 
 async def _make_peer_calls(ids):
     combinations = list(itertools.combinations(ids, 2))
-    print('make-peer-call', combinations)
+    logger.info('make-peer-call %s', combinations)
 
     tasks = []
     for id in ids:
@@ -148,7 +159,7 @@ async def _make_peer_calls(ids):
 
 @sio.on('close-all-room-peer-connections')
 async def close_all_peer_connections(from_id):
-    print('call-all', from_id)
+    logger.info('close-all-room-peer-connections %s (%s)', from_id, await room_manager.get_client_name(from_id))
     room = await room_manager.get_room(from_id)
 
     if room is not None:
@@ -175,9 +186,14 @@ if __name__ == '__main__':
     parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
     parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
     parser.add_argument('--key', type=str, help='TLS private key path', default=None)
+    parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
+        logging.WARNING, logging.INFO, logging.DEBUG], help='Log level value', default=logging.DEBUG)
 
     # Parse arguments
     args = parser.parse_args()
+
+    # Set logging level
+    logger.setLevel(args.log_level)
 
     # Default = not using TLS
     using_tls = False
@@ -185,8 +201,8 @@ if __name__ == '__main__':
     # Test for certificates / key pair
     if args.certificate and args.key:
         using_tls = True
-        print('Using certificate: ', args.certificate)
-        print('Using private key: ', args.key)
+        logger.info('Using certificate: %s', args.certificate)
+        logger.info('Using private key: %s', args.key)
     elif args.certificate or args.key:
         sys.exit('You must specify both certificate and key.')
     else:
@@ -194,7 +210,7 @@ if __name__ == '__main__':
 
     # Update global password
     password = args.password
-    
+
     # Look for ice servers file
     if args.ice_servers is not None:
         with open(args.ice_servers) as file:

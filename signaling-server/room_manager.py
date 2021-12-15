@@ -9,7 +9,7 @@ class RoomManager:
         self._client_name_by_id = {}
         self._client_datum_by_id = {}
 
-        self._lock = asyncio.Lock()    
+        self._lock = asyncio.Lock()
 
     async def add_client(self, id, client_name, client_data, room):
         async with self._lock:
@@ -37,7 +37,7 @@ class RoomManager:
                     self._ids_by_room[room].remove(id)
                     if len(self._ids_by_room[room]) == 0:
                         del self._ids_by_room[room]
-            
+
             if id in self._client_name_by_id:
                 del self._client_name_by_id[id]
 
@@ -80,3 +80,10 @@ class RoomManager:
             if tasks == []:
                 return
             await asyncio.wait(tasks)
+
+    async def get_client_name(self, id):
+        async with self._lock:
+            if id in self._client_name_by_id:
+                return self._client_name_by_id[id]
+            else:
+                return None
