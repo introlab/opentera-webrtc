@@ -38,6 +38,7 @@ void opentera::initVideoSourcePython(pybind11::module& m)
                     ":param configuration: The configuration applied to the video stream by the image transport layer",
                     py::arg("configuration"))
             .def("send_frame", &sendFrame,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sends a frame to the WebRTC transport layer\n"
                     "\n"
                     "The frame may or may not be sent depending of the transport layer state\n"

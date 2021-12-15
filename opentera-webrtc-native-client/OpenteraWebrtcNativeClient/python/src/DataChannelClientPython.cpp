@@ -65,6 +65,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     py::arg("message"))
 
             .def_property("on_data_channel_opened", nullptr, &DataChannelClient::setOnDataChannelOpened,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a data channel opens.\n"
                     "\n"
                     "The callback is called from the internal client thread.\n"
@@ -74,6 +75,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
             .def_property("on_data_channel_closed", nullptr, &DataChannelClient::setOnDataChannelClosed,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a data channel closes.\n"
                     "\n"
                     "The callback is called from the internal client thread.\n"
@@ -83,6 +85,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
             .def_property("on_data_channel_error", nullptr, &DataChannelClient::setOnDataChannelError,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a data channel error occurs.\n"
                     "\n"
                     "The callback is called from the internal client thread.\n"
@@ -93,6 +96,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
             .def_property("on_data_channel_message_binary", nullptr, &setOnDataChannelMessageBinary,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when binary data are received.\n"
                     "\n"
                     "The callback is called from the internal client thread.\n"
@@ -103,6 +107,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
             .def_property("on_data_channel_message_string", nullptr, &DataChannelClient::setOnDataChannelMessageString,
+                    py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a string message is received.\n"
                     "\n"
                     "The callback is called from the internal client thread.\n"
