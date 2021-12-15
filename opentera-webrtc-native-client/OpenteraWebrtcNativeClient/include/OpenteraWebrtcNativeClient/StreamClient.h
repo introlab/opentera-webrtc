@@ -142,7 +142,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a stream is added.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -162,7 +162,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a stream is removed.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -182,7 +182,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a video stream frame is received.
      *
-     * The callback is called from a WebRTC processing thread.
+     * The callback is called from a WebRTC processing thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -205,7 +205,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when an audio stream frame is received.
      *
-     * The callback is called from a WebRTC processing thread.
+     * The callback is called from a WebRTC processing thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -236,7 +236,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a mixed audio stream frame is received.
      *
-     * The callback is called from a WebRTC processing thread.
+     * The callback is called from a WebRTC processing thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:

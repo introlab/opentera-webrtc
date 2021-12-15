@@ -229,7 +229,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when the signaling connection opens.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @param callback The callback
      */
@@ -244,7 +244,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when the signaling connection closes.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @param callback The callback
      */
@@ -258,7 +258,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when a signaling connection error occurs.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -278,7 +279,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when the room client changes.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -298,7 +300,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is used to accept or reject a call.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -320,7 +323,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when a call is rejected.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -339,7 +343,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when a client peer connection opens.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -358,7 +363,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when a client peer connection closes.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -377,7 +383,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is called when an error occurs.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -396,7 +403,8 @@ namespace opentera
 
     /**
      * @brief Sets the callback that is used to log information.
-     * The callback is called from the internal client thread.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:

@@ -60,20 +60,21 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when the signaling connection opens.\n"
                     "\n"
-                    "The callback is called from the internal client thread.\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     ":param callback: The callback")
             .def_property("on_signaling_connection_closed", nullptr, &SignalingClient::setOnSignalingConnectionClosed,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when the signaling connection closes.\n"
                     "\n"
-                    "The callback is called from the internal client thread.\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     ":param callback: The callback")
             .def_property("on_signaling_connection_error", nullptr, &SignalingClient::setOnSignalingConnectionError,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a signaling connection error occurs.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - error: The error message\n"
@@ -83,7 +84,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("on_room_clients_changed", nullptr, &SignalingClient::setOnRoomClientsChanged,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when the room client changes.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - room_clients: The room clients\n"
@@ -93,7 +95,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("call_acceptor", nullptr, &SignalingClient::setCallAcceptor,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is used to accept or reject a call.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client the call is from\n"
@@ -105,7 +108,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("on_call_rejected", nullptr, &SignalingClient::setOnCallRejected,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a call is rejected.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client that rejects the call\n"
@@ -115,7 +119,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("on_client_connected", nullptr, &SignalingClient::setOnClientConnected,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a client peer connection opens.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client that is connected\n"
@@ -124,7 +129,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("on_client_disconnected", nullptr, &SignalingClient::setOnClientDisconnected,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a client peer connection closes.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client that is disconnected\n"
@@ -134,7 +140,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("on_error", nullptr, &SignalingClient::setOnError,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when an error occurs.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - error: The error message\n"
@@ -144,7 +151,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def_property("logger", nullptr, &SignalingClient::setLogger,
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is used to log information.\n"
-                    "The callback is called from the internal client thread.\n"
+                    "\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - message: The message\n"

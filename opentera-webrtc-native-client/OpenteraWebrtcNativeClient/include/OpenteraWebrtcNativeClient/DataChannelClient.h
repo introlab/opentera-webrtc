@@ -98,7 +98,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a data channel opens.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -118,7 +118,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a data channel closes.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -138,7 +138,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a data channel error occurs.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -160,7 +160,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when binary data are received.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:
@@ -183,7 +183,7 @@ namespace opentera
     /**
      * @brief Sets the callback that is called when a string message is received.
      *
-     * The callback is called from the internal client thread.
+     * The callback is called from the internal client thread. The callback should not block.
      *
      * @parblock
      * Callback parameters:

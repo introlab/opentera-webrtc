@@ -170,7 +170,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a stream is added.\n"
                     "\n"
-                    "The callback is called from the internal client thread.\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client of the stream\n"
@@ -180,7 +180,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a stream is removed.\n"
                     "\n"
-                    "The callback is called from the internal client thread.\n"
+                    "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client of the stream\n"
@@ -190,7 +190,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a video stream frame is received.\n"
                     "\n"
-                    "The callback is called from a WebRTC processing thread.\n"
+                    "The callback is called from a WebRTC processing thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client of the stream frame\n"
@@ -202,7 +202,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when an audio stream frame is received.\n"
                     "\n"
-                    "The callback is called from a WebRTC processing thread.\n"
+                    "The callback is called from a WebRTC processing thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - client: The client of the stream frame\n"
@@ -216,7 +216,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Sets the callback that is called when a mixed audio stream frame is received.\n"
                     "\n"
-                    "The callback is called from a WebRTC processing thread.\n"
+                    "The callback is called from a WebRTC processing thread. The callback should not block.\n"
                     "\n"
                     "Callback parameters:\n"
                     " - audio_data: The audio data (numpy.array[int8], numpy.array[int16] or numpy.array[int32])\n"
