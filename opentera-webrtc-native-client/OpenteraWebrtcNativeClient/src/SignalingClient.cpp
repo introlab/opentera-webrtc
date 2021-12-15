@@ -77,9 +77,7 @@ void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, isEnabled]()
     {
-        log("****** callAsync - setTlsVerificationEnabled");
         m_sio.set_is_tls_verification_enabled(isEnabled);
-        log("------ callAsync - setTlsVerificationEnabled");
     });
 }
 
@@ -90,12 +88,10 @@ void SignalingClient::connect()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        log("****** callAsync - connect");
         closeAllConnections();
         m_hasClosePending = false;
         connectSioEvents();
         m_sio.connect(m_signalingServerConfiguration.url());
-        log("------ callAsync - connect");
     });
 }
 
@@ -106,11 +102,9 @@ void SignalingClient::close()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        log("****** callAsync - close");
         closeAllConnections();
         m_sio.close();
         m_hasClosePending = true;
-        log("------ callAsync - close");
     });
 }
 
@@ -121,11 +115,9 @@ void SignalingClient::closeSync()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        log("****** callSync - closeSync");
         closeAllConnections();
         m_sio.sync_close();
         m_hasClosePending = true;
-        log("------ callSync - closeSync");
     });
 }
 
@@ -136,7 +128,6 @@ void SignalingClient::callAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        log("****** callAsync - callAll");
         m_alreadyAcceptedCalls.clear();
         for (const auto& pair : m_roomClientsById)
         {
@@ -144,7 +135,6 @@ void SignalingClient::callAll()
         }
 
         m_sio.socket()->emit("call-all");
-        log("------ callAsync - callAll");
     });
 }
 
@@ -155,7 +145,6 @@ void SignalingClient::callIds(const vector<string>& ids)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, ids]()
     {
-        log("****** callAsync - callIds");
         m_alreadyAcceptedCalls = ids;
 
         auto data = sio::array_message::create();
@@ -164,7 +153,6 @@ void SignalingClient::callIds(const vector<string>& ids)
             data->get_vector().push_back(sio::string_message::create(id));
         }
         m_sio.socket()->emit("call-ids", data);
-        log("------ callAsync - callIds");
     });
 }
 
@@ -175,10 +163,8 @@ void SignalingClient::hangUpAll()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        log("****** callAsync - hangUpAll");
         closeAllConnections();
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
-        log("------ callAsync - hangUpAll");
     });
 }
 
@@ -189,9 +175,7 @@ void SignalingClient::closeAllRoomPeerConnections()
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
-        log("****** callAsync - closeAllRoomPeerConnections");
         m_sio.socket()->emit("close-all-room-peer-connections");
-        log("------ callAsync - closeAllRoomPeerConnections");
     });
 }
 
@@ -203,14 +187,12 @@ vector<string> SignalingClient::getConnectedRoomClientIds()
 {
     return FunctionTask<vector<string>>::callSync(m_internalClientThread.get(), [this]()
     {
-        log("****** callSync - getConnectedRoomClientIds");
         vector<string> ids;
         ids.reserve(m_peerConnectionHandlersById.size());
         for (const auto& pair : m_peerConnectionHandlersById)
         {
             ids.push_back(pair.first);
         }
-        log("------ callSync - getConnectedRoomClientIds");
         return ids;
     });
 }
@@ -223,7 +205,6 @@ vector<RoomClient> SignalingClient::getRoomClients()
 {
     return FunctionTask<vector<RoomClient>>::callSync(m_internalClientThread.get(), [this]()
     {
-        log("****** callSync - getRoomClients");
         vector<RoomClient> roomClients;
         roomClients.reserve(m_roomClientsById.size());
         for (const auto &pair : m_roomClientsById)
@@ -234,7 +215,6 @@ vector<RoomClient> SignalingClient::getRoomClients()
             roomClients.emplace_back(client, isConnected);
         }
 
-        log("------ callSync - getRoomClients");
         return roomClients;
     });
 }
@@ -245,9 +225,7 @@ function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFu
     {
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event, message]()
         {
-            log("****** callAsync - emit message");
             m_sio.socket()->emit(event, message);
-            log("------ callAsync - emit message");
         });
     };
 }
@@ -344,7 +322,6 @@ void SignalingClient::onRoomClientsEvent(sio::event& event)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event]()
     {
-        log("****** callAsync - onRoomClientsEvent");
         m_roomClientsById.clear();
         for (const auto& roomClient : event.get_message()->get_vector())
         {
@@ -355,7 +332,6 @@ void SignalingClient::onRoomClientsEvent(sio::event& event)
             }
         }
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
-        log("------ callAsync - onRoomClientsEvent");
     });
 }
 
@@ -376,32 +352,27 @@ void SignalingClient::makePeerCall(const string& id)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, id]()
     {
-        log("****** callAsync - makePeerCall");
         log("makePeerCall (to_id=" + id + ")");
         auto clientIt = m_roomClientsById.find(id);
         if (clientIt == m_roomClientsById.end())
         {
             log("makePeerCall failed because " + id + " is not in the room.");
-            log("------ callAsync - makePeerCall");
             return;
         }
         if (m_peerConnectionHandlersById.find(id) != m_peerConnectionHandlersById.end())
         {
             log("makePeerCall failed because " + id + " is already connected.");
-            log("------ callAsync - makePeerCall");
             return;
         }
 
         if (!getCallAcceptance(id))
         {
             invokeIfCallable(m_onCallRejected, clientIt->second);
-            log("------ callAsync - makePeerCall");
             return;
         }
 
         m_peerConnectionHandlersById[id] = createConnection(id, clientIt->second, true);
         m_peerConnectionHandlersById[id]->makePeerCall();
-        log("------ callAsync - makePeerCall");
     });
 }
 
@@ -439,7 +410,6 @@ void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
-        log("****** callAsync - receivePeerCall");
         log("receivePeerCall (from_id=" + fromId + ")");
         auto fromClientIt = m_roomClientsById.find(fromId);
         if (fromClientIt == m_roomClientsById.end()) { return; }
@@ -447,7 +417,6 @@ void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
         if (m_peerConnectionHandlersById.find(fromId) != m_peerConnectionHandlersById.end())
         {
             log("receivePeerCall failed because " + fromId + " is already connected.");
-            log("------ callAsync - receivePeerCall");
             return;
         }
         if (!getCallAcceptance(fromId))
@@ -455,13 +424,11 @@ void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
             auto data = sio::object_message::create();
             data->get_map()["toId"] = sio::string_message::create(fromId);
             m_sio.socket()->emit("make-peer-call-answer", data);
-            log("------ callAsync - receivePeerCall");
             return;
         }
 
         m_peerConnectionHandlersById[fromId] = createConnection(fromId, fromClientIt->second, false);
         m_peerConnectionHandlersById[fromId]->receivePeerCall(sdp);
-        log("------ callAsync - receivePeerCall");
     });
 }
 
@@ -481,11 +448,9 @@ void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
     {
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId]()
         {
-            log("****** callAsync - onCallRejected");
             removeConnection(fromId);
             auto clientIt = m_roomClientsById.find(fromId);
             invokeIfCallable(m_onCallRejected, clientIt->second);
-            log("------ callAsync - onCallRejected");
         });
         return;
     }
@@ -509,18 +474,15 @@ void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& 
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdp]()
     {
-        log("****** callAsync - receivePeerCallAnswer");
         log("receivePeerCallAnswer (from_id=" + fromId + ")");
         auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
         if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end())
         {
             log("receivePeerCallAnswer failed because " + fromId + " is not found.");
-            log("------ callAsync - receivePeerCallAnswer");
             return;
         }
 
         peerConnectionsHandlerIt->second->receivePeerCallAnswer(sdp);
-        log("------ callAsync - receivePeerCallAnswer");
     });
 }
 
@@ -570,18 +532,15 @@ void SignalingClient::receiveIceCandidate(const string& fromId, const string& sd
 {
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, fromId, sdpMid, sdpMLineIndex, sdp]()
     {
-        log("****** callAsync - receiveIceCandidate");
         log("receiveIceCandidate (from_id=" + fromId + ")");
         auto peerConnectionsHandlerIt = m_peerConnectionHandlersById.find(fromId);
         if (peerConnectionsHandlerIt == m_peerConnectionHandlersById.end())
         {
             log("receivePeerCallAnswer failed because " + fromId + " is already connected.");
-            log("------ callAsync - receiveIceCandidate");
             return;
         }
 
         peerConnectionsHandlerIt->second->receiveIceCandidate(sdpMid, sdpMLineIndex, sdp);
-        log("------ callAsync - receiveIceCandidate");
     });
 }
 
@@ -589,7 +548,6 @@ void SignalingClient::closeAllConnections()
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this]()
     {
-        log("****** callSync - closeAllConnections");
         vector<string> ids(m_peerConnectionHandlersById.size());
         for (const auto& pair : m_peerConnectionHandlersById)
         {
@@ -600,7 +558,6 @@ void SignalingClient::closeAllConnections()
         {
             removeConnection(id);
         }
-        log("------ callSync - closeAllConnections");
     });
 }
 
@@ -608,11 +565,9 @@ bool SignalingClient::getCallAcceptance(const string& id)
 {
     return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this, id]()
     {
-        log("****** callSync - getCallAcceptance");
         if (find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id) != m_alreadyAcceptedCalls.end())
         {
             log("The call is already accepted (id=" + id + ").");
-            log("------ callSync - getCallAcceptance");
             return true;
         }
 
@@ -620,25 +575,21 @@ bool SignalingClient::getCallAcceptance(const string& id)
         if (clientIt == m_roomClientsById.end())
         {
             log("The call is rejected because " + id + " is not in the room.");
-            log("------ callSync - getCallAcceptance");
             return false;
         }
         else if (!m_callAcceptor)
         {
             log("The call is accepted by default (id=" + id + ").");
-            log("------ callSync - getCallAcceptance");
             return true;
         }
         else if (m_callAcceptor(clientIt->second))
         {
             log("The call is accepted by the user (id=" + id + ").");
-            log("------ callSync - getCallAcceptance");
             return true;
         }
         else
         {
             log("The call is rejected by the user (id=" + id + ").");
-            log("------ callSync - getCallAcceptance");
             return false;
         }
     });
@@ -649,13 +600,11 @@ unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string
 {
     return FunctionTask<unique_ptr<PeerConnectionHandler>>::callSync(m_internalClientThread.get(), [&, this]()
     {
-        log("****** callSync - createConnection");
         auto configuration = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(m_webrtcConfiguration);
         unique_ptr<PeerConnectionHandler> handler = createPeerConnectionHandler(id(), peerClient, isCaller);
         auto peerConnection = m_peerConnectionFactory->CreatePeerConnection(configuration,
                 webrtc::PeerConnectionDependencies(handler.get()));
         handler->setPeerConnection(peerConnection);
-        log("------ callSync - createConnection");
         return handler;
     });
 }
@@ -664,7 +613,6 @@ void SignalingClient::removeConnection(const string& id)
 {
     FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &id]()
     {
-        log("****** callSync - removeConnection");
         log("removeConnection (" + id + ")");
 
         auto it = find(m_alreadyAcceptedCalls.begin(), m_alreadyAcceptedCalls.end(), id);
@@ -680,6 +628,5 @@ void SignalingClient::removeConnection(const string& id)
             peerConnectionHandler = move(peerConnectionIt->second);
             m_peerConnectionHandlersById.erase(peerConnectionIt);
         }
-        log("------ callSync - removeConnection");
     });
 }

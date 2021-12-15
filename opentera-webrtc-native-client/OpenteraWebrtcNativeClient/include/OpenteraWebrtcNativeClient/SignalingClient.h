@@ -171,9 +171,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
-            log("****** callSync - isConnected");
             bool r =  m_sio.opened();
-            log("------ callSync - isConnected");
             return r;
         });
     }
@@ -186,9 +184,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
-            log("****** callSync - isRtcConnected");
             auto r = !m_peerConnectionHandlersById.empty();
-            log("------ callSync - isRtcConnected");
             return r;
         });
     }
@@ -201,9 +197,7 @@ namespace opentera
     {
         return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
         {
-            log("****** callSync - id");
             auto r =  m_hasClosePending ? "" : m_sio.get_sessionid();
-            log("------ callSync - id");
             return r;
         });
     }
@@ -219,7 +213,6 @@ namespace opentera
     {
         return FunctionTask<RoomClient>::callSync(m_internalClientThread.get(), [this, &id]()
         {
-            log("****** callSync - getRoomClient");
             auto clientIt = m_roomClientsById.find(id);
             if (clientIt != m_roomClientsById.end())
             {
@@ -227,12 +220,10 @@ namespace opentera
                 bool isConnected = m_peerConnectionHandlersById.find(
                         client.id()) != m_peerConnectionHandlersById.end() || client.id() == this->id();
                 auto r=  RoomClient(client, isConnected);
-                log("------ callSync - getRoomClient");
                 return r;
             }
             else
             {
-                log("------ callSync - getRoomClient");
                 return RoomClient();
             }
         });
@@ -250,9 +241,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnSignalingConnectionOpened");
             m_onSignalingConnectionOpened = callback;
-            log("------ callSync - setOnSignalingConnectionOpened");
         });
     }
 
@@ -267,9 +256,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnSignalingConnectionClosed");
             m_onSignalingConnectionClosed = callback;
-            log("------ callSync - setOnSignalingConnectionClosed");
         });
     }
 
@@ -289,9 +276,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnSignalingConnectionError");
             m_onSignalingConnectionError = callback;
-            log("------ callSync - setOnSignalingConnectionError");
         });
     }
 
@@ -311,9 +296,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnRoomClientsChanged");
             m_onRoomClientsChanged = callback;
-            log("------ callSync - setOnRoomClientsChanged");
         });
     }
 
@@ -335,9 +318,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setCallAcceptor");
             m_callAcceptor = callback;
-            log("------ callSync - setCallAcceptor");
         });
     }
 
@@ -356,9 +337,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnCallRejected");
             m_onCallRejected = callback;
-            log("------ callSync - setOnCallRejected");
         });
     }
 
@@ -377,9 +356,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnClientConnected");
             m_onClientConnected = callback;
-            log("------ callSync - setOnClientConnected");
         });
     }
 
@@ -398,9 +375,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnClientDisconnected");
             m_onClientDisconnected = callback;
-            log("------ callSync - setOnClientDisconnected");
         });
     }
 
@@ -419,9 +394,7 @@ namespace opentera
     {
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
-            log("****** callSync - setOnError");
             m_onError = callback;
-            log("------ callSync - setOnError");
         });
     }
 
@@ -449,12 +422,10 @@ namespace opentera
     {
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [=]()
         {
-            log(std::string("****** callAsync - invokeIfCallable (") + typeid(f).name() + ")");
             if (f)
             {
                 f(args...);
             }
-            log(std::string("------ callAsync - invokeIfCallable (") + typeid(f).name() + ")");
         });
     }
 
