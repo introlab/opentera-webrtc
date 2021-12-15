@@ -90,8 +90,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
         {
-            auto r = m_isLocalAudioMuted;
-            return r;
+            return m_isLocalAudioMuted;
         });
     }
 
@@ -120,8 +119,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
         {
-            auto r =  m_isLocalVideoMuted;
-            return r;
+            return m_isLocalVideoMuted;
         });
     }
 

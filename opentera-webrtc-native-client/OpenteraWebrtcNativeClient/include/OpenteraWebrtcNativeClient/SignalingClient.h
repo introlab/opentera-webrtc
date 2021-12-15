@@ -171,8 +171,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
-            bool r =  m_sio.opened();
-            return r;
+            return m_sio.opened();
         });
     }
 
@@ -184,8 +183,7 @@ namespace opentera
     {
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
-            auto r = !m_peerConnectionHandlersById.empty();
-            return r;
+            return !m_peerConnectionHandlersById.empty();
         });
     }
 
@@ -197,8 +195,7 @@ namespace opentera
     {
         return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
         {
-            auto r =  m_hasClosePending ? "" : m_sio.get_sessionid();
-            return r;
+            return m_hasClosePending ? "" : m_sio.get_sessionid();
         });
     }
 
