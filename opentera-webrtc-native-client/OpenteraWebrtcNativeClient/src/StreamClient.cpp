@@ -106,7 +106,7 @@ void StreamClient::setLocalAudioMuted(bool muted)
         {
             dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
         }
-    });
+    }, m_logger);
 }
 
 /**
@@ -122,7 +122,7 @@ void StreamClient::setLocalVideoMuted(bool muted)
         {
             dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllVideoTracksEnabled(!muted);
         }
-    });
+    }, m_logger);
 }
 
 /**

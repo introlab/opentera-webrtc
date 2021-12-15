@@ -78,7 +78,7 @@ void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, isEnabled]()
     {
         m_sio.set_is_tls_verification_enabled(isEnabled);
-    });
+    }, m_logger);
 }
 
 /**
@@ -92,7 +92,7 @@ void SignalingClient::connect()
         m_hasClosePending = false;
         connectSioEvents();
         m_sio.connect(m_signalingServerConfiguration.url());
-    });
+    }, m_logger);
 }
 
 /**
@@ -105,7 +105,7 @@ void SignalingClient::close()
         closeAllConnections();
         m_sio.close();
         m_hasClosePending = true;
-    });
+    }, m_logger);
 }
 
 /**
@@ -118,7 +118,7 @@ void SignalingClient::closeSync()
         closeAllConnections();
         m_sio.sync_close();
         m_hasClosePending = true;
-    });
+    }, m_logger);
 }
 
 /**
@@ -135,7 +135,7 @@ void SignalingClient::callAll()
         }
 
         m_sio.socket()->emit("call-all");
-    });
+    }, m_logger);
 }
 
 /**
@@ -153,7 +153,7 @@ void SignalingClient::callIds(const vector<string>& ids)
             data->get_vector().push_back(sio::string_message::create(id));
         }
         m_sio.socket()->emit("call-ids", data);
-    });
+    }, m_logger);
 }
 
 /**
@@ -165,7 +165,7 @@ void SignalingClient::hangUpAll()
     {
         closeAllConnections();
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
-    });
+    }, m_logger);
 }
 
 /**
@@ -176,7 +176,7 @@ void SignalingClient::closeAllRoomPeerConnections()
     FunctionTask<void>::callAsync(m_internalClientThread.get(), [this]()
     {
         m_sio.socket()->emit("close-all-room-peer-connections");
-    });
+    }, m_logger);
 }
 
 /**
@@ -194,7 +194,7 @@ vector<string> SignalingClient::getConnectedRoomClientIds()
             ids.push_back(pair.first);
         }
         return ids;
-    });
+    }, m_logger);
 }
 
 /**
@@ -216,7 +216,7 @@ vector<RoomClient> SignalingClient::getRoomClients()
         }
 
         return roomClients;
-    });
+    }, m_logger);
 }
 
 function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFunction()
@@ -226,7 +226,7 @@ function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFu
         FunctionTask<void>::callAsync(m_internalClientThread.get(), [this, event, message]()
         {
             m_sio.socket()->emit(event, message);
-        });
+        }, m_logger);
     };
 }
 
@@ -254,7 +254,7 @@ function<void(const Client&)> SignalingClient::getOnClientDisconnectedFunction()
         {
             removeConnection(client.id());
             invokeIfCallable(m_onClientDisconnected, client);
-        });
+        }, m_logger);
     };
 }
 
@@ -332,7 +332,7 @@ void SignalingClient::onRoomClientsEvent(sio::event& event)
             }
         }
         invokeIfCallable(m_onRoomClientsChanged, getRoomClients());
-    });
+    }, m_logger);
 }
 
 void SignalingClient::onMakePeerCallEvent(sio::event& event)
@@ -373,7 +373,7 @@ void SignalingClient::makePeerCall(const string& id)
 
         m_peerConnectionHandlersById[id] = createConnection(id, clientIt->second, true);
         m_peerConnectionHandlersById[id]->makePeerCall();
-    });
+    }, m_logger);
 }
 
 void SignalingClient::onPeerCallReceivedEvent(sio::event& event)
@@ -429,7 +429,7 @@ void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
 
         m_peerConnectionHandlersById[fromId] = createConnection(fromId, fromClientIt->second, false);
         m_peerConnectionHandlersById[fromId]->receivePeerCall(sdp);
-    });
+    }, m_logger);
 }
 
 void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
@@ -451,7 +451,7 @@ void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
             removeConnection(fromId);
             auto clientIt = m_roomClientsById.find(fromId);
             invokeIfCallable(m_onCallRejected, clientIt->second);
-        });
+        }, m_logger);
         return;
     }
     auto answer = answerIt->second->get_map();
@@ -483,7 +483,7 @@ void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& 
         }
 
         peerConnectionsHandlerIt->second->receivePeerCallAnswer(sdp);
-    });
+    }, m_logger);
 }
 
 void SignalingClient::onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event)
@@ -541,7 +541,7 @@ void SignalingClient::receiveIceCandidate(const string& fromId, const string& sd
         }
 
         peerConnectionsHandlerIt->second->receiveIceCandidate(sdpMid, sdpMLineIndex, sdp);
-    });
+    }, m_logger);
 }
 
 void SignalingClient::closeAllConnections()
@@ -558,7 +558,7 @@ void SignalingClient::closeAllConnections()
         {
             removeConnection(id);
         }
-    });
+    }, m_logger);
 }
 
 bool SignalingClient::getCallAcceptance(const string& id)
@@ -592,7 +592,7 @@ bool SignalingClient::getCallAcceptance(const string& id)
             log("The call is rejected by the user (id=" + id + ").");
             return false;
         }
-    });
+    }, m_logger);
 }
 
 unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string& peerId, const Client& peerClient,
@@ -606,7 +606,7 @@ unique_ptr<PeerConnectionHandler> SignalingClient::createConnection(const string
                 webrtc::PeerConnectionDependencies(handler.get()));
         handler->setPeerConnection(peerConnection);
         return handler;
-    });
+    }, m_logger);
 }
 
 void SignalingClient::removeConnection(const string& id)
@@ -628,5 +628,5 @@ void SignalingClient::removeConnection(const string& id)
             peerConnectionHandler = move(peerConnectionIt->second);
             m_peerConnectionHandlersById.erase(peerConnectionIt);
         }
-    });
+    }, m_logger);
 }

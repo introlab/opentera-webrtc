@@ -30,7 +30,7 @@ void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<st
                 dynamic_cast<DataChannelPeerConnectionHandler*>(it->second.get())->send(buffer);
             }
         }
-    });
+    }, m_logger);
 }
 
 void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
@@ -41,7 +41,7 @@ void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
         {
             dynamic_cast<DataChannelPeerConnectionHandler*>(pair.second.get())->send(buffer);
         }
-    });
+    }, m_logger);
 }
 
 unique_ptr<PeerConnectionHandler> DataChannelClient::createPeerConnectionHandler(const string& id,

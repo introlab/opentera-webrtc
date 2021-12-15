@@ -2,7 +2,8 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 
 // TODO remove
-#include <iostream>
+#include <string>
+#include <sstream>
 #define BOOST_STACKTRACE_USE_ADDR2LINE
 #include <boost/stacktrace.hpp>
 
@@ -35,14 +36,19 @@ namespace opentera
             return false;
         }
 
-        static T callSync(rtc::Thread* thread, const std::function<T()>& function)
+        static T callSync(rtc::Thread* thread, const std::function<T()>& function, const std::function<void(const std::string&)>& logger)
         {
-            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-            std::cout << boost::stacktrace::stacktrace() << std::endl;
+            if (logger)
+                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            std::ostringstream ss;
+            ss << boost::stacktrace::stacktrace();
+            if (logger)
+                logger(ss.str());
             if (thread->IsCurrent())
             {
                 auto r = function();
-                std::cout << "-------------------------------------------------------------" << std::endl;
+                if (logger)
+                    logger("-------------------------------------------------------------");
                 return r;
             }
             else
@@ -50,7 +56,8 @@ namespace opentera
                 FunctionTask task(function);
                 thread->PostTask(std::unique_ptr<QueuedTask>(&task));
                 task.m_event.Wait(rtc::Event::kForever);
-                std::cout << "-------------------------------------------------------------" << std::endl;
+                if (logger)
+                    logger("-------------------------------------------------------------");
                 return std::move(task.m_returnedValue);
             }
         }
@@ -79,30 +86,39 @@ namespace opentera
             return isAsync;
         }
 
-        static void callSync(rtc::Thread* thread, const std::function<void()>& function)
+        static void callSync(rtc::Thread* thread, const std::function<void()>& function, const std::function<void(const std::string&)>& logger)
         {
-            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-            std::cout << boost::stacktrace::stacktrace() << std::endl;
+            if (logger)
+                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            std::ostringstream ss;
+            ss << boost::stacktrace::stacktrace();
+            if (logger)
+                logger(ss.str());
             if (thread->IsCurrent())
             {
                 function();
-                std::cout << "-------------------------------------------------------------" << std::endl;
+                logger("-------------------------------------------------------------");
             }
             else
             {
                 FunctionTask task(function, false);
                 thread->PostTask(std::unique_ptr<QueuedTask>(&task));
                 task.m_event.Wait(rtc::Event::kForever);
-                std::cout << "-------------------------------------------------------------" << std::endl;
+                logger("-------------------------------------------------------------");
             }
         }
 
-        static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
+        static void callAsync(rtc::Thread* thread, const std::function<void()>& function, const std::function<void(const std::string&)>& logger)
         {
-            std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << std::endl;
-            std::cout << boost::stacktrace::stacktrace() << std::endl;
+            if (logger)
+                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            std::ostringstream ss;
+            ss << boost::stacktrace::stacktrace();
+            if (logger)
+                logger(ss.str());
+
             thread->PostTask(std::make_unique<FunctionTask>(function, true));
-            std::cout << "-------------------------------------------------------------" << std::endl;
+            logger("-------------------------------------------------------------");
         }
     };
 }

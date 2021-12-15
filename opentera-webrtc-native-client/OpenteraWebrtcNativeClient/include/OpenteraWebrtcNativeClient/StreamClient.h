@@ -91,7 +91,7 @@ namespace opentera
         return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
         {
             return m_isLocalAudioMuted;
-        });
+        }, m_logger);
     }
 
 
@@ -120,7 +120,7 @@ namespace opentera
         return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
         {
             return m_isLocalVideoMuted;
-        });
+        }, m_logger);
     }
 
     /**
@@ -156,7 +156,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onAddRemoteStream = callback;
-        });
+        }, m_logger);
     }
 
     /**
@@ -176,7 +176,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onRemoveRemoteStream = callback;
-        });
+        }, m_logger);
     }
 
     /**
@@ -199,7 +199,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onVideoFrameReceived = callback;
-        });
+        }, m_logger);
     }
 
     /**
@@ -230,7 +230,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onAudioFrameReceived = callback;
-        });
+        }, m_logger);
     }
 
     /**
