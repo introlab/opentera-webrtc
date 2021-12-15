@@ -216,8 +216,7 @@ namespace opentera
                 const auto& client = clientIt->second;
                 bool isConnected = m_peerConnectionHandlersById.find(
                         client.id()) != m_peerConnectionHandlersById.end() || client.id() == this->id();
-                auto r=  RoomClient(client, isConnected);
-                return r;
+                return RoomClient(client, isConnected);
             }
             else
             {
