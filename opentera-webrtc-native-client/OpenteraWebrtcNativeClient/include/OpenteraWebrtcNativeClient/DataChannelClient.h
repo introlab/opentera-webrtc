@@ -112,7 +112,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onDataChannelOpened = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -132,7 +132,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onDataChannelClosed = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -154,7 +154,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onDataChannelError = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -177,7 +177,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onDataChannelMessageBinary = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -199,7 +199,7 @@ namespace opentera
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onDataChannelMessageString = callback;
-        }, m_logger);
+        });
     }
 }
 

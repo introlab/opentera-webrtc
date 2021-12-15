@@ -52,14 +52,13 @@ namespace opentera
 
         std::function<void(const std::string& error)> m_onError;
 
+        std::function<void(const std::string& log)> m_logger;
 
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signalingThread;
 
     protected:
-        std::function<void(const std::string& log)> m_logger; // TODO private
-
         SignalingServerConfiguration m_signalingServerConfiguration;
 
         rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
@@ -173,7 +172,7 @@ namespace opentera
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
             return m_sio.opened();
-        }, m_logger);
+        });
     }
 
     /**
@@ -185,7 +184,7 @@ namespace opentera
         return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]()
         {
             return !m_peerConnectionHandlersById.empty();
-        }, m_logger);
+        });
     }
 
     /**
@@ -197,7 +196,7 @@ namespace opentera
         return FunctionTask<std::string>::callSync(m_internalClientThread.get(), [this]()
         {
             return m_hasClosePending ? "" : m_sio.get_sessionid();
-        }, m_logger);
+        });
     }
 
     /**
@@ -223,7 +222,7 @@ namespace opentera
             {
                 return RoomClient();
             }
-        }, m_logger);
+        });
 
     }
 
@@ -239,7 +238,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionOpened = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -254,7 +253,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionClosed = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -274,7 +273,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onSignalingConnectionError = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -294,7 +293,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onRoomClientsChanged = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -316,7 +315,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_callAcceptor = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -335,7 +334,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onCallRejected = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -354,7 +353,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onClientConnected = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -373,7 +372,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onClientDisconnected = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -392,7 +391,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_onError = callback;
-        }, m_logger);
+        });
     }
 
     /**
@@ -411,7 +410,7 @@ namespace opentera
         FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]()
         {
             m_logger = callback;
-        }, m_logger);
+        });
     }
 
     template<class T, class ... Types>
@@ -423,7 +422,7 @@ namespace opentera
             {
                 f(args...);
             }
-        }, m_logger);
+        });
     }
 
     inline void SignalingClient::log(const std::string& message)
@@ -434,7 +433,7 @@ namespace opentera
             {
                 m_logger(message);
             }
-        }, m_logger);
+        });
     }
 
     inline rtc::Thread* SignalingClient::getInternalClientThread()

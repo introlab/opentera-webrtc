@@ -1,12 +1,6 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 
-// TODO remove
-#include <string>
-#include <sstream>
-#define BOOST_STACKTRACE_USE_ADDR2LINE
-#include <boost/stacktrace.hpp>
-
 #include <rtc_base/event.h>
 #include <api/task_queue/queued_task.h>
 #include <rtc_base/thread.h>
@@ -36,28 +30,17 @@ namespace opentera
             return false;
         }
 
-        static T callSync(rtc::Thread* thread, const std::function<T()>& function, const std::function<void(const std::string&)>& logger)
+        static T callSync(rtc::Thread* thread, const std::function<T()>& function)
         {
-            if (logger)
-                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            std::ostringstream ss;
-            ss << boost::stacktrace::stacktrace();
-            if (logger)
-                logger(ss.str());
             if (thread->IsCurrent())
             {
-                auto r = function();
-                if (logger)
-                    logger("-------------------------------------------------------------");
-                return r;
+                return function();
             }
             else
             {
                 FunctionTask task(function);
                 thread->PostTask(std::unique_ptr<QueuedTask>(&task));
                 task.m_event.Wait(rtc::Event::kForever);
-                if (logger)
-                    logger("-------------------------------------------------------------");
                 return std::move(task.m_returnedValue);
             }
         }
@@ -86,60 +69,23 @@ namespace opentera
             return isAsync;
         }
 
-        static void callSync(rtc::Thread* thread, const std::function<void()>& function, const std::function<void(const std::string&)>& logger)
+        static void callSync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            if (logger)
-                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            std::ostringstream ss;
-            ss << boost::stacktrace::stacktrace();
-            if (logger)
-                logger(ss.str());
             if (thread->IsCurrent())
             {
                 function();
-                if (logger)
-                    logger("-------------------------------------------------------------");
             }
             else
             {
                 FunctionTask task(function, false);
                 thread->PostTask(std::unique_ptr<QueuedTask>(&task));
                 task.m_event.Wait(rtc::Event::kForever);
-                if (logger)
-                    logger("-------------------------------------------------------------");
             }
         }
 
-        static void callAsync(rtc::Thread* thread, const std::function<void()>& function, const std::function<void(const std::string&)>& logger)
+        static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            if (thread->IsCurrent())
-            {
-                if (logger)
-                    logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                std::ostringstream ss;
-                ss << boost::stacktrace::stacktrace();
-                if (logger)
-                    logger(ss.str());
-                function();
-                if (logger)
-                    logger("-------------------------------------------------------------");
-            }
-            else
-            {
-                std::ostringstream ss;
-                ss << boost::stacktrace::stacktrace();
-                std::string stacktrace = ss.str();
-                thread->PostTask(std::make_unique<FunctionTask>([=]() {
-                    if (logger)
-                    {
-                        logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-                        logger(stacktrace);
-                    }
-                    function();
-                    if (logger)
-                        logger("-------------------------------------------------------------");
-                }, true));
-            }
+            thread->PostTask(std::make_unique<FunctionTask>(function, true));
         }
     };
 }
