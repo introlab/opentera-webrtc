@@ -97,14 +97,16 @@ namespace opentera
             if (thread->IsCurrent())
             {
                 function();
-                logger("-------------------------------------------------------------");
+                if (logger)
+                    logger("-------------------------------------------------------------");
             }
             else
             {
                 FunctionTask task(function, false);
                 thread->PostTask(std::unique_ptr<QueuedTask>(&task));
                 task.m_event.Wait(rtc::Event::kForever);
-                logger("-------------------------------------------------------------");
+                if (logger)
+                    logger("-------------------------------------------------------------");
             }
         }
 
@@ -118,7 +120,8 @@ namespace opentera
                 logger(ss.str());
 
             thread->PostTask(std::make_unique<FunctionTask>(function, true));
-            logger("-------------------------------------------------------------");
+            if (logger)
+                logger("-------------------------------------------------------------");
         }
     };
 }
