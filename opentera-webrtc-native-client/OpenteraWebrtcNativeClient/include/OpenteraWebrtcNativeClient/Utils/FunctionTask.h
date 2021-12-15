@@ -112,16 +112,34 @@ namespace opentera
 
         static void callAsync(rtc::Thread* thread, const std::function<void()>& function, const std::function<void(const std::string&)>& logger)
         {
-            if (logger)
-                logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-            std::ostringstream ss;
-            ss << boost::stacktrace::stacktrace();
-            if (logger)
-                logger(ss.str());
-
-            thread->PostTask(std::make_unique<FunctionTask>(function, true));
-            if (logger)
-                logger("-------------------------------------------------------------");
+            if (thread->IsCurrent())
+            {
+                if (logger)
+                    logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                std::ostringstream ss;
+                ss << boost::stacktrace::stacktrace();
+                if (logger)
+                    logger(ss.str());
+                function();
+                if (logger)
+                    logger("-------------------------------------------------------------");
+            }
+            else
+            {
+                std::ostringstream ss;
+                ss << boost::stacktrace::stacktrace();
+                std::string stacktrace = ss.str();
+                thread->PostTask(std::make_unique<FunctionTask>([=]() {
+                    if (logger)
+                    {
+                        logger("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                        logger(stacktrace);
+                    }
+                    function();
+                    if (logger)
+                        logger("-------------------------------------------------------------");
+                }, true));
+            }
         }
     };
 }
