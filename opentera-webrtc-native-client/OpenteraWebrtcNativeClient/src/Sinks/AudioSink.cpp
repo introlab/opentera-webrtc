@@ -9,12 +9,7 @@ using namespace opentera;
  * @brief Construct an AudioStream object
  * @param onAudioDataReceived callback function to consume audio data received on the WebRTC transport layer
  */
-AudioSink::AudioSink(function<void(
-        const void* audioData,
-        int bitsPerSample,
-        int sampleRate,
-        size_t numberOfChannels,
-        size_t numberOfFrames)> onAudioDataReceived) : m_onAudioFrameReceived(move(onAudioDataReceived))
+AudioSink::AudioSink(AudioSinkCallback onAudioDataReceived) : m_onAudioFrameReceived(move(onAudioDataReceived))
 {
 }
 

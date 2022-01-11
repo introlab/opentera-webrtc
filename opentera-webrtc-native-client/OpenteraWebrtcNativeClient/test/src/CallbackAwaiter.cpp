@@ -13,7 +13,7 @@ CallbackAwaiter::CallbackAwaiter(int maxCount, chrono::seconds timeout) :
 {
 }
 
-void CallbackAwaiter::wait()
+void CallbackAwaiter::wait(const char* file, int line)
 {
     while (m_count.load() < m_maxCount)
     {
@@ -22,7 +22,7 @@ void CallbackAwaiter::wait()
         chrono::steady_clock::time_point end = chrono::steady_clock::now();
         if (chrono::duration_cast<chrono::seconds>(end - m_begin) > m_timeout)
         {
-            ADD_FAILURE();
+            ADD_FAILURE_AT(file, line);
             return;
         }
     }

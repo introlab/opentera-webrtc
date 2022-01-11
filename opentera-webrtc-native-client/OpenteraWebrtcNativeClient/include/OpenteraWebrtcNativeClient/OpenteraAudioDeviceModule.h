@@ -2,6 +2,7 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_BLACK_HOLE_AUDIO_CAPTURE_MODULE_H
 
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
+#include <OpenteraWebrtcNativeClient/Sinks/AudioSink.h>
 
 #include <modules/audio_device/include/audio_device.h>
 
@@ -9,7 +10,6 @@
 #include <memory>
 #include <mutex>
 #include <thread>
-#include <functional>
 
 namespace opentera
 {
@@ -18,11 +18,7 @@ namespace opentera
      */
     class OpenteraAudioDeviceModule : public webrtc::AudioDeviceModule
     {
-        std::function<void(const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)> m_onMixedAudioFrameReceived;
+        AudioSinkCallback m_onMixedAudioFrameReceived;
 
         bool m_isPlayoutInitialized;
         bool m_isRecordingInitialized;
@@ -46,8 +42,7 @@ namespace opentera
         DECLARE_NOT_COPYABLE(OpenteraAudioDeviceModule);
         DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
 
-        void setOnMixedAudioFrameReceived(
-                const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived);
+        void setOnMixedAudioFrameReceived(const AudioSinkCallback& onMixedAudioFrameReceived);
         void sendFrame(const void* audioData,
                 int bitsPerSample,
                 int sampleRate,

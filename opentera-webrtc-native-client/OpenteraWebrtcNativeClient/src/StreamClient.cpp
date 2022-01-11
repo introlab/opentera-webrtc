@@ -1,5 +1,4 @@
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
-#include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
 using namespace opentera;
 using namespace std;
@@ -173,5 +172,6 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             onAddRemoteStream,
             onRemoveRemoteStream,
             m_onVideoFrameReceived,
+            m_onEncodedVideoFrameReceived,
             m_onAudioFrameReceived);
 }

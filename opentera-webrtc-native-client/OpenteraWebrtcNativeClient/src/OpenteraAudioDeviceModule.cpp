@@ -21,8 +21,7 @@ OpenteraAudioDeviceModule::~OpenteraAudioDeviceModule()
     stop();
 }
 
-void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(
-    const std::function<void(const void*, int, int, size_t, size_t)>& onMixedAudioFrameReceived)
+void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(const AudioSinkCallback& onMixedAudioFrameReceived)
 {
     lock_guard<mutex> lock(m_setCallbackMutex);
     stop();

@@ -5,7 +5,6 @@
 #include <libyuv.h>
 
 using namespace opentera;
-using namespace webrtc;
 using namespace rtc;
 using namespace std;
 
@@ -14,7 +13,7 @@ using namespace std;
  *
  * @param onFrameReceived callback function that gets called whenever a frame is received
  */
-VideoSink::VideoSink(function<void(const cv::Mat&, uint64_t)>  onFrameReceived) :
+VideoSink::VideoSink(VideoSinkCallback onFrameReceived) :
         m_onFrameReceived(move(onFrameReceived))
 {
     m_wants.rotation_applied = true;
@@ -31,7 +30,7 @@ VideoSink::VideoSink(function<void(const cv::Mat&, uint64_t)>  onFrameReceived) 
  *
  * @param frame available webrtc frame
  */
-void VideoSink::OnFrame(const VideoFrame& frame)
+void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
 {
     // Transform data from 3 array in I420 buffer to one cv::Mat in yuv
     m_bgrImg.create(frame.height(), frame.width(), CV_8UC3);
