@@ -6,7 +6,6 @@
 
 namespace opentera
 {
-
     enum class VideoCodecType
     {
         Generic = 0,
@@ -32,13 +31,11 @@ namespace opentera
     {
         EncodedVideoSinkCallback m_onFrameReceived;
 
-
     public:
         explicit EncodedVideoSink(EncodedVideoSinkCallback onFrameReceived);
 
         void OnFrame(const webrtc::RecordableEncodedFrame& frame) override;
     };
-
 }
 
 #endif
