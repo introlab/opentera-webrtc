@@ -105,7 +105,7 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndNotWait)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_NEAR(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), 0, 10);
-    awaiter.wait();
+    awaiter.wait(__FILE__, __LINE__);
 }
 
 TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldCallTheFunction)
@@ -126,5 +126,5 @@ TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldCallTheFunction)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_NEAR(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), 0, 10);
-    awaiter.wait();
+    awaiter.wait(__FILE__, __LINE__);
 }

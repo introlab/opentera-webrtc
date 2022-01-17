@@ -14,9 +14,9 @@ namespace opentera
         std::chrono::steady_clock::time_point m_begin;
 
     public:
-        explicit CallbackAwaiter(int maxCount, std::chrono::seconds timeout);
+        CallbackAwaiter(int maxCount, std::chrono::seconds timeout);
 
-        void wait();
+        void wait(const char* file, int line);
         bool done();
     };
 }

@@ -5,26 +5,22 @@
 
 namespace opentera
 {
+    using AudioSinkCallback = std::function<void(
+            const void* audioData,
+            int bitsPerSample,
+            int sampleRate,
+            size_t numberOfChannels,
+            size_t numberOfFrames)>;
 
     /**
      * @brief Class that sinks audio data from the WebRTC transport layer and feeds it to the provided callback.
      */
     class AudioSink : public webrtc::AudioTrackSinkInterface
     {
-        std::function<void(
-                const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)> m_onAudioFrameReceived;
+        AudioSinkCallback m_onAudioFrameReceived;
 
     public:
-        explicit AudioSink(std::function<void(
-                const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t number_of_frames)> onAudioFrameReceived);
+        explicit AudioSink(AudioSinkCallback onAudioFrameReceived);
 
         void OnData(const void* audioData,
                int bitsPerSample,

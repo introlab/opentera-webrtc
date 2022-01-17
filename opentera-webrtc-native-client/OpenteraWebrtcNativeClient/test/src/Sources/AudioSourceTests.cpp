@@ -35,12 +35,12 @@ public:
         m_capturedData.emplace_back(reinterpret_cast<const int8_t*>(audioSamples),
                 reinterpret_cast<const int8_t*>(audioSamples) + nChannels * nSamples);
 
-        m_bytesPerSample.push_back(nBytesPerSample);
-        m_sampleRate.push_back(samplesPerSec);
-        m_numberOfChannels.push_back(nChannels);
-        m_numberOfFrames.push_back(nSamples);
-        m_totalDelayMS.push_back(totalDelayMS);
-        m_keyPressed.push_back(keyPressed);
+        m_bytesPerSample.emplace_back(nBytesPerSample);
+        m_sampleRate.emplace_back(samplesPerSec);
+        m_numberOfChannels.emplace_back(nChannels);
+        m_numberOfFrames.emplace_back(nSamples);
+        m_totalDelayMS.emplace_back(totalDelayMS);
+        m_keyPressed.emplace_back(keyPressed);
 
         return 0;
     }

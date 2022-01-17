@@ -56,7 +56,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
             },
                     "Sends binary data to all clients.\n"
                     "\n"
-                    ":param bytes: The binary data\n",
+                    ":param bytes: The binary data (bytes)\n",
                     py::arg("bytes"))
             .def("send_to_all", py::overload_cast<const string&>(&DataChannelClient::sendToAll),
                     "Sends a string message to all clients.\n"

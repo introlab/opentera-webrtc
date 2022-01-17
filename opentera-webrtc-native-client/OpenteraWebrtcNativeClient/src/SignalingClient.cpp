@@ -131,7 +131,7 @@ void SignalingClient::callAll()
         m_alreadyAcceptedCalls.clear();
         for (const auto& pair : m_roomClientsById)
         {
-            m_alreadyAcceptedCalls.push_back(pair.first);
+            m_alreadyAcceptedCalls.emplace_back(pair.first);
         }
 
         m_sio.socket()->emit("call-all");
@@ -150,7 +150,7 @@ void SignalingClient::callIds(const vector<string>& ids)
         auto data = sio::array_message::create();
         for (const auto& id : ids)
         {
-            data->get_vector().push_back(sio::string_message::create(id));
+            data->get_vector().emplace_back(sio::string_message::create(id));
         }
         m_sio.socket()->emit("call-ids", data);
     });
@@ -191,7 +191,7 @@ vector<string> SignalingClient::getConnectedRoomClientIds()
         ids.reserve(m_peerConnectionHandlersById.size());
         for (const auto& pair : m_peerConnectionHandlersById)
         {
-            ids.push_back(pair.first);
+            ids.emplace_back(pair.first);
         }
         return ids;
     });
@@ -551,7 +551,7 @@ void SignalingClient::closeAllConnections()
         vector<string> ids(m_peerConnectionHandlersById.size());
         for (const auto& pair : m_peerConnectionHandlersById)
         {
-            ids.push_back(pair.first);
+            ids.emplace_back(pair.first);
         }
 
         for (const auto& id : ids)

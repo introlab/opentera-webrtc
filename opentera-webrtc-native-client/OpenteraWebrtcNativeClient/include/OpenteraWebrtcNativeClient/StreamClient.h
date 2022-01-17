@@ -3,6 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
 #include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
+#include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
 #include <OpenteraWebrtcNativeClient/SignalingClient.h>
 
@@ -20,13 +21,9 @@ namespace opentera
 
         std::function<void(const Client&)> m_onAddRemoteStream;
         std::function<void(const Client&)> m_onRemoveRemoteStream;
-        std::function<void(const Client&, const cv::Mat&, uint64_t)> m_onVideoFrameReceived;
-        std::function<void(const Client& client,
-                const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)> m_onAudioFrameReceived;
+        VideoFrameReceivedCallback m_onVideoFrameReceived;
+        EncodedVideoFrameReceivedCallback m_onEncodedVideoFrameReceived;
+        AudioFrameReceivedCallback m_onAudioFrameReceived;
 
         bool m_isLocalAudioMuted;
         bool m_isLocalVideoMuted;
@@ -61,21 +58,10 @@ namespace opentera
 
         void setOnAddRemoteStream(const std::function<void(const Client&)>& callback);
         void setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback);
-        void setOnVideoFrameReceived(
-                const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback);
-        void setOnAudioFrameReceived(const std::function<void(
-                const Client& client,
-                const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)>& callback);
-        void setOnMixedAudioFrameReceived(const std::function<void(
-                const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames)>& callback);
+        void setOnVideoFrameReceived(const VideoFrameReceivedCallback& callback);
+        void setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback& callback);
+        void setOnAudioFrameReceived(const AudioFrameReceivedCallback& callback);
+        void setOnMixedAudioFrameReceived(const AudioSinkCallback& callback);
 
     protected:
         std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
@@ -193,12 +179,38 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void StreamClient::setOnVideoFrameReceived(
-            const std::function<void(const Client&, const cv::Mat& bgrImg, uint64_t timestampUs)>& callback)
+    inline void StreamClient::setOnVideoFrameReceived(const VideoFrameReceivedCallback& callback)
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
             m_onVideoFrameReceived = callback;
+        });
+    }
+
+    /**
+     * @brief Sets the callback that is called when an encoded video stream frame is received.
+     *
+     * The callback is called from a WebRTC processing thread. The callback should not block.
+     *
+     * @parblock
+     * Callback parameters:
+     * - client: The client of the stream frame
+     * - data: The binary data
+     * - dataSize: The data size
+     * - codecType: The codec type
+     * - isKeyFrame: Indicates if it is a key frame
+     * - width: The frame width if it is a key frame
+     * - height: The frame height if it is a key frame
+     * - timestampUs The timestamp in microseconds
+     * @endparblock
+     *
+     * @param callback The callback
+     */
+    inline void StreamClient::setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback &callback)
+    {
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
+        {
+            m_onEncodedVideoFrameReceived = callback;
         });
     }
 
@@ -219,13 +231,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void StreamClient::setOnAudioFrameReceived(const std::function<void(
-            const Client& client,
-            const void* audioData,
-            int bitsPerSample,
-            int sampleRate,
-            size_t numberOfChannels,
-            size_t numberOfFrames)>& callback)
+    inline void StreamClient::setOnAudioFrameReceived(const AudioFrameReceivedCallback& callback)
     {
         FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
         {
@@ -249,12 +255,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void StreamClient::setOnMixedAudioFrameReceived(const std::function<void(
-            const void* audioData,
-            int bitsPerSample,
-            int sampleRate,
-            size_t numberOfChannels,
-            size_t numberOfFrames)>& callback)
+    inline void StreamClient::setOnMixedAudioFrameReceived(const AudioSinkCallback& callback)
     {
         m_audioDeviceModule->setOnMixedAudioFrameReceived(callback);
     }

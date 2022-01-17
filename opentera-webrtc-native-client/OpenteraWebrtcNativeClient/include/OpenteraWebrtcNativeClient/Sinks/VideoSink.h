@@ -9,18 +9,20 @@
 namespace opentera
 {
 
+    using VideoSinkCallback = std::function<void(const cv::Mat&, uint64_t)>;
+
     /**
      * @brief Class that sinks frame from a webrtc stream
      */
     class VideoSink : public rtc::VideoSinkInterface<webrtc::VideoFrame>
     {
-        std::function<void(const cv::Mat&, uint64_t)> m_onFrameReceived;
+        VideoSinkCallback m_onFrameReceived;
         rtc::VideoSinkWants m_wants;
         cv::Mat m_bgrImg;
-        
+
 
     public:
-        explicit VideoSink(std::function<void(const cv::Mat&, uint64_t)>  onFrameReceived);
+        explicit VideoSink(VideoSinkCallback onFrameReceived);
 
         void OnFrame(const webrtc::VideoFrame& frame) override;
         rtc::VideoSinkWants wants() const;

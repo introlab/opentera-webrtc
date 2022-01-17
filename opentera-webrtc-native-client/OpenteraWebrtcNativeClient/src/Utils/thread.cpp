@@ -6,8 +6,9 @@
 #include <pthread.h>
 #endif
 
+using namespace std;
 
-bool setThreadPriority(std::thread &thread, ThreadPriority priority)
+bool setThreadPriority(thread &thread, ThreadPriority priority)
 {
 #if defined(WIN32) || defined(_WIN32)
     return SetPriorityClass(thread.native_handle(), static_cast<DWORD>(priority)) != 0;

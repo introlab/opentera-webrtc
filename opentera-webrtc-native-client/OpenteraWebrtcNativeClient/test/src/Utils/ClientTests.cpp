@@ -65,10 +65,10 @@ TEST(ClientTests, equalityOperator_Client_shouldReturnFalseIfOperandsAreNotEqual
         Client("c1", "n1", sio::int_message::create(10)));
 
     auto array1 = sio::array_message::create();
-    array1->get_vector().push_back(sio::string_message::create("a"));
+    array1->get_vector().emplace_back(sio::string_message::create("a"));
     auto array2 = sio::array_message::create();
     EXPECT_FALSE(Client("c1", "n1", array1) == Client("c1", "n1", array2));
-    array2->get_vector().push_back(sio::string_message::create("b"));
+    array2->get_vector().emplace_back(sio::string_message::create("b"));
     EXPECT_FALSE(Client("c1", "n1", array1) == Client("c1", "n1", array2));
 
     auto object1 = sio::object_message::create();
@@ -95,9 +95,9 @@ TEST(ClientTests, equalityOperator_Client_shouldReturnTrueIfOperandsAreEqual)
         Client("c", "n", nullptr));
 
     auto array1 = sio::array_message::create();
-    array1->get_vector().push_back(sio::string_message::create("a"));
+    array1->get_vector().emplace_back(sio::string_message::create("a"));
     auto array2 = sio::array_message::create();
-    array2->get_vector().push_back(sio::string_message::create("a"));
+    array2->get_vector().emplace_back(sio::string_message::create("a"));
     EXPECT_TRUE(Client("c1", "n1", array1) == Client("c1", "n1", array2));
 
     auto object1 = sio::object_message::create();

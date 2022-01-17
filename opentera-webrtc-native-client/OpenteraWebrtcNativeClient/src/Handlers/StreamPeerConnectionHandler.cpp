@@ -11,19 +11,20 @@ static constexpr bool OfferToReceiveVideo = true;
 static constexpr bool OfferToReceiveAudio = true;
 
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
-    string id,
-    Client peerClient,
-    bool isCaller,
-    function<void(const string&, const sio::message::ptr&)> sendEvent,
-    function<void(const string&)> onError,
-    function<void(const Client&)> onClientConnected,
-    function<void(const Client&)> onClientDisconnected,
-    scoped_refptr<VideoTrackInterface>  videoTrack,
-    scoped_refptr<AudioTrackInterface> audioTrack,
-    function<void(const Client&)> onAddRemoteStream,
-    function<void(const Client&)> onRemoveRemoteStream,
-    const function<void(const Client&, const cv::Mat&, uint64_t)>& onVideoFrameReceived,
-    const function<void(const Client&, const void*, int, int, size_t, size_t)>& onAudioFrameReceived) :
+        string id,
+        Client peerClient,
+        bool isCaller,
+        function<void(const string&, const sio::message::ptr&)> sendEvent,
+        function<void(const string&)> onError,
+        function<void(const Client&)> onClientConnected,
+        function<void(const Client&)> onClientDisconnected,
+        scoped_refptr<VideoTrackInterface>  videoTrack,
+        scoped_refptr<AudioTrackInterface> audioTrack,
+        function<void(const Client&)> onAddRemoteStream,
+        function<void(const Client&)> onRemoveRemoteStream,
+        const VideoFrameReceivedCallback& onVideoFrameReceived,
+        const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
+        const AudioFrameReceivedCallback& onAudioFrameReceived) :
     PeerConnectionHandler(move(id), move(peerClient), isCaller, OfferToReceiveVideo, OfferToReceiveAudio,
             move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
     m_videoTrack(move(videoTrack)),
@@ -36,6 +37,21 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
         m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs)
         {
             onVideoFrameReceived(m_peerClient, bgrImg, timestampUs);
+        });
+    }
+
+    if (onEncodedVideoFrameReceived)
+    {
+        m_encodedVideoSink = make_unique<EncodedVideoSink>([=](const uint8_t* data,
+                size_t dataSize,
+                VideoCodecType codecType,
+                bool isKeyFrame,
+                uint32_t width,
+                uint32_t height,
+                uint64_t timestampUs)
+        {
+            onEncodedVideoFrameReceived(m_peerClient, data, dataSize, codecType, isKeyFrame, width, height,
+                    timestampUs);
         });
     }
 
@@ -60,6 +76,10 @@ StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
         if (!videoTracks.empty() && m_videoSink != nullptr)
         {
             videoTracks.front()->RemoveSink(m_videoSink.get());
+        }
+        if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
+        {
+            videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
         }
 
         AudioTrackVector audioTracks = stream->GetAudioTracks();
@@ -105,6 +125,10 @@ void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface
     {
         videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSink->wants());
     }
+    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
+    {
+        videoTracks.front()->GetSource()->AddEncodedSink(m_encodedVideoSink.get());
+    }
 
     AudioTrackVector audioTracks = stream->GetAudioTracks();
     if (!audioTracks.empty() && m_audioSink != nullptr)
@@ -122,6 +146,10 @@ void StreamPeerConnectionHandler::OnRemoveStream(scoped_refptr<MediaStreamInterf
     if (!videoTracks.empty() && m_videoSink != nullptr)
     {
         videoTracks.front()->RemoveSink(m_videoSink.get());
+    }
+    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
+    {
+        videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
     }
 
     AudioTrackVector audioTracks = stream->GetAudioTracks();
