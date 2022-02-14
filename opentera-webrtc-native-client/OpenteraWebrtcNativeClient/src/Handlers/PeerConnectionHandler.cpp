@@ -221,9 +221,6 @@ void PeerConnectionHandler::OnSetSessionDescriptionObserverSuccess()
     if (!m_isCaller)
     {
         webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
-        options.offer_to_receive_video = m_offerToReceiveVideo;
-        options.offer_to_receive_audio = m_offerToReceiveAudio;
-
         m_peerConnection->CreateAnswer(this, options);
     }
 }

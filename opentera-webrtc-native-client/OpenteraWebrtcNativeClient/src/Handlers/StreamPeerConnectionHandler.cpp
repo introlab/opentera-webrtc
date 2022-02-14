@@ -14,7 +14,6 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
         string id,
         Client peerClient,
         bool isCaller,
-        bool hasOnMixedAudioFrameReceivedCallback,
         function<void(const string&, const sio::message::ptr&)> sendEvent,
         function<void(const string&)> onError,
         function<void(const Client&)> onClientConnected,
@@ -26,9 +25,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
         const VideoFrameReceivedCallback& onVideoFrameReceived,
         const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
         const AudioFrameReceivedCallback& onAudioFrameReceived) :
-    PeerConnectionHandler(move(id), move(peerClient), isCaller,
-            onVideoFrameReceived || onEncodedVideoFrameReceived,
-            hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived,
+    PeerConnectionHandler(move(id), move(peerClient), isCaller, OfferToReceiveVideo, OfferToReceiveAudio,
             move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
     m_videoTrack(move(videoTrack)),
     m_audioTrack(move(audioTrack)),

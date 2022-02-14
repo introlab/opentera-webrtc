@@ -12,7 +12,6 @@ using namespace std;
 StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
         WebrtcConfiguration webrtcConfiguration) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
         m_isLocalAudioMuted(false),
         m_isLocalVideoMuted(false)
 {
@@ -30,7 +29,6 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         shared_ptr<VideoSource> videoSource) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
         m_isLocalAudioMuted(false),
         m_isLocalVideoMuted(false)
 {
@@ -48,7 +46,6 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         shared_ptr<AudioSource> audioSource) :
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_audioSource(move(audioSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
         m_isLocalAudioMuted(false),
         m_isLocalVideoMuted(false)
 {
@@ -74,7 +71,6 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
         SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
         m_videoSource(move(videoSource)),
         m_audioSource(move(audioSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
         m_isLocalAudioMuted(false),
         m_isLocalVideoMuted(false)
 {
@@ -167,7 +163,6 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
             id,
             peerClient,
             isCaller,
-            m_hasOnMixedAudioFrameReceivedCallback,
             getSendEventFunction(),
             getOnErrorFunction(),
             getOnClientConnectedFunction(),
