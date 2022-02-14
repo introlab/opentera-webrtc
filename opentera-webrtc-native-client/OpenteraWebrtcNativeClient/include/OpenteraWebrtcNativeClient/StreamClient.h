@@ -19,6 +19,7 @@ namespace opentera
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<AudioSource> m_audioSource;
 
+        bool m_hasOnMixedAudioFrameReceivedCallback;
         std::function<void(const Client&)> m_onAddRemoteStream;
         std::function<void(const Client&)> m_onRemoveRemoteStream;
         VideoFrameReceivedCallback m_onVideoFrameReceived;
@@ -257,6 +258,12 @@ namespace opentera
      */
     inline void StreamClient::setOnMixedAudioFrameReceived(const AudioSinkCallback& callback)
     {
+        bool hasOnMixedAudioFrameReceivedCallback(callback);
+        FunctionTask<void>::callSync(getInternalClientThread(), [this, hasOnMixedAudioFrameReceivedCallback]()
+        {
+            m_hasOnMixedAudioFrameReceivedCallback = hasOnMixedAudioFrameReceivedCallback;
+        });
+
         m_audioDeviceModule->setOnMixedAudioFrameReceived(callback);
     }
 }
