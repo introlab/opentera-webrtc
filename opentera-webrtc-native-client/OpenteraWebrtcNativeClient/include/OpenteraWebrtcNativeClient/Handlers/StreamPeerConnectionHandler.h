@@ -45,6 +45,7 @@ namespace opentera
                 std::string id,
                 Client peerClient,
                 bool isCaller,
+                bool hasOnMixedAudioFrameReceivedCallback,
                 std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
                 std::function<void(const std::string&)> onError,
                 std::function<void(const Client&)> onClientConnected,
