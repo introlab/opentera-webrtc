@@ -5,6 +5,9 @@ import json
 import sys
 import logging
 
+from pathlib import Path
+from typing import Union
+
 from aiohttp import web
 from aiohttp_index import IndexMiddleware
 
@@ -177,21 +180,37 @@ def _isAuthorized(user_password):
     return password is None or user_password == password
 
 
+class ExpandUserPath:
+    def __new__(cls, path: Union[str, Path]) -> Path:
+        return Path(path).expanduser().resolve()
+
+class Args:
+    port: int
+    password: str
+    ice_servers: Path
+    static_folder: Path
+    socketio_path: str
+    certificate: Path
+    key: Path
+    log_level: int
+    robot_type: str
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signaling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
-    parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
-    parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
+    parser.add_argument('--ice_servers', type=ExpandUserPath, help='Choose the ice servers json file', default=None)
+    parser.add_argument('--static_folder', type=ExpandUserPath, help='Choose the static folder', default=None)
     parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
-    parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
-    parser.add_argument('--key', type=str, help='TLS private key path', default=None)
+    parser.add_argument('--certificate', type=ExpandUserPath, help='TLS certificate path', default=None)
+    parser.add_argument('--key', type=ExpandUserPath, help='TLS private key path', default=None)
     parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
         logging.WARNING, logging.INFO, logging.DEBUG], help='Log level value', default=logging.DEBUG)
     parser.add_argument('--robot_type', type=str, choices=['demo', 'ttop', 'beam'], help='Choose the robot type', default='demo')
 
     # Parse arguments
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Args())
 
     # Set logging level
     logger.setLevel(args.log_level)
@@ -214,7 +233,7 @@ if __name__ == '__main__':
 
     # Look for ice servers file
     if args.ice_servers is not None:
-        with open(args.ice_servers) as file:
+        with args.ice_servers.open() as file:
             ice_servers = json.load(file)
 
     # Make sure websocket path is defined
