@@ -1,4 +1,5 @@
 #include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/PyBindUtils.h>
 
 #include <OpenteraWebrtcNativeClient/SignalingClient.h>
 
@@ -25,21 +26,20 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             .def("close_all_room_peer_connections", &SignalingClient::closeAllRoomPeerConnections,
                     "Closes all room peer connections.")
 
-            .def_property_readonly("is_connected", &SignalingClient::isConnected,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property_readonly("is_connected",
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::isConnected),
                     "Indicates if the client is connected to the signaling server.\n"
                     ":return: True if the client is connected to the signaling server")
-            .def_property_readonly("is_rtc_connected", &SignalingClient::isRtcConnected,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property_readonly("is_rtc_connected",
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::isRtcConnected),
                     "Indicates if the client is connected to a least one client (RTCPeerConnection).\n"
                     ":return: True if the client is connected to a least one client (RTCPeerConnection)")
-            .def_property_readonly("id", &SignalingClient::id,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property_readonly("id", GilScopedRelease<SignalingClient>::guard(&SignalingClient::id),
                     "Returns the client id.\n"
                     ":return: The client id")
 
-            .def_property_readonly("connected_room_client_ids", &SignalingClient::getConnectedRoomClientIds,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property_readonly("connected_room_client_ids",
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::getConnectedRoomClientIds),
                     "Returns the connected room client ids.\n"
                     ":return: The connected room client ids")
 
@@ -51,27 +51,27 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     ":param id: The room client id\n"
                     ":return: The room client that matches with the specified id",
                     py::arg("id"))
-            .def_property_readonly("room_clients", &SignalingClient::getRoomClients,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property_readonly("room_clients",
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::getRoomClients),
                     "Returns the room clients\n"
                     ":return: The room clients")
 
-            .def_property("on_signaling_connection_opened", nullptr, &SignalingClient::setOnSignalingConnectionOpened,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_signaling_connection_opened", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionOpened),
                     "Sets the callback that is called when the signaling connection opens.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_signaling_connection_closed", nullptr, &SignalingClient::setOnSignalingConnectionClosed,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_signaling_connection_closed", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionClosed),
                     "Sets the callback that is called when the signaling connection closes.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_signaling_connection_error", nullptr, &SignalingClient::setOnSignalingConnectionError,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_signaling_connection_error", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionError),
                     "Sets the callback that is called when a signaling connection error occurs.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -81,8 +81,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
-            .def_property("on_room_clients_changed", nullptr, &SignalingClient::setOnRoomClientsChanged,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_room_clients_changed", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnRoomClientsChanged),
                     "Sets the callback that is called when the room client changes.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -92,8 +92,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
-            .def_property("call_acceptor", nullptr, &SignalingClient::setCallAcceptor,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("call_acceptor", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setCallAcceptor),
                     "Sets the callback that is used to accept or reject a call.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -105,8 +105,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     " - True to accept the call, False to reject the call\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_call_rejected", nullptr, &SignalingClient::setOnCallRejected,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_call_rejected", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnCallRejected),
                     "Sets the callback that is called when a call is rejected.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -116,8 +116,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
-            .def_property("on_client_connected", nullptr, &SignalingClient::setOnClientConnected,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_client_connected", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnClientConnected),
                     "Sets the callback that is called when a client peer connection opens.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -126,8 +126,8 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     " - client: The client that is connected\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_client_disconnected", nullptr, &SignalingClient::setOnClientDisconnected,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_client_disconnected", nullptr,
+                    GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnClientDisconnected),
                     "Sets the callback that is called when a client peer connection closes.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -137,8 +137,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
-            .def_property("on_error", nullptr, &SignalingClient::setOnError,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_error", nullptr, GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnError),
                     "Sets the callback that is called when an error occurs.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -148,8 +147,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
                     "\n"
                     ":param callback: The callback")
 
-            .def_property("logger", nullptr, &SignalingClient::setLogger,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("logger", nullptr, GilScopedRelease<SignalingClient>::guard(&SignalingClient::setLogger),
                     "Sets the callback that is used to log information.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
