@@ -88,6 +88,10 @@ jobs:
         working-directory: opentera-webrtc-native-client/build
         run: |
           find -name "opentera_webrtc_native_client*.so"
+          /usr/bin/env python3 --version
+          /usr/bin/env python3 -m pip --version
+          python3 --version
+          python3 -m pip --version
 
       - name: Explore stuff 2
         working-directory: opentera-webrtc-native-client/dist
