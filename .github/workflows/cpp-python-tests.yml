@@ -80,7 +80,8 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           make -j2
           make install
-          tree
+          find -name "opentera_webrtc_native_client*.so
+          tree ../dist/${{ matrix.build_type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/python/package/build
         # rm -rf ../dist/${{ matrix.build_type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/build
         # rm -rf ../dist/${{ matrix.build_type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/*.so
         # rm -rf ../dist/${{ matrix.build_type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/opentera_webrtc_native_client.egg-info
