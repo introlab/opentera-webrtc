@@ -13,6 +13,9 @@ class AsyncRunner:
     def run_async(self, coroutine):
         return self.loop.run_until_complete(coroutine)
 
+    def __del__(self):
+        self.loop.close()
+
 
 class SioMock:
     def __init__(self):

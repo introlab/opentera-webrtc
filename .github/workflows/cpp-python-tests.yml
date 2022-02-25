@@ -110,4 +110,4 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/opentera_webrtc_native_client.cpython*.so .
-          python3 -m unittest discover . "*_test.py"
+          python3 -Werror -m unittest discover . "*_test.py"
