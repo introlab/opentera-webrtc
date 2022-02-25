@@ -83,17 +83,12 @@ jobs:
           make install
 
       - name: Python installation cleanup
-        working-directory: opentera-webrtc-native-client/build/OpenteraWebrtcNativeClient
+        working-directory: opentera-webrtc-native-client/build/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
         run: |
-          rm -rfv opentera_webrtc_native_client/build
-          rm -rfv opentera_webrtc_native_client/*.so
+          rm -rfv build
+          rm -rfv '*.so'
           rm -rfv opentera_webrtc_native_client.egg-info
           rm -rfv opentera_webrtc_native_client.html
-
-      - name: Explore stuff 1
-        working-directory: opentera-webrtc-native-client/build
-        run: |
-          python3 -m pip show opentera-webrtc-native-client
 
       - name: Install python dependencies for signaling-server
         working-directory: signaling-server
