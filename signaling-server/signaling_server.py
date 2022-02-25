@@ -193,7 +193,6 @@ class Args:
     certificate: Path
     key: Path
     log_level: int
-    robot_type: str
 
 
 if __name__ == '__main__':
@@ -207,7 +206,6 @@ if __name__ == '__main__':
     parser.add_argument('--key', type=ExpandUserPath, help='TLS private key path', default=None)
     parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
         logging.WARNING, logging.INFO, logging.DEBUG], help='Log level value', default=logging.DEBUG)
-    parser.add_argument('--robot_type', type=str, choices=['demo', 'ttop', 'beam'], help='Choose the robot type', default='demo')
 
     # Parse arguments
     args = parser.parse_args(namespace=Args())
