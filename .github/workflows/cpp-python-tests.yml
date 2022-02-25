@@ -88,18 +88,7 @@ jobs:
       - name: Explore stuff 1
         working-directory: opentera-webrtc-native-client/build
         run: |
-          ls -l
-          tree bin
-          find -name "opentera_webrtc_native_client*.so"
-
-      - name: Explore stuff 2
-        working-directory: opentera-webrtc-native-client/dist
-        run: |
-          ls -l
-          ls -l ${{ matrix.build-type }}
-          tree ${{ matrix.build-type }}
-          find -name "opentera_webrtc_native_client*.so"
-          tree ${{ matrix.build-type }}/opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
+          python3 -m pip show opentera-webrtc-native-client
 
       - name: Install python dependencies for signaling-server
         working-directory: signaling-server
