@@ -31,6 +31,19 @@ option(
     OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
     "If ON, install the native client python library on build instead of install"
     OFF
+    )
+
+# Default behavior is to install to --user in both cases
+set(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_OPTIONS
+    "--user"
+    CACHE STRING
+    "Pip install options when building"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_OPTIONS
+    "--user"
+    CACHE STRING
+    "Pip install options when installing"
 )
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)

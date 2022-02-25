@@ -1,0 +1,8 @@
+execute_process(
+    COMMAND /usr/bin/env python3 -m pip install --verbose --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@CMAKE_CURRENT_BINARY_DIR@/opentera_webrtc_native_client/dist opentera-webrtc-native-client
+    WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@/opentera_webrtc_native_client
+)
+execute_process(
+    COMMAND bash -c "tar c $(/usr/bin/env python3 -m pip show opentera-webrtc-native-client | perl -n0777E 'say $1 if /Location:\\\\s+(.*?)\\\\n.*/s')/opentera_webrtc_native_client 2> /dev/null | md5sum > @CMAKE_CURRENT_BINARY_DIR@/install.md5"
+    WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@/opentera_webrtc_native_client
+)

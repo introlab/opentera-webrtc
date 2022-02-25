@@ -1,6 +1,9 @@
 set(PYTHON_LIB_NAME opentera_webrtc_native_client)
 
 set(INSTALL_ON_BUILD ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD})
+set(PIP_DEVEL_OPTIONS ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_OPTIONS})
+set(PIP_INSTALL_OPTIONS ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_OPTIONS})
+
 if(INSTALL_ON_BUILD)
     set(ALL_OPTION ALL)
 else()
@@ -19,16 +22,6 @@ file(GENERATE
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md.in ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/README.md)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/__init__.py)
 configure_file(${LICENSE_FILE} ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/LICENSE)
-
-# # Signaling server files
-# set(signaling_server_source_files
-#     ../../../../signaling-server/signaling_server.py
-#     ../../../../signaling-server/room_manager.py
-#     ../../../../signaling-server/requirements.txt
-#     ../../../../signaling-server/README.md
-# )
-
-# install(FILES ${signaling_server_source_files} DESTINATION python/signaling-server)
 
 set(GENERATE_CONFIGURE_OUTPUT_FILES
     ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/__init__.py
@@ -53,7 +46,7 @@ add_custom_target(
 )
 
 # Generate html doc
-if (OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC)
+if(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/${PYTHON_LIB_NAME}.html
         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/so.md5 ${GENERATE_CONFIGURE_OUTPUT_FILES} python-opentera-webrtc-native-client-so
@@ -87,23 +80,16 @@ add_custom_target(
     VERBATIM
 )
 
-file(GENERATE
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake
-    CONTENT
-    "execute_process(
-        COMMAND /usr/bin/env python3 -m pip install --upgrade --force-reinstall --no-deps --no-cache-dir --no-index --find-links=${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/dist opentera-webrtc-native-client
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client
-    )
-    execute_process(
-        COMMAND bash -c \"tar c $(/usr/bin/env python3 -m pip show opentera-webrtc-native-client | perl -n0777E 'say $1 if /Location:\\\\s+(.*?)\\\\n.*/s')/opentera_webrtc_native_client 2> /dev/null | md5sum > ${CMAKE_CURRENT_BINARY_DIR}/install.md5\"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client
-    )"
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/pip_install.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake
+    @ONLY
 )
 
 add_custom_command(
     OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/install.md5
-    DEPENDS python-opentera-webrtc-native-client-wheel ${CMAKE_CURRENT_BINARY_DIR}/dist.md5
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake
+    DEPENDS python-opentera-webrtc-native-client-wheel ${CMAKE_CURRENT_BINARY_DIR}/dist.md5 ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake
+    COMMAND ${CMAKE_COMMAND} -DPIP_INSTALL_OPTIONS=${PIP_DEVEL_OPTIONS} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client
     VERBATIM
 )
@@ -113,6 +99,4 @@ add_custom_target(
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/install.md5
 )
 
-if (NOT INSTALL_ON_BUILD)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake)
-endif()
+install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -DPIP_INSTALL_OPTIONS=${PIP_INSTALL_OPTIONS} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_install.cmake)")
