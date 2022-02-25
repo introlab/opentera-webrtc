@@ -81,9 +81,14 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           make -j2
           make install
-        # rm -rf ../dist/${{ matrix.build-type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/build
-        # rm -rf ../dist/${{ matrix.build-type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/*.so
-        # rm -rf ../dist/${{ matrix.build-type }}/opentera-webrtc-native-client-{{ steps.generate_version_output.outputs.version }}/opentera_webrtc_native_client/opentera_webrtc_native_client.egg-info
+
+      - name: Python installation cleanup
+        working-directory: opentera-webrtc-native-client/build/OpenteraWebrtcNativeClient
+        run: |
+          rm -rfv opentera_webrtc_native_client/build
+          rm -rfv opentera_webrtc_native_client/*.so
+          rm -rfv opentera_webrtc_native_client.egg-info
+          rm -rfv opentera_webrtc_native_client.html
 
       - name: Explore stuff 1
         working-directory: opentera-webrtc-native-client/build
