@@ -7,10 +7,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.8]
+        os: [ubuntu-20.04, ubuntu-18.04]
+        python-version: [3.8, 3.9, 3.10]
         build-type: [Debug, Release]
 
     steps:
@@ -21,6 +22,17 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Display Python information
+        run: |
+          /usr/bin/env python --version
+          python --version
+          /usr/bin/env python -m pip --version
+          python -m pip --version
+          /usr/bin/env python3 --version
+          python3 --version
+          /usr/bin/env python3 -m pip --version
+          python3 -m pip --version
 
       - name: Generate Version Output
         id: generate_version_output
@@ -88,14 +100,17 @@ jobs:
         working-directory: opentera-webrtc-native-client/build
         run: |
           ls -l
+          tree bin
           find -name "opentera_webrtc_native_client*.so"
 
       - name: Explore stuff 2
         working-directory: opentera-webrtc-native-client/dist
         run: |
           ls -l
+          ls -l ${{ matrix.build-type }}
+          tree ${{ matrix.build-type }}
           find -name "opentera_webrtc_native_client*.so"
-          tree ${{ matrix.build-type }}/opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}/python/package/build
+          tree ${{ matrix.build-type }}/opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
 
       - name: Install python dependencies for signaling-server
         working-directory: signaling-server
