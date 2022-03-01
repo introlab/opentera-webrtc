@@ -25,7 +25,7 @@ protected:
     {
         fs::path testFilePath(__FILE__);
         fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                .parent_path() / "signaling-server" / "signaling_server.py";
+                .parent_path() / "signaling-server" / "opentera-signaling-server";
 
         m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
                 " --port 8080 --password abc --ice_servers resources/iceServers.json",
