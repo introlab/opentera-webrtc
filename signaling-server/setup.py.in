@@ -35,5 +35,5 @@ setup(
     python_requires='>=3.8',
     zip_safe=False,
     install_requires=requirements,
-    scripts=['opentera/webrtc/signaling_server/signaling_server.py'],
+    scripts=['opentera-signaling-server'],
 )

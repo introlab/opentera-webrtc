@@ -16,11 +16,7 @@ from aiohttp_index import IndexMiddleware
 import socketio
 import ssl
 
-# The script works both on local and when installed
-try:
-    from room_manager import RoomManager
-except ImportError:
-    from opentera.webrtc.signaling_server.room_manager import RoomManager
+from .room_manager import RoomManager
 
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
@@ -201,7 +197,7 @@ class Args:
     log_level: int
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signaling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
@@ -257,3 +253,7 @@ if __name__ == '__main__':
         web.run_app(app, port=args.port, ssl_context=ssl_context)
     else:
         web.run_app(app, port=args.port)
+
+
+if __name__ == '__main__':
+    main()

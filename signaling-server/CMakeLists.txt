@@ -8,6 +8,8 @@ set(ENABLE_HTML_DOC ${OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC})
 set(ENABLE_HTML_DOC OFF)
 
 set(PYTHON_SUBPACKAGE_NAME "signaling_server")
+set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
+set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera/webrtc/${PYTHON_SUBPACKAGE_NAME})
 
 include(../cmake/pip_utils.cmake)
 
@@ -16,12 +18,18 @@ set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE)
 pip_configure_setup(setup.py.in)
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
-pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md README.md)
-pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt requirements.txt)
 
-pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py __init__.py)
-pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/room_manager.py room_manager.py)
-pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/signaling_server.py signaling_server.py)
+set(SOURCE
+    opentera/webrtc/signaling_server/__init__.py
+    opentera/webrtc/signaling_server/room_manager.py
+    opentera/webrtc/signaling_server/signaling_server.py
+
+    opentera-signaling-server
+    README.md
+    requirements.txt
+)
+# Same relative tree between CMAKE_CURRENT_SOURCE_DIR and PYTHON_PACKAGE_DIR for files in SOURCE will work as expected with this command
+pip_configure_package_file_hierarchy(${SOURCE})
 
 pip_add_html_target(NAME ${PYTHON_SUBPACKAGE_NAME}-html DEPENDS ${PIP_CONFIGURE_OUTPUT_FILES} ENABLE_HTML_DOC ${ENABLE_HTML_DOC})
 pip_add_dist_target(NAME ${PYTHON_SUBPACKAGE_NAME}-dist DEPENDS ${${PYTHON_SUBPACKAGE_NAME}-html})
