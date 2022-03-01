@@ -1,6 +1,6 @@
 import unittest
 
-import opentera_webrtc_native_client as webrtc
+import opentera.webrtc.native_client as webrtc
 
 
 class VideoSourceConfigurationTestCase(unittest.TestCase):
