@@ -6,7 +6,13 @@ def read_file(name):
         return fh.read()
 
 
+def read_file_lines(name):
+    with open(name, "r", encoding="utf-8") as fh:
+        return fh.readlines()
+
+
 long_description = read_file("README.md")
+requirements = read_file_lines("requirements.txt")
 
 setup(
     name="opentera_webrtc_signaling_server",
@@ -28,7 +34,6 @@ setup(
     platforms=['linux_x86_64'],
     python_requires='>=3.8',
     zip_safe=False,
-    install_requires=['python-socketio==5.5.0',
-                      'aiohttp==3.8.1', 'aiohttp_index==0.1'],
+    install_requires=requirements,
     scripts=['opentera/webrtc/signaling_server/signaling_server.py'],
 )

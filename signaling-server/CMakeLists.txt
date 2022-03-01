@@ -17,6 +17,7 @@ pip_configure_setup(setup.py.in)
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md README.md)
+pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt requirements.txt)
 
 pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py __init__.py)
 pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/room_manager.py room_manager.py)
