@@ -30,4 +30,5 @@ setup(
     zip_safe=False,
     install_requires=['python-socketio==5.5.0',
                       'aiohttp==3.8.1', 'aiohttp_index==0.1'],
+    scripts=['opentera/webrtc/signaling_server/signaling_server.py'],
 )

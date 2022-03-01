@@ -4,7 +4,7 @@ function(assert_variable_defined NAME)
     endif()
 endfunction()
 
-assert_variable_defined(PIP_SUBPACKAGE_NAME)
+assert_variable_defined(PYTHON_SUBPACKAGE_NAME)
 
 set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
 set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera/webrtc/${PYTHON_SUBPACKAGE_NAME})
@@ -59,13 +59,14 @@ function(pip_add_so_target)
 endfunction()
 
 function(pip_add_html_target)
-    set(options ENABLE_HTML_DOC)
-    set(oneValueArgs NAME)
+    set(options)
+    set(oneValueArgs NAME ENABLE_HTML_DOC)
     set(multiValueArgs DEPENDS)
     cmake_parse_arguments(PIP_ADD_HTML_TARGET "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # TODO: Add support for namespace packages
     if(PIP_ADD_HTML_TARGET_ENABLE_HTML_DOC)
+        message(FATAL_ERROR "Not implemented yet")
         # add_custom_command(
         #         OUTPUT ${PYTHON_PACKAGE_DIR}/${PYTHON_LIB_NAME}.html
         #         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/so.md5 ${GENERATE_CONFIGURE_OUTPUT_FILES} python-opentera-webrtc-native-client-so

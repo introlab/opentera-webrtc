@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import argparse
 import asyncio
 import itertools
@@ -14,7 +16,11 @@ from aiohttp_index import IndexMiddleware
 import socketio
 import ssl
 
-from room_manager import RoomManager
+# The script works both on local and when installed
+try:
+    from room_manager import RoomManager
+except ImportError:
+    from opentera.webrtc.signaling_server.room_manager import RoomManager
 
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
