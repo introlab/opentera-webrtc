@@ -35,15 +35,20 @@ option(
 
 # Default behavior is to install to --user in both cases
 set(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_OPTIONS
-    "--user"
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
+    ""
     CACHE STRING
-    "Pip install options when building"
+    "Pip install prefix when building. If empty, defaults to --user instead of --prefix"
 )
-set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_OPTIONS
-    "--user"
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
+    ""
     CACHE STRING
-    "Pip install options when installing"
+    "Pip install prefix when installing. If empty, defaults to --user instead of --prefix"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
+    ""
+    CACHE STRING
+    "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
 )
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)

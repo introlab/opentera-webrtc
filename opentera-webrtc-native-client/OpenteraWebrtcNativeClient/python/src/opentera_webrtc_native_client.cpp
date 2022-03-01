@@ -17,7 +17,7 @@
 using namespace opentera;
 namespace py = pybind11;
 
-PYBIND11_MODULE(opentera_webrtc_native_client, m)
+PYBIND11_MODULE(_opentera_webrtc_native_client, m)
 {
     initAudioSourceConfigurationPython(m);
     initDataChannelConfigurationPython(m);

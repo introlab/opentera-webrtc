@@ -1,3 +1,3 @@
 # Init
-from opentera_webrtc_native_client.${PYTHON_LIB_NAME} import *
-from opentera_webrtc_native_client.${PYTHON_LIB_NAME} import __version__
+from opentera.webrtc.native_client.${PYTHON_LIB_NAME} import *
+from opentera.webrtc.native_client.${PYTHON_LIB_NAME} import __version__

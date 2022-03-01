@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.1)
 
 project(opentera_webrtc_native_client)
 
@@ -14,18 +14,18 @@ file(GLOB_RECURSE
     include/*
 )
 
-pybind11_add_module(opentera_webrtc_native_client
+pybind11_add_module(_opentera_webrtc_native_client
     MODULE
     ${source_files}
 )
 
-target_link_libraries(opentera_webrtc_native_client PRIVATE
+target_link_libraries(_opentera_webrtc_native_client PRIVATE
     OpenteraWebrtcNativeClient
     ${webrtc_native_LIBRARY}
     ${PYTHON_LIBRARIES}
 )
 
-set_property(TARGET opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
+set_property(TARGET _opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
 
 assign_source_group(${source_files})
 

@@ -1,6 +1,4 @@
-from setuptools import setup, dist, find_packages
-from setuptools.command.install import install
-import os
+from setuptools import setup
 
 
 def read_file(name):
@@ -10,23 +8,16 @@ def read_file(name):
 
 long_description = read_file("README.md")
 
-
-class BinaryDistribution(dist.Distribution):
-    """Force setuptools to recognize that this is actually a binary distribution"""
-    def has_ext_modules(foo):
-        return True
-
-
 setup(
-    name="opentera_webrtc_native_client",
+    name="opentera_webrtc_signaling_server",
     version="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}",
     author="Marc-Antoine Maheux, Cedric Godin, Dominic Letourneau",
     author_email="marc-antoine.maheux@usherbrooke.ca, cedric.godin@usherbrooke.ca, dominic.letourneau@usherbrooke.ca",
-    description="OpenTera WebRTC Client Library for Python",
+    description="OpenTera WebRTC Signaling Server",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/introlab/opentera-webrtc",
-    packages=['opentera.webrtc.native_client'],
+    packages=['opentera.webrtc.signaling_server'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
@@ -34,12 +25,9 @@ setup(
         "Operating System :: POSIX",
     ],
     license="Apache Software License",
-    distclass=BinaryDistribution,
     platforms=['linux_x86_64'],
-    # python_requires='==3.8',
-    package_data={'opentera.webrtc.native_client': ["$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>"]},
-    $<IF:$<BOOL:${ENABLE_PYTHON_HTML_DOC}>,data_files=[('doc'$<COMMA> ['opentera_webrtc_native_client.html'])]$<COMMA>,>
-    include_package_data=True,
+    python_requires='>=3.8',
     zip_safe=False,
-    provides=['opentera.webrtc.native_client'],
+    install_requires=['python-socketio==5.5.0',
+                      'aiohttp==3.8.1', 'aiohttp_index==0.1'],
 )
