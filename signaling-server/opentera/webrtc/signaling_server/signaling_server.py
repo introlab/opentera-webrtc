@@ -229,11 +229,13 @@ def main():
         using_tls = False
 
     # Update global password
+    global password
     password = args.password
 
     # Look for ice servers file
     if args.ice_servers is not None:
         with args.ice_servers.open() as file:
+            global ice_servers
             ice_servers = json.load(file)
 
     # Make sure websocket path is defined
