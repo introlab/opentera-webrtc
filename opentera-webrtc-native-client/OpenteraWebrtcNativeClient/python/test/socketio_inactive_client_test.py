@@ -16,14 +16,10 @@ class SocketIOInactiveClientTestCase(FailureTestCase):
         super(SocketIOInactiveClientTestCase, cls).tearDownClass()
 
     def setUp(self):
-        print(f"Before setUp for method {self._testMethodName}")
         super(SocketIOInactiveClientTestCase, self).setUp()
-        print(f"After setUp for method {self._testMethodName}")
 
     def tearDown(self):
-        print(f"Before tearDown for method {self._testMethodName}")
         super(SocketIOInactiveClientTestCase, self).tearDown()
-        print(f"After tearDown for method {self._testMethodName}")
 
     def test_socketio_inactive_is_disconnected_after_timeout(self):
         awaiter = CallbackAwaiter(2, 15)

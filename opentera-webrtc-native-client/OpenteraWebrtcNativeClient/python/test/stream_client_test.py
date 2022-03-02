@@ -14,16 +14,6 @@ class StreamClientTestCase(FailureTestCase):
         super(StreamClientTestCase, cls).setUpClass()
         cls._signaling_server_runner = SignalingServerRunner()
 
-    def setUp(self):
-        print(f"Before setUp for method {self._testMethodName}")
-        super(StreamClientTestCase, self).setUp()
-        print(f"After setUp for method {self._testMethodName}")
-
-    def tearDown(self):
-        print(f"Before tearDown for method {self._testMethodName}")
-        super(StreamClientTestCase, self).tearDown()
-        print(f"After tearDown for method {self._testMethodName}")
-
     @classmethod
     def tearDownClass(cls):
         cls._signaling_server_runner.close()
@@ -38,23 +28,19 @@ class StreamClientTestCase(FailureTestCase):
         frame2 = np.zeros((480, 640, 3), dtype=np.int8)
         frame2[:, :, 0] = 255
 
-        video_source1 = webrtc.VideoSource(
-            webrtc.VideoSourceConfiguration.create(False, True))
-        video_source2 = webrtc.VideoSource(
-            webrtc.VideoSourceConfiguration.create(False, True))
+        video_source1 = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, True))
+        video_source2 = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, True))
 
         def on_signaling_connection_opened():
             setup_awaiter.done()
 
         client1 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create(
-                'http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             video_source1)
 
         client2 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create(
-                'http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             video_source2)
 
@@ -141,8 +127,7 @@ class StreamClientTestCase(FailureTestCase):
 
     def mute_methods__should_set_the_flag_accordingly(self):
         client = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create(
-                'http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create())
 
         self.assertFalse(client.is_local_audio_muted)
