@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
+        os: [ubuntu-20.04, ubuntu-18.04, macos-10.15, macos-11]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
 
@@ -109,7 +109,7 @@ jobs:
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -m pytest -Werror opentera/webrtc/tests
+          python3 -m pytest opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test

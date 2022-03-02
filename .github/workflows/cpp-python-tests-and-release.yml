@@ -107,7 +107,7 @@ jobs:
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -m pytest -Werror opentera/webrtc/tests
+          python3 -m pytest opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
