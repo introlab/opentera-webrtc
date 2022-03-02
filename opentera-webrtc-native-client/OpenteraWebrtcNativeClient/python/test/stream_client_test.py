@@ -64,35 +64,23 @@ class StreamClientTestCase(FailureTestCase):
         self._mean_color_2 = np.array([0, 0, 0], dtype=np.int8)
 
         def on_add_remote_stream1(client):
-            print('************ StreamClientTestCase - on_add_remote_stream1 -', client.name, ' - 1', flush=True)
             self._on_add_remote_stream_client_name1 = client.name
-            print('************ StreamClientTestCase - on_add_remote_stream1 -', client.name, ' - 2', flush=True)
 
         def on_add_remote_stream2(client):
-            print('************ StreamClientTestCase - on_add_remote_stream2 -', client.name, ' - 1', flush=True)
             self._on_add_remote_stream_client_name2 = client.name
-            print('************ StreamClientTestCase - on_add_remote_stream2 -', client.name, ' - 2', flush=True)
 
         def on_remove_remote_stream(client):
-            print('************ StreamClientTestCase - on_remove_remote_stream -', client.name, flush=True)
             self.add_failure('on_remove_remote_stream')
 
         def on_video_frame_received1(client, frame, timestamp):
-            print('************ StreamClientTestCase - on_video_frame_received1 -', client.name, ' - 1', flush=True)
             self._mean_color_1 = np.mean(frame, axis=(0, 1))
-            print('************ StreamClientTestCase - on_video_frame_received1 -', client.name, ' - 2', flush=True)
             on_video_frame_awaiter1.done()
-            print('************ StreamClientTestCase - on_video_frame_received1 -', client.name, ' - 3', flush=True)
 
         def on_video_frame_received2(client, frame, timestamp):
-            print('************ StreamClientTestCase - on_video_frame_received2 -', client.name, ' - 1', flush=True)
             self._mean_color_2 = np.mean(frame, axis=(0, 1))
-            print('************ StreamClientTestCase - on_video_frame_received2 -', client.name, ' - 2', flush=True)
             on_video_frame_awaiter2.done()
-            print('************ StreamClientTestCase - on_video_frame_received2 -', client.name, ' - 3', flush=True)
 
         def on_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
-            print('************ StreamClientTestCase - on_audio_frame_received -', client.name, flush=True)
             self.add_failure('on_audio_frame_received')
 
         client1.on_add_remote_stream = on_add_remote_stream1
