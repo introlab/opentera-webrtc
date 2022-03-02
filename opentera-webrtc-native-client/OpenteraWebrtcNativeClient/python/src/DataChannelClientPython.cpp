@@ -1,4 +1,5 @@
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/PyBindUtils.h>
 
 #include <OpenteraWebrtcNativeClient/DataChannelClient.h>
 
@@ -64,8 +65,8 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     ":param message: The string message",
                     py::arg("message"))
 
-            .def_property("on_data_channel_opened", nullptr, &DataChannelClient::setOnDataChannelOpened,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_data_channel_opened", nullptr,
+                    GilScopedRelease<DataChannelClient>::guard(&DataChannelClient::setOnDataChannelOpened),
                     "Sets the callback that is called when a data channel opens.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -74,8 +75,8 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     " - client: The client of the data channel that opens\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_data_channel_closed", nullptr, &DataChannelClient::setOnDataChannelClosed,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_data_channel_closed", nullptr,
+                    GilScopedRelease<DataChannelClient>::guard(&DataChannelClient::setOnDataChannelClosed),
                     "Sets the callback that is called when a data channel closes.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -84,8 +85,8 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     " - client: The client of the data channel that closes\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_data_channel_error", nullptr, &DataChannelClient::setOnDataChannelError,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_data_channel_error", nullptr,
+                    GilScopedRelease<DataChannelClient>::guard(&DataChannelClient::setOnDataChannelError),
                     "Sets the callback that is called when a data channel error occurs.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -95,8 +96,8 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     " - error: The error message\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_data_channel_message_binary", nullptr, &setOnDataChannelMessageBinary,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_data_channel_message_binary", nullptr,
+                    GilScopedRelease<DataChannelClient>::guard(&setOnDataChannelMessageBinary),
                     "Sets the callback that is called when binary data are received.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -106,8 +107,8 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                     " - bytes: The binary data\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_data_channel_message_string", nullptr, &DataChannelClient::setOnDataChannelMessageString,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_data_channel_message_string", nullptr,
+                    GilScopedRelease<DataChannelClient>::guard(&DataChannelClient::setOnDataChannelMessageString),
                     "Sets the callback that is called when a string message is received.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
