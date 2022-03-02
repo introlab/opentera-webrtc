@@ -11,7 +11,7 @@ enum class ThreadPriority : int
     RealTime = 0x00000100,
 };
 
-#elif defined(UNIX) || defined(__unix__) || defined(LINUX) || defined(__linux__)
+#elif defined(UNIX) || defined(__unix__) || defined(LINUX) || defined(__linux__) || defined(__APPLE__)
 
 enum class ThreadPriority : int
 {

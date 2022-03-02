@@ -1,4 +1,5 @@
 #include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/PyBindUtils.h>
 
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
 
@@ -180,8 +181,9 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     ":param audio_source: The audio source that this client will add to the call",
                     py::arg("signaling_server_configuration"), py::arg("webrtc_configuration"), py::arg("video_source"), py::arg("audio_source"))
 
-            .def_property("is_local_audio_muted", &StreamClient::isLocalAudioMuted, &StreamClient::setLocalAudioMuted,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("is_local_audio_muted",
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::isLocalAudioMuted),
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::setLocalAudioMuted),
                     "Indicates if the local audio is muted.")
             .def("mute_local_audio", &StreamClient::muteLocalAudio,
                     py::call_guard<py::gil_scoped_release>(),
@@ -190,8 +192,9 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Unmutes the local audio.")
 
-            .def_property("is_local_video_muted", &StreamClient::isLocalVideoMuted, &StreamClient::setLocalVideoMuted,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("is_local_video_muted",
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::isLocalVideoMuted),
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::setLocalVideoMuted),
                     "Indicates if the local video is muted.")
             .def("mute_local_video", &StreamClient::muteLocalVideo,
                     py::call_guard<py::gil_scoped_release>(),
@@ -200,8 +203,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     py::call_guard<py::gil_scoped_release>(),
                     "Unmutes the local video.")
 
-            .def_property("on_add_remote_stream", nullptr, &StreamClient::setOnAddRemoteStream,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_add_remote_stream", nullptr,
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::setOnAddRemoteStream),
                     "Sets the callback that is called when a stream is added.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -210,8 +213,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     " - client: The client of the stream\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_remove_remote_stream", nullptr, &StreamClient::setOnRemoveRemoteStream,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_remove_remote_stream", nullptr,
+                    GilScopedRelease<StreamClient>::guard(&StreamClient::setOnRemoveRemoteStream),
                     "Sets the callback that is called when a stream is removed.\n"
                     "\n"
                     "The callback is called from the internal client thread. The callback should not block.\n"
@@ -220,8 +223,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     " - client: The client of the stream\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_video_frame_received", nullptr, &setOnVideoFrameReceived,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_video_frame_received", nullptr,
+                    GilScopedRelease<StreamClient>::guard(&setOnVideoFrameReceived),
                     "Sets the callback that is called when a video stream frame is received.\n"
                     "\n"
                     "The callback is called from a WebRTC processing thread. The callback should not block.\n"
@@ -232,8 +235,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     " - timestamp_us The timestamp in microseconds\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_encoded_video_frame_received", nullptr, &setOnEncodedVideoFrameReceived,
-                          py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_encoded_video_frame_received", nullptr,
+                          GilScopedRelease<StreamClient>::guard(&setOnEncodedVideoFrameReceived),
                           "Sets the callback that is called when an encoded video stream frame is received.\n"
                           "\n"
                           "The callback is called from a WebRTC processing thread. The callback should not block.\n"
@@ -248,8 +251,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                           " - timestamp_us The timestamp in microseconds\n"
                           "\n"
                           ":param callback: The callback")
-            .def_property("on_audio_frame_received", nullptr, &setOnAudioFrameReceived,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_audio_frame_received", nullptr,
+                    GilScopedRelease<StreamClient>::guard(&setOnAudioFrameReceived),
                     "Sets the callback that is called when an audio stream frame is received.\n"
                     "\n"
                     "The callback is called from a WebRTC processing thread. The callback should not block.\n"
@@ -262,8 +265,8 @@ void opentera::initStreamClientPython(pybind11::module& m)
                     " - number_of_frames: The number of frames\n"
                     "\n"
                     ":param callback: The callback")
-            .def_property("on_mixed_audio_frame_received", nullptr, &setOnMixedAudioFrameReceived,
-                    py::call_guard<py::gil_scoped_release>(),
+            .def_property("on_mixed_audio_frame_received", nullptr,
+                    GilScopedRelease<StreamClient>::guard(&setOnMixedAudioFrameReceived),
                     "Sets the callback that is called when a mixed audio stream frame is received.\n"
                     "\n"
                     "The callback is called from a WebRTC processing thread. The callback should not block.\n"
