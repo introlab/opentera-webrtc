@@ -48,7 +48,6 @@ elseif(UNIX)
 
 		# set(archive_name webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version}.tar.gz)
 		set(archive_name webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
-	endif(APPLE)
 
 	set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
 
