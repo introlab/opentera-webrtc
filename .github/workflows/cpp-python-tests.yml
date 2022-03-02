@@ -6,6 +6,13 @@ on:
     branches: [main]
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      pytest_stdout:
+        description: "Show test STDOUT in log for Pytest tests"
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -25,6 +32,12 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
+
+      - id: pytest_stdout
+        if: ${{ github.event.inputs.pytest_stdout }}
+        run: echo "::set-output name=value::${{ --capture=tee-sys }}"
+        else:
+        run: echo "::set-output name=value::${{ }}"
 
       - name: Generate Version Output
         id: generate_version_output
@@ -109,11 +122,11 @@ jobs:
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -m pytest opentera/webrtc/tests
+          python3 -m pytest -v ${{ pytest_stdout.outputs.value }} opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
-          python3 -m pytest -v --capture=tee-sys
+          python3 -m pytest -v ${{ pytest_stdout.outputs.value }}
