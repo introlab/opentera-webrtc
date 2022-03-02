@@ -2,7 +2,6 @@ import pathlib
 import subprocess
 import time
 import sys
-import signal
 
 signaling_server_path = pathlib.Path(__file__).parent.parent.parent.parent.parent.joinpath('signaling-server') \
     .joinpath('opentera-signaling-server').absolute()
@@ -23,9 +22,5 @@ class SignalingServerRunner:
         self.close()
 
     def close(self):
-        self._process.send_signal(signal.SIGINT)
-        try:
-            self._process.wait(5)
-        except subprocess.TimeoutExpired:
-            self._process.kill()
-            self._process.wait()
+        self._process.kill()
+        self._process.wait()
