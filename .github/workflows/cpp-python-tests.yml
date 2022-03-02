@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -68,11 +69,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install ninja-build cmake build-essential libssl-dev libboost-all-dev
           sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
+
       - name: Install python dependencies
         run: |
           python3 -m pip install --user --upgrade pip
           python3 -m pip install --user --upgrade setuptools wheel
           python3 -m pip install --user --upgrade twine
+          python3 -m pip install --user --upgrade pytest
+
       - name: Create build directory
         working-directory: opentera-webrtc-native-client
         run: |
@@ -106,13 +110,11 @@ jobs:
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -Werror -m unittest discover tests "test_*.py"
+          python3 -m pytest -Werror opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
-          python3 -m unittest discover . "*_test.py"
-        # Werror breaks in library code currently (in the tornado package)
-        # python3 -Werror -m unittest discover . "*_test.py"
+          python3 -m pytest
