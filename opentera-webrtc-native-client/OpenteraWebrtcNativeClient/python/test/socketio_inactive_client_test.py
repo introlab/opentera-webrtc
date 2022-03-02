@@ -8,18 +8,17 @@ class SocketIOInactiveClientTestCase(FailureTestCase):
     @classmethod
     def setUpClass(cls):
         super(SocketIOInactiveClientTestCase, cls).setUpClass()
+        print('************ SocketIOInactiveClientTestCase - setUpClass - 1', flush=True)
         cls._signaling_server_runner = SignalingServerRunner()
+        print('************ SocketIOInactiveClientTestCase - setUpClass - 2', flush=True)
 
     @classmethod
     def tearDownClass(cls):
+        print('************ SocketIOInactiveClientTestCase - tearDownClass - 1', flush=True)
         cls._signaling_server_runner.close()
+        print('************ SocketIOInactiveClientTestCase - tearDownClass - 2', flush=True)
         super(SocketIOInactiveClientTestCase, cls).tearDownClass()
-
-    def setUp(self):
-        super(SocketIOInactiveClientTestCase, self).setUp()
-
-    def tearDown(self):
-        super(SocketIOInactiveClientTestCase, self).tearDown()
+        print('************ SocketIOInactiveClientTestCase - tearDownClass - 3', flush=True)
 
     def test_socketio_inactive_is_disconnected_after_timeout(self):
         awaiter = CallbackAwaiter(2, 15)
