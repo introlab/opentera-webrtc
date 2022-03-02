@@ -14,7 +14,8 @@ jobs:
       matrix:
         os: [ubuntu-20.04, ubuntu-18.04]
         python-version: ["3.8", "3.9", "3.10"]
-        build-type: [Debug, Release]
+        build-type: [Release]
+        # build-type: [Debug, Release]
 
     steps:
       - uses: actions/checkout@v2
@@ -112,4 +113,6 @@ jobs:
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
-          python3 -Werror -m unittest discover . "*_test.py"
+          python3 -m unittest discover . "*_test.py"
+        # Werror breaks in library code currently (in the tornado package)
+        # python3 -Werror -m unittest discover . "*_test.py"
