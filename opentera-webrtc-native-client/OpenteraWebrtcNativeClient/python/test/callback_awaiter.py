@@ -24,8 +24,8 @@ class CallbackAwaiter:
     def done(self):
         with self._lock:
             self._count += 1
-            return self._count == self._max_count
+            return self._count >= self._max_count
 
     def is_finished(self):
         with self._lock:
-            return self._count == self._max_count
+            return self._count >= self._max_count
