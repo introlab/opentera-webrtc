@@ -124,11 +124,11 @@ jobs:
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v ${{ pytest_stdout.outputs.value }} opentera/webrtc/tests
+          python3 -m pytest -v ${{ steps.pytest_stdout.outputs.value }} opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
-          python3 -m pytest -v ${{ pytest_stdout.outputs.value }}
+          python3 -m pytest -v ${{ steps.pytest_stdout.outputs.value }}
