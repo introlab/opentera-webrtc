@@ -33,14 +33,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - id: pytest_stdout
-        if: ${{ github.event.inputs.pytest_stdout }}
-        run: echo "::set-output name=value::--capture=tee-sys"
-
-      - id: pytest_stdout
-        if: ${{ !github.event.inputs.pytest_stdout }}
-        run: echo "::set-output name=value::"
-
       - name: Generate Version Output
         id: generate_version_output
         run: echo "::set-output name=version::$(cat VERSION)"
@@ -121,14 +113,32 @@ jobs:
         run: |
           ./OpenteraWebrtcNativeClientTests
 
+      # Without capture of stdout
       - name: Run Python signaling-server Tests
+        if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v ${{ steps.pytest_stdout.outputs.value }} opentera/webrtc/tests
+          python3 -m pytest -v opentera/webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
+        if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
-          python3 -m pytest -v ${{ steps.pytest_stdout.outputs.value }}
+          python3 -m pytest -v
+
+      # With capture of stdout
+      - name: Run Python signaling-server Tests
+        if: ${{ github.event.inputs.pytest_stdout }}
+        working-directory: signaling-server
+        run: |
+          python3 -m pytest -v --capture=tee-sys opentera/webrtc/tests
+
+      - name: Run Python webrtc-native-client Tests
+        if: ${{ github.event.inputs.pytest_stdout }}
+        working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
+        run: |
+          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+          cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
+          python3 -m pytest -v --capture=tee-sys
