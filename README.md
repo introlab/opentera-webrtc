@@ -1,5 +1,5 @@
 # opentera-webrtc
-[![Actions Status](https://github.com/introlab/opentera-webrtc/workflows/cpp-python-tests/badge.svg?branch=main)](https://github.com/introlab/opentera-webrtc/actions)
+[![Actions Status](https://github.com/introlab/opentera-webrtc/workflows/cpp-python-tests/badge.svg)](https://github.com/introlab/opentera-webrtc/actions)
 
 [WebRTC](https://webrtc.org/) is a standard for real-time audio/video/data communication and is mostly used in web browsers.
 For the [OpenTera](https://github.com/introlab/opentera) micro-service architecture, we wanted to use Google's native WebRTC implementation for robots so we would have more control on the streams and develop a framework that is optimized for robot teleoperation. This project provides:
