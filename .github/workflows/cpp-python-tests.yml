@@ -113,7 +113,7 @@ jobs:
         run: |
           ./OpenteraWebrtcNativeClientTests
 
-      # Without capture of stdout
+      # Without stdout
       - name: Run Python signaling-server Tests
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
@@ -128,14 +128,14 @@ jobs:
           cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
           python3 -m pytest -v
 
-      # With capture of stdout
-      - name: Run Python signaling-server Tests
+      # With stdout
+      - name: Run Python signaling-server Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
           python3 -m pytest -v --capture=tee-sys opentera/webrtc/tests
 
-      - name: Run Python webrtc-native-client Tests
+      - name: Run Python webrtc-native-client Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
