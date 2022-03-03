@@ -36,7 +36,9 @@ jobs:
       - id: pytest_stdout
         if: ${{ github.event.inputs.pytest_stdout }}
         run: echo "::set-output name=value::--capture=tee-sys"
-        else:
+
+      - id: pytest_stdout
+        if: ${{ !github.event.inputs.pytest_stdout }}
         run: echo "::set-output name=value::"
 
       - name: Generate Version Output
