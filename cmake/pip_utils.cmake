@@ -71,6 +71,35 @@ function(pip_add_so_target)
     )
     set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/so.md5 PARENT_SCOPE)
 endfunction()
+function(pip_add_stub_target)
+    set(options)
+    set(oneValueArgs NAME PACKAGE_NAME)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    assert_program_installed("pybind11-stubgen")
+    string(REPLACE "." "/" PACKAGE_PATH ${ARGS_PACKAGE_NAME})
+
+    add_custom_command(
+        OUTPUT ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+        BYPRODUCTS ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
+        DEPENDS ${ARGS_DEPENDS}
+        COMMAND pybind11-stubgen ${ARGS_PACKAGE_NAME}
+        COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+        COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
+        COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
+        WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
+        VERBATIM
+    )
+    add_custom_target(
+        ${ARGS_NAME}-target
+        ALL
+        DEPENDS ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+        VERBATIM
+    )
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi PARENT_SCOPE)
+endfunction()
+
 
 function(pip_add_html_target)
     set(options)
@@ -84,9 +113,9 @@ function(pip_add_html_target)
             DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_templates
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_static
-            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip install -t _source/theme -r _source/theme/requirements.txt; fi"
+            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip -qq install -t _source/theme -r _source/theme/requirements.txt; fi"
             COMMAND sphinx-build -aE _source _build
-            COMMAND bash -c "if [ -f post-process.sh ]; then ./post-process.sh; fi"
+            COMMAND bash -c "if [ -f post-process-doc.sh ]; then ./post-process-doc.sh; fi"
             COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
             COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
             COMMAND tar c ${PYTHON_PACKAGE_DIR}/_doc 2> /dev/null | md5sum > ${WORKING_DIR}/html.md5

@@ -21,19 +21,29 @@ pip_configure_setup(setup.py.in)
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md.in README.md)
+pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/MANIFEST.in.in MANIFEST.in)
+pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-stub.sh post-process-stub.sh)
 
 pip_configure_subpackage_file(${CMAKE_CURRENT_SOURCE_DIR}/__init__.py.in __init__.py)
 
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/conf.py.in conf.py)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/index.rst index.rst)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.txt theme/requirements.txt)
+pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-process-doc.sh)
 
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
-pip_add_html_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-html
+pip_add_stub_target(
+    NAME ${PYTHON_LIB_NAME}-stub
+    PACKAGE_NAME "opentera.webrtc.native_client"
+    # PACKAGE_PATH "opentera/webrtc/native_client"
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}
         ${PIP_CONFIGURE_OUTPUT_FILES}
+)
+pip_add_html_target(
+    NAME ${PYTHON_SUBPACKAGE_NAME}-html
+    DEPENDS
+        ${${PYTHON_LIB_NAME}-stub}
     DOC_DEPENDS
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
     ENABLE_HTML_DOC ${ENABLE_HTML_DOC}

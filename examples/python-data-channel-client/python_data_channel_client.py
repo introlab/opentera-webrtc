@@ -1,6 +1,6 @@
 import time
 
-import opentera_webrtc_native_client as webrtc
+import opentera.webrtc.native_client as webrtc
 
 
 def on_signaling_connection_opened():
@@ -23,20 +23,23 @@ def on_room_clients_changed(room_clients):
     # This callback is called from the internal client thread.
     print('on_room_clients_changed:')
     for c in room_clients:
-        print('\tid={}, name={}, data={}, is_connected={}'.format(c.id, c.name, c.data, c.is_connected))
+        print('\tid={}, name={}, data={}, is_connected={}'.format(
+            c.id, c.name, c.data, c.is_connected))
     print('\n')
 
 
 def on_client_connected(client):
     # This callback is called from the internal client thread.
     print('on_client_connected:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_client_disconnected(client):
     # This callback is called from the internal client thread.
     print('on_client_disconnected:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_error(error):
@@ -48,19 +51,22 @@ def on_error(error):
 def on_data_channel_opened(client):
     # This callback is called from the internal client thread.
     print('on_data_channel_opened:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_data_channel_closed(client):
     # This callback is called from the internal client thread.
     print('on_data_channel_closed:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_data_channel_error(client, error):
     # This callback is called from the internal client thread.
     print('on_data_channel_error:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
     print('\terror={}\n'.format(error))
 
 
@@ -71,12 +77,15 @@ def on_data_channel_message_string(client, message):
 
 
 if __name__ == '__main__':
-    signaling_server_configuration = webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
-    ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
+    signaling_server_configuration = webrtc.SignalingServerConfiguration.create(
+        'http://localhost:8080', 'Python', None, 'chat', 'abc')
+    ice_servers = webrtc.IceServer.fetch_from_server(
+        'http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
     data_channel_configuration = webrtc.DataChannelConfiguration.create()
 
-    client = webrtc.DataChannelClient(signaling_server_configuration, webrtc_configuration, data_channel_configuration)
+    client = webrtc.DataChannelClient(
+        signaling_server_configuration, webrtc_configuration, data_channel_configuration)
 
     client.on_signaling_connection_opened = on_signaling_connection_opened
     client.on_signaling_connection_closed = on_signaling_connection_closed
