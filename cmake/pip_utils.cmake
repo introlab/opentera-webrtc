@@ -169,8 +169,8 @@ endfunction()
 ## Required programs ##
 #######################
 function(assert_program_installed PROGRAM)
-    find_program(prog ${PROGRAM})
-    if(${prog} STREQUAL "prog-NOTFOUND")
+    find_program(prog-${PROGRAM} ${PROGRAM})
+    if(${prog-${PROGRAM}} STREQUAL "prog-${PROGRAM}-NOTFOUND")
         message(FATAL_ERROR "'${PROGRAM}' needs to be installed")
     endif()
 endfunction()
