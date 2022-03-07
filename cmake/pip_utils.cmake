@@ -78,6 +78,7 @@ function(pip_add_stub_target)
     set(multiValueArgs DEPENDS)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
+    # Used via python -m to correctly add current directory to path, but can be checked for installation nonetheless
     assert_program_installed("pybind11-stubgen")
     string(REPLACE "." "/" PACKAGE_PATH ${ARGS_PACKAGE_NAME})
 
@@ -85,7 +86,7 @@ function(pip_add_stub_target)
         OUTPUT ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
         BYPRODUCTS ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
         DEPENDS ${ARGS_DEPENDS}
-        COMMAND pybind11-stubgen ${ARGS_PACKAGE_NAME}
+        COMMAND python3 -m pybind11_stubgen "${ARGS_PACKAGE_NAME}"
         COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
         COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
         COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
