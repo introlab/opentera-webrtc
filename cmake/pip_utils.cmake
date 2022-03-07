@@ -71,6 +71,7 @@ function(pip_add_so_target)
     )
     set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/so.md5 PARENT_SCOPE)
 endfunction()
+
 function(pip_add_stub_target)
     set(options)
     set(oneValueArgs NAME PACKAGE_NAME)
@@ -100,12 +101,13 @@ function(pip_add_stub_target)
     set(${ARGS_NAME} ${ARGS_NAME}-target ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi PARENT_SCOPE)
 endfunction()
 
-
 function(pip_add_html_target)
     set(options)
     set(oneValueArgs NAME ENABLE_HTML_DOC)
     set(multiValueArgs DEPENDS DOC_DEPENDS)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    assert_program_installed("sphinx-build")
 
     if(ARGS_ENABLE_HTML_DOC)
         add_custom_command(
@@ -209,5 +211,4 @@ assert_program_installed("python3")
 assert_program_installed("rsync")
 assert_program_installed("tar")
 assert_program_installed("md5sum")
-assert_program_installed("sphinx-build")
 assert_program_installed("bash")
