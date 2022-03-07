@@ -2,10 +2,20 @@ from setuptools import setup, dist, find_packages
 from setuptools.command.install import install
 import os
 
-
 def read_file(name):
     with open(name, "r", encoding="utf-8") as fh:
         return fh.read()
+
+
+def get_doc_files():
+    files = {}
+    for root, _, filenames in os.walk('_doc'):
+        for filename in filenames:
+            rootless = root.replace('_doc', os.path.join('doc', 'opentera', 'webrtc', 'native_client'))
+            if not rootless in files.keys():
+                files[rootless] = []
+            files[rootless].append(os.path.join(root, filename))
+    return list(files.items())
 
 
 long_description = read_file("README.md")
@@ -13,7 +23,7 @@ long_description = read_file("README.md")
 
 class BinaryDistribution(dist.Distribution):
     """Force setuptools to recognize that this is actually a binary distribution"""
-    def has_ext_modules(foo):
+    def has_ext_modules(self):
         return True
 
 
@@ -38,8 +48,7 @@ setup(
     platforms=['linux_x86_64'],
     # python_requires='==3.8',
     package_data={'opentera.webrtc.native_client': ["$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>"]},
-    $<IF:$<BOOL:${ENABLE_PYTHON_HTML_DOC}>,data_files=[('doc'$<COMMA> ['opentera_webrtc_native_client.html'])]$<COMMA>,>
+    $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>
     include_package_data=True,
     zip_safe=False,
-    provides=['opentera.webrtc.native_client'],
 )

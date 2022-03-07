@@ -28,6 +28,12 @@ function(pip_configure_package_file in_file out_file)
     set(PIP_CONFIGURE_OUTPUT_FILES ${PIP_CONFIGURE_OUTPUT_FILES} PARENT_SCOPE)
 endfunction()
 
+function(pip_configure_doc_file in_file out_file)
+    configure_file(${in_file} ${PYTHON_PACKAGE_DIR}/_source/${out_file})
+    list(APPEND PIP_CONFIGURE_OUTPUT_DOC_FILES ${PYTHON_PACKAGE_DIR}/_source/${out_file})
+    set(PIP_CONFIGURE_OUTPUT_DOC_FILES ${PIP_CONFIGURE_OUTPUT_DOC_FILES} PARENT_SCOPE)
+endfunction()
+
 function(pip_configure_package_file_hierarchy)
     foreach(file IN ITEMS ${ARGV})
         if(IS_ABSOLUTE ${file})
@@ -69,27 +75,31 @@ endfunction()
 function(pip_add_html_target)
     set(options)
     set(oneValueArgs NAME ENABLE_HTML_DOC)
-    set(multiValueArgs DEPENDS)
+    set(multiValueArgs DEPENDS DOC_DEPENDS)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    # TODO: Add support for namespace packages
     if(ARGS_ENABLE_HTML_DOC)
-        message(FATAL_ERROR "Not implemented yet")
-        # add_custom_command(
-        #         OUTPUT ${PYTHON_PACKAGE_DIR}/${PYTHON_LIB_NAME}.html
-        #         DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/so.md5 ${GENERATE_CONFIGURE_OUTPUT_FILES} python-opentera-webrtc-native-client-so
-        #         COMMAND /usr/bin/env python3 -m pydoc -w opentera.webrtc.native_client
-        #         COMMAND /usr/bin/env python3 -m pydoc -w opentera.webrtc.native_client.${PYTHON_LIB_NAME}
-        #         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
-        #         VERBATIM
-        #     )
-        #     add_custom_target(
-        #     python-opentera-webrtc-native-client-html
-        #     ALL
-        #     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/${PYTHON_LIB_NAME}.html
-        #     VERBATIM
-        # )
-        # set(HTML_DOC_DEPENDENCY_OPTION python-opentera-webrtc-native-client-html ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_native_client/${PYTHON_LIB_NAME}.html)
+        add_custom_command(
+            OUTPUT ${WORKING_DIR}/html.md5
+            DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
+            COMMAND ${CMAKE_COMMAND} -E make_directory _source/_templates
+            COMMAND ${CMAKE_COMMAND} -E make_directory _source/_static
+            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip install -t _source/theme -r _source/theme/requirements.txt 2> /dev/null; fi"
+            COMMAND sphinx-build -aE _source _build 2> /dev/null
+            COMMAND bash -c "if [ -f post-process.sh ]; then ./post-process.sh; fi"
+            COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
+            COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
+            COMMAND tar c ${PYTHON_PACKAGE_DIR}/_doc 2> /dev/null | md5sum > ${WORKING_DIR}/html.md5
+            WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
+            VERBATIM
+        )
+        add_custom_target(
+            ${ARGS_NAME}-target
+            ALL
+            DEPENDS ${WORKING_DIR}/html.md5
+            VERBATIM
+        )
+        set(HTML_DOC_DEPENDENCY_OPTION ${ARGS_NAME}-target ${WORKING_DIR}/html.md5)
     else()
         set(HTML_DOC_DEPENDENCY_OPTION ${ARGS_DEPENDS})
     endif()
@@ -105,7 +115,7 @@ function(pip_add_dist_target)
     add_custom_command(
         OUTPUT ${WORKING_DIR}/dist.md5
         DEPENDS ${ARGS_DEPENDS}
-        COMMAND /usr/bin/env python3 setup.py bdist bdist_wheel sdist
+        COMMAND python3 setup.py bdist bdist_wheel sdist
         COMMAND tar c ${PYTHON_PACKAGE_DIR}/dist 2> /dev/null | md5sum > ${WORKING_DIR}/dist.md5
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
@@ -170,3 +180,5 @@ assert_program_installed("python3")
 assert_program_installed("rsync")
 assert_program_installed("tar")
 assert_program_installed("md5sum")
+assert_program_installed("sphinx-build")
+assert_program_installed("bash")

@@ -1,5 +1,5 @@
 from setuptools import setup
-
+import os
 
 def read_file(name):
     with open(name, "r", encoding="utf-8") as fh:
@@ -9,6 +9,17 @@ def read_file(name):
 def read_file_lines(name):
     with open(name, "r", encoding="utf-8") as fh:
         return fh.readlines()
+
+
+def get_doc_files():
+    files = {}
+    for root, _, filenames in os.walk('_doc'):
+        for filename in filenames:
+            rootless = root.replace('_doc', os.path.join('doc', 'opentera', 'webrtc', 'signaling_server'))
+            if not rootless in files.keys():
+                files[rootless] = []
+            files[rootless].append(os.path.join(root, filename))
+    return list(files.items())
 
 
 long_description = read_file("README.md")
@@ -33,6 +44,8 @@ setup(
     license="Apache Software License",
     platforms=['linux_x86_64'],
     python_requires='>=3.8',
+    $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>
+    include_package_data=True,
     zip_safe=False,
     install_requires=requirements,
     scripts=['opentera-signaling-server'],
