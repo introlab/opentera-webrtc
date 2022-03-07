@@ -84,8 +84,8 @@ function(pip_add_html_target)
             DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_templates
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_static
-            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip install -t _source/theme -r _source/theme/requirements.txt 2> /dev/null; fi"
-            COMMAND sphinx-build -aE _source _build 2> /dev/null
+            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip install -t _source/theme -r _source/theme/requirements.txt; fi"
+            COMMAND sphinx-build -aE _source _build
             COMMAND bash -c "if [ -f post-process.sh ]; then ./post-process.sh; fi"
             COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
             COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
