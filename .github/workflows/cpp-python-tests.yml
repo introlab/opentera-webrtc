@@ -90,6 +90,10 @@ jobs:
         run: |
           mkdir build
 
+      - name: WIP Debug info
+        run: |
+          python -c "import _multibytecodec"
+
       - name: Run CMake and build opentera-webrtc-native-client
         working-directory: opentera-webrtc-native-client/build
         run: |
