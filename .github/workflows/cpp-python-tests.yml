@@ -92,7 +92,8 @@ jobs:
 
       - name: WIP Debug info
         run: |
-          python -c "import _multibytecodec"
+          python -c "import _multibytecodec; print('Ok')"
+          /usr/bin/python --version
 
       - name: Run CMake and build opentera-webrtc-native-client
         working-directory: opentera-webrtc-native-client/build
