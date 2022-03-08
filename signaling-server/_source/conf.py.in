@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath('../opentera/webrtc/signaling_server'))
 
 for path in sys.path:
     for prefix in "${PYTHON_HTML_IGNORE_PREFIXES}".split(";"):
-        if path.startswith(prefix):
+        if prefix.strip() != "" and path.startswith(prefix):
             sys.path.remove(path)
 
 # -- Project information -----------------------------------------------------
