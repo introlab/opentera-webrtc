@@ -90,10 +90,9 @@ jobs:
         run: |
           mkdir build
 
-      - name: WIP Debug info
+      - name: Patch sphinx-build to force the use of python3
         run: |
-          python -c "import _multibytecodec; print('Ok')"
-          /usr/bin/python --version
+          sed -i "s|/usr/bin/python|python3|" $(which sphinx-build)
 
       - name: Run CMake and build opentera-webrtc-native-client
         working-directory: opentera-webrtc-native-client/build
