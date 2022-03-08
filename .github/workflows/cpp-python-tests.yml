@@ -92,9 +92,9 @@ jobs:
 
       - name: Patch sphinx-build to force the use of python3
         run: |
-          cat $(which shinx-build)
+          cat $(which sphinx-build)
           sed -i "s|/usr/bin/python|python3|" $(which sphinx-build)
-          cat $(which shinx-build)
+          cat $(which sphinx-build)
           /usr/bin/python --version
           python3 --version
 
