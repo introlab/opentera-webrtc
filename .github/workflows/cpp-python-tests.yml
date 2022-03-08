@@ -90,14 +90,6 @@ jobs:
         run: |
           mkdir build
 
-      - name: Patch sphinx-build to force the use of python3
-        run: |
-          cat $(which sphinx-build)
-          sed -i "s|/usr/bin/python|python3|" $(which sphinx-build)
-          cat $(which sphinx-build)
-          /usr/bin/python --version
-          python3 --version
-
       - name: Run CMake and build opentera-webrtc-native-client
         working-directory: opentera-webrtc-native-client/build
         run: |
