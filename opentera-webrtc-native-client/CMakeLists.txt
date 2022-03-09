@@ -109,7 +109,7 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 if (WIN32)
-    message(FATAL_ERROR "Windows is not supported yet.")
+    # message(FATAL_ERROR "Windows is not supported yet.")
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
     if (APPLE)
