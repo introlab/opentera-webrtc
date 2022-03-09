@@ -6,6 +6,7 @@ endfunction()
 
 assert_variable_defined(PYTHON_PACKAGE_DIR)
 assert_variable_defined(PYTHON_PACKAGE_CONTENT_DIR)
+assert_variable_defined(PYTHON_EXECUTABLE)
 
 set(WORKING_DIR ${CMAKE_CURRENT_BINARY_DIR}/cmake/pip_utils)
 set(CMAKE_UTILS_DIR ${CMAKE_CURRENT_LIST_DIR})
@@ -89,7 +90,7 @@ function(pip_add_stub_target)
             DEPENDS ${ARGS_DEPENDS} ${ARGS_STUB_DEPENDS}
             # Required to allow generating a stub from the local version of the package, pybind11_stubgen changes the current directory
             # before importing the module, as seen here: https://github.com/sizmailov/pybind11-stubgen/blob/master/pybind11_stubgen/__init__.py#L944-L945
-            COMMAND python3 -c "from pybind11_stubgen import main as gen; import os, sys; sys.path.insert(0, os.path.abspath('.')); gen(['${ARGS_PACKAGE_NAME}'])"
+            COMMAND ${PYTHON_EXECUTABLE} -c "from pybind11_stubgen import main as gen; import os, sys; sys.path.insert(0, os.path.abspath('.')); gen(['${ARGS_PACKAGE_NAME}'])"
             COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
             COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
             COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
@@ -122,8 +123,8 @@ function(pip_add_html_target)
             DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_templates
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_static
-            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then python3 -m pip -qq install -t _source/theme -r _source/theme/requirements.txt; fi"
-            COMMAND python3 -m sphinx -aE _source _build
+            COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then ${PYTHON_EXECUTABLE} -m pip -qq install -t _source/theme -r _source/theme/requirements.txt; fi"
+            COMMAND ${PYTHON_EXECUTABLE} -m sphinx -aE _source _build
             COMMAND bash -c "if [ -f post-process-doc.sh ]; then ./post-process-doc.sh; fi"
             COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
             COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
@@ -152,7 +153,7 @@ function(pip_add_dist_target)
     add_custom_command(
         OUTPUT ${WORKING_DIR}/dist.md5
         DEPENDS ${ARGS_DEPENDS}
-        COMMAND python3 setup.py bdist bdist_wheel sdist
+        COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel sdist
         COMMAND tar c ${PYTHON_PACKAGE_DIR}/dist 2> /dev/null | md5sum > ${WORKING_DIR}/dist.md5
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
@@ -213,8 +214,8 @@ function(assert_program_installed PROGRAM)
 endfunction()
 
 assert_program_installed("perl")
-assert_program_installed("python3")
 assert_program_installed("rsync")
 assert_program_installed("tar")
 assert_program_installed("md5sum")
 assert_program_installed("bash")
+assert_program_installed("find")
