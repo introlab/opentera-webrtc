@@ -2,11 +2,13 @@ set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
 
 if(WIN32)
 	set(architecture "win64")
-	set(archive_name webrtc-native-build-windows-10-${architecture}-Release-${webrtc_native_build_version}.zip)
+	set(archive_stem webrtc-native-build-windows-10-${architecture}-Release-${webrtc_native_build_version})
+	set(archive_extension "zip")
 elseif(UNIX)
+	set(archive_extension "tar.gz")
 	if(APPLE)
 		set(architecture "osx64")
-		set(archive_name webrtc-native-build-macos-10.15-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
+		set(archive_stem webrtc-native-build-macos-10.15-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
 	else(APPLE)
 		# Taken from : https://stackoverflow.com/questions/26919334/detect-underlying-platform-flavour-in-cmake
 		function(get_linux_lsb_release_information)
@@ -46,11 +48,13 @@ elseif(UNIX)
 			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04 or 20.04.")
 		endif()
 
-		set(archive_name webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
+		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version})
 	endif(APPLE)
 else()
     message(FATAL_ERROR "Unsupported operating system.")
 endif()
+
+set(archive_name ${archive_stem}.${archive_extension})
 
 set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
 
@@ -69,6 +73,10 @@ set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
 	file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
+	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem} ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 endif()
 
 set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
