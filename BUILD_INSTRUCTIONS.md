@@ -6,7 +6,7 @@
 sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev libopencv-dev python3-pip python3-venv python3 python-is-python3 libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev
 ```
 ```
-python -m pip install sphinx
+python -m pip install -r requirements.txt
 ```
 
 ## Build

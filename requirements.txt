@@ -1,2 +1,2 @@
 sphinx==4.4.0
-pybind11-stubgen=0.10.5
+pybind11-stubgen==0.10.5
