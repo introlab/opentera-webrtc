@@ -35,7 +35,6 @@ pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
 pip_add_stub_target(
     NAME ${PYTHON_LIB_NAME}-stub
     PACKAGE_NAME "opentera_webrtc.native_client"
-    # PACKAGE_PATH "opentera/webrtc/native_client"
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}
         ${PIP_CONFIGURE_OUTPUT_FILES}
