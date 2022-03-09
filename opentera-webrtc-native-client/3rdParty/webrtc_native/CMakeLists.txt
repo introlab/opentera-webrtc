@@ -20,7 +20,7 @@ if(WIN32)
 
 	if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 		message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
-		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
 		# execute_process(
 		# 	COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
 		# 	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
