@@ -1,6 +1,6 @@
 import time
 
-import opentera.webrtc.native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 from callback_awaiter import CallbackAwaiter
 from failure_test_case import FailureTestCase

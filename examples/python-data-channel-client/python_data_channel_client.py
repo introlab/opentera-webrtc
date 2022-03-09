@@ -1,6 +1,6 @@
 import time
 
-import opentera.webrtc.native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 
 def on_signaling_connection_opened():

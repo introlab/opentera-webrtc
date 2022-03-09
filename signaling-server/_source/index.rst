@@ -10,7 +10,7 @@ Welcome to OpenTera's documentation!
    :toctree: _autosummary
    :recursive:
 
-      opentera.webrtc
+      opentera_webrtc
 
 
 Indices and tables

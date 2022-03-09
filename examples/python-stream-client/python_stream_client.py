@@ -4,7 +4,7 @@ import time
 import numpy as np
 import cv2
 
-import opentera.webrtc.native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 
 def on_signaling_connection_opened():

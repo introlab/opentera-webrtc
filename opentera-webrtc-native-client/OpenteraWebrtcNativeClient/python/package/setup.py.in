@@ -36,7 +36,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/introlab/opentera-webrtc",
-    packages=['opentera.webrtc.native_client'],
+    packages=['opentera_webrtc.native_client'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
@@ -48,10 +48,10 @@ setup(
     platforms=['linux_x86_64'],
     # python_requires='==3.8',
     package_data={
-        'opentera.webrtc.native_client': [
+        'opentera_webrtc.native_client': [
             "$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>",
-            "opentera/webrtc/native_client/py.typed",
-            "opentera/webrtc/native_client/__init__.pyi",
+            "opentera_webrtc/native_client/py.typed",
+            "opentera_webrtc/native_client/__init__.pyi",
         ],
     },
     $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>

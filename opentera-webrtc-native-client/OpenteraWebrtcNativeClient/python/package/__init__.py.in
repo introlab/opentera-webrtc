@@ -1,4 +1,4 @@
-from opentera.webrtc.native_client.${PYTHON_LIB_NAME} import *
+from opentera_webrtc.native_client.${PYTHON_LIB_NAME} import *
 
 def _patch():
 
@@ -7,7 +7,7 @@ def _patch():
         for _k, _v
         in globals().items()
         if isinstance(_v, type) and isinstance(_k, str)
-        and _v.__module__ == 'opentera.webrtc.native_client._opentera_webrtc_native_client'
+        and _v.__module__ == 'opentera_webrtc.native_client._opentera_webrtc_native_client'
     }
 
     __all = []

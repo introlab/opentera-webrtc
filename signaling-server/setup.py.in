@@ -34,7 +34,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/introlab/opentera-webrtc",
-    packages=['opentera.webrtc.signaling_server'],
+    packages=['opentera_webrtc.signaling_server'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",

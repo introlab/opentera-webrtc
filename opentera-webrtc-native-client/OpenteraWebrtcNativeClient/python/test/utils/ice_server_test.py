@@ -1,6 +1,6 @@
 import unittest
 
-import opentera.webrtc.native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 from signaling_server_runner import SignalingServerRunner
 

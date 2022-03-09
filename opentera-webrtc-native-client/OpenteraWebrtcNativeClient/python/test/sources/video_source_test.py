@@ -1,7 +1,7 @@
 import unittest
 
 import numpy as np
-import opentera.webrtc.native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 
 class VideoSourceTestCase(unittest.TestCase):

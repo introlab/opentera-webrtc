@@ -9,7 +9,7 @@ set(PYTHON_HTML_IGNORE_PREFIXES ${PIP_DEVEL_PREFIX} ${PIP_INSTALL_PREFIX})
 # Needed for pip_utils.cmake
 set(PYTHON_SUBPACKAGE_NAME "signaling_server")
 set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
-set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera/webrtc/${PYTHON_SUBPACKAGE_NAME})
+set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SUBPACKAGE_NAME})
 
 include(../cmake/pip_utils.cmake)
 
@@ -20,9 +20,9 @@ pip_configure_setup(setup.py.in)
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 
 set(SOURCE
-    opentera/webrtc/signaling_server/__init__.py
-    opentera/webrtc/signaling_server/room_manager.py
-    opentera/webrtc/signaling_server/signaling_server.py
+    opentera_webrtc/signaling_server/__init__.py
+    opentera_webrtc/signaling_server/room_manager.py
+    opentera_webrtc/signaling_server/signaling_server.py
 
     opentera-signaling-server
     README.md

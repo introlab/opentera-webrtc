@@ -14,7 +14,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../'))
 sys.path.insert(0, os.path.abspath('./theme'))
-sys.path.insert(0, os.path.abspath('../opentera/webrtc/signaling_server'))
+sys.path.insert(0, os.path.abspath('../opentera_webrtc/signaling_server'))
 
 for path in sys.path:
     for prefix in "${PYTHON_HTML_IGNORE_PREFIXES}".split(";"):

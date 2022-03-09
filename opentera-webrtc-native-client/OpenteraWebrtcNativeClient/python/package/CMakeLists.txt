@@ -11,7 +11,7 @@ set(PYTHON_HTML_IGNORE_PREFIXES ${PIP_DEVEL_PREFIX} ${PIP_INSTALL_PREFIX})
 # Needed for pip_utils.cmake
 set(PYTHON_SUBPACKAGE_NAME "native_client")
 set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
-set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera/webrtc/${PYTHON_SUBPACKAGE_NAME})
+set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SUBPACKAGE_NAME})
 
 include(../../../../cmake/pip_utils.cmake)
 
@@ -34,7 +34,7 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-p
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
 pip_add_stub_target(
     NAME ${PYTHON_LIB_NAME}-stub
-    PACKAGE_NAME "opentera.webrtc.native_client"
+    PACKAGE_NAME "opentera_webrtc.native_client"
     # PACKAGE_PATH "opentera/webrtc/native_client"
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}

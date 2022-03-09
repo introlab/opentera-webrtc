@@ -9,7 +9,7 @@ if(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
 endif()
 
 execute_process(
-    COMMAND /usr/bin/env python3 -m pip install --verbose --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera.webrtc.@PYTHON_SUBPACKAGE_NAME@
+    COMMAND /usr/bin/env python3 -m pip install --verbose --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )
 
@@ -26,6 +26,6 @@ if(${MV} STREQUAL "ON")
 endif()
 
 execute_process(
-    COMMAND sh -c "tar c $(/usr/bin/env python3 -m pip show opentera.webrtc.@PYTHON_SUBPACKAGE_NAME@ | perl -n0777E 'say $1 if /Location:\\s+(.*?)\\n.*/s')/opentera/webrtc/@PYTHON_SUBPACKAGE_NAME@ 2> /dev/null | md5sum > @WORKING_DIR@/install.md5"
+    COMMAND sh -c "tar c $(/usr/bin/env python3 -m pip show opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@ | perl -n0777E 'say $1 if /Location:\\s+(.*?)\\n.*/s')/opentera_webrtc/@PYTHON_SUBPACKAGE_NAME@ 2> /dev/null | md5sum > @WORKING_DIR@/install.md5"
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )
