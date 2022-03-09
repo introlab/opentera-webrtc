@@ -120,7 +120,7 @@ jobs:
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v opentera/webrtc/tests
+          python3 -m pytest -v opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         if: ${{ !github.event.inputs.pytest_stdout }}
