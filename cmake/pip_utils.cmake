@@ -1,5 +1,5 @@
 function(assert_variable_defined NAME)
-    if(${${NAME}} STREQUAL "")
+    if("${${NAME}}" STREQUAL "")
         message(FATAL_ERROR "'${NAME}' not set before including pip_utils.cmake")
     endif()
 endfunction()
