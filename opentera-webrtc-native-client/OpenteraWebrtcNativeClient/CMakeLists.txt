@@ -43,6 +43,17 @@ target_link_libraries(OpenteraWebrtcNativeClient
         ${libyuv_LIBRARY}
         ${OpenCV_LIBRARIES})
 
+if(WIN32)
+    target_link_libraries(OpenteraWebrtcNativeClient
+        secur32
+        winmm
+        dmoguids
+        wmcodecdspuuid
+        msdmo
+        strmiids
+    )
+endif()
+
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)

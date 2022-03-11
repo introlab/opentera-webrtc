@@ -48,6 +48,7 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 * Marc-Antoine Maheux (@mamaheux)
 * Cédric Godin (@godced)
 * Dominic Létourneau (@doumdi)
+* Philippe Warren (@philippewarren)
 
 ## License
 
