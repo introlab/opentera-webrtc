@@ -4,7 +4,7 @@ import time
 import numpy as np
 import cv2
 
-import opentera_webrtc_native_client as webrtc
+import opentera_webrtc.native_client as webrtc
 
 
 def on_signaling_connection_opened():
@@ -27,32 +27,37 @@ def on_room_clients_changed(room_clients):
     # This callback is called from the internal client thread.
     print('on_room_clients_changed:')
     for c in room_clients:
-        print('\tid={}, name={}, data={}, is_connected={}'.format(c.id, c.name, c.data, c.is_connected))
+        print('\tid={}, name={}, data={}, is_connected={}'.format(
+            c.id, c.name, c.data, c.is_connected))
     print('\n')
 
 
 def on_client_connected(client):
     # This callback is called from the internal client thread.
     print('on_client_connected:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_client_disconnected(client):
     # This callback is called from the internal client thread.
     print('on_client_disconnected:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_add_remote_stream(client):
     # This callback is called from the internal client thread.
     print('on_add_remote_stream:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_remove_remote_stream(client):
     # This callback is called from the internal client thread.
     print('on_remove_remote_stream:')
-    print('\tid={}, name={}, data={}\n'.format(client.id, client.name, client.data))
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
 
 
 def on_video_frame_received(client, image, timestampUs):
@@ -64,14 +69,17 @@ def on_video_frame_received(client, image, timestampUs):
 def on_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
     # This callback is called from a WebRTC processing thread.
     print('on_audio_frame_received:')
-    print('\tid={}, name={}, data={}'.format(client.id, client.name, client.data))
-    print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
+    print('\tid={}, name={}, data={}'.format(
+        client.id, client.name, client.data))
+    print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(
+        data.dtype, sample_rate, number_of_channels, number_of_frames))
 
 
 def on_mixed_audio_frame_received(data, sample_rate, number_of_channels, number_of_frames):
     # This callback is called from the audio device module thread.
     print('on_mixed_audio_frame_received:')
-    print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(data.dtype, sample_rate, number_of_channels, number_of_frames))
+    print('\tdtype={}, sample_rate={}, number_of_channels={}, number_of_frames={}'.format(
+        data.dtype, sample_rate, number_of_channels, number_of_frames))
 
 
 def on_error(error):
@@ -81,17 +89,23 @@ def on_error(error):
 
 
 if __name__ == '__main__':
-    frame = cv2.imread(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'frame.png'))
+    frame = cv2.imread(os.path.join(os.path.dirname(
+        os.path.realpath(__file__)), 'frame.png'))
 
-    signaling_server_configuration = webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'Python', None, 'chat', 'abc')
-    ice_servers = webrtc.IceServer.fetch_from_server('http://localhost:8080/iceservers', 'abc')
+    signaling_server_configuration = webrtc.SignalingServerConfiguration.create(
+        'http://localhost:8080', 'Python', None, 'chat', 'abc')
+    ice_servers = webrtc.IceServer.fetch_from_server(
+        'http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
 
-    video_source = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, False))
+    video_source = webrtc.VideoSource(
+        webrtc.VideoSourceConfiguration.create(False, False))
     sound_card_total_delay_ms = 0
     fs = 48000
-    audio_source = webrtc.AudioSource(webrtc.AudioSourceConfiguration.create(sound_card_total_delay_ms), 16, fs, 1)
-    client = webrtc.StreamClient(signaling_server_configuration, webrtc_configuration, video_source, audio_source)
+    audio_source = webrtc.AudioSource(
+        webrtc.AudioSourceConfiguration.create(sound_card_total_delay_ms), 16, fs, 1)
+    client = webrtc.StreamClient(
+        signaling_server_configuration, webrtc_configuration, video_source, audio_source)
 
     client.on_signaling_connection_opened = on_signaling_connection_opened
     client.on_signaling_connection_closed = on_signaling_connection_closed
@@ -117,7 +131,8 @@ if __name__ == '__main__':
 
     start_time = time.time()
     while True:
-        frame_with_noise = frame + np.random.randint(0, 10, size=frame.shape, dtype=frame.dtype)
+        frame_with_noise = frame + \
+            np.random.randint(0, 10, size=frame.shape, dtype=frame.dtype)
         timestamp_us = int((time.time() - start_time) * 1e6)
         video_source.send_frame(frame_with_noise, timestamp_us)
         audio_source.send_frame(audio_frame)

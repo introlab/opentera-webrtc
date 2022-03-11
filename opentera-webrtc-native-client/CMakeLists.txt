@@ -23,8 +23,33 @@ option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking"
 # Default behavior is to enable tests
 option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 
+# Default behavior is to enable HTML documentation
 option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
 
+# Default behavior is to install only on "install" target
+option(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
+    "If ON, install the native client python library on build instead of install"
+    OFF
+    )
+
+# Default behavior is to install to --user in both cases
+set(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
+    ""
+    CACHE STRING
+    "Pip install prefix when building. If empty, defaults to --user instead of --prefix"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
+    ""
+    CACHE STRING
+    "Pip install prefix when installing. If empty, defaults to --user instead of --prefix"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
+    ""
+    CACHE STRING
+    "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
+)
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     find_package(OpenCV REQUIRED core imgproc)
@@ -104,4 +129,3 @@ endif()
 
 add_subdirectory(3rdParty)
 add_subdirectory(OpenteraWebrtcNativeClient)
-

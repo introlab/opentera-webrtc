@@ -75,7 +75,7 @@ class RoomManager:
 
             for client in clients:
                 if client['id'] != skip_id:
-                    tasks.append(self._sio.emit(event, data, to=client['id']))
+                    tasks.append(asyncio.create_task(self._sio.emit(event, data, to=client['id'])))
 
             if tasks == []:
                 return

@@ -4,7 +4,7 @@ import time
 import sys
 
 signaling_server_path = pathlib.Path(__file__).parent.parent.parent.parent.parent.joinpath('signaling-server') \
-    .joinpath('signaling_server.py').absolute()
+    .joinpath('opentera-signaling-server').absolute()
 ice_server_path = pathlib.Path(__file__).parent.joinpath('resources').joinpath('iceServers.json').absolute()
 
 

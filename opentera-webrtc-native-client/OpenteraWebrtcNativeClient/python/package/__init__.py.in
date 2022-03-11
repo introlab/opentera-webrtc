@@ -1,3 +1,23 @@
-# Init
-from opentera_webrtc_native_client.opentera_webrtc_native_client import *
-from opentera_webrtc_native_client.opentera_webrtc_native_client import __version__
+from opentera_webrtc.native_client.${PYTHON_LIB_NAME} import *
+
+def _patch():
+
+    __all_imports = {
+        _k: _v
+        for _k, _v
+        in globals().items()
+        if isinstance(_v, type) and isinstance(_k, str)
+        and _v.__module__ == 'opentera_webrtc.native_client._opentera_webrtc_native_client'
+    }
+
+    __all = []
+
+    for _k, _v in __all_imports.items():
+        _v.__module__ = _v.__module__.replace(
+            '.${PYTHON_LIB_NAME}', '')
+        __all.append(_k)
+
+    return __all
+
+
+__all__ = _patch()

@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 import argparse
 import asyncio
 import itertools
@@ -5,13 +7,16 @@ import json
 import sys
 import logging
 
+from pathlib import Path
+from typing import Union
+
 from aiohttp import web
 from aiohttp_index import IndexMiddleware
 
 import socketio
 import ssl
 
-from room_manager import RoomManager
+from .room_manager import RoomManager
 
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
@@ -177,20 +182,35 @@ def _isAuthorized(user_password):
     return password is None or user_password == password
 
 
-if __name__ == '__main__':
+class ExpandUserPath:
+    def __new__(cls, path: Union[str, Path]) -> Path:
+        return Path(path).expanduser().resolve()
+
+class Args:
+    port: int
+    password: str
+    ice_servers: Path
+    static_folder: Path
+    socketio_path: str
+    certificate: Path
+    key: Path
+    log_level: int
+
+
+def main():
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signaling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
-    parser.add_argument('--ice_servers', type=str, help='Choose the ice servers json file', default=None)
-    parser.add_argument('--static_folder', type=str, help='Choose the static folder', default=None)
+    parser.add_argument('--ice_servers', type=ExpandUserPath, help='Choose the ice servers json file', default=None)
+    parser.add_argument('--static_folder', type=ExpandUserPath, help='Choose the static folder', default=None)
     parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
-    parser.add_argument('--certificate', type=str, help='TLS certificate path', default=None)
-    parser.add_argument('--key', type=str, help='TLS private key path', default=None)
+    parser.add_argument('--certificate', type=ExpandUserPath, help='TLS certificate path', default=None)
+    parser.add_argument('--key', type=ExpandUserPath, help='TLS private key path', default=None)
     parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
         logging.WARNING, logging.INFO, logging.DEBUG], help='Log level value', default=logging.DEBUG)
 
     # Parse arguments
-    args = parser.parse_args()
+    args = parser.parse_args(namespace=Args())
 
     # Set logging level
     logger.setLevel(args.log_level)
@@ -209,11 +229,13 @@ if __name__ == '__main__':
         using_tls = False
 
     # Update global password
+    global password
     password = args.password
 
     # Look for ice servers file
     if args.ice_servers is not None:
-        with open(args.ice_servers) as file:
+        with args.ice_servers.open() as file:
+            global ice_servers
             ice_servers = json.load(file)
 
     # Make sure websocket path is defined
@@ -233,3 +255,7 @@ if __name__ == '__main__':
         web.run_app(app, port=args.port, ssl_context=ssl_context)
     else:
         web.run_app(app, port=args.port)
+
+
+if __name__ == '__main__':
+    main()

@@ -15,16 +15,9 @@ class SocketIOInactiveClientTestCase(FailureTestCase):
         cls._signaling_server_runner.close()
         super(SocketIOInactiveClientTestCase, cls).tearDownClass()
 
-    def setUp(self):
-        super(SocketIOInactiveClientTestCase, self).setUp()
-
-    def tearDown(self):
-        super(SocketIOInactiveClientTestCase, self).tearDown()
-
     def test_socketio_inactive_is_disconnected_after_timeout(self):
         awaiter = CallbackAwaiter(2, 15)
         sio = socketio.Client()
-        sio.connect('http://localhost:8080')
 
         @sio.event
         def connect():
@@ -40,4 +33,5 @@ class SocketIOInactiveClientTestCase(FailureTestCase):
         def disconnect():
             awaiter.done()
 
+        sio.connect('http://localhost:8080')
         awaiter.wait()
