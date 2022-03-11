@@ -35,34 +35,41 @@ make
 
 ## Install dependencies
 * [Git](https://git-scm.com/downloads/win)
-    * Do not add all the UNIX tools to path, it will conflict with the Windows tools.
+    * Do not add all the UNIX tools to path, it will conflict with the `MSYS2` tools. You will be fine if you use the default options.
 * [CMake](https://cmake.org/download)
-* [Python 3](https://www.python.org/downloads)
+    * Add CMake to the PATH variable for at least the current user.
+* [Python 3](https://www.python.org/downloads/windows)
+    * Install Python 3.8 or higher
+    * Choose customize installation
     * Make sure to include `pip`
         * If you installed `python 2` BEFORE, you might need to remove it from `PATH` for the time of the install to install `pip` properly
-    * Make sure to include the development files
-    * Make a copy of the executable as `python3.exe`
-    * Make sure to add both to `PATH`
+    * Make sure to add to `PATH`
+    * Make a copy of the `python.exe` executable as `python3.exe`
+        * Find it using `where python` in a CMD prompt
+    * If offered to disable PATH length limit, choose to do it
 * [Python 2](https://www.python.org/downloads)
     * Make sure to include `pip`
-    * Make a copy of the executable as `python2.exe`
-    * Make sure to add both to `PATH`
+    * Make sure to add to `PATH`
+    * Make a copy of the `python.exe` executable as `python2.exe`
+        * Find it using `where python` in a CMD prompt
 * [MSVC 2019 Build Tools](https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products)
+    * Choose the Desktop C++ workload
 * `numpy` installed on python 2 with `python2 -m pip install numpy`
 * `numpy` installed on python 3 with `python3 -m pip install numpy`
 * `wheel` installed on python 3 with `python3 -m pip install wheel`
 * `pybind11-stubgen` installed on python 3 with `python3 -m pip install pybind11-stubgen`
 * `sphinx` installed on python 3 with `python3 -m pip install sphinx`
 * [MSYS2](https://www.msys2.org/)
+    * Check `Run MSYS2 now` at the end of the installation process
     * Update using `pacman -Syu`
-    * Launch `MSYS2 MSYS` from start menu
+    * Launch `MSYS2 MSYS` from the Start menu
         * Update using `pacman -Su`
-    * Add `C:\msys64\usr\bin` and `C:\msys64\usr\local\bin` to `PATH` BEFORE `C:\Windows\System32` (to properly use the `MSYS` commands that have windows equivalents named the same way)
+    * Add `C:\msys64\usr\bin` and `C:\msys64\usr\local\bin` to `PATH` BEFORE `C:\Windows\System32` (to properly use the `MSYS` commands that have Windows or Git-bash equivalents named the same way)
 
 ### Install MSYS2 packages
 These packages are utilities used during the build process
 ```bash
-pacman -S rsync tar rsync perl git
+pacman -S rsync tar perl
 ```
 
 ### Initialize submodules

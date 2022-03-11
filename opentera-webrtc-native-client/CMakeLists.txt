@@ -130,5 +130,7 @@ else()
     message(FATAL_ERROR "Python3 is not found")
 endif()
 
+message(STATUS "PYTHON_EXECUTABLE(find_package): ${PYTHON_EXECUTABLE}")
 add_subdirectory(3rdParty)
+message(STATUS "PYTHON_EXECUTABLE(after 3rdParty): ${PYTHON_EXECUTABLE}")
 add_subdirectory(OpenteraWebrtcNativeClient)
