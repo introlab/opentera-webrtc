@@ -128,7 +128,7 @@ function(pip_add_html_target)
             COMMAND bash -c "if [ -f post-process-doc.sh ]; then ./post-process-doc.sh; fi"
             COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
             COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
-            COMMAND tar c ${PYTHON_PACKAGE_DIR}/_doc 2> /dev/null | md5sum > ${WORKING_DIR}/html.md5
+            COMMAND bash -c "tar c ${PYTHON_PACKAGE_DIR}/_doc 2> /dev/null | md5sum > ${WORKING_DIR}/html.md5"
             WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
             VERBATIM
         )
@@ -154,7 +154,7 @@ function(pip_add_dist_target)
         OUTPUT ${WORKING_DIR}/dist.md5
         DEPENDS ${ARGS_DEPENDS}
         COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel sdist
-        COMMAND tar c ${PYTHON_PACKAGE_DIR}/dist 2> /dev/null | md5sum > ${WORKING_DIR}/dist.md5
+        COMMAND bash -c "tar c ${PYTHON_PACKAGE_DIR}/dist 2> /dev/null | md5sum > ${WORKING_DIR}/dist.md5"
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
     )
