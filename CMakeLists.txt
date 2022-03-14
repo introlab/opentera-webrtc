@@ -16,6 +16,9 @@ add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIV
 # Default behavior is not to use system OpenCV
 option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking" OFF)
 
+# If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
+# Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
+
 # Default behavior is to enable tests
 option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 

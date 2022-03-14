@@ -49,6 +49,8 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     set(BUILD_JAVA OFF)
     set(BUILD_OBJC OFF)
 
+    set(OPENCV_CONFIG_FILE_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+
     # Configure opencv
     add_subdirectory(opencv)
 

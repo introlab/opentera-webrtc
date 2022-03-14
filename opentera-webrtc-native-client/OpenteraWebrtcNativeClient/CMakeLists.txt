@@ -11,7 +11,7 @@ else()
     set(OpenCV_INCLUDE_DIRS
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-	    ${CMAKE_CURRENT_BINARY_DIR}/../ CACHE INTERNAL "")
+	    ${CMAKE_CURRENT_BINARY_DIR}/../3rdParty/ CACHE INTERNAL "")
 
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
 endif()
