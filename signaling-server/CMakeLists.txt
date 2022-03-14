@@ -1,3 +1,7 @@
+cmake_minimum_required(VERSION 3.1)
+
+project(signaling_server)
+
 # Options and other arguments, required to configure files
 set(INSTALL_ON_BUILD ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD})
 set(PIP_DEVEL_PREFIX ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX})
