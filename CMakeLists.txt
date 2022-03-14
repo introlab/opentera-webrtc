@@ -61,7 +61,7 @@ endif (POLICY CMP0048)
 project(opentera-webrtc)
 
 if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "")
 endif ()
 
 find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)

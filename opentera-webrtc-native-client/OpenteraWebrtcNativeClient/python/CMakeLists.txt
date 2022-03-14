@@ -29,5 +29,4 @@ set_property(TARGET _opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
 
 assign_source_group(${source_files})
 
-message(STATUS "PYTHON_EXECUTABLE(python): ${PYTHON_EXECUTABLE}")
 add_subdirectory(package)

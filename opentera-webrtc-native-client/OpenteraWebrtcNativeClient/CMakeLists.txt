@@ -67,7 +67,6 @@ install(DIRECTORY include/ DESTINATION include
 
 assign_source_group(${source_files})
 
-message(STATUS "PYTHON_EXECUTABLE(OpenteraWebrtcNativeClient): ${PYTHON_EXECUTABLE}")
 add_subdirectory(python)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
