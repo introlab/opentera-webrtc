@@ -18,14 +18,14 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
     try
     {
         httplib::Client cli(host.c_str());
-#if defined(__APPLE__) || defined(__MACOSX__)
+#if defined(__APPLE__)
         /*
             TODO : Remove the certificate path on macosx with new version of BoringSSL?
             As of now, the ca-certificates need to be installed on the system with the following command:
             brew install ca-certificates
         */
         cli.set_ca_cert_path("/usr/local/etc/ca-certificates/cert.pem");
-#elif defined(__WIN32__) || defined(__WIN64__)
+#elif defined(_WIN_32)
         /*
             TODO : Find a better solution than MSYS2 to install the certificate on windows.
             As of now, the ca-certificates need to be installed on the system with the following command:
