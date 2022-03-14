@@ -43,7 +43,7 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 if (WIN32)
-    add_compile_definitions(WEBRTC_WIN WIN32_LEAN_AND_MEAN NOMINMAX)
+    add_compile_definitions(WEBRTC_WIN WIN32_LEAN_AND_MEAN NOMINMAX _WIN32_WINNT=0x0A00)
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
     if (APPLE)
