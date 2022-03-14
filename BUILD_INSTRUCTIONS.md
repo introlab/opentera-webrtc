@@ -20,7 +20,7 @@ git submodule update --init --recursive
 
 ### Prepare build with cmake
 ```bash
-cd opentera-webrtc-native-client
+cd opentera-webrtc
 mkdir build
 cd build
 cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
@@ -80,14 +80,14 @@ git submodule update --init --recursive
 ### Prepare build with cmake
 Using a CMD prompt (not tested with `powershell` or `git-bash` or `msys2` or any other shell)
 ```powershell
-cd opentera-webrtc-native-client
+cd opentera-webrtc
 mkdir build
 cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release|Debug -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
+cmake .. -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
 ```
 
 ### Build
 Using a CMD prompt (not tested with `powershell` or `git-bash` or `msys2` or any other shell)
 ```powershell
-cmake --build . --config Release|Debug
+cmake --build .
 ```
