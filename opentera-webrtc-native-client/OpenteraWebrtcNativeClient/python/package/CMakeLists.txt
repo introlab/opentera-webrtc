@@ -23,6 +23,7 @@ set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SU
 include(../../../../cmake/pip_utils.cmake)
 
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../LICENSE)
+set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
 pip_configure_setup(setup.py.in)
 
@@ -39,11 +40,13 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.tx
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-process-doc.sh)
 
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
+pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-requirements REQUIREMENTS_FILE ${REQUIREMENTS_FILE})
 pip_add_stub_target(
     NAME ${PYTHON_LIB_NAME}-stub
     PACKAGE_NAME "opentera_webrtc.native_client"
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
         ${PIP_CONFIGURE_OUTPUT_FILES}
     ENABLE_SO_STUB ${ENABLE_SO_STUB}
 )
@@ -51,6 +54,7 @@ pip_add_html_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-html
     DEPENDS
         ${${PYTHON_LIB_NAME}-stub}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
     DOC_DEPENDS
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
     ENABLE_HTML_DOC ${ENABLE_HTML_DOC}

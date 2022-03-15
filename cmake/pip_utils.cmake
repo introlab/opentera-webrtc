@@ -50,6 +50,29 @@ function(pip_configure_subpackage_file in_file out_file)
     set(PIP_CONFIGURE_OUTPUT_FILES ${PIP_CONFIGURE_OUTPUT_FILES} PARENT_SCOPE)
 endfunction()
 
+function(pip_add_requirements_target)
+    set(options)
+    set(oneValueArgs NAME REQUIREMENTS_FILE)
+    set(multiValueArgs DEPENDS)
+    cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    add_custom_command(
+        OUTPUT ${WORKING_DIR}/${ARGS_NAME}-req.stamp
+        DEPENDS ${ARGS_REQUIREMENTS_FILE} ${ARGS_DEPENDS}
+        COMMAND ${PYTHON_EXECUTABLE} -m pip install -qq -r ${ARGS_REQUIREMENTS_FILE}
+        COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/${ARGS_NAME}-req.stamp
+        WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
+        VERBATIM
+    )
+    add_custom_target(
+        ${ARGS_NAME}-target
+        ALL
+        DEPENDS ${WORKING_DIR}/${ARGS_NAME}-req.stamp
+        VERBATIM
+    )
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/${ARGS_NAME}-req.stamp PARENT_SCOPE)
+endfunction()
+
 function(pip_add_so_target)
     set(options)
     set(oneValueArgs NAME SO_NAME)
@@ -57,20 +80,20 @@ function(pip_add_so_target)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     add_custom_command(
-        OUTPUT ${WORKING_DIR}/so.md5
+        OUTPUT ${WORKING_DIR}/so.stamp
         DEPENDS ${ARGS_SO_NAME} ${ARGS_DEPENDS}
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${ARGS_SO_NAME}> ${PYTHON_PACKAGE_CONTENT_DIR}/$<TARGET_FILE_NAME:${ARGS_SO_NAME}>
-        COMMAND md5sum ${PYTHON_PACKAGE_CONTENT_DIR}/$<TARGET_FILE_NAME:${ARGS_SO_NAME}> > ${WORKING_DIR}/so.md5
+        COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/so.stamp
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
     )
     add_custom_target(
         ${ARGS_NAME}-target
         ALL
-        DEPENDS ${WORKING_DIR}/so.md5
+        DEPENDS ${WORKING_DIR}/so.stamp
         VERBATIM
     )
-    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/so.md5 PARENT_SCOPE)
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/so.stamp PARENT_SCOPE)
 endfunction()
 
 function(pip_add_stub_target)
@@ -119,26 +142,26 @@ function(pip_add_html_target)
         assert_program_installed("sphinx-build")
 
         add_custom_command(
-            OUTPUT ${WORKING_DIR}/html.md5
+            OUTPUT ${WORKING_DIR}/html.stamp
             DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_templates
             COMMAND ${CMAKE_COMMAND} -E make_directory _source/_static
             COMMAND bash -c "if [ -f _source/theme/requirements.txt ]; then ${PYTHON_EXECUTABLE} -m pip -qq install -t _source/theme -r _source/theme/requirements.txt; fi"
-            COMMAND ${PYTHON_EXECUTABLE} -m sphinx -aE _source _build
+            COMMAND bash -c "${PYTHON_EXECUTABLE} -m sphinx -aE _source _build 2> /dev/null"
             COMMAND bash -c "if [ -f post-process-doc.sh ]; then ./post-process-doc.sh; fi"
             COMMAND rm -rf ${PYTHON_PACKAGE_DIR}/_doc
             COMMAND bash -c "rsync -a --prune-empty-dirs --include '_*/' --include '_static/**' --include '*.html' --include '*.js' --include '*.css' --exclude '*' _build/ _doc/"
-            COMMAND bash -c "tar c ${PYTHON_PACKAGE_DIR}/_doc 2> /dev/null | md5sum > ${WORKING_DIR}/html.md5"
+            COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/html.stamp
             WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
             VERBATIM
         )
         add_custom_target(
             ${ARGS_NAME}-target
             ALL
-            DEPENDS ${WORKING_DIR}/html.md5
+            DEPENDS ${WORKING_DIR}/html.stamp
             VERBATIM
         )
-        set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/html.md5 PARENT_SCOPE)
+        set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/html.stamp PARENT_SCOPE)
     else()
         set(${ARGS_NAME} ${ARGS_DEPENDS} PARENT_SCOPE)
     endif()
@@ -151,20 +174,20 @@ function(pip_add_dist_target)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     add_custom_command(
-        OUTPUT ${WORKING_DIR}/dist.md5
+        OUTPUT ${WORKING_DIR}/dist.stamp
         DEPENDS ${ARGS_DEPENDS}
-        COMMAND ${PYTHON_EXECUTABLE} setup.py bdist bdist_wheel sdist
-        COMMAND bash -c "tar c ${PYTHON_PACKAGE_DIR}/dist 2> /dev/null | md5sum > ${WORKING_DIR}/dist.md5"
+        COMMAND ${PYTHON_EXECUTABLE} setup.py -q bdist bdist_wheel sdist
+        COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/dist.stamp
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
     )
     add_custom_target(
         ${ARGS_NAME}-target
         ALL
-        DEPENDS ${WORKING_DIR}/dist.md5
+        DEPENDS ${WORKING_DIR}/dist.stamp
         VERBATIM
     )
-    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/dist.md5 PARENT_SCOPE)
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/dist.stamp PARENT_SCOPE)
 endfunction()
 
 function(pip_add_install_target)
@@ -177,7 +200,7 @@ function(pip_add_install_target)
         set(ALL_OPTION ALL)
     else()
         set(ALL_OPTION)
-        file(REMOVE ${WORKING_DIR}/install.md5)
+        file(REMOVE ${WORKING_DIR}/install.stamp)
     endif()
 
     configure_file(
@@ -187,7 +210,7 @@ function(pip_add_install_target)
     )
 
     add_custom_command(
-        OUTPUT ${WORKING_DIR}/install.md5
+        OUTPUT ${WORKING_DIR}/install.stamp
         DEPENDS ${ARGS_DEPENDS} ${WORKING_DIR}/pip_install.cmake
         COMMAND ${CMAKE_COMMAND} -DPIP_INSTALL_PREFIX=${ARGS_PIP_DEVEL_PREFIX} -P ${WORKING_DIR}/pip_install.cmake
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
@@ -196,10 +219,10 @@ function(pip_add_install_target)
     add_custom_target(
         ${ARGS_NAME}-target
         ${ALL_OPTION}
-        DEPENDS ${WORKING_DIR}/install.md5
+        DEPENDS ${WORKING_DIR}/install.stamp
         VERBATIM
     )
-    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/install.md5 PARENT_SCOPE)
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/install.stamp PARENT_SCOPE)
     install(CODE "execute_process(COMMAND ${CMAKE_COMMAND} -DPIP_INSTALL_PREFIX=${ARGS_PIP_INSTALL_PREFIX} -P ${WORKING_DIR}/pip_install.cmake)")
 endfunction()
 
@@ -216,6 +239,5 @@ endfunction()
 assert_program_installed("perl")
 assert_program_installed("rsync")
 assert_program_installed("tar")
-assert_program_installed("md5sum")
 assert_program_installed("bash")
 assert_program_installed("find")

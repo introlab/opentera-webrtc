@@ -18,6 +18,8 @@ set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SU
 include(../cmake/pip_utils.cmake)
 
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE)
+set(BUILD_REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../requirements.txt)
+set(RUN_REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt)
 
 pip_configure_setup(setup.py.in)
 
@@ -39,11 +41,15 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/conf.py.in conf.py)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/index.rst index.rst)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.txt theme/requirements.txt)
 
+pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-build-requirements REQUIREMENTS_FILE ${BUILD_REQUIREMENTS_FILE})
+pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-run-requirements REQUIREMENTS_FILE ${RUN_REQUIREMENTS_FILE})
 pip_add_html_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-html
     DEPENDS
         ${PIP_CONFIGURE_OUTPUT_FILES}
+        ${${PYTHON_SUBPACKAGE_NAME}-run-requirements}
     DOC_DEPENDS
+        ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
     ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
 )

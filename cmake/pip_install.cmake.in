@@ -11,7 +11,7 @@ elseif(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
 endif()
 
 execute_process(
-    COMMAND @PYTHON_EXECUTABLE@ -m pip install --verbose --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@
+    COMMAND @PYTHON_EXECUTABLE@ -m pip install --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )
 
@@ -28,6 +28,6 @@ if(${MV} STREQUAL "ON")
 endif()
 
 execute_process(
-    COMMAND bash -c "tar c $(@PYTHON_EXECUTABLE@ -m pip show opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@ | perl -n0777E 'say $1 if /Location:\\s+(.*?)\\n.*/s')/opentera_webrtc/@PYTHON_SUBPACKAGE_NAME@ 2> /dev/null | md5sum > @WORKING_DIR@/install.md5"
+    COMMAND @CMAKE_COMMAND@ -E touch @WORKING_DIR@/install.stamp
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )
