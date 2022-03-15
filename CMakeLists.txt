@@ -40,12 +40,12 @@ set(
     OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
     ""
     CACHE STRING
-    "Pip install prefix when building. If empty, defaults to --user instead of --prefix"
+    "Pip install '--prefix' when building. If empty, no prefix is used; if '--user', --user is used"
 )
 set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
     ""
     CACHE STRING
-    "Pip install prefix when installing. If empty, defaults to --user instead of --prefix"
+    "Pip install '--prefix' when installing. If empty, no prefix is used; if '--user', --user is used"
 )
 set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
     ""
@@ -60,6 +60,10 @@ endif (POLICY CMP0014)
 if (POLICY CMP0048)
     cmake_policy(SET CMP0048 NEW)
 endif (POLICY CMP0048)
+
+if (POLICY CMP0094)
+    cmake_policy(SET CMP0094 NEW)
+endif (POLICY CMP0094)
 
 project(opentera-webrtc)
 

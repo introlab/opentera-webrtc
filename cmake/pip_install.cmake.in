@@ -1,7 +1,9 @@
 set(MV OFF)
-set(PIP_INSTALL_OPTIONS "--user")
+set(PIP_INSTALL_OPTIONS "")
 
-if(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
+if("${PIP_INSTALL_PREFIX}" STREQUAL "--user")
+    set(PIP_INSTALL_OPTIONS "--user")
+elseif(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
     set(PIP_INSTALL_OPTIONS "--prefix=${PIP_INSTALL_PREFIX}")
     if(NOT "@USE_EXACT_LIB_SUBPATH@" STREQUAL "")
         set(MV ON)
