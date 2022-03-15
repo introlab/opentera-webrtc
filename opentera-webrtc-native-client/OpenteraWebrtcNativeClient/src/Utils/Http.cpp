@@ -25,7 +25,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
             brew install ca-certificates
         */
         cli.set_ca_cert_path("/usr/local/etc/ca-certificates/cert.pem");
-#elif defined(_WIN_32)
+#elif defined(_WIN32)
         /*
             TODO : Find a better solution than MSYS2 to install the certificate on windows.
             As of now, the ca-certificates need to be installed on the system with the following command:
