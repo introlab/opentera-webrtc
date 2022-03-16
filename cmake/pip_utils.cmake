@@ -74,32 +74,36 @@ endfunction()
 
 function(pip_add_stub_target)
     set(options)
-    set(oneValueArgs NAME PACKAGE_NAME)
-    set(multiValueArgs DEPENDS)
+    set(oneValueArgs NAME PACKAGE_NAME ENABLE_SO_STUB)
+    set(multiValueArgs DEPENDS STUB_DEPENDS)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    # Used via python -m to correctly add current directory to path, but can be checked for installation nonetheless
-    assert_program_installed("pybind11-stubgen")
-    string(REPLACE "." "/" PACKAGE_PATH ${ARGS_PACKAGE_NAME})
+    if(ARGS_ENABLE_SO_STUB)
+        # Used via python -m to correctly add current directory to path, but can be checked for installation nonetheless
+        assert_program_installed("pybind11-stubgen")
+        string(REPLACE "." "/" PACKAGE_PATH ${ARGS_PACKAGE_NAME})
 
-    add_custom_command(
-        OUTPUT ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
-        BYPRODUCTS ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
-        DEPENDS ${ARGS_DEPENDS}
-        COMMAND python3 -m pybind11_stubgen "${ARGS_PACKAGE_NAME}"
-        COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
-        COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
-        COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
-        WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
-        VERBATIM
-    )
-    add_custom_target(
-        ${ARGS_NAME}-target
-        ALL
-        DEPENDS ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
-        VERBATIM
-    )
-    set(${ARGS_NAME} ${ARGS_NAME}-target ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi PARENT_SCOPE)
+        add_custom_command(
+            OUTPUT ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+            BYPRODUCTS ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
+            DEPENDS ${ARGS_DEPENDS} ${ARGS_STUB_DEPENDS}
+            COMMAND python3 -m pybind11_stubgen "${ARGS_PACKAGE_NAME}"
+            COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+            COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
+            COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
+            WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
+            VERBATIM
+        )
+        add_custom_target(
+            ${ARGS_NAME}-target
+            ALL
+            DEPENDS ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
+            VERBATIM
+        )
+        set(${ARGS_NAME} ${ARGS_NAME}-target ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi PARENT_SCOPE)
+    else()
+        set(${ARGS_NAME} ${ARGS_DEPENDS} PARENT_SCOPE)
+    endif()
 endfunction()
 
 function(pip_add_html_target)
@@ -108,9 +112,9 @@ function(pip_add_html_target)
     set(multiValueArgs DEPENDS DOC_DEPENDS)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    assert_program_installed("sphinx-build")
-
     if(ARGS_ENABLE_HTML_DOC)
+        assert_program_installed("sphinx-build")
+
         add_custom_command(
             OUTPUT ${WORKING_DIR}/html.md5
             DEPENDS ${ARGS_DEPENDS} ${ARGS_DOC_DEPENDS}
@@ -131,11 +135,10 @@ function(pip_add_html_target)
             DEPENDS ${WORKING_DIR}/html.md5
             VERBATIM
         )
-        set(HTML_DOC_DEPENDENCY_OPTION ${ARGS_NAME}-target ${WORKING_DIR}/html.md5)
+        set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/html.md5 PARENT_SCOPE)
     else()
-        set(HTML_DOC_DEPENDENCY_OPTION ${ARGS_DEPENDS})
+        set(${ARGS_NAME} ${ARGS_DEPENDS} PARENT_SCOPE)
     endif()
-    set(${ARGS_NAME} ${HTML_DOC_DEPENDENCY_OPTION} PARENT_SCOPE)
 endfunction()
 
 function(pip_add_dist_target)

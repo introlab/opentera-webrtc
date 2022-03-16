@@ -26,6 +26,9 @@ option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 # Default behavior is to enable HTML documentation
 option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
 
+# Default behavior is to enable stub file
+option(OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB "Generate stub file" ON)
+
 # Default behavior is to install only on "install" target
 option(
     OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
