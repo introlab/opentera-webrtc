@@ -39,6 +39,7 @@ pip_add_stub_target(
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}
         ${PIP_CONFIGURE_OUTPUT_FILES}
+    ENABLE_SO_STUB ${ENABLE_SO_STUB}
 )
 pip_add_html_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-html

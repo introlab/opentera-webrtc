@@ -87,7 +87,9 @@ function(pip_add_stub_target)
             OUTPUT ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
             BYPRODUCTS ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
             DEPENDS ${ARGS_DEPENDS} ${ARGS_STUB_DEPENDS}
-            COMMAND python3 -m pybind11_stubgen "${ARGS_PACKAGE_NAME}"
+            # Required to allow generating a stub from the local version of the package, pybind11_stubgen changes the current directory
+            # before importing the module, as seen here: https://github.com/sizmailov/pybind11-stubgen/blob/master/pybind11_stubgen/__init__.py#L944-L945
+            COMMAND python3 -c "from pybind11_stubgen import main as gen; import os, sys; sys.path.insert(0, os.path.abspath('.')); gen(['${ARGS_PACKAGE_NAME}'])"
             COMMAND ${CMAKE_COMMAND} -E copy ${PYTHON_PACKAGE_DIR}/stubs/${PACKAGE_PATH}-stubs/__init__.pyi ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi
             COMMAND bash -c "if [ -f post-process-stub.sh ]; then ./post-process-stub.sh ${PYTHON_PACKAGE_CONTENT_DIR}/__init__.pyi; fi"
             COMMAND ${CMAKE_COMMAND} -E touch ${PYTHON_PACKAGE_CONTENT_DIR}/py.typed
