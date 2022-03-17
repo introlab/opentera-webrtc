@@ -135,7 +135,7 @@ jobs:
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v --capture=tee-sys opentera/webrtc/tests
+          python3 -m pytest -v --capture=tee-sys opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
