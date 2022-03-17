@@ -82,4 +82,3 @@ endif()
 
 add_subdirectory(opentera-webrtc-native-client)
 add_subdirectory(signaling-server)
-message(STATUS "CMAKE_INSTALL_PREFIX after signaling-server : ${CMAKE_INSTALL_PREFIX}")

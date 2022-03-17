@@ -77,46 +77,46 @@ jobs:
           python3 -m pip install --user --upgrade pybind11-stubgen
 
       - name: Create build directory
-        working-directory: opentera-webrtc-native-client
         run: |
           mkdir build
 
-      - name: Run CMake and build opentera-webrtc-native-client
-        working-directory: opentera-webrtc-native-client/build
+      - name: Run CMake and build opentera-webrtc
+        working-directory: build
         run: |
-          cmake ../
+          cmake ../  -DCMAKE_INSTALL_PREFIX=dist
           make -j2
           make install
 
-      - name: Python installation cleanup
-        working-directory: opentera-webrtc-native-client/build/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
+      - name: Python native_client build cleanup
+        working-directory: build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
         run: |
           rm -rfv build
           rm -rfv '*.so'
           rm -rfv opentera_webrtc_native_client.egg-info
-          rm -rfv opentera_webrtc_native_client.html
+          rm -rfv _build
 
-      - name: Install python dependencies for signaling-server
-        working-directory: signaling-server
+      - name: Python signaling_server build cleanup
+        working-directory: build/signaling-server/opentera_webrtc_signaling_server
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+          rm -rfv build
+          rm -rfv opentera_webrtc_signaling_server.egg-info
+          rm -rfv _build
 
       - name: Run CPP Tests
-        working-directory: opentera-webrtc-native-client/build/bin
+        working-directory: build/bin
         run: |
           ./OpenteraWebrtcNativeClientTests
 
       - name: Run Python signaling-server Tests
         working-directory: signaling-server
         run: |
-          python3 -m pytest opentera_webrtc/tests
+          python3 -m pytest -v opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          cp ../../../build/OpenteraWebrtcNativeClient/python/bin/Release/opentera_webrtc_native_client.cpython-38-x86_64-linux-gnu.so .
-          python3 -m pytest
+          python3 -m pytest -v
 
       - name: Create Release
         id: create_release
@@ -133,7 +133,7 @@ jobs:
           prerelease: true
 
       - name: Create Archive
-        working-directory: opentera-webrtc-native-client/dist/Release
+        working-directory: dist/Release
         run: |
           tar cvzf ${{ steps.generate_release_file_name.outputs.release_file_name }}.tar.gz opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
 
@@ -144,6 +144,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: opentera-webrtc-native-client/dist/Release/${{ steps.generate_release_file_name.outputs.release_file_name }}.tar.gz
+          asset_path: dist/Release/${{ steps.generate_release_file_name.outputs.release_file_name }}.tar.gz
           asset_name: ${{ steps.generate_release_file_name.outputs.release_file_name }}.tar.gz
           asset_content_type: application/x-gzip

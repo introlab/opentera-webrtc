@@ -16,9 +16,7 @@ else()
 endif()
 add_subdirectory(boost-cmake)
 add_subdirectory(pybind11)
-message(STATUS "CMAKE_INSTALL_PREFIX before socketio : ${CMAKE_INSTALL_PREFIX}")
 add_subdirectory(socket.io-client-cpp)
-message(STATUS "CMAKE_INSTALL_PREFIX after socketio: ${CMAKE_INSTALL_PREFIX}")
 
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)

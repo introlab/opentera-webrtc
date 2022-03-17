@@ -55,7 +55,6 @@ else()
 endif (WIN32)
 
 add_subdirectory(3rdParty)
-message(STATUS "CMAKE_INSTALL_PREFIX after 3rdParty : ${CMAKE_INSTALL_PREFIX}")
 
 # Looked up again in case 3rdParty changed it
 find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
@@ -68,4 +67,3 @@ else()
 endif()
 
 add_subdirectory(OpenteraWebrtcNativeClient)
-message(STATUS "CMAKE_INSTALL_PREFIX after OpenTeraWebrtcNativeClient : ${CMAKE_INSTALL_PREFIX}")
