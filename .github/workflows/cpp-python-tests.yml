@@ -84,6 +84,7 @@ jobs:
           python3 -m pip install --user --upgrade pytest
           python3 -m pip install --user --upgrade sphinx
           python3 -m pip install --user --upgrade pybind11-stubgen
+          python3 -m pip install --user --upgrade numpy
 
       - name: Create build directory
         working-directory: opentera-webrtc-native-client
