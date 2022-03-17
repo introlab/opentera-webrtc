@@ -22,6 +22,9 @@ option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking"
 # Default behavior is to enable tests
 option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 
+# Default behavior is to enable examples
+option(OPENTERA_WEBRTC_ENABLE_EXAMPLES "Build examples" ON)
+
 # Default behavior is to enable stub file
 option(OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB "Generate stub file" ON)
 
@@ -82,3 +85,8 @@ endif()
 
 add_subdirectory(opentera-webrtc-native-client)
 add_subdirectory(signaling-server)
+
+if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+    add_subdirectory(examples/cpp-data-channel-client)
+    add_subdirectory(examples/cpp-stream-client)
+endif()

@@ -1,29 +1,29 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.1.0)
 
-if (POLICY CMP0014)
-    cmake_policy(SET CMP0014 NEW)
-endif (POLICY CMP0014)
+# if (POLICY CMP0014)
+#     cmake_policy(SET CMP0014 NEW)
+# endif (POLICY CMP0014)
 
-if (POLICY CMP0048)
-    cmake_policy(SET CMP0048 NEW)
-endif (POLICY CMP0048)
+# if (POLICY CMP0048)
+#     cmake_policy(SET CMP0048 NEW)
+# endif (POLICY CMP0048)
 
-if (WIN32)
-    #TODO
-elseif (UNIX)
-    set(CMAKE_CXX_FLAGS "-fPIC")
-    add_compile_definitions(WEBRTC_POSIX)
+# if (WIN32)
+#     #TODO
+# elseif (UNIX)
+#     set(CMAKE_CXX_FLAGS "-fPIC")
+#     add_compile_definitions(WEBRTC_POSIX)
 
-    if (CMAKE_BUILD_TYPE MATCHES Debug)
-        list(APPEND linux_LIBRARY dl X11 expat pthread)
-    endif ()
-    if (CMAKE_BUILD_TYPE MATCHES Release)
-        list(APPEND linux_LIBRARY  dl X11 expat pthread)
-    endif ()
-endif (WIN32)
+#     if (CMAKE_BUILD_TYPE MATCHES Debug)
+#         list(APPEND linux_LIBRARY dl X11 expat pthread)
+#     endif ()
+#     if (CMAKE_BUILD_TYPE MATCHES Release)
+#         list(APPEND linux_LIBRARY  dl X11 expat pthread)
+#     endif ()
+# endif (WIN32)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-add_subdirectory(../../opentera-webrtc-native-client ./opentera-webrtc-native-client)
+# add_subdirectory(../../opentera-webrtc-native-client ./opentera-webrtc-native-client)
 
 project(CppStreamClient)
 
@@ -41,11 +41,10 @@ add_executable(CppStreamClient main.cpp)
 
 target_link_libraries(CppStreamClient
         OpenteraWebrtcNativeClient
-        sioclient
-        ${webrtc_native_LIBRARY}
-        ${boringssl_LIBRARY}
-        ${OpenCV_LIBRARIES}
+        # sioclient
+        # ${webrtc_native_LIBRARY}
+        # ${boringssl_LIBRARY}
+        # ${OpenCV_LIBRARIES}
         opencv_highgui)
 
 set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 14)
-

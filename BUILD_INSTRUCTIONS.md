@@ -42,16 +42,11 @@ make
     * Install Python 3.8 or higher
     * Choose customize installation
     * Make sure to include `pip`
-        * If you installed `python 2` BEFORE, you might need to remove it from `PATH` for the time of the install to install `pip` properly
     * Make sure to add to `PATH`
-    * Make a copy of the `python.exe` executable as `python3.exe`
+    * Make a symlink of the `python.exe` executable as `python3.exe`
         * Find it using `where python` in a CMD prompt
+        * Use the command `mklink python3.exe python.exe`
     * If offered to disable PATH length limit, choose to do it
-* [Python 2](https://www.python.org/downloads)
-    * Make sure to include `pip`
-    * Make sure to add to `PATH`
-    * Make a copy of the `python.exe` executable as `python2.exe`
-        * Find it using `where python` in a CMD prompt
 * [MSVC 2019 Build Tools](https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products)
     * Choose the Desktop C++ workload
 * `numpy` installed on python 2 with `python2 -m pip install numpy`
@@ -65,6 +60,10 @@ make
     * Launch `MSYS2 MSYS` from the Start menu
         * Update using `pacman -Su`
     * Add `C:\msys64\usr\bin` and `C:\msys64\usr\local\bin` to `PATH` BEFORE `C:\Windows\System32` (to properly use the `MSYS` commands that have Windows or Git-bash equivalents named the same way)
+
+### Optional: required to run the examples
+* [Node.js](https://nodejs.org/)
+    * No need to install Python and MSVC Build Tools, as they should be installed from before
 
 ### Install MSYS2 packages
 These packages are utilities used during the build process
@@ -89,5 +88,11 @@ cmake .. -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
 ### Build
 Using a CMD prompt (not tested with `powershell` or `git-bash` or `msys2` or any other shell)
 ```powershell
-cmake --build .
+cmake --build . --config Release|Debug
+```
+
+### Install
+Using a CMD prompt (not tested with `powershell` or `git-bash` or `msys2` or any other shell)
+```powershell
+cmake --install .
 ```
