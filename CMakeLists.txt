@@ -95,6 +95,19 @@ else()
     message(FATAL_ERROR "Unsupported operating system.")
 endif (WIN32)
 
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+    add_definitions(-DDEBUG=1)
+endif ()
+
+if (CMAKE_BUILD_TYPE MATCHES Release)
+    add_definitions(-DRELEASE=1)
+endif ()
+
+if (MSVC)
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+endif (MSVC)
+
 add_subdirectory(opentera-webrtc-native-client)
 add_subdirectory(signaling-server)
 

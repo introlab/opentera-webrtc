@@ -16,19 +16,6 @@ message(STATUS "CMAKE_INSTALL_PREFIX : ${CMAKE_INSTALL_PREFIX}")
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(-DDEBUG=1)
-endif ()
-
-if (CMAKE_BUILD_TYPE MATCHES Release)
-    add_definitions(-DRELEASE=1)
-endif ()
-
-if (MSVC)
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-endif (MSVC)
-
 function(assign_source_group)
     foreach (_source IN ITEMS ${ARGN})
         if (IS_ABSOLUTE "${_source}")
