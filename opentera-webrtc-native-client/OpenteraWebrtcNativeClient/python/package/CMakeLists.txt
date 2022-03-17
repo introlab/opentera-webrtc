@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.14.0)
+
+project(opentera_webrtc_native_client_package)
 
 # Options and other arguments, required to configure files
 set(PYTHON_LIB_NAME _opentera_webrtc_native_client)

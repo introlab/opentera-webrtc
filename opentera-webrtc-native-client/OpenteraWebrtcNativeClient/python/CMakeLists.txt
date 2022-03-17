@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.14.0)
 
 project(opentera_webrtc_native_client)
 

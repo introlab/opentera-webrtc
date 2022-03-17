@@ -83,6 +83,18 @@ else()
     message(FATAL_ERROR "Python3 is not found")
 endif()
 
+if (WIN32)
+    add_compile_definitions(WEBRTC_WIN WIN32_LEAN_AND_MEAN NOMINMAX _WIN32_WINNT=0x0A00)
+elseif (UNIX)
+    set(CMAKE_CXX_FLAGS "-fPIC")
+    add_compile_definitions(WEBRTC_POSIX)
+    if (APPLE)
+        add_compile_definitions(WEBRTC_MAC)
+    endif(APPLE)
+else()
+    message(FATAL_ERROR "Unsupported operating system.")
+endif (WIN32)
+
 add_subdirectory(opentera-webrtc-native-client)
 add_subdirectory(signaling-server)
 
