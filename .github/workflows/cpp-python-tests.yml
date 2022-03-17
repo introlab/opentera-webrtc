@@ -94,6 +94,7 @@ jobs:
         run: |
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
           make -j2
+          cat opentera-webrtc-native-client/3rdParty/socket.io-client-cpp/cmake_install.cmake
           make install
 
       - name: Python native_client build cleanup
