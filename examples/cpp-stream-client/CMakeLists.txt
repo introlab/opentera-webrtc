@@ -19,6 +19,7 @@ add_executable(CppStreamClient main.cpp)
 target_link_libraries(CppStreamClient
     OpenteraWebrtcNativeClient
     opencv_highgui
+    pthread
 )
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
