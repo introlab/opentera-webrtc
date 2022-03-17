@@ -19,8 +19,4 @@ target_link_libraries(CppDataChannelClient
     OpenteraWebrtcNativeClient
 )
 
-if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
-    add_dependencies(CppStreamClient opencv_highgui)
-endif()
-
 set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)
