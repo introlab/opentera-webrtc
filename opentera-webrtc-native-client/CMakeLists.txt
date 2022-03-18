@@ -1,18 +1,21 @@
 cmake_minimum_required(VERSION 3.14.0)
 
-if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
-    set(HIGH_GUI "highgui imgcodecs")
-else()
-    set(HIGH_GUI "")
-endif()
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
-    find_package(OpenCV REQUIRED core imgproc ${HIGH_GUI})
+    if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+        set(_OpenCV_extra_modules_examples "highgui" "imgcodecs")
+    else()
+        set(_OpenCV_extra_modules_examples "")
+    endif()
+
+    find_package(OpenCV REQUIRED core imgproc ${_OpenCV_extra_modules_examples})
     message(STATUS "OpenCV library status:")
     message(STATUS "    config: ${OpenCV_DIR}")
     message(STATUS "    version: ${OpenCV_VERSION}")
     message(STATUS "    libraries: ${OpenCV_LIBS}")
     message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+
+    unset(_OpenCV_extra_modules_examples)
 endif()
 
 project(opentera-webrtc-native-client)

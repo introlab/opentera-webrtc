@@ -15,6 +15,7 @@ else()
         )
         set(_OpenCV_libraries_examples opencv_highgui opencv_imgcodecs)
     endif()
+
     set(OpenCV_INCLUDE_DIRS
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
@@ -22,6 +23,7 @@ else()
         ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
     )
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core ${_OpenCV_libraries_examples})
+
     unset(_OpenCV_include_dirs_examples)
     unset(_OpenCV_libraries_examples)
 endif()
