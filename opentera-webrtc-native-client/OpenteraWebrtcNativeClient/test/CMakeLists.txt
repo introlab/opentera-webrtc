@@ -12,27 +12,35 @@ include_directories(include)
 
 
 file(GLOB_RECURSE
-        source_files
-        src/*
-        include/*)
+    TEST_SOURCE_FILES
+    "src/*"
+    "include/*"
+)
 
 add_executable(OpenteraWebrtcNativeClientTests
-        ${source_files})
+    ${TEST_SOURCE_FILES}
+)
 
 target_link_libraries(OpenteraWebrtcNativeClientTests
-        OpenteraWebrtcNativeClient
-        Boost::boost
-        Boost::filesystem
-        gtest
-        gmock)
+    OpenteraWebrtcNativeClient
+    Boost::boost
+    Boost::filesystem
+    gtest
+    gmock
+)
+
+if(WIN32)
+    target_compile_definitions(OpenteraWebrtcNativeClientTests PRIVATE WIN32_LEAN_AND_MEAN)
+endif()
 
 set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 14)
 
 assign_source_group(${source_files})
 
 add_custom_command(TARGET OpenteraWebrtcNativeClientTests POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:OpenteraWebrtcNativeClientTests>/resources)
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:OpenteraWebrtcNativeClientTests>/resources
+)
 
 install(TARGETS OpenteraWebrtcNativeClientTests DESTINATION bin)
 install(DIRECTORY resources DESTINATION bin)
