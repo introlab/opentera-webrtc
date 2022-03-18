@@ -66,6 +66,7 @@ pip_add_dist_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-dist
     DEPENDS
         ${${PYTHON_SUBPACKAGE_NAME}-html}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
 )
 pip_add_install_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-install

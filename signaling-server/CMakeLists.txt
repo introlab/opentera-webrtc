@@ -32,7 +32,6 @@ set(SOURCE
 
     opentera-signaling-server
     README.md
-    requirements.txt
 )
 # Same relative tree between CMAKE_CURRENT_SOURCE_DIR and PYTHON_PACKAGE_DIR for files in SOURCE will work as expected with this command
 pip_configure_package_file_hierarchy(${SOURCE})
@@ -53,7 +52,12 @@ pip_add_html_target(
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
     ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
 )
-pip_add_dist_target(NAME ${PYTHON_SUBPACKAGE_NAME}-dist DEPENDS ${${PYTHON_SUBPACKAGE_NAME}-html})
+pip_add_dist_target(
+    NAME ${PYTHON_SUBPACKAGE_NAME}-dist
+    DEPENDS
+        ${${PYTHON_SUBPACKAGE_NAME}-html}
+        ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
+)
 pip_add_install_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-install
     DEPENDS

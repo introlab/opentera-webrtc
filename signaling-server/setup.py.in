@@ -6,11 +6,6 @@ def read_file(name):
         return fh.read()
 
 
-def read_file_lines(name):
-    with open(name, "r", encoding="utf-8") as fh:
-        return fh.readlines()
-
-
 def get_doc_files():
     files = {}
     for root, _, filenames in os.walk('_doc'):
@@ -23,7 +18,6 @@ def get_doc_files():
 
 
 long_description = read_file("README.md")
-requirements = read_file_lines("requirements.txt")
 
 setup(
     name="opentera_webrtc_signaling_server",
@@ -47,6 +41,6 @@ setup(
     $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>
     include_package_data=True,
     zip_safe=False,
-    install_requires=requirements,
+    install_requires=["python-socketio", "aiohttp", "aiohttp_index"],
     scripts=['opentera-signaling-server'],
 )
