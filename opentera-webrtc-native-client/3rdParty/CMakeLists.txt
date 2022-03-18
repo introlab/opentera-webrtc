@@ -19,7 +19,7 @@ add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
 
 if(WIN32)
-    target_compile_definitions(sioclient PRIVATE NOCRYPT)
+    target_compile_definitions(sioclient PRIVATE WIN32_LEAN_AND_MEAN)
 endif()
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)

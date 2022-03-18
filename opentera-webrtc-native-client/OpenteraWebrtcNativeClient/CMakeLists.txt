@@ -9,11 +9,19 @@ if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "")
 else()
     set(OpenCV_INCLUDE_DIRS
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-	    ${CMAKE_BINARY_DIR} CACHE INTERNAL "")
-
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+        ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
+    )
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
+
+    if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+        list(APPEND OpenCV_INCLUDE_DIRS
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/highgui/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgcodecs/include
+        )
+        list(APPEND OpenCV_LIBRARIES opencv_highgui opencv_imgcodecs)
+    endif()
 endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
