@@ -11,5 +11,6 @@ cmake --build . --config Release|Debug
 cmake --install .
 
 cd ../examples/python-stream-client/
+python3 -m pip install -r requirements.txt
 python3 python_stream_client.py
 ```
