@@ -18,6 +18,9 @@ add_subdirectory(boost-cmake)
 add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
 
+if(WIN32)
+    target_compile_definitions(sioclient PRIVATE NOCRYPT)
+endif()
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(googletest)

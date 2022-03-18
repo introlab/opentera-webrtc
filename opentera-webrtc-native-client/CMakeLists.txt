@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14.0)
 
 if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
-    set(HIGH_GUI "highgui")
+    set(HIGH_GUI "highgui imgcodecs")
 else()
     set(HIGH_GUI "")
 endif()

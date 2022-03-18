@@ -176,7 +176,7 @@ function(pip_add_dist_target)
     add_custom_command(
         OUTPUT ${WORKING_DIR}/dist.stamp
         DEPENDS ${ARGS_DEPENDS}
-        COMMAND ${PYTHON_EXECUTABLE} -m build
+        COMMAND ${PYTHON_EXECUTABLE} setup.py -q bdist_wheel sdist
         COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/dist.stamp
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
