@@ -17,7 +17,12 @@ add_executable(CppDataChannelClient main.cpp)
 
 target_link_libraries(CppDataChannelClient
     OpenteraWebrtcNativeClient
-    pthread
 )
+
+if (NOT WIN32)
+    target_link_libraries(CppDataChannelClient
+        pthread
+    )
+endif()
 
 set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)
