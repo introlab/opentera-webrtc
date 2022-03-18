@@ -8,20 +8,22 @@ if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # OpenCV_INCLUDE_DIRS already set in root CMake with find_package(OpenCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "")
 else()
-    set(OpenCV_INCLUDE_DIRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-        ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
-    )
-    set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
-
     if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
-        list(APPEND OpenCV_INCLUDE_DIRS
+        set(_OpenCV_include_dirs_examples
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/highgui/include
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgcodecs/include
         )
-        list(APPEND OpenCV_LIBRARIES opencv_highgui opencv_imgcodecs)
+        set(_OpenCV_libraries_examples opencv_highgui opencv_imgcodecs)
     endif()
+    set(OpenCV_INCLUDE_DIRS
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+        ${_OpenCV_include_dirs_examples}
+        ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
+    )
+    set(OpenCV_LIBRARIES opencv_imgproc opencv_core ${_OpenCV_libraries_examples})
+    unset(_OpenCV_include_dirs_examples)
+    unset(_OpenCV_libraries_examples)
 endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
