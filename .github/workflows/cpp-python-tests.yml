@@ -84,34 +84,36 @@ jobs:
           python3 -m pip install --user --upgrade pytest
           python3 -m pip install --user --upgrade sphinx
           python3 -m pip install --user --upgrade pybind11-stubgen
+          python3 -m pip install --user --upgrade numpy
 
       - name: Create build directory
-        working-directory: opentera-webrtc-native-client
         run: |
           mkdir build
 
-      - name: Run CMake and build opentera-webrtc-native-client
-        working-directory: opentera-webrtc-native-client/build
+      - name: Run CMake and build opentera-webrtc
+        working-directory: build
         run: |
-          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }}
+          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist
           make -j2
           make install
 
-      - name: Python installation cleanup
-        working-directory: opentera-webrtc-native-client/build/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
+      - name: Python native_client build cleanup
+        working-directory: build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
         run: |
           rm -rfv build
           rm -rfv '*.so'
           rm -rfv opentera_webrtc_native_client.egg-info
-          rm -rfv opentera_webrtc_native_client.html
+          rm -rfv _build
 
-      - name: Install python dependencies for signaling-server
-        working-directory: signaling-server
+      - name: Python signaling_server build cleanup
+        working-directory: build/signaling-server/opentera_webrtc_signaling_server
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
+          rm -rfv build
+          rm -rfv opentera_webrtc_signaling_server.egg-info
+          rm -rfv _build
 
       - name: Run CPP Tests
-        working-directory: opentera-webrtc-native-client/build/bin
+        working-directory: build/bin
         run: |
           ./OpenteraWebrtcNativeClientTests
 
@@ -127,7 +129,6 @@ jobs:
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
           python3 -m pytest -v
 
       # With stdout
@@ -142,5 +143,4 @@ jobs:
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          cp ../../../build/OpenteraWebrtcNativeClient/python/bin/${{ matrix.build-type }}/_opentera_webrtc_native_client.cpython*.so .
           python3 -m pytest -v --capture=tee-sys

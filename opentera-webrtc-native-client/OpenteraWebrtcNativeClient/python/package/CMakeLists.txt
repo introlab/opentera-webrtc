@@ -1,3 +1,6 @@
+cmake_minimum_required(VERSION 3.14.0)
+
+project(opentera_webrtc_native_client_package)
 
 # Options and other arguments, required to configure files
 set(PYTHON_LIB_NAME _opentera_webrtc_native_client)
@@ -9,6 +12,12 @@ set(ENABLE_HTML_DOC ${OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC})
 set(ENABLE_SO_STUB ${OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB})
 set(PYTHON_HTML_IGNORE_PREFIXES ${PIP_DEVEL_PREFIX} ${PIP_INSTALL_PREFIX})
 
+if(WIN32)
+    set(PYTHON_SO_EXTENSION "pyd")
+else()
+    set(PYTHON_SO_EXTENSION "so")
+endif()
+
 # Needed for pip_utils.cmake
 set(PYTHON_SUBPACKAGE_NAME "native_client")
 set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
@@ -17,6 +26,7 @@ set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SU
 include(../../../../cmake/pip_utils.cmake)
 
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../LICENSE)
+set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
 pip_configure_setup(setup.py.in)
 
@@ -33,11 +43,13 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.tx
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-process-doc.sh)
 
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
+pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-requirements REQUIREMENTS_FILE ${REQUIREMENTS_FILE})
 pip_add_stub_target(
     NAME ${PYTHON_LIB_NAME}-stub
     PACKAGE_NAME "opentera_webrtc.native_client"
     DEPENDS
         ${${PYTHON_LIB_NAME}-so}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
         ${PIP_CONFIGURE_OUTPUT_FILES}
     ENABLE_SO_STUB ${ENABLE_SO_STUB}
 )
@@ -45,6 +57,7 @@ pip_add_html_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-html
     DEPENDS
         ${${PYTHON_LIB_NAME}-stub}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
     DOC_DEPENDS
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
     ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
@@ -53,6 +66,7 @@ pip_add_dist_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-dist
     DEPENDS
         ${${PYTHON_SUBPACKAGE_NAME}-html}
+        ${${PYTHON_SUBPACKAGE_NAME}-requirements}
 )
 pip_add_install_target(
     NAME ${PYTHON_SUBPACKAGE_NAME}-install

@@ -1,7 +1,9 @@
 set(MV OFF)
-set(PIP_INSTALL_OPTIONS "--user")
+set(PIP_INSTALL_OPTIONS "")
 
-if(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
+if("${PIP_INSTALL_PREFIX}" STREQUAL "--user")
+    set(PIP_INSTALL_OPTIONS "--user")
+elseif(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
     set(PIP_INSTALL_OPTIONS "--prefix=${PIP_INSTALL_PREFIX}")
     if(NOT "@USE_EXACT_LIB_SUBPATH@" STREQUAL "")
         set(MV ON)
@@ -9,14 +11,14 @@ if(NOT "${PIP_INSTALL_PREFIX}" STREQUAL "")
 endif()
 
 execute_process(
-    COMMAND /usr/bin/env python3 -m pip install --verbose --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@
+    COMMAND @PYTHON_EXECUTABLE@ -m pip install --upgrade --force-reinstall --no-deps --no-cache-dir --no-index ${PIP_INSTALL_OPTIONS} --find-links=@PYTHON_PACKAGE_DIR@/dist opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )
 
 if(${MV} STREQUAL "ON")
     execute_process(
         # The format is the same between --user (where pip should be installed) and --prefix (where the package is installed)
-        COMMAND sh -c "rsync -a --remove-source-files ${PIP_INSTALL_PREFIX}/lib/$(/usr/bin/env python3 -m pip show pip | perl -n0777E 'say $1 if /Location:\\s+.*?\\/lib\\/(.*?)\\n.*/s')/ ${PIP_INSTALL_PREFIX}/lib/@USE_EXACT_LIB_SUBPATH@/ 2> /dev/null"
+        COMMAND bash -c "rsync -a --remove-source-files ${PIP_INSTALL_PREFIX}/lib/$(@PYTHON_EXECUTABLE@ -m pip show pip | perl -n0777E 'say $1 if /Location:\\s+.*?\\/lib\\/(.*?)\\n.*/s')/ ${PIP_INSTALL_PREFIX}/lib/@USE_EXACT_LIB_SUBPATH@/ 2> /dev/null"
         WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
     )
     execute_process(
@@ -26,6 +28,6 @@ if(${MV} STREQUAL "ON")
 endif()
 
 execute_process(
-    COMMAND sh -c "tar c $(/usr/bin/env python3 -m pip show opentera_webrtc.@PYTHON_SUBPACKAGE_NAME@ | perl -n0777E 'say $1 if /Location:\\s+(.*?)\\n.*/s')/opentera_webrtc/@PYTHON_SUBPACKAGE_NAME@ 2> /dev/null | md5sum > @WORKING_DIR@/install.md5"
+    COMMAND @CMAKE_COMMAND@ -E touch @WORKING_DIR@/install.stamp
     WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
 )

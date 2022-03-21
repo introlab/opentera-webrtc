@@ -5,10 +5,12 @@ This example shows how to use the C++ library to create a client that communicat
 ## How to use
 
 ```bash
+cd ../..
 mkdir build
 cd build
 cmake ..
-make
+cmake --build . --config Release|Debug
 
+cd bin/Release
 ./CppDataChannelClient
 ```

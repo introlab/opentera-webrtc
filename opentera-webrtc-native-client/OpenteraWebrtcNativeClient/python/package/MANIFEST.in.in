@@ -1,3 +1,3 @@
 global-include *.pyi
 global-include *.typed
-global-include *.so
+global-include *.@PYTHON_SO_EXTENSION@

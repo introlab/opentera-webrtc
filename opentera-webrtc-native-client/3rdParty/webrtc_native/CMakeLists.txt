@@ -1,11 +1,14 @@
 set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
 
 if(WIN32)
-	message(FATAL_ERROR "Windows is not supported yet.")
+	set(architecture "win64")
+	set(archive_stem webrtc-native-build-msvc-2019-${architecture}-Release-${webrtc_native_build_version})
+	set(archive_extension "zip")
 elseif(UNIX)
+	set(archive_extension "tar.gz")
 	if(APPLE)
 		set(architecture "osx64")
-		set(archive_name webrtc-native-build-macos-10.15-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
+		set(archive_stem webrtc-native-build-macos-10.15-${architecture}-Release-${webrtc_native_build_version})
 	else(APPLE)
 		# Taken from : https://stackoverflow.com/questions/26919334/detect-underlying-platform-flavour-in-cmake
 		function(get_linux_lsb_release_information)
@@ -45,42 +48,52 @@ elseif(UNIX)
 			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04 or 20.04.")
 		endif()
 
-		set(archive_name webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version}.tar.gz)
+		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version})
 	endif(APPLE)
+else()
+    message(FATAL_ERROR "Unsupported operating system.")
+endif()
 
-	set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
+set(archive_name ${archive_stem}.${archive_extension})
 
-	if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
-		message(STATUS "Downloading : ${webrtc_native_build_archive_url}")
-		file(DOWNLOAD
-			${webrtc_native_build_archive_url}
-			${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
-			TIMEOUT 60 #seconds
-			TLS_VERIFY ON
-			SHOW_PROGRESS)
-	endif()
+set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
 
-	set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}")
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
+	message(STATUS "Downloading : ${webrtc_native_build_archive_url}")
+	file(DOWNLOAD
+		${webrtc_native_build_archive_url}
+		${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+		TIMEOUT 60 #seconds
+		TLS_VERIFY ON
+		SHOW_PROGRESS)
+endif()
 
-	if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
-		message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
-		execute_process(
-			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-	endif()
+set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}")
 
-	set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
+	file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
+	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem} ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+endif()
+
+set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+
+if(WIN32)
+	set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/boringssl.lib CACHE INTERNAL "")
+	set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/webrtc.lib CACHE INTERNAL "")
+	set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.lib CACHE INTERNAL "")
+else()
 	set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "")
-	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+	set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.a CACHE INTERNAL "")
 
 	if(APPLE)
 		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a "-framework Foundation" "-framework AVFoundation" "-framework CoreAudio" "-framework AudioToolbox" "-framework CoreGraphics" CACHE INTERNAL "")
-	else(APPLE)
-      	set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
-	endif(APPLE)
-
-	set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
-	set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.a CACHE INTERNAL "")
-else()
-    message(FATAL_ERROR "Unsupported operating system.")
+	else()
+		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+	endif()
 endif()

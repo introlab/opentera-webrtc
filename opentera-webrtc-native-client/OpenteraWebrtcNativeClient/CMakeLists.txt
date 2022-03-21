@@ -1,21 +1,31 @@
-cmake_minimum_required(VERSION 2.6.4)
+cmake_minimum_required(VERSION 3.14.0)
 
 project(OpenteraWebrtcNativeClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
-add_compile_definitions(WEBRTC_POSIX)
-
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # OpenCV_INCLUDE_DIRS already set in root CMake with find_package(OpenCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "")
 else()
-    set(OpenCV_INCLUDE_DIRS
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-	    ${CMAKE_CURRENT_BINARY_DIR}/../ CACHE INTERNAL "")
+    if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+        set(_OpenCV_include_dirs_examples
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/highgui/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgcodecs/include
+        )
+        set(_OpenCV_libraries_examples opencv_highgui opencv_imgcodecs)
+    endif()
 
-    set(OpenCV_LIBRARIES opencv_imgproc opencv_core)
+    set(OpenCV_INCLUDE_DIRS
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+        ${_OpenCV_include_dirs_examples}
+        ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
+    )
+    set(OpenCV_LIBRARIES opencv_imgproc opencv_core ${_OpenCV_libraries_examples})
+
+    unset(_OpenCV_include_dirs_examples)
+    unset(_OpenCV_libraries_examples)
 endif()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -44,6 +54,17 @@ target_link_libraries(OpenteraWebrtcNativeClient
         ${boringssl_LIBRARY}
         ${libyuv_LIBRARY}
         ${OpenCV_LIBRARIES})
+
+if(WIN32)
+    target_link_libraries(OpenteraWebrtcNativeClient
+        secur32
+        winmm
+        dmoguids
+        wmcodecdspuuid
+        msdmo
+        strmiids
+    )
+endif()
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 
