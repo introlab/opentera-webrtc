@@ -18,7 +18,7 @@ execute_process(
 if(${MV} STREQUAL "ON")
     execute_process(
         # The format is the same between --user (where pip should be installed) and --prefix (where the package is installed)
-        COMMAND bash -c "rsync -a --remove-source-files ${PIP_INSTALL_PREFIX}/lib/$(@PIP_PYTHON_EXECUTABLE@ -m pip show pip | perl -n0777E 'say $1 if /Location:\\s+.*?\\/lib\\/(.*?)\\n.*/s')/ ${PIP_INSTALL_PREFIX}/lib/@USE_EXACT_LIB_SUBPATH@/ 2> /dev/null"
+        COMMAND bash -c "rsync -a --remove-source-files ${PIP_INSTALL_PREFIX}/lib/@USE_EXACT_LIB_SUBPATH_SOURCE@/ ${PIP_INSTALL_PREFIX}/lib/@USE_EXACT_LIB_SUBPATH@/ 2> /dev/null"
         WORKING_DIRECTORY @PYTHON_PACKAGE_DIR@
     )
     execute_process(
