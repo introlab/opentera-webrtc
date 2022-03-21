@@ -49,7 +49,6 @@ make
     * If offered to disable PATH length limit, choose to do it
 * [MSVC 2019 Build Tools](https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products)
     * Choose the Desktop C++ workload
-* `numpy` installed on python 2 with `python2 -m pip install numpy`
 * `numpy` installed on python 3 with `python3 -m pip install numpy`
 * `wheel` installed on python 3 with `python3 -m pip install wheel`
 * `pybind11-stubgen` installed on python 3 with `python3 -m pip install pybind11-stubgen`
