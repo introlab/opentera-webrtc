@@ -26,6 +26,6 @@ namespace opentera
             size_t numberOfChannels,
             size_t numberOfFrames) override;
     };
-}  // namespace opentera
+}
 
 #endif
