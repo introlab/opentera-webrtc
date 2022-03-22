@@ -150,6 +150,6 @@ namespace opentera
     }
 
     inline bool operator!=(const RoomClient& c1, const RoomClient& c2) { return !(c1 == c2); }
-}  // namespace opentera
+}
 
 #endif

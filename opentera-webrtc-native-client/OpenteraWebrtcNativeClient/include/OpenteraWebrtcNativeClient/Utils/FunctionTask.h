@@ -84,6 +84,6 @@ namespace opentera
             thread->PostTask(std::make_unique<FunctionTask>(function, true));
         }
     };
-}  // namespace opentera
+}
 
 #endif

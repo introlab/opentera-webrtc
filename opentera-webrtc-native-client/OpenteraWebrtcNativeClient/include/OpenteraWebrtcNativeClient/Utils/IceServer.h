@@ -64,6 +64,6 @@ namespace opentera
         iceServer.password = m_credential;
         return iceServer;
     }
-}  // namespace opentera
+}
 
 #endif

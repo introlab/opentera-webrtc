@@ -18,6 +18,6 @@ namespace opentera
                 bool verifyCertificate = true);
         static bool splitUrl(const std::string& url, std::string& host, std::string& target);
     };
-}  // namespace opentera
+}
 
 #endif

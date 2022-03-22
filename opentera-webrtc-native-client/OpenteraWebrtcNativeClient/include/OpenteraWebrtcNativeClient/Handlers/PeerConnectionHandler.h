@@ -92,6 +92,6 @@ namespace opentera
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
     };
-}  // namespace opentera
+}
 
 #endif

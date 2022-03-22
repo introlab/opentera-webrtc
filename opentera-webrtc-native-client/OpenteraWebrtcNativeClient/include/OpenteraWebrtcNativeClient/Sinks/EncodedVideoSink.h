@@ -37,6 +37,6 @@ namespace opentera
 
         void OnFrame(const webrtc::RecordableEncodedFrame& frame) override;
     };
-}  // namespace opentera
+}
 
 #endif

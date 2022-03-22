@@ -19,6 +19,6 @@ namespace opentera
         void wait(const char* file, int line);
         bool done();
     };
-}  // namespace opentera
+}
 
 #endif

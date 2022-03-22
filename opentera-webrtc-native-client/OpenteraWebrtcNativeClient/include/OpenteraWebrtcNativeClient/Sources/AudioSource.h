@@ -77,6 +77,6 @@ namespace opentera
     {
         sendFrame(audioData, numberOfFrames, false);
     }
-}  // namespace opentera
+}
 
 #endif

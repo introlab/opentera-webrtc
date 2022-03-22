@@ -33,6 +33,6 @@ namespace opentera
      */
     inline rtc::VideoSinkWants VideoSink::wants() const { return m_wants; }
 
-}  // namespace opentera
+}
 
 #endif

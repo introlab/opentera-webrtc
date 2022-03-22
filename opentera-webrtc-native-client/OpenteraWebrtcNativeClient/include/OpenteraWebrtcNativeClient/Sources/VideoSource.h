@@ -69,6 +69,6 @@ namespace opentera
     {
         return webrtc::MediaSourceInterface::kLive;
     }
-}  // namespace opentera
+}
 
 #endif
