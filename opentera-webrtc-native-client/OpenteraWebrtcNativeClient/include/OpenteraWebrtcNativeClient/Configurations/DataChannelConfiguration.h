@@ -13,12 +13,15 @@ namespace opentera
     class DataChannelConfiguration
     {
         bool m_ordered;
-        absl::optional<int> m_maxPacketLifeTime; // It cannot be set with m_maxRetransmits
-        absl::optional<int> m_maxRetransmits; // It cannot be set with m_maxPacketLifeTime
+        absl::optional<int> m_maxPacketLifeTime;  // It cannot be set with m_maxRetransmits
+        absl::optional<int> m_maxRetransmits;  // It cannot be set with m_maxPacketLifeTime
         std::string m_protocol;
 
-        DataChannelConfiguration(bool ordered, absl::optional<int> maxPacketLifeTime,
-                absl::optional<int> maxRetransmits, std::string&& protocol);
+        DataChannelConfiguration(
+            bool ordered,
+            absl::optional<int> maxPacketLifeTime,
+            absl::optional<int> maxRetransmits,
+            std::string&& protocol);
 
     public:
         DataChannelConfiguration(const DataChannelConfiguration& other) = default;
@@ -33,8 +36,8 @@ namespace opentera
         static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime);
         static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime);
         static DataChannelConfiguration createMaxPacketLifeTime(int maxPacketLifeTime, std::string protocol);
-        static DataChannelConfiguration createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime,
-                std::string protocol);
+        static DataChannelConfiguration
+            createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime, std::string protocol);
 
         static DataChannelConfiguration createMaxRetransmits(int maxRetransmits);
         static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits);
@@ -113,8 +116,8 @@ namespace opentera
      * @param maxPacketLifeTime Indicates the amount of time a message can be retransmitted (ms)
      * @return A data channel configuration with the specified values
      */
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
-            int maxPacketLifeTime)
+    inline DataChannelConfiguration
+        DataChannelConfiguration::createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime)
     {
         return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, "");
     }
@@ -126,8 +129,8 @@ namespace opentera
      * @param protocol The data channel protocol
      * @return A data channel configuration with the specified values
      */
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime,
-            std::string protocol)
+    inline DataChannelConfiguration
+        DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime, std::string protocol)
     {
         return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
@@ -140,8 +143,8 @@ namespace opentera
      * @param protocol The data channel protocol
      * @return A data channel configuration with the specified values
      */
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(bool ordered,
-            int maxPacketLifeTime, std::string protocol)
+    inline DataChannelConfiguration
+        DataChannelConfiguration::createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime, std::string protocol)
     {
         return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, std::move(protocol));
     }
@@ -176,8 +179,8 @@ namespace opentera
      * @param protocol The data channel protocol
      * @return A data channel configuration with the specified values
      */
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits,
-            std::string protocol)
+    inline DataChannelConfiguration
+        DataChannelConfiguration::createMaxRetransmits(int maxRetransmits, std::string protocol)
     {
         return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, std::move(protocol));
     }
@@ -190,8 +193,8 @@ namespace opentera
      * @param protocol The data channel protocol
      * @return A data channel configuration with the specified values
      */
-    inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits,
-            std::string protocol)
+    inline DataChannelConfiguration
+        DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits, std::string protocol)
     {
         return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, std::move(protocol));
     }
@@ -200,10 +203,7 @@ namespace opentera
      * @brief Indicates if the message order must be preserved.
      * @return true if the message order must be preserved
      */
-    inline bool DataChannelConfiguration::ordered() const
-    {
-        return m_ordered;
-    }
+    inline bool DataChannelConfiguration::ordered() const { return m_ordered; }
 
     /**
      * @brief Returns the maximum number of time a message can be retransmitted.
@@ -218,19 +218,13 @@ namespace opentera
      * @brief Returns the maximum number of time a message can be retransmitted.
      * @return The maximum number of time a message can be retransmitted
      */
-    inline const absl::optional<int>& DataChannelConfiguration::maxRetransmits() const
-    {
-        return m_maxRetransmits;
-    }
+    inline const absl::optional<int>& DataChannelConfiguration::maxRetransmits() const { return m_maxRetransmits; }
 
     /**
      * @brief Returns the data channel protocol.
      * @return The data channel protocol
      */
-    inline const std::string& DataChannelConfiguration::protocol() const
-    {
-        return m_protocol;
-    }
+    inline const std::string& DataChannelConfiguration::protocol() const { return m_protocol; }
 }
 
 #endif

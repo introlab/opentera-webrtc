@@ -1,5 +1,5 @@
-#include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
 #include <OpenteraWebrtcNativeClient/Sinks/AudioSink.h>
+#include <OpenteraWebrtcNativeClient/Sources/AudioSource.h>
 
 #include <gtest/gtest.h>
 
@@ -21,19 +21,21 @@ public:
     vector<uint32_t> m_totalDelayMS;
     vector<bool> m_keyPressed;
 
-    int32_t RecordedDataIsAvailable(const void* audioSamples,
-            const size_t nSamples,
-            const size_t nBytesPerSample,
-            const size_t nChannels,
-            const uint32_t samplesPerSec,
-            const uint32_t totalDelayMS,
-            const int32_t clockDrift,
-            const uint32_t currentMicLevel,
-            const bool keyPressed,
-            uint32_t& newMicLevel) override
+    int32_t RecordedDataIsAvailable(
+        const void* audioSamples,
+        const size_t nSamples,
+        const size_t nBytesPerSample,
+        const size_t nChannels,
+        const uint32_t samplesPerSec,
+        const uint32_t totalDelayMS,
+        const int32_t clockDrift,
+        const uint32_t currentMicLevel,
+        const bool keyPressed,
+        uint32_t& newMicLevel) override
     {
-        m_capturedData.emplace_back(reinterpret_cast<const int8_t*>(audioSamples),
-                reinterpret_cast<const int8_t*>(audioSamples) + nChannels * nSamples);
+        m_capturedData.emplace_back(
+            reinterpret_cast<const int8_t*>(audioSamples),
+            reinterpret_cast<const int8_t*>(audioSamples) + nChannels * nSamples);
 
         m_bytesPerSample.emplace_back(nBytesPerSample);
         m_sampleRate.emplace_back(samplesPerSec);
@@ -45,25 +47,27 @@ public:
         return 0;
     }
 
-    virtual int32_t NeedMorePlayData(const size_t nSamples,
-            const size_t nBytesPerSample,
-            const size_t nChannels,
-            const uint32_t samplesPerSec,
-            void* audioSamples,
-            size_t& nSamplesOut,
-            int64_t* elapsed_time_ms,
-            int64_t* ntp_time_ms) override
+    virtual int32_t NeedMorePlayData(
+        const size_t nSamples,
+        const size_t nBytesPerSample,
+        const size_t nChannels,
+        const uint32_t samplesPerSec,
+        void* audioSamples,
+        size_t& nSamplesOut,
+        int64_t* elapsed_time_ms,
+        int64_t* ntp_time_ms) override
     {
         return -1;
     }
 
-    virtual void PullRenderData(int bits_per_sample,
-            int sample_rate,
-            size_t number_of_channels,
-            size_t number_of_frames,
-            void* audio_data,
-            int64_t* elapsed_time_ms,
-            int64_t* ntp_time_ms) override
+    virtual void PullRenderData(
+        int bits_per_sample,
+        int sample_rate,
+        size_t number_of_channels,
+        size_t number_of_frames,
+        void* audio_data,
+        int64_t* elapsed_time_ms,
+        int64_t* ntp_time_ms) override
     {
     }
 };
@@ -139,17 +143,17 @@ TEST(AudioSourceTests, sendFrame_shouldCreate10msFrame)
     adm->RegisterAudioCallback(&audioTransportMock);
     testee.setAudioDeviceModule(adm);
 
-    int8_t data1[] = { 1, 2, 3, 4, 5, 6 };
-    int8_t data2[] = { 7, 8, 9, 10, 11, 12 };
-    int8_t data3[] = { 13, 14, 15, 16, 17, 18 };
+    int8_t data1[] = {1, 2, 3, 4, 5, 6};
+    int8_t data2[] = {7, 8, 9, 10, 11, 12};
+    int8_t data3[] = {13, 14, 15, 16, 17, 18};
 
     testee.sendFrame(data1, 3, true);
     testee.sendFrame(data2, 3, false);
     testee.sendFrame(data3, 3, true);
 
     ASSERT_EQ(audioTransportMock.m_capturedData.size(), 2);
-    EXPECT_EQ(audioTransportMock.m_capturedData[0], vector<int8_t>({ 1, 2, 3, 4, 5, 6, 7, 8 }));
-    EXPECT_EQ(audioTransportMock.m_capturedData[1], vector<int8_t>({ 9, 10, 11, 12, 13, 14, 15, 16 }));
+    EXPECT_EQ(audioTransportMock.m_capturedData[0], vector<int8_t>({1, 2, 3, 4, 5, 6, 7, 8}));
+    EXPECT_EQ(audioTransportMock.m_capturedData[1], vector<int8_t>({9, 10, 11, 12, 13, 14, 15, 16}));
 
     EXPECT_EQ(audioTransportMock.m_bytesPerSample, vector<size_t>({1, 1}));
     EXPECT_EQ(audioTransportMock.m_sampleRate, vector<size_t>({400, 400}));

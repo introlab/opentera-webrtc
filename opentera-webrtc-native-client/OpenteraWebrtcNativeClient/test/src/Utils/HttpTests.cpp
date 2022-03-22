@@ -1,7 +1,7 @@
 #include <OpenteraWebrtcNativeClient/Utils/Http.h>
 
-#include <gtest/gtest.h>
 #include <gmock/gmock.h>
+#include <gtest/gtest.h>
 
 using namespace opentera;
 using namespace std;

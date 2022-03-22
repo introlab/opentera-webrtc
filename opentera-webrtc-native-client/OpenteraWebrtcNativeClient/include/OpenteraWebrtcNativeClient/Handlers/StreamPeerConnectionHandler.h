@@ -11,20 +11,22 @@
 namespace opentera
 {
     using VideoFrameReceivedCallback = std::function<void(const Client&, const cv::Mat&, uint64_t)>;
-    using EncodedVideoFrameReceivedCallback = std::function<void(const Client& client,
-            const uint8_t* data,
-            size_t dataSize,
-            VideoCodecType codecType,
-            bool isKeyFrame,
-            uint32_t width,
-            uint32_t height,
-            uint64_t timestampUs)>;
-    using AudioFrameReceivedCallback = std::function<void(const Client& client,
-            const void* audioData,
-            int bitsPerSample,
-            int sampleRate,
-            size_t numberOfChannels,
-            size_t numberOfFrames)>;
+    using EncodedVideoFrameReceivedCallback = std::function<void(
+        const Client& client,
+        const uint8_t* data,
+        size_t dataSize,
+        VideoCodecType codecType,
+        bool isKeyFrame,
+        uint32_t width,
+        uint32_t height,
+        uint64_t timestampUs)>;
+    using AudioFrameReceivedCallback = std::function<void(
+        const Client& client,
+        const void* audioData,
+        int bitsPerSample,
+        int sampleRate,
+        size_t numberOfChannels,
+        size_t numberOfFrames)>;
 
     class StreamPeerConnectionHandler : public PeerConnectionHandler
     {
@@ -42,21 +44,21 @@ namespace opentera
 
     public:
         StreamPeerConnectionHandler(
-                std::string id,
-                Client peerClient,
-                bool isCaller,
-                bool hasOnMixedAudioFrameReceivedCallback,
-                std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
-                std::function<void(const std::string&)> onError,
-                std::function<void(const Client&)> onClientConnected,
-                std::function<void(const Client&)> onClientDisconnected,
-                rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack,
-                rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack,
-                std::function<void(const Client&)> onAddRemoteStream,
-                std::function<void(const Client&)> onRemoveRemoteStream,
-                const VideoFrameReceivedCallback& onVideoFrameReceived,
-                const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
-                const AudioFrameReceivedCallback& onAudioFrameReceived);
+            std::string id,
+            Client peerClient,
+            bool isCaller,
+            bool hasOnMixedAudioFrameReceivedCallback,
+            std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+            std::function<void(const std::string&)> onError,
+            std::function<void(const Client&)> onClientConnected,
+            std::function<void(const Client&)> onClientDisconnected,
+            rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack,
+            rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack,
+            std::function<void(const Client&)> onAddRemoteStream,
+            std::function<void(const Client&)> onRemoveRemoteStream,
+            const VideoFrameReceivedCallback& onVideoFrameReceived,
+            const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
+            const AudioFrameReceivedCallback& onAudioFrameReceived);
 
         ~StreamPeerConnectionHandler() override;
 

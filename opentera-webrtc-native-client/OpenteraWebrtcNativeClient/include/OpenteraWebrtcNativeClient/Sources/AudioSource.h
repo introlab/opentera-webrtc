@@ -2,8 +2,8 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SOURCES_AUDIO_SOURCE_H
 
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
-#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/OpenteraAudioDeviceModule.h>
+#include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 
 #include <api/media_stream_interface.h>
 #include <api/notifier.h>
@@ -18,7 +18,8 @@ namespace opentera
     /**
      * @brief Represents an audio source that can be added to a WebRTC call.
      *
-     * Pass a shared_ptr to an instance of this to the StreamClient and call sendFrame for each of your audio frame.
+     * Pass a shared_ptr to an instance of this to the StreamClient and call
+     * sendFrame for each of your audio frame.
      */
     class AudioSource : public webrtc::Notifier<webrtc::AudioSourceInterface>
     {
@@ -29,7 +30,7 @@ namespace opentera
         size_t m_bytesPerFrame;
 
         size_t m_dataIndex;
-        std::vector<uint8_t> m_data; // 10 ms audio frame
+        std::vector<uint8_t> m_data;  // 10 ms audio frame
         size_t m_dataNumberOfFrames;
 
         std::mutex m_audioDeviceModuleMutex;
@@ -56,7 +57,8 @@ namespace opentera
         void sendFrame(const void* audioData, size_t numberOfFrames);
         void sendFrame(const void* audioData, size_t numberOfFrames, bool isTyping);
 
-        // Methods to fake a ref counted object, so the Python binding is easier to make because we can use a shared_ptr
+        // Methods to fake a ref counted object, so the Python binding is easier to
+        // make because we can use a shared_ptr
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
     };
@@ -64,10 +66,7 @@ namespace opentera
     /**
      * @return The audio source configuration
      */
-    inline AudioSourceConfiguration AudioSource::configuration() const
-    {
-        return m_configuration;
-    }
+    inline AudioSourceConfiguration AudioSource::configuration() const { return m_configuration; }
 
     /**
      * Send an audio frame

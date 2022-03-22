@@ -5,15 +5,15 @@
 
 #include <functional>
 
-template <class type_>
+template<class type_>
 struct GilScopedRelease
 {
-    template <class F>
+    template<class F>
     static pybind11::cpp_function guard(const F& f)
     {
         return pybind11::cpp_function(
-                pybind11::method_adaptor<type_>(f),
-                pybind11::call_guard<pybind11::gil_scoped_release>());
+            pybind11::method_adaptor<type_>(f),
+            pybind11::call_guard<pybind11::gil_scoped_release>());
     }
 };
 

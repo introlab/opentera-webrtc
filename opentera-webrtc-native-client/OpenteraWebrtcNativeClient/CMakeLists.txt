@@ -7,26 +7,26 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     # OpenCV_INCLUDE_DIRS already set in root CMake with find_package(OpenCV)
     set(OpenCV_LIBRARIES ${OpenCV_LIBS} CACHE INTERNAL "")
-else()
-    if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+else ()
+    if (OPENTERA_WEBRTC_ENABLE_EXAMPLES)
         set(_OpenCV_include_dirs_examples
-            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/highgui/include
-            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgcodecs/include
-        )
+                ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/highgui/include
+                ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgcodecs/include
+                )
         set(_OpenCV_libraries_examples opencv_highgui opencv_imgcodecs)
-    endif()
+    endif ()
 
     set(OpenCV_INCLUDE_DIRS
-        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
-        ${_OpenCV_include_dirs_examples}
-        ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
-    )
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+            ${_OpenCV_include_dirs_examples}
+            ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
+            )
     set(OpenCV_LIBRARIES opencv_imgproc opencv_core ${_OpenCV_libraries_examples})
 
     unset(_OpenCV_include_dirs_examples)
     unset(_OpenCV_libraries_examples)
-endif()
+endif ()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${webrtc_native_INCLUDE})
@@ -55,32 +55,32 @@ target_link_libraries(OpenteraWebrtcNativeClient
         ${libyuv_LIBRARY}
         ${OpenCV_LIBRARIES})
 
-if(WIN32)
+if (WIN32)
     target_link_libraries(OpenteraWebrtcNativeClient
-        secur32
-        winmm
-        dmoguids
-        wmcodecdspuuid
-        msdmo
-        strmiids
-    )
-endif()
+            secur32
+            winmm
+            dmoguids
+            wmcodecdspuuid
+            msdmo
+            strmiids
+            )
+endif ()
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
-endif()
+endif ()
 
 
 install(TARGETS OpenteraWebrtcNativeClient DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include
-	FILES_MATCHING PATTERN "*.h")
+        FILES_MATCHING PATTERN "*.h")
 
 assign_source_group(${source_files})
 
 add_subdirectory(python)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
-	add_subdirectory(test)
-endif()
+    add_subdirectory(test)
+endif ()

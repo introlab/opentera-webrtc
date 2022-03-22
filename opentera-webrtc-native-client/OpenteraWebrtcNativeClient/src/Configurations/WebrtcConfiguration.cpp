@@ -3,12 +3,11 @@
 using namespace opentera;
 using namespace std;
 
-WebrtcConfiguration::WebrtcConfiguration(vector<IceServer>&& iceServers) : m_iceServers(move(iceServers))
-{
-}
+WebrtcConfiguration::WebrtcConfiguration(vector<IceServer>&& iceServers) : m_iceServers(move(iceServers)) {}
 
 /**
- * Converts a AudioSourceConfiguration to a webrtc::PeerConnectionInterface::RTCConfiguration.
+ * Converts a AudioSourceConfiguration to a
+ * webrtc::PeerConnectionInterface::RTCConfiguration.
  * @return The converted webrtc::PeerConnectionInterface::RTCConfiguration
  */
 WebrtcConfiguration::operator webrtc::PeerConnectionInterface::RTCConfiguration() const

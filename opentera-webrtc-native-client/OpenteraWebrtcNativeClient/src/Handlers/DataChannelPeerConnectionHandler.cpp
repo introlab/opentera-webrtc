@@ -6,27 +6,39 @@ using namespace std;
 static constexpr bool OfferToReceiveVideo = false;
 static constexpr bool OfferToReceiveAudio = false;
 
-DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(string id,
-        Client peerClient,
-        bool isCaller,
-        function<void(const string&, const sio::message::ptr&)> sendEvent,
-        function<void(const string&)> onError,
-        function<void(const Client&)> onClientConnected,
-        function<void(const Client&)> onClientDisconnected,
-        string room,
-        DataChannelConfiguration dataChannelConfiguration,
-        function<void(const Client&)> onDataChannelOpen,
-        function<void(const Client&)> onDataChannelClosed,
-        function<void(const Client&, const string&)> onDataChannelError,
-        function<void(const Client&, const webrtc::DataBuffer& buffer)> onDataChannelMessageBinary,
-        function<void(const Client&, const string&)> onDataChannelMessageString) :
-        PeerConnectionHandler(move(id), move(peerClient), isCaller, OfferToReceiveVideo, OfferToReceiveAudio,
-                move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
-        m_room(move(room)), m_dataChannelConfiguration(move(dataChannelConfiguration)),
-        m_onDataChannelOpen(move(onDataChannelOpen)), m_onDataChannelClosed(move(onDataChannelClosed)),
-        m_onDataChannelError(move(onDataChannelError)), m_onDataChannelMessageBinary(move(onDataChannelMessageBinary)),
-        m_onDataChannelMessageString(move(onDataChannelMessageString)),
-        m_onDataChannelClosedCalled(true)
+DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
+    string id,
+    Client peerClient,
+    bool isCaller,
+    function<void(const string&, const sio::message::ptr&)> sendEvent,
+    function<void(const string&)> onError,
+    function<void(const Client&)> onClientConnected,
+    function<void(const Client&)> onClientDisconnected,
+    string room,
+    DataChannelConfiguration dataChannelConfiguration,
+    function<void(const Client&)> onDataChannelOpen,
+    function<void(const Client&)> onDataChannelClosed,
+    function<void(const Client&, const string&)> onDataChannelError,
+    function<void(const Client&, const webrtc::DataBuffer& buffer)> onDataChannelMessageBinary,
+    function<void(const Client&, const string&)> onDataChannelMessageString)
+    : PeerConnectionHandler(
+          move(id),
+          move(peerClient),
+          isCaller,
+          OfferToReceiveVideo,
+          OfferToReceiveAudio,
+          move(sendEvent),
+          move(onError),
+          move(onClientConnected),
+          move(onClientDisconnected)),
+      m_room(move(room)),
+      m_dataChannelConfiguration(move(dataChannelConfiguration)),
+      m_onDataChannelOpen(move(onDataChannelOpen)),
+      m_onDataChannelClosed(move(onDataChannelClosed)),
+      m_onDataChannelError(move(onDataChannelError)),
+      m_onDataChannelMessageBinary(move(onDataChannelMessageBinary)),
+      m_onDataChannelMessageString(move(onDataChannelMessageString)),
+      m_onDataChannelClosedCalled(true)
 {
 }
 
@@ -46,7 +58,7 @@ DataChannelPeerConnectionHandler::~DataChannelPeerConnectionHandler()
 }
 
 void DataChannelPeerConnectionHandler::setPeerConnection(
-        const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
+    const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {
     PeerConnectionHandler::setPeerConnection(peerConnection);
     if (m_isCaller)

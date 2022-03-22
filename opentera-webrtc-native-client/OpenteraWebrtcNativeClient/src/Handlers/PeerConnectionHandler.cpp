@@ -35,19 +35,26 @@ void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
     OnSetSessionDescriptionObserverFailure(error);
 }
 
-PeerConnectionHandler::PeerConnectionHandler(string&& id,
-        Client&& peerClient,
-        bool isCaller,
-        bool offerToReceiveVideo,
-        bool offerToReceiveAudio,
-        function<void(const string&, const sio::message::ptr&)>&& sendEvent,
-        function<void(const string&)>&& onError,
-        function<void(const Client&)>&& onClientConnected,
-        function<void(const Client&)>&& onClientDisconnected) :
-        m_id(move(id)), m_peerClient(move(peerClient)), m_isCaller(isCaller), m_sendEvent(move(sendEvent)),
-        m_onError(move(onError)), m_onClientConnected(move(onClientConnected)),
-        m_onClientDisconnected(move(onClientDisconnected)), m_onClientDisconnectedCalled(true),
-        m_offerToReceiveVideo(offerToReceiveVideo), m_offerToReceiveAudio(offerToReceiveAudio)
+PeerConnectionHandler::PeerConnectionHandler(
+    string&& id,
+    Client&& peerClient,
+    bool isCaller,
+    bool offerToReceiveVideo,
+    bool offerToReceiveAudio,
+    function<void(const string&, const sio::message::ptr&)>&& sendEvent,
+    function<void(const string&)>&& onError,
+    function<void(const Client&)>&& onClientConnected,
+    function<void(const Client&)>&& onClientDisconnected)
+    : m_id(move(id)),
+      m_peerClient(move(peerClient)),
+      m_isCaller(isCaller),
+      m_sendEvent(move(sendEvent)),
+      m_onError(move(onError)),
+      m_onClientConnected(move(onClientConnected)),
+      m_onClientDisconnected(move(onClientDisconnected)),
+      m_onClientDisconnectedCalled(true),
+      m_offerToReceiveVideo(offerToReceiveVideo),
+      m_offerToReceiveAudio(offerToReceiveAudio)
 {
 }
 
@@ -69,7 +76,7 @@ PeerConnectionHandler::~PeerConnectionHandler()
     }
 }
 
-void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface> &peerConnection)
+void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection)
 {
     m_peerConnection = peerConnection;
 }
@@ -97,7 +104,7 @@ void PeerConnectionHandler::receivePeerCall(const string& sdp)
     }
 }
 
-void PeerConnectionHandler::receivePeerCallAnswer(const string &sdp)
+void PeerConnectionHandler::receivePeerCallAnswer(const string& sdp)
 {
     webrtc::SdpParseError error;
     auto desc = webrtc::CreateSessionDescription("answer", sdp, &error);
@@ -164,25 +171,15 @@ void PeerConnectionHandler::OnIceCandidate(const webrtc::IceCandidateInterface* 
     m_sendEvent("send-ice-candidate", data);
 }
 
-void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel)
-{
-}
+void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) {}
 
-void PeerConnectionHandler::OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream)
-{
-}
+void PeerConnectionHandler::OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
 
-void PeerConnectionHandler::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream)
-{
-}
+void PeerConnectionHandler::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
 
-void PeerConnectionHandler::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState)
-{
-}
+void PeerConnectionHandler::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) {}
 
-void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState)
-{
-}
+void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) {}
 
 void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc)
 {
@@ -233,9 +230,7 @@ void PeerConnectionHandler::OnSetSessionDescriptionObserverFailure(webrtc::RTCEr
     m_onError(error.message());
 }
 
-void PeerConnectionHandler::AddRef() const
-{
-}
+void PeerConnectionHandler::AddRef() const {}
 
 rtc::RefCountReleaseStatus PeerConnectionHandler::Release() const
 {

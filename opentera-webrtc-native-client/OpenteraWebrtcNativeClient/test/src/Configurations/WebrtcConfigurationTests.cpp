@@ -21,7 +21,7 @@ TEST(WebrtcConfigurationTests, create_iceServers_shouldSetTheAttributes)
 TEST(WebrtcConfigurationTests, operator_webrtcPeerConnectionInterfaceRtcConfiguration_shouldSetTheAttributes)
 {
     auto testee = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(
-            WebrtcConfiguration::create({IceServer("url1")}));
+        WebrtcConfiguration::create({IceServer("url1")}));
     ASSERT_EQ(testee.servers.size(), 1);
     ASSERT_EQ(testee.servers[0].urls.size(), 1);
     EXPECT_EQ(testee.servers[0].urls[0], "url1");

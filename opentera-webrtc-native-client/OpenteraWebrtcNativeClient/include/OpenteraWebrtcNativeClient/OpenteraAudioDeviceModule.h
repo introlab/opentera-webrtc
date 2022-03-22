@@ -43,13 +43,14 @@ namespace opentera
         DECLARE_NOT_MOVABLE(OpenteraAudioDeviceModule);
 
         void setOnMixedAudioFrameReceived(const AudioSinkCallback& onMixedAudioFrameReceived);
-        void sendFrame(const void* audioData,
-                int bitsPerSample,
-                int sampleRate,
-                size_t numberOfChannels,
-                size_t numberOfFrames,
-                uint32_t audioDelayMs,
-                bool isTyping);
+        void sendFrame(
+            const void* audioData,
+            int bitsPerSample,
+            int sampleRate,
+            size_t numberOfChannels,
+            size_t numberOfFrames,
+            uint32_t audioDelayMs,
+            bool isTyping);
 
         // Retrieve the currently utilized audio layer
         int32_t ActiveAudioLayer(AudioLayer* audioLayer) const override;
@@ -65,12 +66,14 @@ namespace opentera
         // Device enumeration
         int16_t PlayoutDevices() override;
         int16_t RecordingDevices() override;
-        int32_t PlayoutDeviceName(uint16_t index,
-                char name[webrtc::kAdmMaxDeviceNameSize],
-                char guid[webrtc::kAdmMaxGuidSize]) override;
-        int32_t RecordingDeviceName(uint16_t index,
-                char name[webrtc::kAdmMaxDeviceNameSize],
-                char guid[webrtc::kAdmMaxGuidSize]) override;
+        int32_t PlayoutDeviceName(
+            uint16_t index,
+            char name[webrtc::kAdmMaxDeviceNameSize],
+            char guid[webrtc::kAdmMaxGuidSize]) override;
+        int32_t RecordingDeviceName(
+            uint16_t index,
+            char name[webrtc::kAdmMaxDeviceNameSize],
+            char guid[webrtc::kAdmMaxGuidSize]) override;
 
         // Device selection
         int32_t SetPlayoutDevice(uint16_t index) override;

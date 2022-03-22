@@ -3,24 +3,25 @@
 using namespace opentera;
 using namespace std;
 
-AudioSourceConfiguration::AudioSourceConfiguration(uint32_t soundCardTotalDelayMs,
-        absl::optional<bool> echoCancellation,
-        absl::optional<bool> autoGainControl,
-        absl::optional<bool> noiseSuppression,
-        absl::optional<bool> highpassFilter,
-        absl::optional<bool> stereoSwapping,
-        absl::optional<bool> typingDetection,
-        absl::optional<bool> residualEchoDetector,
-        absl::optional<bool> transientSuppression) :
-        m_soundCardTotalDelayMs(soundCardTotalDelayMs),
-        m_echoCancellation(echoCancellation),
-        m_autoGainControl(autoGainControl),
-        m_noiseSuppression(noiseSuppression),
-        m_highpassFilter(highpassFilter),
-        m_stereoSwapping(stereoSwapping),
-        m_typingDetection(typingDetection),
-        m_residualEchoDetector(residualEchoDetector),
-        m_transientSuppression(transientSuppression)
+AudioSourceConfiguration::AudioSourceConfiguration(
+    uint32_t soundCardTotalDelayMs,
+    absl::optional<bool> echoCancellation,
+    absl::optional<bool> autoGainControl,
+    absl::optional<bool> noiseSuppression,
+    absl::optional<bool> highpassFilter,
+    absl::optional<bool> stereoSwapping,
+    absl::optional<bool> typingDetection,
+    absl::optional<bool> residualEchoDetector,
+    absl::optional<bool> transientSuppression)
+    : m_soundCardTotalDelayMs(soundCardTotalDelayMs),
+      m_echoCancellation(echoCancellation),
+      m_autoGainControl(autoGainControl),
+      m_noiseSuppression(noiseSuppression),
+      m_highpassFilter(highpassFilter),
+      m_stereoSwapping(stereoSwapping),
+      m_typingDetection(typingDetection),
+      m_residualEchoDetector(residualEchoDetector),
+      m_transientSuppression(transientSuppression)
 {
 }
 

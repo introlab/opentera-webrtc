@@ -15,11 +15,8 @@ using namespace opentera;
 using namespace std;
 namespace fs = boost::filesystem;
 
-
-static const WebrtcConfiguration DefaultWebrtcConfiguration = WebrtcConfiguration::create(
-{
-    IceServer("stun:stun.l.google.com:19302")
-});
+static const WebrtcConfiguration DefaultWebrtcConfiguration =
+    WebrtcConfiguration::create({IceServer("stun:stun.l.google.com:19302")});
 
 class DataChannelClientTests : public ::testing::TestWithParam<bool>
 {
@@ -27,25 +24,25 @@ class DataChannelClientTests : public ::testing::TestWithParam<bool>
     static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
-
     bool m_tlsTestEnable;
     string m_baseUrl;
 
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
-        fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                                  / "signaling-server" / "opentera-signaling-server";
+        fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path() /
+                                  "signaling-server" / "opentera-signaling-server";
 
-        m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
+        m_signalingServerProcessTLS = make_unique<subprocess::Popen>(
+            "python3 " + pythonFilePath.string() +
                 " --port 8081 --password abc"
                 " --certificate resources/cert.pem"
                 " --key resources/key.pem",
-                subprocess::input(subprocess::PIPE));
+            subprocess::input(subprocess::PIPE));
 
-        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc",
-                subprocess::input(subprocess::PIPE));
+        m_signalingServerProcess = make_unique<subprocess::Popen>(
+            "python3 " + pythonFilePath.string() + " --port 8080 --password abc",
+            subprocess::input(subprocess::PIPE));
 
         this_thread::sleep_for(2s);
     }
@@ -69,7 +66,7 @@ protected:
     {
         m_tlsTestEnable = GetParam();
 
-        if(m_tlsTestEnable)
+        if (m_tlsTestEnable)
         {
             m_baseUrl = "https://localhost:8081";
         }
@@ -79,10 +76,7 @@ protected:
         }
     }
 
-    void TearDown()
-    {
-
-    }
+    void TearDown() {}
 };
 
 unique_ptr<subprocess::Popen> DataChannelClientTests::m_signalingServerProcess = nullptr;
@@ -100,23 +94,34 @@ protected:
 
         if (m_tlsTestEnable)
         {
-            m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("https://localhost:8081", "c1",
-                sio::string_message::create("cd1"),"chat", ""), DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+            m_client1 = make_unique<DataChannelClient>(
+                SignalingServerConfiguration::create(
+                    "https://localhost:8081",
+                    "c1",
+                    sio::string_message::create("cd1"),
+                    "chat",
+                    ""),
+                DefaultWebrtcConfiguration,
+                DataChannelConfiguration::create());
         }
         else
         {
-            m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create("http://localhost:8080", "c1",
-                sio::string_message::create("cd1"),"chat", ""), DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+            m_client1 = make_unique<DataChannelClient>(
+                SignalingServerConfiguration::create(
+                    "http://localhost:8080",
+                    "c1",
+                    sio::string_message::create("cd1"),
+                    "chat",
+                    ""),
+                DefaultWebrtcConfiguration,
+                DataChannelConfiguration::create());
         }
 
         m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
     }
 
-    void TearDown() override
-    {
-        m_client1->closeSync();
-    }
+    void TearDown() override { m_client1->closeSync(); }
 };
 
 class WrongPasswordDataChannelClientTests : public DataChannelClientTests
@@ -128,9 +133,10 @@ protected:
     {
         DataChannelClientTests::SetUp();
 
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
-                sio::string_message::create("cd1"), "chat", ""),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        m_client1 = make_unique<DataChannelClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", ""),
+            DefaultWebrtcConfiguration,
+            DataChannelConfiguration::create());
 
         m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
@@ -153,9 +159,10 @@ protected:
     {
         DataChannelClientTests::SetUp();
 
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
-                sio::string_message::create("cd1"), "chat", "abc"),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        m_client1 = make_unique<DataChannelClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration,
+            DataChannelConfiguration::create());
 
         m_client1->setTlsVerificationEnabled(false);
         m_client1->setOnError([](const string& error) { ADD_FAILURE() << error; });
@@ -185,15 +192,18 @@ protected:
         DataChannelClientTests::SetUp();
 
         CallbackAwaiter setupAwaiter(3, 15s);
-        m_client1 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c1",
-                sio::string_message::create("cd1"), "chat", "abc"),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client2 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c2",
-                sio::string_message::create("cd2"), "chat", "abc"),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
-        m_client3 = make_unique<DataChannelClient>(SignalingServerConfiguration::create(m_baseUrl, "c3",
-                sio::string_message::create("cd3"), "chat", "abc"),
-                DefaultWebrtcConfiguration, DataChannelConfiguration::create());
+        m_client1 = make_unique<DataChannelClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            DefaultWebrtcConfiguration,
+            DataChannelConfiguration::create());
+        m_client2 = make_unique<DataChannelClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            DefaultWebrtcConfiguration,
+            DataChannelConfiguration::create());
+        m_client3 = make_unique<DataChannelClient>(
+            SignalingServerConfiguration::create(m_baseUrl, "c3", sio::string_message::create("cd3"), "chat", "abc"),
+            DefaultWebrtcConfiguration,
+            DataChannelConfiguration::create());
 
         m_client1->setTlsVerificationEnabled(false);
         m_client2->setTlsVerificationEnabled(false);
@@ -233,7 +243,6 @@ protected:
     }
 };
 
-
 TEST_P(DisconnectedDataChannelClientTests, isConnected_shouldReturnFalse)
 {
     EXPECT_FALSE(m_client1->isConnected());
@@ -259,47 +268,52 @@ TEST_P(DisconnectedDataChannelClientTests, getRoomClients_shouldReturnAnEmptyVec
     EXPECT_EQ(m_client1->getRoomClients().size(), 0);
 }
 
-
 TEST_P(WrongPasswordDataChannelClientTests, connect_shouldGenerateAnError)
 {
     CallbackAwaiter awaiter(2, 15s);
-    m_client1->setOnSignalingConnectionOpened([&] {
-        ADD_FAILURE();
-        awaiter.done();
-        awaiter.done();
-    });
-    m_client1->setOnSignalingConnectionError([&](const string &error) {
-        EXPECT_EQ(m_client1->isConnected(), false);
-        EXPECT_EQ(m_client1->isRtcConnected(), false);
-        EXPECT_EQ(m_client1->id(), "");
-        EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
-        EXPECT_EQ(m_client1->getRoomClients().size(), 0);
-        awaiter.done();
-    });
-    m_client1->setOnSignalingConnectionClosed([&] {
-        awaiter.done();
-    });
+    m_client1->setOnSignalingConnectionOpened(
+        [&]
+        {
+            ADD_FAILURE();
+            awaiter.done();
+            awaiter.done();
+        });
+    m_client1->setOnSignalingConnectionError(
+        [&](const string& error)
+        {
+            EXPECT_EQ(m_client1->isConnected(), false);
+            EXPECT_EQ(m_client1->isRtcConnected(), false);
+            EXPECT_EQ(m_client1->id(), "");
+            EXPECT_EQ(m_client1->getConnectedRoomClientIds().size(), 0);
+            EXPECT_EQ(m_client1->getRoomClients().size(), 0);
+            awaiter.done();
+        });
+    m_client1->setOnSignalingConnectionClosed([&] { awaiter.done(); });
 
     m_client1->connect();
     awaiter.wait(__FILE__, __LINE__);
 
     m_client1->setOnSignalingConnectionOpened([] {});
-    m_client1->setOnSignalingConnectionError([](const string &error) {});
+    m_client1->setOnSignalingConnectionError([](const string& error) {});
     m_client1->setOnSignalingConnectionClosed([] {});
 }
-
 
 TEST_P(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheConnection)
 {
     CallbackAwaiter awaiter(2, 15s);
     m_client1->setOnSignalingConnectionOpened([&] { awaiter.done(); });
-    m_client1->setOnRoomClientsChanged([&](const vector<RoomClient>& roomClients)
-    {
-        EXPECT_EQ(roomClients.size(), 1);
-        EXPECT_EQ(count(roomClients.begin(), roomClients.end(),
-                RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)), 1);
-        awaiter.done();
-    });
+    m_client1->setOnRoomClientsChanged(
+        [&](const vector<RoomClient>& roomClients)
+        {
+            EXPECT_EQ(roomClients.size(), 1);
+            EXPECT_EQ(
+                count(
+                    roomClients.begin(),
+                    roomClients.end(),
+                    RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)),
+                1);
+            awaiter.done();
+        });
 
     m_client1->connect();
     awaiter.wait(__FILE__, __LINE__);
@@ -307,7 +321,6 @@ TEST_P(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheCo
     m_client1->setOnSignalingConnectionOpened([] {});
     m_client1->setOnRoomClientsChanged([](const vector<RoomClient>& roomClients) {});
 }
-
 
 TEST_P(RightPasswordDataChannelClientTests, isConnected_shouldReturnTrue)
 {
@@ -339,12 +352,15 @@ TEST_P(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotR
 
 TEST_P(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
 {
-    EXPECT_EQ(m_client1->getRoomClient(m_client1->id()),
-            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
-    EXPECT_EQ(m_client1->getRoomClient(m_client2->id()),
-            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false));
-    EXPECT_EQ(m_client1->getRoomClient(m_client3->id()),
-            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false));
+    EXPECT_EQ(
+        m_client1->getRoomClient(m_client1->id()),
+        RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
+    EXPECT_EQ(
+        m_client1->getRoomClient(m_client2->id()),
+        RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false));
+    EXPECT_EQ(
+        m_client1->getRoomClient(m_client3->id()),
+        RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false));
 
     EXPECT_EQ(m_client1->getRoomClient(""), RoomClient());
 }
@@ -353,30 +369,66 @@ TEST_P(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
 {
     auto roomClients1 = m_client1->getRoomClients();
     ASSERT_EQ(roomClients1.size(), 3);
-    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(),
-        RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)), 1);
-    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(),
-        RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)), 1);
-    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(),
-        RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)), 1);
+    EXPECT_EQ(
+        count(
+            roomClients1.begin(),
+            roomClients1.end(),
+            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients1.begin(),
+            roomClients1.end(),
+            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients1.begin(),
+            roomClients1.end(),
+            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)),
+        1);
 
     auto roomClients2 = m_client2->getRoomClients();
     ASSERT_EQ(roomClients2.size(), 3);
-    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(),
-                    RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)), 1);
-    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(),
-                    RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), true)), 1);
-    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(),
-                    RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)), 1);
+    EXPECT_EQ(
+        count(
+            roomClients2.begin(),
+            roomClients2.end(),
+            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients2.begin(),
+            roomClients2.end(),
+            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), true)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients2.begin(),
+            roomClients2.end(),
+            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)),
+        1);
 
     auto roomClients3 = m_client3->getRoomClients();
     ASSERT_EQ(roomClients3.size(), 3);
-    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
-                    RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)), 1);
-    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
-                    RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)), 1);
-    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(),
-                    RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)), 1);
+    EXPECT_EQ(
+        count(
+            roomClients3.begin(),
+            roomClients3.end(),
+            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients3.begin(),
+            roomClients3.end(),
+            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)),
+        1);
+    EXPECT_EQ(
+        count(
+            roomClients3.begin(),
+            roomClients3.end(),
+            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)),
+        1);
 }
 
 TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
@@ -385,100 +437,110 @@ TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
     CallbackAwaiter awaiter2(2, 60s);
     CallbackAwaiter awaiter3(2, 60s);
 
-    m_client1->setOnDataChannelOpened([this, &awaiter1](const Client &client) {
-        if (awaiter1.done()) {
-            EXPECT_TRUE(m_client1->isRtcConnected());
-            auto connectedRoomClientIds = m_client1->getConnectedRoomClientIds();
-            ASSERT_EQ(connectedRoomClientIds.size(), 2);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId2), 1);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId3), 1);
-        }
-    });
-    m_client2->setOnDataChannelOpened([this, &awaiter2](const Client &client) {
-        if (awaiter2.done()) {
-            EXPECT_TRUE(m_client2->isRtcConnected());
-            auto connectedRoomClientIds = m_client2->getConnectedRoomClientIds();
-            ASSERT_EQ(connectedRoomClientIds.size(), 2);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId1), 1);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId3), 1);
-        }
-    });
-    m_client3->setOnDataChannelOpened([this, &awaiter3](const Client &client) {
-        if (awaiter3.done()) {
-            EXPECT_TRUE(m_client3->isRtcConnected());
-            auto connectedRoomClientIds = m_client3->getConnectedRoomClientIds();
-            ASSERT_EQ(connectedRoomClientIds.size(), 2);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId1), 1);
-            EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId2), 1);
-        }
-    });
+    m_client1->setOnDataChannelOpened(
+        [this, &awaiter1](const Client& client)
+        {
+            if (awaiter1.done())
+            {
+                EXPECT_TRUE(m_client1->isRtcConnected());
+                auto connectedRoomClientIds = m_client1->getConnectedRoomClientIds();
+                ASSERT_EQ(connectedRoomClientIds.size(), 2);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId2), 1);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId3), 1);
+            }
+        });
+    m_client2->setOnDataChannelOpened(
+        [this, &awaiter2](const Client& client)
+        {
+            if (awaiter2.done())
+            {
+                EXPECT_TRUE(m_client2->isRtcConnected());
+                auto connectedRoomClientIds = m_client2->getConnectedRoomClientIds();
+                ASSERT_EQ(connectedRoomClientIds.size(), 2);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId1), 1);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId3), 1);
+            }
+        });
+    m_client3->setOnDataChannelOpened(
+        [this, &awaiter3](const Client& client)
+        {
+            if (awaiter3.done())
+            {
+                EXPECT_TRUE(m_client3->isRtcConnected());
+                auto connectedRoomClientIds = m_client3->getConnectedRoomClientIds();
+                ASSERT_EQ(connectedRoomClientIds.size(), 2);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId1), 1);
+                EXPECT_EQ(count(connectedRoomClientIds.begin(), connectedRoomClientIds.end(), m_clientId2), 1);
+            }
+        });
 
     m_client1->callAll();
     awaiter1.wait(__FILE__, __LINE__);
     awaiter2.wait(__FILE__, __LINE__);
     awaiter3.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
 }
 
 TEST_P(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient)
 {
     CallbackAwaiter awaiter(2, 60s);
 
-    m_client1->setOnDataChannelOpened([this, &awaiter](const Client &client) {
-        awaiter.done();
+    m_client1->setOnDataChannelOpened(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-    });
-    m_client2->setOnDataChannelOpened([this, &awaiter](const Client &client) {
-        awaiter.done();
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+        });
+    m_client2->setOnDataChannelOpened(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-    });
-    m_client3->setOnDataChannelOpened([](const Client &client) {
-        ADD_FAILURE();
-    });
+            EXPECT_EQ(client.id(), m_clientId1);
+            EXPECT_EQ(client.name(), "c1");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd1");
+        });
+    m_client3->setOnDataChannelOpened([](const Client& client) { ADD_FAILURE(); });
 
     m_client1->callIds({m_clientId2});
     awaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 }
 
 TEST_P(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfterACall)
 {
     CallbackAwaiter awaiter(1, 60s);
-    m_client1->setOnClientConnected([this, &awaiter](const Client& client)
-    {
-        awaiter.done();
+    m_client1->setOnClientConnected(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-    });
-    m_client2->setOnClientConnected([this, &awaiter](const Client& client)
-    {
-        awaiter.done();
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+        });
+    m_client2->setOnClientConnected(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-    });
-    m_client3->setOnClientConnected([](const Client& client)
-    {
-        ADD_FAILURE();
-    });
+            EXPECT_EQ(client.id(), m_clientId1);
+            EXPECT_EQ(client.name(), "c1");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd1");
+        });
+    m_client3->setOnClientConnected([](const Client& client) { ADD_FAILURE(); });
 
     m_client1->callIds({m_clientId2});
     awaiter.wait(__FILE__, __LINE__);
@@ -491,31 +553,28 @@ TEST_P(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfte
 TEST_P(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledAfterHangUpAllCall)
 {
     CallbackAwaiter awaiter(2, 60s);
-    m_client1->setOnDataChannelOpened([this](const Client &client) {
-        m_client1->hangUpAll();
-    });
-    m_client1->setOnClientDisconnected([this, &awaiter](const Client& client)
-    {
-        awaiter.done();
+    m_client1->setOnDataChannelOpened([this](const Client& client) { m_client1->hangUpAll(); });
+    m_client1->setOnClientDisconnected(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-    });
-    m_client2->setOnClientDisconnected([this, &awaiter](const Client& client)
-    {
-        awaiter.done();
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+        });
+    m_client2->setOnClientDisconnected(
+        [this, &awaiter](const Client& client)
+        {
+            awaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-    });
-    m_client3->setOnClientDisconnected([](const Client& client)
-    {
-        ADD_FAILURE();
-    });
+            EXPECT_EQ(client.id(), m_clientId1);
+            EXPECT_EQ(client.name(), "c1");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd1");
+        });
+    m_client3->setOnClientDisconnected([](const Client& client) { ADD_FAILURE(); });
 
     m_client1->callIds({m_clientId2});
     awaiter.wait(__FILE__, __LINE__);
@@ -547,91 +606,92 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
         }
     };
 
-    m_client1->setOnClientConnected([this, &onFinish](const Client& client)
-    {
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-
-        onFinish();
-    });
-    m_client2->setOnClientConnected([this, &onFinish](const Client& client)
-    {
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-
-        onFinish();
-    });
-    m_client3->setOnClientConnected([](const Client& client)
-    {
-        ADD_FAILURE();
-    });
-
-    m_client1->setCallAcceptor([](const Client& client)
-    {
-        ADD_FAILURE();
-        return true;
-    });
-    m_client2->setCallAcceptor([this](const Client& client)
-    {
-        if (client.id() == m_clientId1)
+    m_client1->setOnClientConnected(
+        [this, &onFinish](const Client& client)
         {
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+
+            onFinish();
+        });
+    m_client2->setOnClientConnected(
+        [this, &onFinish](const Client& client)
+        {
+            EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
             EXPECT_EQ(client.data()->get_string(), "cd1");
-        }
-        else if (client.id() == m_clientId3)
-        {
-            EXPECT_EQ(client.name(), "c3");
-            EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
-        }
-        else
+
+            onFinish();
+        });
+    m_client3->setOnClientConnected([](const Client& client) { ADD_FAILURE(); });
+
+    m_client1->setCallAcceptor(
+        [](const Client& client)
         {
             ADD_FAILURE();
-        }
-       return client.id() == m_clientId1;
-    });
-    m_client3->setCallAcceptor([this](const Client& client)
-    {
-       if (client.id() == m_clientId1)
-       {
-           EXPECT_EQ(client.name(), "c1");
-           EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
-           EXPECT_EQ(client.data()->get_string(), "cd1");
-       }
-       else
-       {
-           ADD_FAILURE();
-       }
-       return client.id() == m_clientId2;
-    });
+            return true;
+        });
+    m_client2->setCallAcceptor(
+        [this](const Client& client)
+        {
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+            }
+            else if (client.id() == m_clientId3)
+            {
+                EXPECT_EQ(client.name(), "c3");
+                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd3");
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+            return client.id() == m_clientId1;
+        });
+    m_client3->setCallAcceptor(
+        [this](const Client& client)
+        {
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+            return client.id() == m_clientId2;
+        });
 
-    m_client1->setOnCallRejected([this, &onFinish](const Client& client)
-    {
-        EXPECT_EQ(client.id(), m_clientId3);
-        EXPECT_EQ(client.name(), "c3");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd3");
+    m_client1->setOnCallRejected(
+        [this, &onFinish](const Client& client)
+        {
+            EXPECT_EQ(client.id(), m_clientId3);
+            EXPECT_EQ(client.name(), "c3");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd3");
 
-        onFinish();
-    });
-    m_client2->setOnCallRejected([this, &onFinish](const Client& client)
-    {
-        EXPECT_EQ(client.id(), m_clientId3);
-        EXPECT_EQ(client.name(), "c3");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd3");
+            onFinish();
+        });
+    m_client2->setOnCallRejected(
+        [this, &onFinish](const Client& client)
+        {
+            EXPECT_EQ(client.id(), m_clientId3);
+            EXPECT_EQ(client.name(), "c3");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd3");
 
-        onFinish();
-    });
-    m_client3->setOnCallRejected([](const Client& client)
-    {
-        ADD_FAILURE();
-    });
+            onFinish();
+        });
+    m_client3->setOnCallRejected([](const Client& client) { ADD_FAILURE(); });
 
     m_client1->callAll();
     awaiter.wait(__FILE__, __LINE__);
@@ -659,7 +719,8 @@ TEST_P(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
         }
     };
 
-    auto onDataChannelClosed = [this, &halfOnDataChannelClosedAwaiter, &onDataChannelClosedAwaiter](const Client& client)
+    auto onDataChannelClosed =
+        [this, &halfOnDataChannelClosedAwaiter, &onDataChannelClosedAwaiter](const Client& client)
     {
         if (halfOnDataChannelClosedAwaiter.done())
         {
@@ -681,9 +742,9 @@ TEST_P(RightPasswordDataChannelClientTests, hangUpAll_shouldHangUpAllClients)
     halfOnDataChannelClosedAwaiter.wait(__FILE__, __LINE__);
     onDataChannelClosedAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelClosed([](const Client& client) {});
     m_client2->setOnDataChannelClosed([](const Client& client) {});
@@ -704,9 +765,7 @@ TEST_P(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCl
     };
 
     auto onDataChannelClosed = [this, &onDataChannelClosedAwaiter](const Client& client)
-    {
-        onDataChannelClosedAwaiter.done();
-    };
+    { onDataChannelClosedAwaiter.done(); };
 
     m_client1->setOnDataChannelOpened(onDataChannelOpened);
     m_client2->setOnDataChannelOpened(onDataChannelOpened);
@@ -720,9 +779,9 @@ TEST_P(RightPasswordDataChannelClientTests, closeAllRoomPeerConnections_shouldCl
     onDataChannelOpenedAwaiter.wait(__FILE__, __LINE__);
     onDataChannelClosedAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelClosed([](const Client& client) {});
     m_client2->setOnDataChannelClosed([](const Client& client) {});
@@ -752,50 +811,50 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
     m_client2->setOnDataChannelOpened(onDataChannelOpened);
     m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
-    m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+    m_client1->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId3);
-        EXPECT_EQ(client.name(), "c3");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd3");
-        ASSERT_EQ(size, 1);
-        EXPECT_EQ(data[0], 103);
-    });
-    m_client2->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+            EXPECT_EQ(client.id(), m_clientId3);
+            EXPECT_EQ(client.name(), "c3");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd3");
+            ASSERT_EQ(size, 1);
+            EXPECT_EQ(data[0], 103);
+        });
+    m_client2->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-        ASSERT_EQ(size, 1);
-        EXPECT_EQ(data[0], 101);
-    });
-    m_client3->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+            EXPECT_EQ(client.id(), m_clientId1);
+            EXPECT_EQ(client.name(), "c1");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd1");
+            ASSERT_EQ(size, 1);
+            EXPECT_EQ(data[0], 101);
+        });
+    m_client3->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-        ASSERT_EQ(size, 1);
-        EXPECT_EQ(data[0], 102);
-    });
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+            ASSERT_EQ(size, 1);
+            EXPECT_EQ(data[0], 102);
+        });
 
     m_client1->callAll();
     onDataChannelOpenAwaiter.wait(__FILE__, __LINE__);
     onDataChannelMessageAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
     m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
@@ -821,47 +880,47 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
     m_client2->setOnDataChannelOpened(onDataChannelOpened);
     m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
-    m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+    m_client1->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId3);
-        EXPECT_EQ(client.name(), "c3");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd3");
-        EXPECT_EQ(data, "data3");
-    });
-    m_client2->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+            EXPECT_EQ(client.id(), m_clientId3);
+            EXPECT_EQ(client.name(), "c3");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd3");
+            EXPECT_EQ(data, "data3");
+        });
+    m_client2->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId1);
-        EXPECT_EQ(client.name(), "c1");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd1");
-        EXPECT_EQ(data, "data1");
-    });
-    m_client3->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+            EXPECT_EQ(client.id(), m_clientId1);
+            EXPECT_EQ(client.name(), "c1");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(data, "data1");
+        });
+    m_client3->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        EXPECT_EQ(client.id(), m_clientId2);
-        EXPECT_EQ(client.name(), "c2");
-        ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-        EXPECT_EQ(client.data()->get_string(), "cd2");
-        EXPECT_EQ(data, "data2");
-    });
+            EXPECT_EQ(client.id(), m_clientId2);
+            EXPECT_EQ(client.name(), "c2");
+            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(data, "data2");
+        });
 
     m_client1->callAll();
     onDataChannelOpenedAwaiter.wait(__FILE__, __LINE__);
     onDataChannelMessageAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelMessageString([](const Client& client, const string& data) {});
     m_client2->setOnDataChannelMessageString([](const Client& client, const string& data) {});
@@ -891,92 +950,92 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
     m_client2->setOnDataChannelOpened(onDataChannelOpened);
     m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
-    m_client1->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+    m_client1->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId2)
+            if (client.id() == m_clientId2)
+            {
+                EXPECT_EQ(client.name(), "c2");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(size, 1);
+                EXPECT_EQ(data[0], 102);
+            }
+            else if (client.id() == m_clientId3)
+            {
+                EXPECT_EQ(client.name(), "c3");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd3");
+                ASSERT_EQ(size, 1);
+                EXPECT_EQ(data[0], 103);
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
+    m_client2->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
         {
-            EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
-            EXPECT_EQ(size, 1);
-            EXPECT_EQ(data[0], 102);
-        }
-        else if (client.id() == m_clientId3)
-        {
-            EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
-            ASSERT_EQ(size, 1);
-            EXPECT_EQ(data[0], 103);
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
-    m_client2->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId1)
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+                ASSERT_EQ(size, 1);
+                EXPECT_EQ(data[0], 101);
+            }
+            else if (client.id() == m_clientId3)
+            {
+                EXPECT_EQ(client.name(), "c3");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd3");
+                ASSERT_EQ(size, 1);
+                EXPECT_EQ(data[0], 103);
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
+    m_client3->setOnDataChannelMessageBinary(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const uint8_t* data, size_t size)
         {
-            EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
-            ASSERT_EQ(size, 1);
-            EXPECT_EQ(data[0], 101);
-        }
-        else if (client.id() == m_clientId3)
-        {
-            EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
-            ASSERT_EQ(size, 1);
-            EXPECT_EQ(data[0], 103);
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
-    m_client3->setOnDataChannelMessageBinary([this, &onDataChannelMessageAwaiter](const Client& client,
-            const uint8_t* data, size_t size)
-    {
-        onDataChannelMessageAwaiter.done();
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId1)
-        {
-            EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
-            ASSERT_EQ(size, 1);
-            EXPECT_EQ(data[0], 101);
-        }
-        else if (client.id() == m_clientId2)
-        {
-            EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
-            ASSERT_EQ(size, 1);
-            EXPECT_EQ(data[0], 102);
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+                ASSERT_EQ(size, 1);
+                EXPECT_EQ(data[0], 101);
+            }
+            else if (client.id() == m_clientId2)
+            {
+                EXPECT_EQ(client.name(), "c2");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd2");
+                ASSERT_EQ(size, 1);
+                EXPECT_EQ(data[0], 102);
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
 
     m_client1->callAll();
     onDataChannelOpenedAwaiter.wait(__FILE__, __LINE__);
     onDataChannelMessageAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
     m_client2->setOnDataChannelMessageBinary([](const Client& client, const uint8_t* data, size_t size) {});
@@ -1002,86 +1061,86 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
     m_client2->setOnDataChannelOpened(onDataChannelOpened);
     m_client3->setOnDataChannelOpened(onDataChannelOpened);
 
-    m_client1->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+    m_client1->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
+        {
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId2)
+            if (client.id() == m_clientId2)
+            {
+                EXPECT_EQ(client.name(), "c2");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(data, "data2");
+            }
+            else if (client.id() == m_clientId3)
+            {
+                EXPECT_EQ(client.name(), "c3");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(data, "data3");
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
+    m_client2->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
         {
-            EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
-            EXPECT_EQ(data, "data2");
-        }
-        else if (client.id() == m_clientId3)
-        {
-            EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
-            EXPECT_EQ(data, "data3");
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
-    m_client2->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId1)
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(data, "data1");
+            }
+            else if (client.id() == m_clientId3)
+            {
+                EXPECT_EQ(client.name(), "c3");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(data, "data3");
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
+    m_client3->setOnDataChannelMessageString(
+        [this, &onDataChannelMessageAwaiter](const Client& client, const string& data)
         {
-            EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
-            EXPECT_EQ(data, "data1");
-        }
-        else if (client.id() == m_clientId3)
-        {
-            EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
-            EXPECT_EQ(data, "data3");
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
-    m_client3->setOnDataChannelMessageString([this, &onDataChannelMessageAwaiter](const Client& client,
-            const string& data)
-    {
-        onDataChannelMessageAwaiter.done();
+            onDataChannelMessageAwaiter.done();
 
-        if (client.id() == m_clientId1)
-        {
-            EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
-            EXPECT_EQ(data, "data1");
-        }
-        else if (client.id() == m_clientId2)
-        {
-            EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
-            EXPECT_EQ(data, "data2");
-        }
-        else
-        {
-            ADD_FAILURE();
-        }
-    });
+            if (client.id() == m_clientId1)
+            {
+                EXPECT_EQ(client.name(), "c1");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(data, "data1");
+            }
+            else if (client.id() == m_clientId2)
+            {
+                EXPECT_EQ(client.name(), "c2");
+                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
+                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(data, "data2");
+            }
+            else
+            {
+                ADD_FAILURE();
+            }
+        });
 
     m_client1->callAll();
     onDataChannelOpenedAwaiter.wait(__FILE__, __LINE__);
     onDataChannelMessageAwaiter.wait(__FILE__, __LINE__);
 
-    m_client1->setOnDataChannelOpened([](const Client &client) {});
-    m_client2->setOnDataChannelOpened([](const Client &client) {});
-    m_client3->setOnDataChannelOpened([](const Client &client) {});
+    m_client1->setOnDataChannelOpened([](const Client& client) {});
+    m_client2->setOnDataChannelOpened([](const Client& client) {});
+    m_client3->setOnDataChannelOpened([](const Client& client) {});
 
     m_client1->setOnDataChannelMessageString([](const Client& client, const string& data) {});
     m_client2->setOnDataChannelMessageString([](const Client& client, const string& data) {});
@@ -1089,30 +1148,18 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
 }
 
 INSTANTIATE_TEST_SUITE_P(
-        WrongPasswordDataChannelClientTests,
-        WrongPasswordDataChannelClientTests,
-        ::testing::Values(
-                false, true
-        ));
+    WrongPasswordDataChannelClientTests,
+    WrongPasswordDataChannelClientTests,
+    ::testing::Values(false, true));
 
-
-INSTANTIATE_TEST_SUITE_P(
-        SingleDataChannelClientTests,
-        SingleDataChannelClientTests,
-        ::testing::Values(
-                false, true
-        ));
+INSTANTIATE_TEST_SUITE_P(SingleDataChannelClientTests, SingleDataChannelClientTests, ::testing::Values(false, true));
 
 INSTANTIATE_TEST_SUITE_P(
-        RightPasswordDataChannelClientTests,
-        RightPasswordDataChannelClientTests,
-        ::testing::Values(
-                false, true
-        ));
+    RightPasswordDataChannelClientTests,
+    RightPasswordDataChannelClientTests,
+    ::testing::Values(false, true));
 
 INSTANTIATE_TEST_SUITE_P(
-        DisconnectedDataChannelClientTests,
-        DisconnectedDataChannelClientTests,
-        ::testing::Values(
-                false, true
-        ));
+    DisconnectedDataChannelClientTests,
+    DisconnectedDataChannelClientTests,
+    ::testing::Values(false, true));

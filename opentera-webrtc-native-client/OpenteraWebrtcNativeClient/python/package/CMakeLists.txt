@@ -12,11 +12,11 @@ set(ENABLE_HTML_DOC ${OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC})
 set(ENABLE_SO_STUB ${OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB})
 set(PYTHON_HTML_IGNORE_PREFIXES ${PIP_DEVEL_PREFIX} ${PIP_INSTALL_PREFIX})
 
-if(WIN32)
+if (WIN32)
     set(PYTHON_SO_EXTENSION "pyd")
-else()
+else ()
     set(PYTHON_SO_EXTENSION "so")
-endif()
+endif ()
 
 # Needed for pip_utils.cmake
 set(PYTHON_SUBPACKAGE_NAME "native_client")
@@ -45,34 +45,34 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-p
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
 pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-requirements REQUIREMENTS_FILE ${REQUIREMENTS_FILE})
 pip_add_stub_target(
-    NAME ${PYTHON_LIB_NAME}-stub
-    PACKAGE_NAME "opentera_webrtc.native_client"
-    DEPENDS
+        NAME ${PYTHON_LIB_NAME}-stub
+        PACKAGE_NAME "opentera_webrtc.native_client"
+        DEPENDS
         ${${PYTHON_LIB_NAME}-so}
         ${${PYTHON_SUBPACKAGE_NAME}-requirements}
         ${PIP_CONFIGURE_OUTPUT_FILES}
-    ENABLE_SO_STUB ${ENABLE_SO_STUB}
+        ENABLE_SO_STUB ${ENABLE_SO_STUB}
 )
 pip_add_html_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-html
-    DEPENDS
+        NAME ${PYTHON_SUBPACKAGE_NAME}-html
+        DEPENDS
         ${${PYTHON_LIB_NAME}-stub}
         ${${PYTHON_SUBPACKAGE_NAME}-requirements}
-    DOC_DEPENDS
+        DOC_DEPENDS
         ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
-    ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
+        ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
 )
 pip_add_dist_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-dist
-    DEPENDS
+        NAME ${PYTHON_SUBPACKAGE_NAME}-dist
+        DEPENDS
         ${${PYTHON_SUBPACKAGE_NAME}-html}
         ${${PYTHON_SUBPACKAGE_NAME}-requirements}
 )
 pip_add_install_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-install
-    DEPENDS
+        NAME ${PYTHON_SUBPACKAGE_NAME}-install
+        DEPENDS
         ${${PYTHON_SUBPACKAGE_NAME}-dist}
-    INSTALL_ON_BUILD ${INSTALL_ON_BUILD}
-    PIP_DEVEL_PREFIX ${PIP_DEVEL_PREFIX}
-    PIP_INSTALL_PREFIX ${PIP_INSTALL_PREFIX}
+        INSTALL_ON_BUILD ${INSTALL_ON_BUILD}
+        PIP_DEVEL_PREFIX ${PIP_DEVEL_PREFIX}
+        PIP_INSTALL_PREFIX ${PIP_INSTALL_PREFIX}
 )

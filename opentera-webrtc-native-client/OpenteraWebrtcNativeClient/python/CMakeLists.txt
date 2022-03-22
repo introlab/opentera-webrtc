@@ -9,21 +9,21 @@ include_directories(../include)
 include_directories(include)
 
 file(GLOB_RECURSE
-    source_files
-    src/*
-    include/*
-)
+        source_files
+        src/*
+        include/*
+        )
 
 pybind11_add_module(_opentera_webrtc_native_client
-    MODULE
-    ${source_files}
-)
+        MODULE
+        ${source_files}
+        )
 
 target_link_libraries(_opentera_webrtc_native_client PRIVATE
-    OpenteraWebrtcNativeClient
-    ${webrtc_native_LIBRARY}
-    ${PYTHON_LIBRARIES}
-)
+        OpenteraWebrtcNativeClient
+        ${webrtc_native_LIBRARY}
+        ${PYTHON_LIBRARIES}
+        )
 
 set_property(TARGET _opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
 
