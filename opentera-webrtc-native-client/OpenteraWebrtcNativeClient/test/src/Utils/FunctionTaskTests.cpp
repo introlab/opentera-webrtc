@@ -20,10 +20,7 @@ protected:
         m_thread->Start();
     }
 
-    void TearDown() override
-    {
-        m_thread->Stop();
-    }
+    void TearDown() override { m_thread->Stop(); }
 };
 
 TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
@@ -31,12 +28,14 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
     constexpr chrono::milliseconds SleepDuration = 100ms;
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    int result = FunctionTask<int>::callSync(m_thread.get(), [this, SleepDuration]()
-    {
-        this_thread::sleep_for(SleepDuration);
-        EXPECT_TRUE(m_thread->IsCurrent());
-        return 10;
-    });
+    int result = FunctionTask<int>::callSync(
+        m_thread.get(),
+        [this, SleepDuration]()
+        {
+            this_thread::sleep_for(SleepDuration);
+            EXPECT_TRUE(m_thread->IsCurrent());
+            return 10;
+        });
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_EQ(result, 10);
@@ -46,14 +45,18 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
 
 TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
 {
-    int result = FunctionTask<int>::callSync(m_thread.get(), [this]()
-    {
-        return FunctionTask<int>::callSync(m_thread.get(), [this]()
+    int result = FunctionTask<int>::callSync(
+        m_thread.get(),
+        [this]()
         {
-            EXPECT_TRUE(m_thread->IsCurrent());
-            return 10;
+            return FunctionTask<int>::callSync(
+                m_thread.get(),
+                [this]()
+                {
+                    EXPECT_TRUE(m_thread->IsCurrent());
+                    return 10;
+                });
         });
-    });
 
     EXPECT_EQ(result, 10);
 }
@@ -64,12 +67,14 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 
     bool flag = false;
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callSync(m_thread.get(), [this, SleepDuration, &flag]()
-    {
-        this_thread::sleep_for(SleepDuration);
-        flag = true;
-        EXPECT_TRUE(m_thread->IsCurrent());
-    });
+    FunctionTask<void>::callSync(
+        m_thread.get(),
+        [this, SleepDuration, &flag]()
+        {
+            this_thread::sleep_for(SleepDuration);
+            flag = true;
+            EXPECT_TRUE(m_thread->IsCurrent());
+        });
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_TRUE(flag);
@@ -80,14 +85,18 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldNotLock)
 {
     bool flag = false;
-    FunctionTask<void>::callSync(m_thread.get(), [this, &flag]()
-    {
-        FunctionTask<void>::callSync(m_thread.get(), [this, &flag]()
+    FunctionTask<void>::callSync(
+        m_thread.get(),
+        [this, &flag]()
         {
-            flag = true;
-            EXPECT_TRUE(m_thread->IsCurrent());
+            FunctionTask<void>::callSync(
+                m_thread.get(),
+                [this, &flag]()
+                {
+                    flag = true;
+                    EXPECT_TRUE(m_thread->IsCurrent());
+                });
         });
-    });
 
     EXPECT_TRUE(flag);
 }
@@ -98,12 +107,14 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndNotWait)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(m_thread.get(), [this, SleepDuration, &awaiter]()
-    {
-        this_thread::sleep_for(SleepDuration);
-        awaiter.done();
-        EXPECT_TRUE(m_thread->IsCurrent());
-    });
+    FunctionTask<void>::callAsync(
+        m_thread.get(),
+        [this, SleepDuration, &awaiter]()
+        {
+            this_thread::sleep_for(SleepDuration);
+            awaiter.done();
+            EXPECT_TRUE(m_thread->IsCurrent());
+        });
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_NEAR(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), 0, 10);
@@ -116,15 +127,19 @@ TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldCallTheFunction)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(m_thread.get(), [this, SleepDuration, &awaiter]()
-    {
-        FunctionTask<void>::callAsync(m_thread.get(), [this, SleepDuration, &awaiter]()
+    FunctionTask<void>::callAsync(
+        m_thread.get(),
+        [this, SleepDuration, &awaiter]()
         {
-            this_thread::sleep_for(SleepDuration);
-            awaiter.done();
-            EXPECT_TRUE(m_thread->IsCurrent());
+            FunctionTask<void>::callAsync(
+                m_thread.get(),
+                [this, SleepDuration, &awaiter]()
+                {
+                    this_thread::sleep_for(SleepDuration);
+                    awaiter.done();
+                    EXPECT_TRUE(m_thread->IsCurrent());
+                });
         });
-    });
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_NEAR(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), 0, 10);

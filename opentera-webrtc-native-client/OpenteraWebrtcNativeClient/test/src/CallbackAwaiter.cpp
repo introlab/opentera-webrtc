@@ -8,8 +8,11 @@
 using namespace opentera;
 using namespace std;
 
-CallbackAwaiter::CallbackAwaiter(int maxCount, chrono::seconds timeout) :
-        m_count(0), m_maxCount(maxCount), m_timeout(timeout), m_begin(chrono::steady_clock::now())
+CallbackAwaiter::CallbackAwaiter(int maxCount, chrono::seconds timeout)
+    : m_count(0),
+      m_maxCount(maxCount),
+      m_timeout(timeout),
+      m_begin(chrono::steady_clock::now())
 {
 }
 

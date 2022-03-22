@@ -14,7 +14,7 @@ namespace pybind11
         struct type_caster<absl::optional<T>> : public optional_caster<absl::optional<T>>
         {
         };
-    }
-}
+    }  // namespace detail
+}  // namespace pybind11
 
 #endif

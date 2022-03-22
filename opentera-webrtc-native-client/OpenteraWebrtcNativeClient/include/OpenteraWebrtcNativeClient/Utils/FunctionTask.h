@@ -1,8 +1,8 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 
-#include <rtc_base/event.h>
 #include <api/task_queue/queued_task.h>
+#include <rtc_base/event.h>
 #include <rtc_base/thread.h>
 
 #include <functional>
@@ -17,9 +17,7 @@ namespace opentera
         T m_returnedValue;
 
     public:
-        FunctionTask(const std::function<T()>& function) : m_function(function)
-        {
-        }
+        FunctionTask(const std::function<T()>& function) : m_function(function) {}
 
         ~FunctionTask() override = default;
 
@@ -54,9 +52,7 @@ namespace opentera
         rtc::Event m_event;
 
     public:
-        FunctionTask(const std::function<void()>& function, bool isAsync) : m_function(function), m_isAsync(isAsync)
-        {
-        }
+        FunctionTask(const std::function<void()>& function, bool isAsync) : m_function(function), m_isAsync(isAsync) {}
 
         ~FunctionTask() override = default;
 
@@ -88,6 +84,6 @@ namespace opentera
             thread->PostTask(std::make_unique<FunctionTask>(function, true));
         }
     };
-}
+}  // namespace opentera
 
 #endif

@@ -8,7 +8,7 @@
 
 using namespace std;
 
-bool setThreadPriority(thread &thread, ThreadPriority priority)
+bool setThreadPriority(thread& thread, ThreadPriority priority)
 {
 #if defined(WIN32) || defined(_WIN32)
     return SetPriorityClass(thread.native_handle(), static_cast<DWORD>(priority)) != 0;
@@ -19,12 +19,12 @@ bool setThreadPriority(thread &thread, ThreadPriority priority)
     sched_param sch_params;
     switch (priority)
     {
-    case ThreadPriority::Normal:
-        sch_params.sched_priority = (topPriority - lowPriority - 1) / 2;
-        break;
-    case ThreadPriority::RealTime:
-        sch_params.sched_priority = topPriority;
-        break;
+        case ThreadPriority::Normal:
+            sch_params.sched_priority = (topPriority - lowPriority - 1) / 2;
+            break;
+        case ThreadPriority::RealTime:
+            sch_params.sched_priority = topPriority;
+            break;
     }
 
     return pthread_setschedparam(thread.native_handle(), SCHED_RR, &sch_params) == 0;

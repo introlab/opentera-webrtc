@@ -21,15 +21,16 @@ namespace opentera
         absl::optional<bool> m_residualEchoDetector;
         absl::optional<bool> m_transientSuppression;
 
-        AudioSourceConfiguration(uint32_t soundCardTotalDelayMs,
-                absl::optional<bool> echoCancellation,
-                absl::optional<bool> autoGainControl,
-                absl::optional<bool> noiseSuppression,
-                absl::optional<bool> highpassFilter,
-                absl::optional<bool> stereoSwapping,
-                absl::optional<bool> typingDetection,
-                absl::optional<bool> residualEchoDetector,
-                absl::optional<bool> transientSuppression);
+        AudioSourceConfiguration(
+            uint32_t soundCardTotalDelayMs,
+            absl::optional<bool> echoCancellation,
+            absl::optional<bool> autoGainControl,
+            absl::optional<bool> noiseSuppression,
+            absl::optional<bool> highpassFilter,
+            absl::optional<bool> stereoSwapping,
+            absl::optional<bool> typingDetection,
+            absl::optional<bool> residualEchoDetector,
+            absl::optional<bool> transientSuppression);
 
     public:
         AudioSourceConfiguration(const AudioSourceConfiguration& other) = default;
@@ -37,15 +38,16 @@ namespace opentera
         virtual ~AudioSourceConfiguration() = default;
 
         static AudioSourceConfiguration create(uint32_t soundCardTotalDelayMs);
-        static AudioSourceConfiguration create(uint32_t soundCardTotalDelayMs,
-                absl::optional<bool> echoCancellation,
-                absl::optional<bool> autoGainControl,
-                absl::optional<bool> noiseSuppression,
-                absl::optional<bool> highpassFilter,
-                absl::optional<bool> stereoSwapping,
-                absl::optional<bool> typingDetection,
-                absl::optional<bool> residualEchoDetector,
-                absl::optional<bool> transientSuppression);
+        static AudioSourceConfiguration create(
+            uint32_t soundCardTotalDelayMs,
+            absl::optional<bool> echoCancellation,
+            absl::optional<bool> autoGainControl,
+            absl::optional<bool> noiseSuppression,
+            absl::optional<bool> highpassFilter,
+            absl::optional<bool> stereoSwapping,
+            absl::optional<bool> typingDetection,
+            absl::optional<bool> residualEchoDetector,
+            absl::optional<bool> transientSuppression);
 
         uint32_t soundCardTotalDelayMs() const;
         absl::optional<bool> echoCancellation() const;
@@ -71,8 +73,16 @@ namespace opentera
      */
     inline AudioSourceConfiguration AudioSourceConfiguration::create(uint32_t soundCardTotalDelayMs)
     {
-        return AudioSourceConfiguration(soundCardTotalDelayMs, absl::nullopt, absl::nullopt, absl::nullopt,
-                absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt, absl::nullopt);
+        return AudioSourceConfiguration(
+            soundCardTotalDelayMs,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt,
+            absl::nullopt);
     }
 
     /**
@@ -89,82 +99,70 @@ namespace opentera
      * @param transientSuppression Enable or disable the transient suppression
      * @return An audio source configuration with the specified values
      */
-    inline AudioSourceConfiguration AudioSourceConfiguration::create(uint32_t soundCardTotalDelayMs,
-            absl::optional<bool> echoCancellation,
-            absl::optional<bool> autoGainControl,
-            absl::optional<bool> noiseSuppression,
-            absl::optional<bool> highpassFilter,
-            absl::optional<bool> stereoSwapping,
-            absl::optional<bool> typingDetection,
-            absl::optional<bool> residualEchoDetector,
-            absl::optional<bool> transientSuppression)
+    inline AudioSourceConfiguration AudioSourceConfiguration::create(
+        uint32_t soundCardTotalDelayMs,
+        absl::optional<bool> echoCancellation,
+        absl::optional<bool> autoGainControl,
+        absl::optional<bool> noiseSuppression,
+        absl::optional<bool> highpassFilter,
+        absl::optional<bool> stereoSwapping,
+        absl::optional<bool> typingDetection,
+        absl::optional<bool> residualEchoDetector,
+        absl::optional<bool> transientSuppression)
     {
-        return AudioSourceConfiguration(soundCardTotalDelayMs, echoCancellation, autoGainControl, noiseSuppression,
-                highpassFilter, stereoSwapping, typingDetection, residualEchoDetector, transientSuppression);
+        return AudioSourceConfiguration(
+            soundCardTotalDelayMs,
+            echoCancellation,
+            autoGainControl,
+            noiseSuppression,
+            highpassFilter,
+            stereoSwapping,
+            typingDetection,
+            residualEchoDetector,
+            transientSuppression);
     }
 
     /**
      * @brief Returns the sum of the playback and recording delays.
      * @return The sum of the playback and recording delays
      */
-    inline uint32_t AudioSourceConfiguration::soundCardTotalDelayMs() const
-    {
-        return m_soundCardTotalDelayMs;
-    }
+    inline uint32_t AudioSourceConfiguration::soundCardTotalDelayMs() const { return m_soundCardTotalDelayMs; }
 
     /**
      * @brief Indicates if the echo cancellation is enabled.
      * @return true if the echo cancellation is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::echoCancellation() const
-    {
-        return m_echoCancellation;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::echoCancellation() const { return m_echoCancellation; }
 
     /**
      * @brief Indicates if the auto gain control is enabled.
      * @return true if the auto gain control is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::autoGainControl() const
-    {
-        return m_autoGainControl;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::autoGainControl() const { return m_autoGainControl; }
 
     /**
      * @brief Indicates if the noise suppression is enabled.
      * @return true if the noise suppression is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::noiseSuppression() const
-    {
-        return m_noiseSuppression;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::noiseSuppression() const { return m_noiseSuppression; }
 
     /**
      * @brief Indicates if the highpass filter is enabled.
      * @return true if the highpass filter is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::highpassFilter() const
-    {
-        return m_highpassFilter;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::highpassFilter() const { return m_highpassFilter; }
 
     /**
      * @brief Indicates if the stereo swapping is enabled.
      * @return true if the stereo swapping is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::stereoSwapping() const
-    {
-        return m_stereoSwapping;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::stereoSwapping() const { return m_stereoSwapping; }
 
     /**
      * @brief Indicates if the typing detection is enabled.
      * @return true if the typing detection is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::typingDetection() const
-    {
-        return m_typingDetection;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::typingDetection() const { return m_typingDetection; }
 
     /**
      * @brief Indicates if the residual echo detector is enabled.

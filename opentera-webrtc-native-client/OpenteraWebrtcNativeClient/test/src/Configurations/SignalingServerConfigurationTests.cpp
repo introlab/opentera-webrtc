@@ -19,8 +19,8 @@ TEST(SignalingServerConfigurationTests, create_urlClientNameRoom_shouldSetTheAtt
 
 TEST(SignalingServerConfigurationTests, create_urlClientNameClientDataRoom__shouldSetTheAttributes)
 {
-    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name",
-            sio::int_message::create(10), "room");
+    SignalingServerConfiguration testee =
+        SignalingServerConfiguration::create("url", "name", sio::int_message::create(10), "room");
 
     EXPECT_EQ(testee.url(), "url");
     EXPECT_EQ(testee.clientName(), "name");
@@ -42,8 +42,8 @@ TEST(SignalingServerConfigurationTests, create_urlClientNameRoomPassword_shouldS
 
 TEST(SignalingServerConfigurationTests, create_urlClientNameClientDataRoomPassword_shouldSetTheAttributes)
 {
-    SignalingServerConfiguration testee = SignalingServerConfiguration::create("url", "name",
-            sio::int_message::create(10), "room", "password");
+    SignalingServerConfiguration testee =
+        SignalingServerConfiguration::create("url", "name", sio::int_message::create(10), "room", "password");
 
     EXPECT_EQ(testee.url(), "url");
     EXPECT_EQ(testee.clientName(), "name");

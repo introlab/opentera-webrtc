@@ -4,15 +4,15 @@
 using namespace opentera;
 using namespace std;
 
-OpenteraAudioDeviceModule::OpenteraAudioDeviceModule() :
-        m_isPlayoutInitialized(false),
-        m_isRecordingInitialized(false),
-        m_isSpeakerInitialized(false),
-        m_isMicrophoneInitialized(false),
-        m_isPlaying(false),
-        m_isRecording(false),
-        m_stopped(true),
-        m_audioTransport(nullptr)
+OpenteraAudioDeviceModule::OpenteraAudioDeviceModule()
+    : m_isPlayoutInitialized(false),
+      m_isRecordingInitialized(false),
+      m_isSpeakerInitialized(false),
+      m_isMicrophoneInitialized(false),
+      m_isPlaying(false),
+      m_isRecording(false),
+      m_stopped(true),
+      m_audioTransport(nullptr)
 {
 }
 
@@ -29,13 +29,14 @@ void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(const AudioSinkCall
     startIfStoppedAndTransportValid();
 }
 
-void OpenteraAudioDeviceModule::sendFrame(const void* audioData,
-        int bitsPerSample,
-        int sampleRate,
-        size_t numberOfChannels,
-        size_t numberOfFrames,
-        uint32_t audioDelayMs,
-        bool isTyping)
+void OpenteraAudioDeviceModule::sendFrame(
+    const void* audioData,
+    int bitsPerSample,
+    int sampleRate,
+    size_t numberOfChannels,
+    size_t numberOfFrames,
+    uint32_t audioDelayMs,
+    bool isTyping)
 {
     lock_guard<mutex> audioTransportCaptureLock(m_audioTransportCaptureMutex);
     if (m_audioTransport == nullptr)
@@ -44,16 +45,17 @@ void OpenteraAudioDeviceModule::sendFrame(const void* audioData,
     }
 
     uint32_t newMicLevel = 0;
-    m_audioTransport->RecordedDataIsAvailable(audioData,
-            numberOfFrames,
-            bitsPerSample / 8,
-            numberOfChannels,
-            sampleRate,
-            audioDelayMs,
-            0, // Clock drift (not used)
-            0, // Volume (not used)
-            isTyping, // key_pressed
-            newMicLevel); // New mic volume (not used)
+    m_audioTransport->RecordedDataIsAvailable(
+        audioData,
+        numberOfFrames,
+        bitsPerSample / 8,
+        numberOfChannels,
+        sampleRate,
+        audioDelayMs,
+        0,  // Clock drift (not used)
+        0,  // Volume (not used)
+        isTyping,  // key_pressed
+        newMicLevel);  // New mic volume (not used)
 }
 
 int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) const
@@ -96,18 +98,20 @@ int16_t OpenteraAudioDeviceModule::RecordingDevices()
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(uint16_t index,
-        char name[webrtc::kAdmMaxDeviceNameSize],
-        char guid[webrtc::kAdmMaxGuidSize])
+int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(
+    uint16_t index,
+    char name[webrtc::kAdmMaxDeviceNameSize],
+    char guid[webrtc::kAdmMaxGuidSize])
 {
     strcpy(name, "AudioSink");
     strcpy(guid, "0");
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::RecordingDeviceName(uint16_t index,
-        char name[webrtc::kAdmMaxDeviceNameSize],
-        char guid[webrtc::kAdmMaxGuidSize])
+int32_t OpenteraAudioDeviceModule::RecordingDeviceName(
+    uint16_t index,
+    char name[webrtc::kAdmMaxDeviceNameSize],
+    char guid[webrtc::kAdmMaxGuidSize])
 {
     return 0;
 }
@@ -438,8 +442,15 @@ void OpenteraAudioDeviceModule::run()
     {
         auto start = chrono::steady_clock::now();
 
-        int32_t result = m_audioTransport->NeedMorePlayData(NSamples, NBytesPerSample, NChannels, SamplesPerSec, data.data(), nSamplesOut,
-                &elapsedTimeMs, &ntpTimeMs);
+        int32_t result = m_audioTransport->NeedMorePlayData(
+            NSamples,
+            NBytesPerSample,
+            NChannels,
+            SamplesPerSec,
+            data.data(),
+            nSamplesOut,
+            &elapsedTimeMs,
+            &ntpTimeMs);
 
         if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
         {

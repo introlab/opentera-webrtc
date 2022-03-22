@@ -5,15 +5,17 @@
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 
 #include <media/base/adapted_video_track_source.h>
-#include <rtc_base/ref_counted_object.h>
 #include <opencv2/core/mat.hpp>
+#include <rtc_base/ref_counted_object.h>
 
-namespace opentera {
+namespace opentera
+{
 
     /**
      * @brief Represents a video source that can be added to a WebRTC call.
      *
-     * Pass a shared_ptr to an instance of this to the StreamClient and call sendFrame for each of your frame.
+     * Pass a shared_ptr to an instance of this to the StreamClient and call
+     * sendFrame for each of your frame.
      */
     class VideoSource : public rtc::AdaptedVideoTrackSource
     {
@@ -35,7 +37,8 @@ namespace opentera {
         bool remote() const override;
         webrtc::MediaSourceInterface::SourceState state() const override;
 
-        // Methods to fake a ref counted object, so the Python binding is easier to make because we can use a shared_ptr
+        // Methods to fake a ref counted object, so the Python binding is easier to
+        // make because we can use a shared_ptr
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
     };
@@ -44,28 +47,19 @@ namespace opentera {
      * @brief Indicates if this source is screencast.
      * @return true if this source is a screencast
      */
-    inline bool VideoSource::is_screencast() const
-    {
-        return m_configuration.isScreencast();
-    }
+    inline bool VideoSource::is_screencast() const { return m_configuration.isScreencast(); }
 
     /**
      * @brief Indicates if this source needs denoising.
      * @return true if this source needs denoising
      */
-    inline absl::optional<bool> VideoSource::needs_denoising() const
-    {
-        return m_configuration.needsDenoising();
-    }
+    inline absl::optional<bool> VideoSource::needs_denoising() const { return m_configuration.needsDenoising(); }
 
     /**
      * @brief Indicates if this source is remote.
      * @return Always false, the source is local
      */
-    inline bool VideoSource::remote() const
-    {
-        return false;
-    }
+    inline bool VideoSource::remote() const { return false; }
 
     /**
      * @brief Indicates if this source is live.
@@ -75,6 +69,6 @@ namespace opentera {
     {
         return webrtc::MediaSourceInterface::kLive;
     }
-}
+}  // namespace opentera
 
 #endif

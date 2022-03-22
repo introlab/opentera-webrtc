@@ -30,39 +30,37 @@ size_t bytesPerFrame(int bitsPerSample, size_t numberOfChannels)
 /**
  * @brief Creates an AudioSource
  *
- * @param configuration the configuration applied to the audio stream by the audio transport layer
+ * @param configuration the configuration applied to the audio stream by the
+ * audio transport layer
  * @param bitsPerSample The audio stream sample size (8, 16 or 32 bits)
  * @param sampleRate The audio stream sample rate
  * @param numberOfChannels The audio stream channel count
  */
-AudioSource::AudioSource(AudioSourceConfiguration configuration,
-        int bitsPerSample,
-        int sampleRate,
-        size_t numberOfChannels) :
-        m_configuration(move(configuration)),
-        m_bitsPerSample(bitsPerSample),
-        m_sampleRate(sampleRate),
-        m_numberOfChannels(numberOfChannels),
-        m_bytesPerFrame(::bytesPerFrame(bitsPerSample, numberOfChannels)),
-        m_dataIndex(0),
-        m_data(m_bytesPerFrame * sampleRate / 100, 0),
-        m_dataNumberOfFrames(m_data.size() / m_bytesPerFrame)
+AudioSource::AudioSource(
+    AudioSourceConfiguration configuration,
+    int bitsPerSample,
+    int sampleRate,
+    size_t numberOfChannels)
+    : m_configuration(move(configuration)),
+      m_bitsPerSample(bitsPerSample),
+      m_sampleRate(sampleRate),
+      m_numberOfChannels(numberOfChannels),
+      m_bytesPerFrame(::bytesPerFrame(bitsPerSample, numberOfChannels)),
+      m_dataIndex(0),
+      m_data(m_bytesPerFrame * sampleRate / 100, 0),
+      m_dataNumberOfFrames(m_data.size() / m_bytesPerFrame)
 {
 }
 
 /**
  * Do nothing.
  */
-void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink)
-{
-}
+void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink) {}
 
 /**
  * Do nothing.
  */
-void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink)
-{
-}
+void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink) {}
 
 /**
  * @brief Indicates if this source is remote
@@ -120,7 +118,8 @@ void AudioSource::setAudioDeviceModule(const rtc::scoped_refptr<OpenteraAudioDev
  * Send an audio frame
  * @param audioData The audio data
  * @param numberOfFrames The number of frames
- * @param isTyping Indicates if the frame contains typing sound. This is only useful with the typing detection option.
+ * @param isTyping Indicates if the frame contains typing sound. This is only
+ * useful with the typing detection option.
  */
 void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames, bool isTyping)
 {
@@ -135,8 +134,14 @@ void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames, bool i
             lock_guard<mutex> lock(m_audioDeviceModuleMutex);
             if (m_audioDeviceModule != nullptr)
             {
-                m_audioDeviceModule->sendFrame(m_data.data(), m_bitsPerSample, m_sampleRate, m_numberOfChannels,
-                        m_dataNumberOfFrames, m_configuration.soundCardTotalDelayMs(), isTyping);
+                m_audioDeviceModule->sendFrame(
+                    m_data.data(),
+                    m_bitsPerSample,
+                    m_sampleRate,
+                    m_numberOfChannels,
+                    m_dataNumberOfFrames,
+                    m_configuration.soundCardTotalDelayMs(),
+                    isTyping);
             }
         }
 
@@ -153,9 +158,7 @@ void AudioSource::sendFrame(const void* audioData, size_t numberOfFrames, bool i
     }
 }
 
-void AudioSource::AddRef() const
-{
-}
+void AudioSource::AddRef() const {}
 
 rtc::RefCountReleaseStatus AudioSource::Release() const
 {

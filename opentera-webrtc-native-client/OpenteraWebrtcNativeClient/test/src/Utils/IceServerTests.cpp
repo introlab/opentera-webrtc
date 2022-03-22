@@ -24,16 +24,22 @@ protected:
     static void SetUpTestSuite()
     {
         fs::path testFilePath(__FILE__);
-        fs::path pythonFilePath = testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path()
-                .parent_path() / "signaling-server" / "opentera-signaling-server";
+        fs::path pythonFilePath =
+            testFilePath.parent_path().parent_path().parent_path().parent_path().parent_path().parent_path() /
+            "signaling-server" / "opentera-signaling-server";
 
-        m_signalingServerProcess = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8080 --password abc --ice_servers resources/iceServers.json",
-                subprocess::input(subprocess::PIPE));
+        m_signalingServerProcess = make_unique<subprocess::Popen>(
+            "python3 " + pythonFilePath.string() +
+                " --port 8080 --password abc --ice_servers "
+                "resources/iceServers.json",
+            subprocess::input(subprocess::PIPE));
 
-        m_signalingServerProcessTLS = make_unique<subprocess::Popen>("python3 " + pythonFilePath.string() +
-                " --port 8081 --password abc --ice_servers resources/iceServers.json"
-                " --certificate resources/cert.pem --key resources/key.pem", subprocess::input(subprocess::PIPE));
+        m_signalingServerProcessTLS = make_unique<subprocess::Popen>(
+            "python3 " + pythonFilePath.string() +
+                " --port 8081 --password abc --ice_servers "
+                "resources/iceServers.json"
+                " --certificate resources/cert.pem --key resources/key.pem",
+            subprocess::input(subprocess::PIPE));
 
         this_thread::sleep_for(2s);
     }
@@ -57,7 +63,7 @@ protected:
     {
         m_tlsTestEnable = GetParam();
 
-        if(m_tlsTestEnable)
+        if (m_tlsTestEnable)
         {
             m_baseUrl = "https://localhost:8081";
         }
@@ -214,6 +220,4 @@ TEST(IceServerTests, fromJson_valid_shouldReturnTrueAndSetIceServers)
 INSTANTIATE_TEST_SUITE_P(
     IceServerTestsWithSignalingServer,
     IceServerTestsWithSignalingServer,
-    ::testing::Values(
-        false, true
-));
+    ::testing::Values(false, true));

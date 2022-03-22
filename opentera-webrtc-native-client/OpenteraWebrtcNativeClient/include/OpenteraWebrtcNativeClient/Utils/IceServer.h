@@ -3,8 +3,8 @@
 
 #include <api/peer_connection_interface.h>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace opentera
 {
@@ -30,8 +30,11 @@ namespace opentera
 
         explicit operator webrtc::PeerConnectionInterface::IceServer() const;
 
-        static bool fetchFromServer(const std::string& url, const std::string& password,
-                std::vector<IceServer>& iceServers, bool verifyCertificate = true);
+        static bool fetchFromServer(
+            const std::string& url,
+            const std::string& password,
+            std::vector<IceServer>& iceServers,
+            bool verifyCertificate = true);
         static bool fromJson(const std::string& json, std::vector<IceServer>& iceServers);
     };
 
@@ -39,28 +42,19 @@ namespace opentera
      * @brief Returns the ice server urls.
      * @return The ice server urls
      */
-    inline const std::vector<std::string>& IceServer::urls() const
-    {
-        return m_urls;
-    }
+    inline const std::vector<std::string>& IceServer::urls() const { return m_urls; }
 
     /**
      * @brief Returns the ice server username.
      * @return The ice server username
      */
-    inline const std::string& IceServer::username() const
-    {
-        return m_username;
-    }
+    inline const std::string& IceServer::username() const { return m_username; }
 
     /**
      * @brief Returns the ice server credential.
      * @return The ice server credential
      */
-    inline const std::string& IceServer::credential() const
-    {
-        return m_credential;
-    }
+    inline const std::string& IceServer::credential() const { return m_credential; }
 
     inline IceServer::operator webrtc::PeerConnectionInterface::IceServer() const
     {
@@ -70,6 +64,6 @@ namespace opentera
         iceServer.password = m_credential;
         return iceServer;
     }
-}
+}  // namespace opentera
 
 #endif

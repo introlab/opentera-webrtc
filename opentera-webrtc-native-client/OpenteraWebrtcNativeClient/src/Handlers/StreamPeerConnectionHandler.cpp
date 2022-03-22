@@ -11,63 +11,80 @@ static constexpr bool OfferToReceiveVideo = true;
 static constexpr bool OfferToReceiveAudio = true;
 
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
-        string id,
-        Client peerClient,
-        bool isCaller,
-        bool hasOnMixedAudioFrameReceivedCallback,
-        function<void(const string&, const sio::message::ptr&)> sendEvent,
-        function<void(const string&)> onError,
-        function<void(const Client&)> onClientConnected,
-        function<void(const Client&)> onClientDisconnected,
-        scoped_refptr<VideoTrackInterface>  videoTrack,
-        scoped_refptr<AudioTrackInterface> audioTrack,
-        function<void(const Client&)> onAddRemoteStream,
-        function<void(const Client&)> onRemoveRemoteStream,
-        const VideoFrameReceivedCallback& onVideoFrameReceived,
-        const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
-        const AudioFrameReceivedCallback& onAudioFrameReceived) :
-    PeerConnectionHandler(move(id), move(peerClient), isCaller,
-            onVideoFrameReceived || onEncodedVideoFrameReceived,
-            hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived,
-            move(sendEvent), move(onError), move(onClientConnected), move(onClientDisconnected)),
-    m_videoTrack(move(videoTrack)),
-    m_audioTrack(move(audioTrack)),
-    m_onAddRemoteStream(move(onAddRemoteStream)),
-    m_onRemoveRemoteStream(move(onRemoveRemoteStream))
+    string id,
+    Client peerClient,
+    bool isCaller,
+    bool hasOnMixedAudioFrameReceivedCallback,
+    function<void(const string&, const sio::message::ptr&)> sendEvent,
+    function<void(const string&)> onError,
+    function<void(const Client&)> onClientConnected,
+    function<void(const Client&)> onClientDisconnected,
+    scoped_refptr<VideoTrackInterface> videoTrack,
+    scoped_refptr<AudioTrackInterface> audioTrack,
+    function<void(const Client&)> onAddRemoteStream,
+    function<void(const Client&)> onRemoveRemoteStream,
+    const VideoFrameReceivedCallback& onVideoFrameReceived,
+    const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
+    const AudioFrameReceivedCallback& onAudioFrameReceived)
+    : PeerConnectionHandler(
+          move(id),
+          move(peerClient),
+          isCaller,
+          onVideoFrameReceived || onEncodedVideoFrameReceived,
+          hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived,
+          move(sendEvent),
+          move(onError),
+          move(onClientConnected),
+          move(onClientDisconnected)),
+      m_videoTrack(move(videoTrack)),
+      m_audioTrack(move(audioTrack)),
+      m_onAddRemoteStream(move(onAddRemoteStream)),
+      m_onRemoveRemoteStream(move(onRemoveRemoteStream))
 {
     if (onVideoFrameReceived)
     {
         m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs)
-        {
-            onVideoFrameReceived(m_peerClient, bgrImg, timestampUs);
-        });
+                                             { onVideoFrameReceived(m_peerClient, bgrImg, timestampUs); });
     }
 
     if (onEncodedVideoFrameReceived)
     {
-        m_encodedVideoSink = make_unique<EncodedVideoSink>([=](const uint8_t* data,
+        m_encodedVideoSink = make_unique<EncodedVideoSink>(
+            [=](const uint8_t* data,
                 size_t dataSize,
                 VideoCodecType codecType,
                 bool isKeyFrame,
                 uint32_t width,
                 uint32_t height,
-                uint64_t timestampUs)
-        {
-            onEncodedVideoFrameReceived(m_peerClient, data, dataSize, codecType, isKeyFrame, width, height,
+                uint64_t timestampUs) {
+                onEncodedVideoFrameReceived(
+                    m_peerClient,
+                    data,
+                    dataSize,
+                    codecType,
+                    isKeyFrame,
+                    width,
+                    height,
                     timestampUs);
-        });
+            });
     }
 
     if (onAudioFrameReceived)
     {
-        m_audioSink = make_unique<AudioSink>([=](const void* audioData,
+        m_audioSink = make_unique<AudioSink>(
+            [=](const void* audioData,
                 int bitsPerSample,
                 int sampleRate,
                 size_t numberOfChannels,
-                size_t numberOfFrames)
-        {
-            onAudioFrameReceived(m_peerClient, audioData, bitsPerSample, sampleRate, numberOfChannels, numberOfFrames);
-        });
+                size_t numberOfFrames) {
+                onAudioFrameReceived(
+                    m_peerClient,
+                    audioData,
+                    bitsPerSample,
+                    sampleRate,
+                    numberOfChannels,
+                    numberOfFrames);
+            });
     }
 }
 
@@ -93,8 +110,7 @@ StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
     }
 }
 
-void StreamPeerConnectionHandler::setPeerConnection(
-        const scoped_refptr<PeerConnectionInterface>& peerConnection)
+void StreamPeerConnectionHandler::setPeerConnection(const scoped_refptr<PeerConnectionInterface>& peerConnection)
 {
     if (m_videoTrack != nullptr)
     {

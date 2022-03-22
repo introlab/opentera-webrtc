@@ -10,7 +10,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
     string host;
     string target;
 
-    if(!Http::splitUrl(url, host, target))
+    if (!Http::splitUrl(url, host, target))
     {
         return false;
     }
@@ -20,16 +20,16 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
         httplib::Client cli(host.c_str());
 #if defined(__APPLE__)
         /*
-            TODO : Remove the certificate path on macosx with new version of BoringSSL?
-            As of now, the ca-certificates need to be installed on the system with the following command:
-            brew install ca-certificates
+            TODO : Remove the certificate path on macosx with new version of
+           BoringSSL? As of now, the ca-certificates need to be installed on the
+           system with the following command: brew install ca-certificates
         */
         cli.set_ca_cert_path("/usr/local/etc/ca-certificates/cert.pem");
 #elif defined(_WIN32)
         /*
-            TODO : Find a better solution than MSYS2 to install the certificate on windows.
-            As of now, the ca-certificates need to be installed on the system with the following command:
-            pacman -S ca-certificates
+            TODO : Find a better solution than MSYS2 to install the certificate on
+           windows. As of now, the ca-certificates need to be installed on the
+           system with the following command: pacman -S ca-certificates
         */
         cli.set_ca_cert_path("C:\\msys64\\usr\\ssl\\cert.pem");
 #endif

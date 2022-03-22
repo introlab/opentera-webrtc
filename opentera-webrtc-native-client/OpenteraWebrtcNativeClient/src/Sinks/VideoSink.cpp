@@ -1,8 +1,8 @@
 #include <OpenteraWebrtcNativeClient/Sinks/VideoSink.h>
 
-#include <utility>
-#include <opencv2/imgproc.hpp>
 #include <libyuv.h>
+#include <opencv2/imgproc.hpp>
+#include <utility>
 
 using namespace opentera;
 using namespace rtc;
@@ -11,10 +11,10 @@ using namespace std;
 /**
  * @brief Construct a VideoSink
  *
- * @param onFrameReceived callback function that gets called whenever a frame is received
+ * @param onFrameReceived callback function that gets called whenever a frame is
+ * received
  */
-VideoSink::VideoSink(VideoSinkCallback onFrameReceived) :
-        m_onFrameReceived(move(onFrameReceived))
+VideoSink::VideoSink(VideoSinkCallback onFrameReceived) : m_onFrameReceived(move(onFrameReceived))
 {
     m_wants.rotation_applied = true;
 
@@ -25,8 +25,9 @@ VideoSink::VideoSink(VideoSinkCallback onFrameReceived) :
 /**
  * @brief Process incoming frames from webrtc
  *
- * This function is called by the webrtc transport layer whenever a frame is available.
- * It convert YUV frame data from the I420 buffer to BGR data and call the callback function with a cv::Mat
+ * This function is called by the webrtc transport layer whenever a frame is
+ * available. It convert YUV frame data from the I420 buffer to BGR data and
+ * call the callback function with a cv::Mat
  *
  * @param frame available webrtc frame
  */

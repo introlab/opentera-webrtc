@@ -23,9 +23,10 @@ namespace opentera
         std::function<void(const Client&, const std::string&)> m_onDataChannelMessageString;
 
     public:
-        DataChannelClient(SignalingServerConfiguration signalingServerConfiguration,
-                WebrtcConfiguration webrtcConfiguration,
-                DataChannelConfiguration dataChannelConfiguration);
+        DataChannelClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration,
+            DataChannelConfiguration dataChannelConfiguration);
         ~DataChannelClient() override = default;
 
         DECLARE_NOT_COPYABLE(DataChannelClient);
@@ -40,15 +41,15 @@ namespace opentera
         void setOnDataChannelClosed(const std::function<void(const Client&)>& callback);
         void setOnDataChannelError(const std::function<void(const Client&, const std::string&)>& callback);
         void setOnDataChannelMessageBinary(
-                const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback);
+            const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback);
         void setOnDataChannelMessageString(const std::function<void(const Client&, const std::string&)>& callback);
 
     protected:
         void sendTo(const webrtc::DataBuffer& buffer, const std::vector<std::string>& ids);
         void sendToAll(const webrtc::DataBuffer& buffer);
 
-        std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
-                const Client& peerClient, bool isCaller) override;
+        std::unique_ptr<PeerConnectionHandler>
+            createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) override;
     };
 
     /**
@@ -90,10 +91,7 @@ namespace opentera
      *
      * @param message The string message
      */
-    inline void DataChannelClient::sendToAll(const std::string& message)
-    {
-        sendToAll(webrtc::DataBuffer(message));
-    }
+    inline void DataChannelClient::sendToAll(const std::string& message) { sendToAll(webrtc::DataBuffer(message)); }
 
     /**
      * @brief Sets the callback that is called when a data channel opens.
@@ -109,10 +107,9 @@ namespace opentera
      */
     inline void DataChannelClient::setOnDataChannelOpened(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onDataChannelOpened = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onDataChannelOpened = callback; });
     }
 
     /**
@@ -129,10 +126,9 @@ namespace opentera
      */
     inline void DataChannelClient::setOnDataChannelClosed(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onDataChannelClosed = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onDataChannelClosed = callback; });
     }
 
     /**
@@ -148,13 +144,12 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void DataChannelClient::setOnDataChannelError(
-            const std::function<void(const Client&, const std::string&)>& callback)
+    inline void
+        DataChannelClient::setOnDataChannelError(const std::function<void(const Client&, const std::string&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onDataChannelError = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onDataChannelError = callback; });
     }
 
     /**
@@ -172,12 +167,11 @@ namespace opentera
      * @param callback The callback
      */
     inline void DataChannelClient::setOnDataChannelMessageBinary(
-            const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback)
+        const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onDataChannelMessageBinary = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onDataChannelMessageBinary = callback; });
     }
 
     /**
@@ -194,12 +188,11 @@ namespace opentera
      * @param callback The callback
      */
     inline void DataChannelClient::setOnDataChannelMessageString(
-            const std::function<void(const Client&, const std::string&)>& callback)
+        const std::function<void(const Client&, const std::string&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onDataChannelMessageString = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onDataChannelMessageString = callback; });
     }
 }
 

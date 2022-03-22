@@ -14,7 +14,7 @@ namespace opentera
     /**
      * @brief A signaling client to join a WebRTC room and stream a video source.
      */
-    class StreamClient: public SignalingClient
+    class StreamClient : public SignalingClient
     {
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<AudioSource> m_audioSource;
@@ -30,18 +30,22 @@ namespace opentera
         bool m_isLocalVideoMuted;
 
     public:
-        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-                WebrtcConfiguration webrtcConfiguration);
-        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-                WebrtcConfiguration webrtcConfiguration,
-                std::shared_ptr<VideoSource> videoSource);
-        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-                WebrtcConfiguration webrtcConfiguration,
-                std::shared_ptr<AudioSource> audioSource);
-        StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-                WebrtcConfiguration webrtcConfiguration,
-                std::shared_ptr<VideoSource> videoSource,
-                std::shared_ptr<AudioSource> audioSource);
+        StreamClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration);
+        StreamClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration,
+            std::shared_ptr<VideoSource> videoSource);
+        StreamClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration,
+            std::shared_ptr<AudioSource> audioSource);
+        StreamClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration,
+            std::shared_ptr<VideoSource> videoSource,
+            std::shared_ptr<AudioSource> audioSource);
         ~StreamClient() override;
 
         DECLARE_NOT_COPYABLE(StreamClient);
@@ -65,8 +69,8 @@ namespace opentera
         void setOnMixedAudioFrameReceived(const AudioSinkCallback& callback);
 
     protected:
-        std::unique_ptr<PeerConnectionHandler> createPeerConnectionHandler(const std::string& id,
-                const Client& peerClient, bool isCaller) override;
+        std::unique_ptr<PeerConnectionHandler>
+            createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) override;
     };
 
     /**
@@ -75,28 +79,19 @@ namespace opentera
      */
     inline bool StreamClient::isLocalAudioMuted()
     {
-        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
-        {
-            return m_isLocalAudioMuted;
-        });
+        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]() { return m_isLocalAudioMuted; });
     }
 
 
     /**
      * @brief Mutes the local audio.
      */
-    inline void StreamClient::muteLocalAudio()
-    {
-        setLocalAudioMuted(true);
-    }
+    inline void StreamClient::muteLocalAudio() { setLocalAudioMuted(true); }
 
     /**
      * @brief Unmutes the local audio.
      */
-    inline void StreamClient::unmuteLocalAudio()
-    {
-        setLocalAudioMuted(false);
-    }
+    inline void StreamClient::unmuteLocalAudio() { setLocalAudioMuted(false); }
 
     /**
      * @brief Indicates if the local video is muted.
@@ -104,27 +99,18 @@ namespace opentera
      */
     inline bool StreamClient::isLocalVideoMuted()
     {
-        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]()
-        {
-            return m_isLocalVideoMuted;
-        });
+        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]() { return m_isLocalVideoMuted; });
     }
 
     /**
      * @brief Mutes the local video.
      */
-    inline void StreamClient::muteLocalVideo()
-    {
-        setLocalVideoMuted(true);
-    }
+    inline void StreamClient::muteLocalVideo() { setLocalVideoMuted(true); }
 
     /**
      * @brief Unmutes the local video.
      */
-    inline void StreamClient::unmuteLocalVideo()
-    {
-        setLocalVideoMuted(false);
-    }
+    inline void StreamClient::unmuteLocalVideo() { setLocalVideoMuted(false); }
 
     /**
      * @brief Sets the callback that is called when a stream is added.
@@ -140,10 +126,9 @@ namespace opentera
      */
     inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onAddRemoteStream = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onAddRemoteStream = callback; });
     }
 
     /**
@@ -160,10 +145,9 @@ namespace opentera
      */
     inline void StreamClient::setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onRemoveRemoteStream = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onRemoveRemoteStream = callback; });
     }
 
     /**
@@ -182,10 +166,9 @@ namespace opentera
      */
     inline void StreamClient::setOnVideoFrameReceived(const VideoFrameReceivedCallback& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onVideoFrameReceived = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onVideoFrameReceived = callback; });
     }
 
     /**
@@ -207,12 +190,11 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void StreamClient::setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback &callback)
+    inline void StreamClient::setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onEncodedVideoFrameReceived = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onEncodedVideoFrameReceived = callback; });
     }
 
     /**
@@ -234,10 +216,9 @@ namespace opentera
      */
     inline void StreamClient::setOnAudioFrameReceived(const AudioFrameReceivedCallback& callback)
     {
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, &callback]()
-        {
-            m_onAudioFrameReceived = callback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, &callback]() { m_onAudioFrameReceived = callback; });
     }
 
     /**
@@ -259,10 +240,10 @@ namespace opentera
     inline void StreamClient::setOnMixedAudioFrameReceived(const AudioSinkCallback& callback)
     {
         bool hasOnMixedAudioFrameReceivedCallback(callback);
-        FunctionTask<void>::callSync(getInternalClientThread(), [this, hasOnMixedAudioFrameReceivedCallback]()
-        {
-            m_hasOnMixedAudioFrameReceivedCallback = hasOnMixedAudioFrameReceivedCallback;
-        });
+        FunctionTask<void>::callSync(
+            getInternalClientThread(),
+            [this, hasOnMixedAudioFrameReceivedCallback]()
+            { m_hasOnMixedAudioFrameReceivedCallback = hasOnMixedAudioFrameReceivedCallback; });
 
         m_audioDeviceModule->setOnMixedAudioFrameReceived(callback);
     }

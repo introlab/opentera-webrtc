@@ -1,8 +1,8 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_ENCODED_VIDEO_SINK_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_ENCODED_VIDEO_SINK_H
 
-#include <api/video/video_sink_interface.h>
 #include <api/video/recordable_encoded_frame.h>
+#include <api/video/video_sink_interface.h>
 
 namespace opentera
 {
@@ -16,13 +16,14 @@ namespace opentera
         Multiplex,
     };
 
-    using EncodedVideoSinkCallback = std::function<void(const uint8_t* data,
-            size_t dataSize,
-            VideoCodecType codecType,
-            bool isKeyFrame,
-            uint32_t width,
-            uint32_t height,
-            uint64_t timestampUs)>;
+    using EncodedVideoSinkCallback = std::function<void(
+        const uint8_t* data,
+        size_t dataSize,
+        VideoCodecType codecType,
+        bool isKeyFrame,
+        uint32_t width,
+        uint32_t height,
+        uint64_t timestampUs)>;
 
     /**
      * @brief Class that sinks frame from a webrtc stream
@@ -36,6 +37,6 @@ namespace opentera
 
         void OnFrame(const webrtc::RecordableEncodedFrame& frame) override;
     };
-}
+}  // namespace opentera
 
 #endif

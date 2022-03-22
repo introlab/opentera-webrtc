@@ -25,7 +25,6 @@ enum class ThreadPriority : int
 
 #endif
 
-
-bool setThreadPriority(std::thread &thread, ThreadPriority priority);
+bool setThreadPriority(std::thread& thread, ThreadPriority priority);
 
 #endif

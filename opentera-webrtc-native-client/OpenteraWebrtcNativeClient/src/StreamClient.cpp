@@ -6,51 +6,57 @@ using namespace std;
 /**
  * @brief Creates a stream client
  *
- * @param signalingServerConfiguration The configuration to connect to the signaling server
+ * @param signalingServerConfiguration The configuration to connect to the
+ * signaling server
  * @param webrtcConfiguration The WebRTC configuration
  */
-StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-        WebrtcConfiguration webrtcConfiguration) :
-        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
-        m_isLocalAudioMuted(false),
-        m_isLocalVideoMuted(false)
+StreamClient::StreamClient(
+    SignalingServerConfiguration signalingServerConfiguration,
+    WebrtcConfiguration webrtcConfiguration)
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+      m_hasOnMixedAudioFrameReceivedCallback(false),
+      m_isLocalAudioMuted(false),
+      m_isLocalVideoMuted(false)
 {
 }
 
 /**
  * @brief Creates a stream client
  *
- * @param signalingServerConfiguration The configuration to connect to the signaling server
+ * @param signalingServerConfiguration The configuration to connect to the
+ * signaling server
  * @param webrtcConfiguration The WebRTC configuration
  * @param videoSource The video source that this client will add to the call
  */
-StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-        WebrtcConfiguration webrtcConfiguration,
-        shared_ptr<VideoSource> videoSource) :
-        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_videoSource(move(videoSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
-        m_isLocalAudioMuted(false),
-        m_isLocalVideoMuted(false)
+StreamClient::StreamClient(
+    SignalingServerConfiguration signalingServerConfiguration,
+    WebrtcConfiguration webrtcConfiguration,
+    shared_ptr<VideoSource> videoSource)
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+      m_videoSource(move(videoSource)),
+      m_hasOnMixedAudioFrameReceivedCallback(false),
+      m_isLocalAudioMuted(false),
+      m_isLocalVideoMuted(false)
 {
 }
 
 /**
  * @brief Creates a stream client
  *
- * @param signalingServerConfiguration The configuration to connect to the signaling server
+ * @param signalingServerConfiguration The configuration to connect to the
+ * signaling server
  * @param webrtcConfiguration The WebRTC configuration
  * @param audioSource The audio source that this client will add to the call
  */
-StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-        WebrtcConfiguration webrtcConfiguration,
-        shared_ptr<AudioSource> audioSource) :
-        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_audioSource(move(audioSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
-        m_isLocalAudioMuted(false),
-        m_isLocalVideoMuted(false)
+StreamClient::StreamClient(
+    SignalingServerConfiguration signalingServerConfiguration,
+    WebrtcConfiguration webrtcConfiguration,
+    shared_ptr<AudioSource> audioSource)
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+      m_audioSource(move(audioSource)),
+      m_hasOnMixedAudioFrameReceivedCallback(false),
+      m_isLocalAudioMuted(false),
+      m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
     {
@@ -62,21 +68,23 @@ StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfigura
 /**
  * @brief Creates a stream client
  *
- * @param signalingServerConfiguration The configuration to connect to the signaling server
+ * @param signalingServerConfiguration The configuration to connect to the
+ * signaling server
  * @param webrtcConfiguration The WebRTC configuration
  * @param videoSource The video source that this client will add to the call
  * @param audioSource The audio source that this client will add to the call
  */
-StreamClient::StreamClient(SignalingServerConfiguration signalingServerConfiguration,
-        WebrtcConfiguration webrtcConfiguration,
-        shared_ptr<VideoSource> videoSource,
-        shared_ptr<AudioSource> audioSource) :
-        SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
-        m_videoSource(move(videoSource)),
-        m_audioSource(move(audioSource)),
-        m_hasOnMixedAudioFrameReceivedCallback(false),
-        m_isLocalAudioMuted(false),
-        m_isLocalVideoMuted(false)
+StreamClient::StreamClient(
+    SignalingServerConfiguration signalingServerConfiguration,
+    WebrtcConfiguration webrtcConfiguration,
+    shared_ptr<VideoSource> videoSource,
+    shared_ptr<AudioSource> audioSource)
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+      m_videoSource(move(videoSource)),
+      m_audioSource(move(audioSource)),
+      m_hasOnMixedAudioFrameReceivedCallback(false),
+      m_isLocalAudioMuted(false),
+      m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
     {
@@ -102,14 +110,16 @@ StreamClient::~StreamClient()
  */
 void StreamClient::setLocalAudioMuted(bool muted)
 {
-    FunctionTask<void>::callSync(getInternalClientThread(), [this, muted]()
-    {
-        this->m_isLocalAudioMuted = muted;
-        for (auto& pair : m_peerConnectionHandlersById)
+    FunctionTask<void>::callSync(
+        getInternalClientThread(),
+        [this, muted]()
         {
-            dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
-        }
-    });
+            this->m_isLocalAudioMuted = muted;
+            for (auto& pair : m_peerConnectionHandlersById)
+            {
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
+            }
+        });
 }
 
 /**
@@ -118,14 +128,16 @@ void StreamClient::setLocalAudioMuted(bool muted)
  */
 void StreamClient::setLocalVideoMuted(bool muted)
 {
-    FunctionTask<void>::callSync(getInternalClientThread(), [this, muted]()
-    {
-        this->m_isLocalVideoMuted = muted;
-        for (auto& pair : m_peerConnectionHandlersById)
+    FunctionTask<void>::callSync(
+        getInternalClientThread(),
+        [this, muted]()
         {
-            dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllVideoTracksEnabled(!muted);
-        }
-    });
+            this->m_isLocalVideoMuted = muted;
+            for (auto& pair : m_peerConnectionHandlersById)
+            {
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllVideoTracksEnabled(!muted);
+            }
+        });
 }
 
 /**
@@ -136,8 +148,8 @@ void StreamClient::setLocalVideoMuted(bool muted)
  * @param isCaller indicates if this peer initiated the call
  * @return the peer connection handler
  */
-unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(const string& id,
-                                                                            const Client& peerClient, bool isCaller)
+unique_ptr<PeerConnectionHandler>
+    StreamClient::createPeerConnectionHandler(const string& id, const Client& peerClient, bool isCaller)
 {
     // Create a video track if a video source is provided
     rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = nullptr;
@@ -154,29 +166,23 @@ unique_ptr<PeerConnectionHandler> StreamClient::createPeerConnectionHandler(cons
         audioTrack->set_enabled(!m_isLocalAudioMuted);
     }
 
-    auto onAddRemoteStream = [this](const Client& client)
-    {
-        invokeIfCallable(m_onAddRemoteStream, client);
-    };
-    auto onRemoveRemoteStream = [this](const Client& client)
-    {
-        invokeIfCallable(m_onRemoveRemoteStream, client);
-    };
+    auto onAddRemoteStream = [this](const Client& client) { invokeIfCallable(m_onAddRemoteStream, client); };
+    auto onRemoveRemoteStream = [this](const Client& client) { invokeIfCallable(m_onRemoveRemoteStream, client); };
 
     return make_unique<StreamPeerConnectionHandler>(
-            id,
-            peerClient,
-            isCaller,
-            m_hasOnMixedAudioFrameReceivedCallback,
-            getSendEventFunction(),
-            getOnErrorFunction(),
-            getOnClientConnectedFunction(),
-            getOnClientDisconnectedFunction(),
-            videoTrack,
-            audioTrack,
-            onAddRemoteStream,
-            onRemoveRemoteStream,
-            m_onVideoFrameReceived,
-            m_onEncodedVideoFrameReceived,
-            m_onAudioFrameReceived);
+        id,
+        peerClient,
+        isCaller,
+        m_hasOnMixedAudioFrameReceivedCallback,
+        getSendEventFunction(),
+        getOnErrorFunction(),
+        getOnClientConnectedFunction(),
+        getOnClientDisconnectedFunction(),
+        videoTrack,
+        audioTrack,
+        onAddRemoteStream,
+        onRemoveRemoteStream,
+        m_onVideoFrameReceived,
+        m_onEncodedVideoFrameReceived,
+        m_onAudioFrameReceived);
 }

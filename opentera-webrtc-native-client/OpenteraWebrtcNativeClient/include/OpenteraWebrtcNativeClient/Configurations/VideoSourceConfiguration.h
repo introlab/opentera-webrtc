@@ -43,19 +43,13 @@ namespace opentera
      * @brief Indicates if this source needs denoising.
      * @return true if this source needs denoising
      */
-    inline bool VideoSourceConfiguration::needsDenoising() const
-    {
-        return m_needsDenoising;
-    }
+    inline bool VideoSourceConfiguration::needsDenoising() const { return m_needsDenoising; }
 
     /**
      * @brief Indicates if this source is screencast.
      * @return true if this source is a screencast
      */
-    inline bool VideoSourceConfiguration::isScreencast() const
-    {
-        return m_isScreencast;
-    }
+    inline bool VideoSourceConfiguration::isScreencast() const { return m_isScreencast; }
 }
 
 #endif

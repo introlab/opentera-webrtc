@@ -13,9 +13,7 @@ using namespace std;
  *
  * @param url The ice server url
  */
-IceServer::IceServer(string url) : m_urls({move(url)})
-{
-}
+IceServer::IceServer(string url) : m_urls({move(url)}) {}
 
 /**
  * @brief Creates an ice server configuration with the specified values.
@@ -24,8 +22,10 @@ IceServer::IceServer(string url) : m_urls({move(url)})
  * @param username The ice server username
  * @param credential The ice server credential
  */
-IceServer::IceServer(string url, string username, string credential) :
-        m_urls({move(url)}), m_username(move(username)), m_credential(move(credential))
+IceServer::IceServer(string url, string username, string credential)
+    : m_urls({move(url)}),
+      m_username(move(username)),
+      m_credential(move(credential))
 {
 }
 
@@ -34,9 +34,7 @@ IceServer::IceServer(string url, string username, string credential) :
  *
  * @param urls The ice server urls
  */
-IceServer::IceServer(vector<string> urls) : m_urls(move(urls))
-{
-}
+IceServer::IceServer(vector<string> urls) : m_urls(move(urls)) {}
 
 /**
  * @brief Creates an ice server configuration with the specified values.
@@ -45,8 +43,10 @@ IceServer::IceServer(vector<string> urls) : m_urls(move(urls))
  * @param username The ice server username
  * @param credential The ice server credential
  */
-IceServer::IceServer(vector<string> urls, string username, string credential) :
-        m_urls(move(urls)), m_username(move(username)), m_credential(move(credential))
+IceServer::IceServer(vector<string> urls, string username, string credential)
+    : m_urls(move(urls)),
+      m_username(move(username)),
+      m_credential(move(credential))
 {
 }
 
@@ -59,8 +59,11 @@ IceServer::IceServer(vector<string> urls, string username, string credential) :
  * @param verifyCertificate Indicates to verify the certificate or not
  * @return true if success
  */
-bool IceServer::fetchFromServer(const string& url, const string& password, vector<IceServer>& iceServers,
-        bool verifyCertificate)
+bool IceServer::fetchFromServer(
+    const string& url,
+    const string& password,
+    vector<IceServer>& iceServers,
+    bool verifyCertificate)
 {
     string response;
     if (!Http::get(url, response, {{"Authorization", password.c_str()}}, verifyCertificate))
@@ -133,7 +136,7 @@ bool IceServer::fromJson(const string& json, vector<IceServer>& iceServers)
     Document jsonDocument;
     jsonDocument.Parse(json.data());
 
-    if(!jsonDocument.IsArray())
+    if (!jsonDocument.IsArray())
     {
         return false;
     }

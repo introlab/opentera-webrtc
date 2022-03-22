@@ -31,10 +31,9 @@ namespace opentera
         virtual void OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) = 0;
     };
 
-
     class PeerConnectionHandler : public webrtc::PeerConnectionObserver,
-            public CreateSessionDescriptionObserverHelper,
-            public SetSessionDescriptionObserverHelper
+                                  public CreateSessionDescriptionObserverHelper,
+                                  public SetSessionDescriptionObserverHelper
     {
     protected:
         std::string m_id;
@@ -53,15 +52,16 @@ namespace opentera
         bool m_offerToReceiveAudio;
 
     public:
-        PeerConnectionHandler(std::string&& id,
-                Client&& peerClient,
-                bool isCaller,
-                bool offerToReceiveVideo,
-                bool offerToReceiveAudio,
-                std::function<void(const std::string&, const sio::message::ptr&)>&& sendEvent,
-                std::function<void(const std::string&)>&& onError,
-                std::function<void(const Client&)>&& onClientConnected,
-                std::function<void(const Client&)>&& onClientDisconnected);
+        PeerConnectionHandler(
+            std::string&& id,
+            Client&& peerClient,
+            bool isCaller,
+            bool offerToReceiveVideo,
+            bool offerToReceiveAudio,
+            std::function<void(const std::string&, const sio::message::ptr&)>&& sendEvent,
+            std::function<void(const std::string&)>&& onError,
+            std::function<void(const Client&)>&& onClientConnected,
+            std::function<void(const Client&)>&& onClientDisconnected);
         ~PeerConnectionHandler() override;
 
         virtual void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection);
@@ -92,6 +92,6 @@ namespace opentera
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
     };
-}
+}  // namespace opentera
 
 #endif

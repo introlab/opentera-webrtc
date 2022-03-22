@@ -59,7 +59,7 @@ bool opentera::operator==(const sio::message& m1, const sio::message& m2)
             for (const auto& m1Pair : m1.get_map())
             {
                 if (m2.get_map().find(m1Pair.first) == m2.get_map().end() ||
-                        *m1Pair.second != *m2.get_map().at(m1Pair.first))
+                    *m1Pair.second != *m2.get_map().at(m1Pair.first))
                 {
                     return false;
                 }
@@ -81,8 +81,7 @@ bool opentera::operator!=(const sio::message& m1, const sio::message& m2)
  * @param name The client name
  * @param data The client data
  */
-Client::Client(string id, string name, sio::message::ptr data) :
-        m_id(move(id)), m_name(move(name)), m_data(move(data))
+Client::Client(string id, string name, sio::message::ptr data) : m_id(move(id)), m_name(move(name)), m_data(move(data))
 {
 }
 
@@ -100,7 +99,7 @@ Client::Client(const sio::message::ptr& message)
     }
 }
 
-bool Client::isValid(const sio::message::ptr &message)
+bool Client::isValid(const sio::message::ptr& message)
 {
     if (message->get_flag() != sio::message::flag_object)
     {
@@ -126,8 +125,11 @@ bool Client::isValid(const sio::message::ptr &message)
  * @param data The client data
  * @param isConnected Indicates if the client is connected (RTCPeerConnection)
  */
-RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isConnected) :
-        m_id(move(id)), m_name(move(name)), m_data(move(data)), m_isConnected(isConnected)
+RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isConnected)
+    : m_id(move(id)),
+      m_name(move(name)),
+      m_data(move(data)),
+      m_isConnected(isConnected)
 {
 }
 
@@ -137,7 +139,10 @@ RoomClient::RoomClient(string id, string name, sio::message::ptr data, bool isCo
  * @param client The client
  * @param isConnected Indicates if the client is connected (RTCPeerConnection)
  */
-RoomClient::RoomClient(const Client& client, bool isConnected) :
-        m_id(client.id()), m_name(client.name()), m_data(client.data()), m_isConnected(isConnected)
+RoomClient::RoomClient(const Client& client, bool isConnected)
+    : m_id(client.id()),
+      m_name(client.name()),
+      m_data(client.data()),
+      m_isConnected(isConnected)
 {
 }

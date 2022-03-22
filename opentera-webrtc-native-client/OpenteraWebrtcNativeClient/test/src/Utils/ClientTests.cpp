@@ -51,18 +51,16 @@ TEST(ClientTests, isValid_shouldReturnTrueOnlyIfTheMessageIsValid)
 
 TEST(ClientTests, equalityOperator_Client_shouldReturnFalseIfOperandsAreNotEqual)
 {
-    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) ==
-        Client("c2", "n1", sio::string_message::create("d")));
-    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) ==
-        Client("c1", "n2", sio::string_message::create("d")));
-    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) ==
-        Client("c1", "n1", sio::string_message::create("e")));
-    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) ==
-        Client("c1", "n1", sio::int_message::create(10)));
-    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) ==
-        Client("c1", "n1", nullptr));
-    EXPECT_FALSE(Client("c1", "n1", nullptr) ==
-        Client("c1", "n1", sio::int_message::create(10)));
+    EXPECT_FALSE(
+        Client("c1", "n1", sio::string_message::create("d")) == Client("c2", "n1", sio::string_message::create("d")));
+    EXPECT_FALSE(
+        Client("c1", "n1", sio::string_message::create("d")) == Client("c1", "n2", sio::string_message::create("d")));
+    EXPECT_FALSE(
+        Client("c1", "n1", sio::string_message::create("d")) == Client("c1", "n1", sio::string_message::create("e")));
+    EXPECT_FALSE(
+        Client("c1", "n1", sio::string_message::create("d")) == Client("c1", "n1", sio::int_message::create(10)));
+    EXPECT_FALSE(Client("c1", "n1", sio::string_message::create("d")) == Client("c1", "n1", nullptr));
+    EXPECT_FALSE(Client("c1", "n1", nullptr) == Client("c1", "n1", sio::int_message::create(10)));
 
     auto array1 = sio::array_message::create();
     array1->get_vector().emplace_back(sio::string_message::create("a"));
@@ -81,18 +79,16 @@ TEST(ClientTests, equalityOperator_Client_shouldReturnFalseIfOperandsAreNotEqual
 
 TEST(ClientTests, equalityOperator_Client_shouldReturnTrueIfOperandsAreEqual)
 {
-    EXPECT_TRUE(Client("c", "n", sio::int_message::create(10)) ==
-        Client("c", "n", sio::int_message::create(10)));
-    EXPECT_TRUE(Client("c", "n", sio::double_message::create(0.0)) ==
-        Client("c", "n", sio::double_message::create(0.0)));
-    EXPECT_TRUE(Client("c", "n", sio::binary_message::create(nullptr)) ==
+    EXPECT_TRUE(Client("c", "n", sio::int_message::create(10)) == Client("c", "n", sio::int_message::create(10)));
+    EXPECT_TRUE(
+        Client("c", "n", sio::double_message::create(0.0)) == Client("c", "n", sio::double_message::create(0.0)));
+    EXPECT_TRUE(
+        Client("c", "n", sio::binary_message::create(nullptr)) ==
         Client("c", "n", sio::binary_message::create(nullptr)));
-    EXPECT_TRUE(Client("c", "n", sio::bool_message::create(false)) ==
-        Client("c", "n", sio::bool_message::create(false)));
-    EXPECT_TRUE(Client("c", "n", sio::null_message::create()) ==
-        Client("c", "n", sio::null_message::create()));
-    EXPECT_TRUE(Client("c", "n", nullptr) ==
-        Client("c", "n", nullptr));
+    EXPECT_TRUE(
+        Client("c", "n", sio::bool_message::create(false)) == Client("c", "n", sio::bool_message::create(false)));
+    EXPECT_TRUE(Client("c", "n", sio::null_message::create()) == Client("c", "n", sio::null_message::create()));
+    EXPECT_TRUE(Client("c", "n", nullptr) == Client("c", "n", nullptr));
 
     auto array1 = sio::array_message::create();
     array1->get_vector().emplace_back(sio::string_message::create("a"));
@@ -128,18 +124,22 @@ TEST(ClientTests, constructor_RoomClient_shouldSetTheAttributes)
 
 TEST(ClientTests, equalityOperator_RoomClient_shouldReturnFalseIfOperandsAreNotEqual)
 {
-    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
         RoomClient("c2", "n1", sio::string_message::create("d"), true));
-    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), false) ==
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", sio::string_message::create("d"), false) ==
         RoomClient("c1", "n2", sio::string_message::create("d"), false));
-    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), false) ==
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", sio::string_message::create("d"), false) ==
         RoomClient("c1", "n1", sio::string_message::create("e"), false));
-    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
         RoomClient("c1", "n1", sio::string_message::create("d"), false));
-    EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) ==
-        RoomClient("c1", "n1", nullptr, false));
-    EXPECT_FALSE(RoomClient("c1", "n1", nullptr, true) ==
-        RoomClient("c1", "n1", sio::string_message::create("d"), false));
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", sio::string_message::create("d"), true) == RoomClient("c1", "n1", nullptr, false));
+    EXPECT_FALSE(
+        RoomClient("c1", "n1", nullptr, true) == RoomClient("c1", "n1", sio::string_message::create("d"), false));
 
     EXPECT_FALSE(RoomClient("c1", "n1", sio::string_message::create("d"), true) == RoomClient());
     EXPECT_FALSE(RoomClient() == RoomClient("c1", "n1", sio::string_message::create("d"), true));
@@ -147,7 +147,8 @@ TEST(ClientTests, equalityOperator_RoomClient_shouldReturnFalseIfOperandsAreNotE
 
 TEST(ClientTests, equalityOperator_RoomClient_shouldReturnTrueIfOperandsAreEqual)
 {
-    EXPECT_TRUE(RoomClient("c", "n", sio::int_message::create(10), false) ==
+    EXPECT_TRUE(
+        RoomClient("c", "n", sio::int_message::create(10), false) ==
         RoomClient("c", "n", sio::int_message::create(10), false));
     EXPECT_TRUE(RoomClient("c", "n", nullptr, false) == RoomClient("c", "n", nullptr, false));
     EXPECT_TRUE(RoomClient() == RoomClient());

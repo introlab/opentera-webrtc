@@ -10,8 +10,8 @@
 #include <OpenteraWebrtcNativeClientPython/Sources/AudioSourcePython.h>
 #include <OpenteraWebrtcNativeClientPython/Sources/VideoSourcePython.h>
 
-#include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
 
 using namespace opentera;

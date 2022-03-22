@@ -7,11 +7,10 @@ using namespace opentera;
 
 /**
  * @brief Construct an AudioStream object
- * @param onAudioDataReceived callback function to consume audio data received on the WebRTC transport layer
+ * @param onAudioDataReceived callback function to consume audio data received
+ * on the WebRTC transport layer
  */
-AudioSink::AudioSink(AudioSinkCallback onAudioDataReceived) : m_onAudioFrameReceived(move(onAudioDataReceived))
-{
-}
+AudioSink::AudioSink(AudioSinkCallback onAudioDataReceived) : m_onAudioFrameReceived(move(onAudioDataReceived)) {}
 
 /**
  * @brief Called by the WebRTC transport layer when audio data is available
@@ -23,11 +22,11 @@ AudioSink::AudioSink(AudioSinkCallback onAudioDataReceived) : m_onAudioFrameRece
  * @param numberOfFrames number of audio frame in the received data
  */
 void AudioSink::OnData(
-        const void* audioData,
-        int bitsPerSample,
-        int sampleRate,
-        size_t numberOfChannels,
-        size_t numberOfFrames)
+    const void* audioData,
+    int bitsPerSample,
+    int sampleRate,
+    size_t numberOfChannels,
+    size_t numberOfFrames)
 {
     if (m_onAudioFrameReceived)
     {
