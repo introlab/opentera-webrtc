@@ -72,7 +72,16 @@ set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
-	file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+	if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
+		if(WIN32)
+			message(FATAL_ERROR "CMake version 3.18.0 or higher is required to extract archives.")
+		endif()
+		execute_process(
+			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+	else()
+		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+	endif()
 endif()
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
