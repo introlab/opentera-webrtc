@@ -3,7 +3,6 @@
 
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 #include <OpenteraWebrtcNativeClient/Sinks/VideoSink.h>
-#include <OpenteraWebrtcNativeClient/Sinks/EncodedVideoSink.h>
 #include <OpenteraWebrtcNativeClient/Sinks/AudioSink.h>
 
 #include <set>
@@ -11,15 +10,6 @@
 namespace opentera
 {
     using VideoFrameReceivedCallback = std::function<void(const Client&, const cv::Mat&, uint64_t)>;
-    using EncodedVideoFrameReceivedCallback = std::function<void(
-        const Client& client,
-        const uint8_t* data,
-        size_t dataSize,
-        VideoCodecType codecType,
-        bool isKeyFrame,
-        uint32_t width,
-        uint32_t height,
-        uint64_t timestampUs)>;
     using AudioFrameReceivedCallback = std::function<void(
         const Client& client,
         const void* audioData,
@@ -37,7 +27,6 @@ namespace opentera
         std::function<void(const Client&)> m_onRemoveRemoteStream;
 
         std::unique_ptr<VideoSink> m_videoSink;
-        std::unique_ptr<EncodedVideoSink> m_encodedVideoSink;
         std::unique_ptr<AudioSink> m_audioSink;
 
         std::set<rtc::scoped_refptr<webrtc::MediaStreamInterface>> m_streams;
@@ -57,7 +46,6 @@ namespace opentera
             std::function<void(const Client&)> onAddRemoteStream,
             std::function<void(const Client&)> onRemoveRemoteStream,
             const VideoFrameReceivedCallback& onVideoFrameReceived,
-            const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
             const AudioFrameReceivedCallback& onAudioFrameReceived);
 
         ~StreamPeerConnectionHandler() override;

@@ -81,34 +81,6 @@ py::buffer_info
     return bufferInfo;
 }
 
-void setOnEncodedVideoFrameReceived(
-    StreamClient& self,
-    const function<void(
-        const Client& client,
-        const py::bytes& data,
-        VideoCodecType codecType,
-        bool isKeyFrame,
-        uint32_t width,
-        uint32_t height,
-        uint64_t timestampUs)>& pythonCallback)
-{
-    auto callback = [=](const Client& client,
-                        const uint8_t* data,
-                        size_t dataSize,
-                        VideoCodecType codecType,
-                        bool isKeyFrame,
-                        uint32_t width,
-                        uint32_t height,
-                        uint64_t timestampUs)
-    {
-        py::gil_scoped_acquire acquire;
-        py::bytes dataBytes(reinterpret_cast<const char*>(data), dataSize);
-        pythonCallback(client, dataBytes, codecType, isKeyFrame, width, height, timestampUs);
-    };
-
-    self.setOnEncodedVideoFrameReceived(callback);
-}
-
 void setOnAudioFrameReceived(
     StreamClient& self,
     const function<void(const Client&, const py::array&, int, size_t, size_t)>& pythonCallback)
@@ -145,14 +117,6 @@ void setOnMixedAudioFrameReceived(
 
 void opentera::initStreamClientPython(pybind11::module& m)
 {
-    py::enum_<VideoCodecType>(m, "VideoCodecType")
-        .value("GENERIC", VideoCodecType::Generic)
-        .value("VP8", VideoCodecType::VP8)
-        .value("VP9", VideoCodecType::VP9)
-        .value("AV1", VideoCodecType::AV1)
-        .value("H264", VideoCodecType::H264)
-        .value("MULTIPLEX", VideoCodecType::Multiplex);
-
     py::class_<StreamClient, SignalingClient>(
         m,
         "StreamClient",
@@ -282,26 +246,6 @@ void opentera::initStreamClientPython(pybind11::module& m)
             "Callback parameters:\n"
             " - client: The client of the stream frame\n"
             " - bgr_img: The BGR frame image (numpy.array[uint8])\n"
-            " - timestamp_us The timestamp in microseconds\n"
-            "\n"
-            ":param callback: The callback")
-        .def_property(
-            "on_encoded_video_frame_received",
-            nullptr,
-            GilScopedRelease<StreamClient>::guard(&setOnEncodedVideoFrameReceived),
-            "Sets the callback that is called when an encoded video "
-            "stream frame is received.\n"
-            "\n"
-            "The callback is called from a WebRTC processing thread. "
-            "The callback should not block.\n"
-            "\n"
-            "Callback parameters:\n"
-            " - client: The client of the stream frame\n"
-            " - data: The binary data (bytes)\n"
-            " - codec_type: The codec type\n"
-            " - is_key_frame: Indicates if it is a key frame\n"
-            " - width: The frame width if it is a key frame\n"
-            " - height: The frame height if it is a key frame\n"
             " - timestamp_us The timestamp in microseconds\n"
             "\n"
             ":param callback: The callback")

@@ -1,6 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_DATA_CHANNEL_CONFIGURATION_H
 
+#include <absl/types/optional.h>
 #include <api/data_channel_interface.h>
 
 #include <string>

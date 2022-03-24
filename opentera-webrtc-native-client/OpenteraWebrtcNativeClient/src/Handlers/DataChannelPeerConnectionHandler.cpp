@@ -104,10 +104,6 @@ void DataChannelPeerConnectionHandler::OnStateChange()
                 m_onDataChannelClosedCalled = false;
                 break;
             case webrtc::DataChannelInterface::kClosed:
-                if (!m_dataChannel->error().ok())
-                {
-                    m_onDataChannelError(m_peerClient, m_dataChannel->error().message());
-                }
                 m_onDataChannelClosed(m_peerClient);
                 m_onDataChannelClosedCalled = true;
                 break;

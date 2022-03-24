@@ -23,7 +23,6 @@ namespace opentera
         std::function<void(const Client&)> m_onAddRemoteStream;
         std::function<void(const Client&)> m_onRemoveRemoteStream;
         VideoFrameReceivedCallback m_onVideoFrameReceived;
-        EncodedVideoFrameReceivedCallback m_onEncodedVideoFrameReceived;
         AudioFrameReceivedCallback m_onAudioFrameReceived;
 
         bool m_isLocalAudioMuted;
@@ -64,7 +63,6 @@ namespace opentera
         void setOnAddRemoteStream(const std::function<void(const Client&)>& callback);
         void setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback);
         void setOnVideoFrameReceived(const VideoFrameReceivedCallback& callback);
-        void setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback& callback);
         void setOnAudioFrameReceived(const AudioFrameReceivedCallback& callback);
         void setOnMixedAudioFrameReceived(const AudioSinkCallback& callback);
 
@@ -169,32 +167,6 @@ namespace opentera
         FunctionTask<void>::callSync(
             getInternalClientThread(),
             [this, &callback]() { m_onVideoFrameReceived = callback; });
-    }
-
-    /**
-     * @brief Sets the callback that is called when an encoded video stream frame is received.
-     *
-     * The callback is called from a WebRTC processing thread. The callback should not block.
-     *
-     * @parblock
-     * Callback parameters:
-     * - client: The client of the stream frame
-     * - data: The binary data
-     * - dataSize: The data size
-     * - codecType: The codec type
-     * - isKeyFrame: Indicates if it is a key frame
-     * - width: The frame width if it is a key frame
-     * - height: The frame height if it is a key frame
-     * - timestampUs The timestamp in microseconds
-     * @endparblock
-     *
-     * @param callback The callback
-     */
-    inline void StreamClient::setOnEncodedVideoFrameReceived(const EncodedVideoFrameReceivedCallback& callback)
-    {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onEncodedVideoFrameReceived = callback; });
     }
 
     /**

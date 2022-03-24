@@ -11,8 +11,7 @@ AudioSourceConfiguration::AudioSourceConfiguration(
     absl::optional<bool> highpassFilter,
     absl::optional<bool> stereoSwapping,
     absl::optional<bool> typingDetection,
-    absl::optional<bool> residualEchoDetector,
-    absl::optional<bool> transientSuppression)
+    absl::optional<bool> residualEchoDetector)
     : m_soundCardTotalDelayMs(soundCardTotalDelayMs),
       m_echoCancellation(echoCancellation),
       m_autoGainControl(autoGainControl),
@@ -20,8 +19,7 @@ AudioSourceConfiguration::AudioSourceConfiguration(
       m_highpassFilter(highpassFilter),
       m_stereoSwapping(stereoSwapping),
       m_typingDetection(typingDetection),
-      m_residualEchoDetector(residualEchoDetector),
-      m_transientSuppression(transientSuppression)
+      m_residualEchoDetector(residualEchoDetector)
 {
 }
 
@@ -69,10 +67,6 @@ AudioSourceConfiguration::operator webrtc::AudioProcessing::Config() const
     if (m_residualEchoDetector.has_value())
     {
         config.residual_echo_detector.enabled = m_residualEchoDetector.value();
-    }
-    if (m_transientSuppression.has_value())
-    {
-        config.transient_suppression.enabled = m_transientSuppression.value();
     }
 
     return config;

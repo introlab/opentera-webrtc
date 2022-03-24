@@ -82,7 +82,7 @@ TEST(AudioSourceTests, constructor_shouldOnlySupportValidBitsPerSample)
 
 TEST(AudioSourceTests, configuration_shouldTheSpecifiedValues)
 {
-    auto configuration = AudioSourceConfiguration::create(0, true, true, true, true, true, true, true, true);
+    auto configuration = AudioSourceConfiguration::create(0, true, true, true, true, true, true, true);
     AudioSource testee(configuration, 16, 48000, 1);
     EXPECT_EQ(testee.configuration().soundCardTotalDelayMs(), 0);
     EXPECT_EQ(testee.configuration().echoCancellation(), true);
@@ -92,7 +92,6 @@ TEST(AudioSourceTests, configuration_shouldTheSpecifiedValues)
     EXPECT_EQ(testee.configuration().stereoSwapping(), true);
     EXPECT_EQ(testee.configuration().typingDetection(), true);
     EXPECT_EQ(testee.configuration().residualEchoDetector(), true);
-    EXPECT_EQ(testee.configuration().transientSuppression(), true);
 }
 
 TEST(AudioSourceTests, remote_shouldReturnFalse)
@@ -109,7 +108,7 @@ TEST(AudioSourceTests, state_shouldReturnLive)
 
 TEST(AudioSourceTests, options_shouldTheSpecifiedValues)
 {
-    auto configuration = AudioSourceConfiguration::create(0, true, true, true, true, true, true, true, true);
+    auto configuration = AudioSourceConfiguration::create(0, true, true, true, true, true, true, true);
     AudioSource testee(configuration, 16, 48000, 1);
     auto options = testee.options();
     EXPECT_EQ(options.echo_cancellation, true);

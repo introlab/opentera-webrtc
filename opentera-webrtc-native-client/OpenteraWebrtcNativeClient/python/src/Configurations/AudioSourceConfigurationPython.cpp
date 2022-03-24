@@ -32,7 +32,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                 absl::optional<bool>,
                 absl::optional<bool>,
                 absl::optional<bool>,
-                absl::optional<bool>,
                 absl::optional<bool>>(&AudioSourceConfiguration::create),
             "Creates an audio source configuration with the specified values.\n"
             "\n"
@@ -46,8 +45,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             ":param typing_detection: Enable or disable the typing detection\n"
             ":param residual_echo_detector: Enable or disable the residual echo "
             "detector\n"
-            ":param transient_suppression: Enable or disable the transient "
-            "suppression\n"
             ":return: An audio source configuration with the specified values",
             py::arg("sound_card_total_delay_ms"),
             py::arg("echo_cancellation"),
@@ -56,8 +53,7 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             py::arg("highpass_filter"),
             py::arg("stereo_swapping"),
             py::arg("typing_detection"),
-            py::arg("residual_echo_detector"),
-            py::arg("transient_suppression"))
+            py::arg("residual_echo_detector"))
 
         .def_property_readonly(
             "sound_card_total_delay_ms",
@@ -98,10 +94,5 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             "residual_echo_detector",
             &AudioSourceConfiguration::residualEchoDetector,
             "Indicates if the residual echo detector is enabled.\n"
-            ":return: True if the residual echo detector is enabled")
-        .def_property_readonly(
-            "transient_suppression",
-            &AudioSourceConfiguration::transientSuppression,
-            "Indicates if the transient suppression is enabled.\n"
-            ":return: True if the transient suppression is enabled");
+            ":return: True if the residual echo detector is enabled");
 }

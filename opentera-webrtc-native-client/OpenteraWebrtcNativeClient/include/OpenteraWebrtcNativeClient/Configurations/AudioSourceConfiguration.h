@@ -19,7 +19,6 @@ namespace opentera
         absl::optional<bool> m_stereoSwapping;
         absl::optional<bool> m_typingDetection;
         absl::optional<bool> m_residualEchoDetector;
-        absl::optional<bool> m_transientSuppression;
 
         AudioSourceConfiguration(
             uint32_t soundCardTotalDelayMs,
@@ -29,8 +28,7 @@ namespace opentera
             absl::optional<bool> highpassFilter,
             absl::optional<bool> stereoSwapping,
             absl::optional<bool> typingDetection,
-            absl::optional<bool> residualEchoDetector,
-            absl::optional<bool> transientSuppression);
+            absl::optional<bool> residualEchoDetector);
 
     public:
         AudioSourceConfiguration(const AudioSourceConfiguration& other) = default;
@@ -46,8 +44,7 @@ namespace opentera
             absl::optional<bool> highpassFilter,
             absl::optional<bool> stereoSwapping,
             absl::optional<bool> typingDetection,
-            absl::optional<bool> residualEchoDetector,
-            absl::optional<bool> transientSuppression);
+            absl::optional<bool> residualEchoDetector);
 
         uint32_t soundCardTotalDelayMs() const;
         absl::optional<bool> echoCancellation() const;
@@ -57,7 +54,6 @@ namespace opentera
         absl::optional<bool> stereoSwapping() const;
         absl::optional<bool> typingDetection() const;
         absl::optional<bool> residualEchoDetector() const;
-        absl::optional<bool> transientSuppression() const;
 
         explicit operator cricket::AudioOptions() const;
         explicit operator webrtc::AudioProcessing::Config() const;
@@ -75,7 +71,6 @@ namespace opentera
     {
         return AudioSourceConfiguration(
             soundCardTotalDelayMs,
-            absl::nullopt,
             absl::nullopt,
             absl::nullopt,
             absl::nullopt,
@@ -107,8 +102,7 @@ namespace opentera
         absl::optional<bool> highpassFilter,
         absl::optional<bool> stereoSwapping,
         absl::optional<bool> typingDetection,
-        absl::optional<bool> residualEchoDetector,
-        absl::optional<bool> transientSuppression)
+        absl::optional<bool> residualEchoDetector)
     {
         return AudioSourceConfiguration(
             soundCardTotalDelayMs,
@@ -118,8 +112,7 @@ namespace opentera
             highpassFilter,
             stereoSwapping,
             typingDetection,
-            residualEchoDetector,
-            transientSuppression);
+            residualEchoDetector);
     }
 
     /**
@@ -171,15 +164,6 @@ namespace opentera
     inline absl::optional<bool> AudioSourceConfiguration::residualEchoDetector() const
     {
         return m_residualEchoDetector;
-    }
-
-    /**
-     * @brief Indicates if the transient suppression is enabled.
-     * @return true if the transient suppression is enabled
-     */
-    inline absl::optional<bool> AudioSourceConfiguration::transientSuppression() const
-    {
-        return m_transientSuppression;
     }
 }
 

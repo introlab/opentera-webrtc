@@ -69,7 +69,7 @@ class SinAudioSource : public AudioSource
 public:
     explicit SinAudioSource(uint16_t amplitude)
         : AudioSource(
-              AudioSourceConfiguration::create(0, false, false, false, false, false, false, false, false),
+              AudioSourceConfiguration::create(0, false, false, false, false, false, false, false),
               BitsPerSample,
               SampleRate,
               NumberOfChannels),
@@ -237,8 +237,6 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     // Setup the callback
     CallbackAwaiter onVideoFrameAwaiter1(1, 15s);
     CallbackAwaiter onVideoFrameAwaiter2(1, 15s);
-    CallbackAwaiter onEncodedVideoFrameAwaiter1(1, 15s);
-    CallbackAwaiter onEncodedVideoFrameAwaiter2(1, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient1;
     unique_ptr<Client> onAddRemoteStreamClient2;
@@ -254,12 +252,6 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
             receivedBgrImage1 = bgrImg.clone();
             onVideoFrameAwaiter1.done();
         });
-    client1->setOnEncodedVideoFrameReceived(
-        [&](const Client& client, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        {
-            EXPECT_EQ(client.name(), "c2");
-            onEncodedVideoFrameAwaiter1.done();
-        });
     client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
     client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
@@ -272,21 +264,13 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
             receivedBgrImage2 = bgrImg.clone();
             onVideoFrameAwaiter2.done();
         });
-    client2->setOnEncodedVideoFrameReceived(
-        [&](const Client& client, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        {
-            EXPECT_EQ(client.name(), "c1");
-            onEncodedVideoFrameAwaiter2.done();
-        });
     client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
     client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     // Setup the call
     client1->callAll();
     onVideoFrameAwaiter1.wait(__FILE__, __LINE__);
-    onEncodedVideoFrameAwaiter1.wait(__FILE__, __LINE__);
     onVideoFrameAwaiter2.wait(__FILE__, __LINE__);
-    onEncodedVideoFrameAwaiter2.wait(__FILE__, __LINE__);
     client1->hangUpAll();
 
     client1->closeSync();
@@ -432,32 +416,24 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
 
     // Setup the callback
     CallbackAwaiter onVideoFrameAwaiter(1, 15s);
-    CallbackAwaiter onEncodedVideoFrameAwaiter(1, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient;
 
     client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client1->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client1->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
     client1->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
     client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([&](const Client&, const cv::Mat&, uint64_t) { onVideoFrameAwaiter.done(); });
-    client2->setOnEncodedVideoFrameReceived(
-        [&](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { onEncodedVideoFrameAwaiter.done(); });
     client2->setOnAudioFrameReceived([](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
     client2->setOnMixedAudioFrameReceived([](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     // Setup the call
     client1->callAll();
     onVideoFrameAwaiter.wait(__FILE__, __LINE__);
-    onEncodedVideoFrameAwaiter.wait(__FILE__, __LINE__);
     client1->hangUpAll();
 
     client1->closeSync();
@@ -549,9 +525,6 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     client1->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient1 = make_unique<Client>(c); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client1->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived(
         [&](const Client& client,
             const void* audioData,
@@ -586,9 +559,6 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
     client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client2->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client2->setOnAudioFrameReceived(
         [&](const Client& client,
             const void* audioData,
@@ -696,9 +666,6 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
     client1->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient1 = make_unique<Client>(c); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client1->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived(
         [&](const Client& client,
             const void* audioData,
@@ -733,9 +700,6 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient2 = make_unique<Client>(c); });
     client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client2->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client2->setOnAudioFrameReceived(
         [&](const Client& client,
             const void* audioData,
@@ -831,18 +795,12 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
     client1->setOnAddRemoteStream([&](const Client&) { ADD_FAILURE(); });
     client1->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client1->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client1->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client1->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
     client1->setOnMixedAudioFrameReceived([&](const void*, int, int, size_t, size_t) { ADD_FAILURE(); });
 
     client2->setOnAddRemoteStream([&](const Client& c) { onAddRemoteStreamClient = make_unique<Client>(c); });
     client2->setOnRemoveRemoteStream([](const Client&) { ADD_FAILURE(); });
     client2->setOnVideoFrameReceived([](const Client&, const cv::Mat&, uint64_t) { ADD_FAILURE(); });
-    client2->setOnEncodedVideoFrameReceived(
-        [](const Client&, const uint8_t*, size_t, VideoCodecType, bool, uint32_t, uint32_t, uint64_t)
-        { ADD_FAILURE(); });
     client2->setOnAudioFrameReceived([&](const Client&, const void*, int, int, size_t, size_t)
                                      { onAudioFrameAwaiter.done(); });
     client2->setOnMixedAudioFrameReceived([&](const void*, int, int, size_t, size_t)

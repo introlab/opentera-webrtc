@@ -77,6 +77,9 @@ namespace opentera
 
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;
 
+        void OnRenegotiationNeeded() override {};
+        void OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) override {};
+
         void OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
         void OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
 

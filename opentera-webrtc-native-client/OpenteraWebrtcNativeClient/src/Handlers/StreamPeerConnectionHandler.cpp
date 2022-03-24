@@ -24,13 +24,12 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     function<void(const Client&)> onAddRemoteStream,
     function<void(const Client&)> onRemoveRemoteStream,
     const VideoFrameReceivedCallback& onVideoFrameReceived,
-    const EncodedVideoFrameReceivedCallback& onEncodedVideoFrameReceived,
     const AudioFrameReceivedCallback& onAudioFrameReceived)
     : PeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          onVideoFrameReceived || onEncodedVideoFrameReceived,
+          static_cast<bool>(onVideoFrameReceived),
           hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived,
           move(sendEvent),
           move(onError),
@@ -45,28 +44,6 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     {
         m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs)
                                              { onVideoFrameReceived(m_peerClient, bgrImg, timestampUs); });
-    }
-
-    if (onEncodedVideoFrameReceived)
-    {
-        m_encodedVideoSink = make_unique<EncodedVideoSink>(
-            [=](const uint8_t* data,
-                size_t dataSize,
-                VideoCodecType codecType,
-                bool isKeyFrame,
-                uint32_t width,
-                uint32_t height,
-                uint64_t timestampUs) {
-                onEncodedVideoFrameReceived(
-                    m_peerClient,
-                    data,
-                    dataSize,
-                    codecType,
-                    isKeyFrame,
-                    width,
-                    height,
-                    timestampUs);
-            });
     }
 
     if (onAudioFrameReceived)
@@ -96,10 +73,6 @@ StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
         if (!videoTracks.empty() && m_videoSink != nullptr)
         {
             videoTracks.front()->RemoveSink(m_videoSink.get());
-        }
-        if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
-        {
-            videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
         }
 
         AudioTrackVector audioTracks = stream->GetAudioTracks();
@@ -144,10 +117,6 @@ void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface
     {
         videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSink->wants());
     }
-    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
-    {
-        videoTracks.front()->GetSource()->AddEncodedSink(m_encodedVideoSink.get());
-    }
 
     AudioTrackVector audioTracks = stream->GetAudioTracks();
     if (!audioTracks.empty() && m_audioSink != nullptr)
@@ -165,10 +134,6 @@ void StreamPeerConnectionHandler::OnRemoveStream(scoped_refptr<MediaStreamInterf
     if (!videoTracks.empty() && m_videoSink != nullptr)
     {
         videoTracks.front()->RemoveSink(m_videoSink.get());
-    }
-    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
-    {
-        videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
     }
 
     AudioTrackVector audioTracks = stream->GetAudioTracks();

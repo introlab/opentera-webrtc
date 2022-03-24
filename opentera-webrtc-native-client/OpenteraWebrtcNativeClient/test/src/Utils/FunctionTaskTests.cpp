@@ -101,7 +101,7 @@ TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldNotLock)
     EXPECT_TRUE(flag);
 }
 
-TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndNotWait)
+TEST_F(FunctionTaskTests, callASync_void_shouldCallTheFunctionAndNotWait)
 {
     constexpr chrono::milliseconds SleepDuration = 100ms;
 
@@ -121,7 +121,7 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndNotWait)
     awaiter.wait(__FILE__, __LINE__);
 }
 
-TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldCallTheFunction)
+TEST_F(FunctionTaskTests, callASync_voidRecursive_shouldCallTheFunction)
 {
     constexpr chrono::milliseconds SleepDuration = 100ms;
 

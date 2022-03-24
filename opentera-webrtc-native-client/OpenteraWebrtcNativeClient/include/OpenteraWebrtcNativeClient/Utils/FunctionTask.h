@@ -1,7 +1,6 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_QUEUED_TASK_UTILS_H
 
-#include <api/task_queue/queued_task.h>
 #include <rtc_base/event.h>
 #include <rtc_base/thread.h>
 
@@ -10,23 +9,10 @@
 namespace opentera
 {
     template<class T>
-    class FunctionTask : public webrtc::QueuedTask
+    class FunctionTask
     {
-        std::function<T()> m_function;
-        rtc::Event m_event;
-        T m_returnedValue;
-
     public:
-        FunctionTask(const std::function<T()>& function) : m_function(function) {}
-
-        ~FunctionTask() override = default;
-
-        bool Run() override
-        {
-            m_returnedValue = std::move(m_function());
-            m_event.Set();
-            return false;
-        }
+        FunctionTask() = delete;
 
         static T callSync(rtc::Thread* thread, const std::function<T()>& function)
         {
@@ -36,10 +22,15 @@ namespace opentera
             }
             else
             {
-                FunctionTask task(function);
-                thread->PostTask(std::unique_ptr<QueuedTask>(&task));
-                task.m_event.Wait(rtc::Event::kForever);
-                return std::move(task.m_returnedValue);
+                rtc::Event event;
+                T returnedValue;
+                thread->PostTask(RTC_FROM_HERE, [&]()
+                                 {
+                                     returnedValue = std::move(function());
+                                     event.Set();
+                                 });
+                event.Wait(rtc::Event::kForever);
+                return std::move(returnedValue);
             }
         }
     };
@@ -47,23 +38,8 @@ namespace opentera
     template<>
     class FunctionTask<void> : public webrtc::QueuedTask
     {
-        std::function<void()> m_function;
-        bool m_isAsync;
-        rtc::Event m_event;
-
     public:
-        FunctionTask(const std::function<void()>& function, bool isAsync) : m_function(function), m_isAsync(isAsync) {}
-
-        ~FunctionTask() override = default;
-
-        bool Run() override
-        {
-            m_function();
-            // Copy flag so it does not read the flag on a deleted object.
-            bool isAsync = m_isAsync;
-            m_event.Set();
-            return isAsync;
-        }
+        FunctionTask() = delete;
 
         static void callSync(rtc::Thread* thread, const std::function<void()>& function)
         {
@@ -73,15 +49,19 @@ namespace opentera
             }
             else
             {
-                FunctionTask task(function, false);
-                thread->PostTask(std::unique_ptr<QueuedTask>(&task));
-                task.m_event.Wait(rtc::Event::kForever);
+                rtc::Event event;
+                thread->PostTask(RTC_FROM_HERE, [&]()
+                                 {
+                                     function();
+                                     event.Set();
+                                 });
+                event.Wait(rtc::Event::kForever);
             }
         }
 
         static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            thread->PostTask(std::make_unique<FunctionTask>(function, true));
+            thread->PostTask(RTC_FROM_HERE, [=]() {function();});
         }
     };
 }
