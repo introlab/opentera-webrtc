@@ -109,16 +109,25 @@ if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
 			COMMAND tar xvf ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native.tbz2
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native)
 	endif()
+
+	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers/absl)
+		file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include/absl DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers/)
+		file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include/openssl DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers/)
+		file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include/libyuv DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers/)
+		file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include/libyuv.h DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers/)
+	endif()
 endif()
 
 set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+	set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
 	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
+	set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
 else()
+	set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+	set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 endif()
-
-set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 
 if(WIN32)
 	set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/boringssl.lib CACHE INTERNAL "")
