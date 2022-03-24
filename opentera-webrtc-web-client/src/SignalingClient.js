@@ -48,7 +48,7 @@ class SignalingClient {
 
     this._offerOptions = {};
   }
-  
+
   async connect() {
     this._logger('SignalingClient.connect method call');
 
@@ -79,7 +79,7 @@ class SignalingClient {
         reject(error);
       });
     });
-    
+
     let data = {
       name: this._signalingServerConfiguration.name,
       data: this._signalingServerConfiguration.data,

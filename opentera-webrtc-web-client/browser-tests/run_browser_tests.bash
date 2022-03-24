@@ -13,9 +13,9 @@ cd $SCRIPT_PATH/../../signaling-server
 python3 opentera-signaling-server --port 8080 --password abc --ice_servers $SCRIPT_PATH/iceServers.json --static_folder $SCRIPT_PATH &
 SERVER_PID=$!
 trap "kill ${SERVER_PID}; exit 1" INT
+sleep 2
 
 URL="http://localhost:8080/tests.html"
-
 
 if which xdg-open > /dev/null
 then
