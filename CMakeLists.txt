@@ -57,7 +57,7 @@ set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
 )
 
 if (UNIX AND EXISTS /etc/nv_tegra_release)
-    message(STATUS "Use NVIDIA hardware acceleration in the WebRTC Native")
+    message(STATUS "Use NVIDIA hardware acceleration in WebRTC Native on Jetson platforms")
     set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON ON)
 else()
     set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON OFF)
