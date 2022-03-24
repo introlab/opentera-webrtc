@@ -93,6 +93,17 @@ namespace opentera
     protected:
         virtual void createAnswer();
     };
+
+    inline void setTransceiverDirection(
+        const rtc::scoped_refptr<webrtc::RtpTransceiverInterface>& transceiver,
+        webrtc::RtpTransceiverDirection direction)
+    {
+#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+        transceiver->SetDirection(direction);
+#else
+        transceiver->SetDirectionWithError(direction);
+#endif
+    }
 }
 
 #endif

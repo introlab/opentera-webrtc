@@ -24,11 +24,13 @@ namespace opentera
             {
                 rtc::Event event;
                 T returnedValue;
-                thread->PostTask(RTC_FROM_HERE, [&]()
-                                 {
-                                     returnedValue = std::move(function());
-                                     event.Set();
-                                 });
+                thread->PostTask(
+                    RTC_FROM_HERE,
+                    [&]()
+                    {
+                        returnedValue = std::move(function());
+                        event.Set();
+                    });
                 event.Wait(rtc::Event::kForever);
                 return std::move(returnedValue);
             }
@@ -50,18 +52,20 @@ namespace opentera
             else
             {
                 rtc::Event event;
-                thread->PostTask(RTC_FROM_HERE, [&]()
-                                 {
-                                     function();
-                                     event.Set();
-                                 });
+                thread->PostTask(
+                    RTC_FROM_HERE,
+                    [&]()
+                    {
+                        function();
+                        event.Set();
+                    });
                 event.Wait(rtc::Event::kForever);
             }
         }
 
         static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
         {
-            thread->PostTask(RTC_FROM_HERE, [=]() {function();});
+            thread->PostTask(RTC_FROM_HERE, [=]() { function(); });
         }
     };
 }

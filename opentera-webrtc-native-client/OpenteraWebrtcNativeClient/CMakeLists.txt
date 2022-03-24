@@ -30,7 +30,7 @@ endif ()
 
 if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
     add_compile_definitions(OPENTERA_WEBRTC_NATIVE_CLIENT_FORCE_H264 OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON)
-endif()
+endif ()
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${webrtc_native_INCLUDE})

@@ -178,15 +178,6 @@ void StreamPeerConnectionHandler::addTransceiver(
     }
 }
 
-void setTransceiverDirection(const rtc::scoped_refptr<RtpTransceiverInterface>& transceiver, RtpTransceiverDirection direction)
-{
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    transceiver->SetDirection(direction);
-#else
-    transceiver->SetDirectionWithError(direction);
-#endif
-}
-
 void StreamPeerConnectionHandler::updateTransceiver(
     cricket::MediaType type,
     rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track,
@@ -243,7 +234,6 @@ RtpCodecCapability
 void StreamPeerConnectionHandler::setVideoCodecPreferences()
 {
 #ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_FORCE_H264
-
     vector<RtpCodecCapability> capabilities = {
         createRtpCodecCapability(
             cricket::MEDIA_TYPE_VIDEO,
