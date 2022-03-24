@@ -92,6 +92,7 @@ if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
 	if (NOT UNIX OR NOT ${architecture} MATCHES "arm64" OR APPLE)
 		message(FATAL_ERROR "OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON is only supported on Jetson platforms")
 	endif()
+
 	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native.tbz2)
 		set(jetson_webrtc_native_build_archive_url "https://developer.nvidia.com/embedded/dlc/r32-3-1_Release_v1.0/t186ref_release_aarch64/WebRTC_R32.3.1_aarch64.tbz2")
 		message(STATUS "Downloading : ${jetson_webrtc_native_build_archive_url}")
