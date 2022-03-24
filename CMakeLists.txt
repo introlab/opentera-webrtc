@@ -38,12 +38,12 @@ option(
     OFF
     )
 
-# Default behavior is to use
-option(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON
-    "If ON, use the WebRTC provided by NVIDIA for Jetson platforms"
-    OFF
-)
+if (UNIX AND EXISTS /etc/nv_tegra_release)
+    message(STATUS "Use NVIDIA hardware acceleration in the WebRTC Native")
+    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON ON CACHE STRING "")
+else()
+    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON OFF CACHE STRING "")
+endif()
 
 # Default behavior is to install to --user in both cases
 set(
