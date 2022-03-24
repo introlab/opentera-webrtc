@@ -17,7 +17,7 @@ class AudioSourceConfigurationTestCase(unittest.TestCase):
         self.assertEqual(testee.residual_echo_detector, None)
 
     def test_create__echo_cancellation_auto_gain_control__should_set_the_attributes(self):
-        testee = webrtc.AudioSourceConfiguration.create(10, True, False, None, None, None, None, None, None)
+        testee = webrtc.AudioSourceConfiguration.create(10, True, False, None, None, None, None, None)
 
         self.assertEqual(testee.sound_card_total_delay_ms, 10)
         self.assertEqual(testee.echo_cancellation, True)
@@ -29,7 +29,7 @@ class AudioSourceConfigurationTestCase(unittest.TestCase):
         self.assertEqual(testee.residual_echo_detector, None)
 
     def test_create__noise_suppression_highpass_filter__should_set_the_attributes(self):
-        testee = webrtc.AudioSourceConfiguration.create(10, None, None, True, False, None, None, None, None)
+        testee = webrtc.AudioSourceConfiguration.create(10, None, None, True, False, None, None, None)
 
         self.assertEqual(testee.sound_card_total_delay_ms, 10)
         self.assertEqual(testee.echo_cancellation, None)
@@ -41,7 +41,7 @@ class AudioSourceConfigurationTestCase(unittest.TestCase):
         self.assertEqual(testee.residual_echo_detector, None)
 
     def test_create__stereo_swapping_typing_detection__should_set_the_attributes(self):
-        testee = webrtc.AudioSourceConfiguration.create(10, None, None, None, None, True, False, None, None)
+        testee = webrtc.AudioSourceConfiguration.create(10, None, None, None, None, True, False, None)
 
         self.assertEqual(testee.sound_card_total_delay_ms, 10)
         self.assertEqual(testee.echo_cancellation, None)
@@ -53,7 +53,7 @@ class AudioSourceConfigurationTestCase(unittest.TestCase):
         self.assertEqual(testee.residual_echo_detector, None)
 
     def test_create__residual_echo_detector__should_set_the_attributes(self):
-        testee = webrtc.AudioSourceConfiguration.create(10, None, None, None, None, None, None, True, False)
+        testee = webrtc.AudioSourceConfiguration.create(10, None, None, None, None, None, None, True)
 
         self.assertEqual(testee.sound_card_total_delay_ms, 10)
         self.assertEqual(testee.echo_cancellation, None)
@@ -63,4 +63,3 @@ class AudioSourceConfigurationTestCase(unittest.TestCase):
         self.assertEqual(testee.stereo_swapping, None)
         self.assertEqual(testee.typing_detection, None)
         self.assertEqual(testee.residual_echo_detector, True)
-        self.assertEqual(testee.transient_suppression, False)
