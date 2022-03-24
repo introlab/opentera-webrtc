@@ -4,6 +4,10 @@ project(opentera_webrtc_native_client)
 
 set(LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
+if(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fno-lto")
+endif()
+
 include_directories(../../3rdParty/pybind11/include)
 include_directories(../include)
 include_directories(include)
