@@ -38,13 +38,6 @@ option(
     OFF
     )
 
-if (UNIX AND EXISTS /etc/nv_tegra_release)
-    message(STATUS "Use NVIDIA hardware acceleration in the WebRTC Native")
-    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON ON CACHE STRING "")
-else()
-    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON OFF CACHE STRING "")
-endif()
-
 # Default behavior is to install to --user in both cases
 set(
     OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
@@ -62,6 +55,13 @@ set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
     CACHE STRING
     "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
 )
+
+if (UNIX AND EXISTS /etc/nv_tegra_release)
+    message(STATUS "Use NVIDIA hardware acceleration in the WebRTC Native")
+    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON ON)
+else()
+    set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON OFF)
+endif()
 
 if (POLICY CMP0014)
     cmake_policy(SET CMP0014 NEW)
