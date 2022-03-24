@@ -3,9 +3,6 @@
 using namespace opentera;
 using namespace std;
 
-static constexpr bool OfferToReceiveVideo = false;
-static constexpr bool OfferToReceiveAudio = false;
-
 DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
     string id,
     Client peerClient,
@@ -25,8 +22,6 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          OfferToReceiveVideo,
-          OfferToReceiveAudio,
           move(sendEvent),
           move(onError),
           move(onClientConnected),

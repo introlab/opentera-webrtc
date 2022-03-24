@@ -38,6 +38,13 @@ option(
     OFF
     )
 
+# Default behavior is to use
+option(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON
+    "If ON, use the WebRTC provided by NVIDIA for Jetson platforms"
+    OFF
+)
+
 # Default behavior is to install to --user in both cases
 set(
     OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX

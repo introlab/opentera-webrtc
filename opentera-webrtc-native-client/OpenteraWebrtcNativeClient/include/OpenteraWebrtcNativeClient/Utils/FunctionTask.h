@@ -36,7 +36,7 @@ namespace opentera
     };
 
     template<>
-    class FunctionTask<void> : public webrtc::QueuedTask
+    class FunctionTask<void>
     {
     public:
         FunctionTask() = delete;

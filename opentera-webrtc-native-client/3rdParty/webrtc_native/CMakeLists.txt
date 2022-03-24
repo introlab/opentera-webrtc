@@ -88,8 +88,36 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS
 	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem} ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 endif()
 
+if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native.tbz2)
+		set(jetson_webrtc_native_build_archive_url "https://developer.nvidia.com/embedded/dlc/r32-3-1_Release_v1.0/t186ref_release_aarch64/WebRTC_R32.3.1_aarch64.tbz2")
+		message(STATUS "Downloading : ${jetson_webrtc_native_build_archive_url}")
+		file(DOWNLOAD
+			${jetson_webrtc_native_build_archive_url}
+			${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native.tbz2
+			TIMEOUT 60 #seconds
+			TLS_VERIFY ON
+			SHOW_PROGRESS)
+	endif()
+
+	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native)
+		execute_process(COMMAND mkdir ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native)
+	endif()
+
+	if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/libwebrtc.a)
+		execute_process(
+			COMMAND tar xvf ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native.tbz2
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native)
+	endif()
+endif()
+
 set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
-set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
+else()
+	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+endif()
+
 set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 
 if(WIN32)
@@ -103,6 +131,10 @@ else()
 	if(APPLE)
 		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a "-framework Foundation" "-framework AVFoundation" "-framework CoreAudio" "-framework AudioToolbox" "-framework CoreGraphics" CACHE INTERNAL "")
 	else()
-		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+		if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+			set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+		else()
+			set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+		endif()
 	endif()
 endif()
