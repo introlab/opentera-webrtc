@@ -27,9 +27,9 @@ namespace opentera
             rtc::Event event;
             thread->PostTask(
                 RTC_FROM_HERE,
-                [&]()
+                [&, function = std::forward<F>(function)]()
                 {
-                    std::forward<F>(function)();
+                    function();
                     event.Set();
                 });
             event.Wait(rtc::Event::kForever);
@@ -49,9 +49,9 @@ namespace opentera
             std::result_of_t<F()> returnedValue;
             thread->PostTask(
                 RTC_FROM_HERE,
-                [&]()
+                [&, function = std::forward<F>(function)]()
                 {
-                    returnedValue = std::move(std::forward<F>(function)());
+                    returnedValue = std::move(function());
                     event.Set();
                 });
             event.Wait(rtc::Event::kForever);
