@@ -5,6 +5,12 @@
 using namespace opentera;
 using namespace std;
 
+#if defined(OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON)
+#define NULLOPT -1
+#else
+#define NULLOPT absl::nullopt
+#endif
+
 TEST(DataChannelConfigurationTests, create_shouldSetTheAttributes)
 {
     DataChannelConfiguration testee = DataChannelConfiguration::create();
@@ -133,30 +139,17 @@ TEST(DataChannelConfigurationTests, operator_webrtcDataChannelInit_shouldSetTheA
     auto testee3 = static_cast<webrtc::DataChannelInit>(DataChannelConfiguration::createMaxRetransmits(false, 10, "a"));
 
     EXPECT_EQ(testee1.ordered, true);
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    EXPECT_EQ(testee1.maxRetransmitTime, -1);
-    EXPECT_EQ(testee1.maxRetransmits, -1);
-#else
-    EXPECT_EQ(testee1.maxRetransmitTime, absl::nullopt);
-    EXPECT_EQ(testee1.maxRetransmits, absl::nullopt);
-#endif
+    EXPECT_EQ(testee1.maxRetransmitTime, NULLOPT);
+    EXPECT_EQ(testee1.maxRetransmits, NULLOPT);
     EXPECT_EQ(testee1.protocol, "");
 
     EXPECT_EQ(testee2.ordered, false);
     EXPECT_EQ(testee2.maxRetransmitTime, 10);
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    EXPECT_EQ(testee2.maxRetransmits, -1);
-#else
-    EXPECT_EQ(testee2.maxRetransmits, absl::nullopt);
-#endif
+    EXPECT_EQ(testee2.maxRetransmits, NULLOPT);
     EXPECT_EQ(testee2.protocol, "a");
 
     EXPECT_EQ(testee3.ordered, false);
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    EXPECT_EQ(testee3.maxRetransmitTime, -1);
-#else
-    EXPECT_EQ(testee3.maxRetransmitTime, absl::nullopt);
-#endif
+    EXPECT_EQ(testee3.maxRetransmitTime, NULLOPT);
     EXPECT_EQ(testee3.maxRetransmits, 10);
     EXPECT_EQ(testee3.protocol, "a");
 }
