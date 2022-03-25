@@ -224,18 +224,6 @@ void StreamPeerConnectionHandler::updateTransceiver(
     setVideoCodecPreferences();
 }
 
-RtpCodecCapability
-    createRtpCodecCapability(cricket::MediaType kind, string name, int clockRate, map<string, string> parameters)
-{
-    RtpCodecCapability capability;
-    capability.kind = kind;
-    capability.name = move(name);
-    capability.clock_rate = clockRate;
-    capability.parameters.insert(parameters.begin(), parameters.end());
-
-    return capability;
-}
-
 void StreamPeerConnectionHandler::setVideoCodecPreferences()
 {
 #ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_FORCE_H264
