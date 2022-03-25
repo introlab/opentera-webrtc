@@ -176,6 +176,8 @@ void StreamPeerConnectionHandler::addTransceiver(
         init.direction = RtpTransceiverDirection::kRecvOnly;
         m_peerConnection->AddTransceiver(type, init);
     }
+
+    setVideoCodecPreferences();
 }
 
 void StreamPeerConnectionHandler::updateTransceiver(
