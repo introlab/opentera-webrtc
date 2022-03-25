@@ -169,6 +169,8 @@ unique_ptr<PeerConnectionHandler>
     auto onAddRemoteStream = [this](const Client& client) { invokeIfCallable(m_onAddRemoteStream, client); };
     auto onRemoveRemoteStream = [this](const Client& client) { invokeIfCallable(m_onRemoveRemoteStream, client); };
 
+    auto videoCapabilities = m_peerConnectionFactory->GetRtpSenderCapabilities(cricket::MEDIA_TYPE_VIDEO);
+
     return make_unique<StreamPeerConnectionHandler>(
         id,
         peerClient,
@@ -183,5 +185,6 @@ unique_ptr<PeerConnectionHandler>
         onAddRemoteStream,
         onRemoveRemoteStream,
         m_onVideoFrameReceived,
-        m_onAudioFrameReceived);
+        m_onAudioFrameReceived,
+        videoCapabilities);
 }

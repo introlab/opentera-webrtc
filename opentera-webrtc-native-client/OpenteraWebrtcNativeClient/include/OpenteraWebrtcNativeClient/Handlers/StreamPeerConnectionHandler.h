@@ -34,6 +34,8 @@ namespace opentera
 
         std::set<rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>> m_tracks;
 
+        webrtc::RtpCapabilities m_videoCapabilities;
+
     public:
         StreamPeerConnectionHandler(
             std::string id,
@@ -49,7 +51,8 @@ namespace opentera
             std::function<void(const Client&)> onAddRemoteStream,
             std::function<void(const Client&)> onRemoveRemoteStream,
             const VideoFrameReceivedCallback& onVideoFrameReceived,
-            const AudioFrameReceivedCallback& onAudioFrameReceived);
+            const AudioFrameReceivedCallback& onAudioFrameReceived,
+            const webrtc::RtpCapabilities& videoCapabilities);
 
         ~StreamPeerConnectionHandler() override;
 

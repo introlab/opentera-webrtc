@@ -1,5 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
+#include <algorithm>
 #include <utility>
 
 using namespace opentera;
@@ -24,7 +25,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     function<void(const Client&)> onAddRemoteStream,
     function<void(const Client&)> onRemoveRemoteStream,
     const VideoFrameReceivedCallback& onVideoFrameReceived,
-    const AudioFrameReceivedCallback& onAudioFrameReceived)
+    const AudioFrameReceivedCallback& onAudioFrameReceived,
+    const webrtc::RtpCapabilities& videoCapabilities)
     : PeerConnectionHandler(
           move(id),
           move(peerClient),
@@ -38,7 +40,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
       m_videoTrack(move(videoTrack)),
       m_audioTrack(move(audioTrack)),
       m_onAddRemoteStream(move(onAddRemoteStream)),
-      m_onRemoveRemoteStream(move(onRemoveRemoteStream))
+      m_onRemoveRemoteStream(move(onRemoveRemoteStream)),
+      m_videoCapabilities(videoCapabilities)
 {
     if (onVideoFrameReceived)
     {
@@ -236,28 +239,14 @@ RtpCodecCapability
 void StreamPeerConnectionHandler::setVideoCodecPreferences()
 {
 #ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_FORCE_H264
-    vector<RtpCodecCapability> capabilities = {
-        createRtpCodecCapability(
-            cricket::MEDIA_TYPE_VIDEO,
-            "H264",
-            90000,
-            {{"level-asymmetry-allowed", "1"}, {"packetization-mode", "1"}, {"profile-level-id", "42001f"}}),
-        createRtpCodecCapability(
-            cricket::MEDIA_TYPE_VIDEO,
-            "H264",
-            90000,
-            {{"level-asymmetry-allowed", "1"}, {"packetization-mode", "0"}, {"profile-level-id", "42001f"}}),
-        createRtpCodecCapability(
-            cricket::MEDIA_TYPE_VIDEO,
-            "H264",
-            90000,
-            {{"level-asymmetry-allowed", "1"}, {"packetization-mode", "1"}, {"profile-level-id", "42e01f"}}),
-        createRtpCodecCapability(
-            cricket::MEDIA_TYPE_VIDEO,
-            "H264",
-            90000,
-            {{"level-asymmetry-allowed", "1"}, {"packetization-mode", "0"}, {"profile-level-id", "42e01f"}})};
-    rtc::ArrayView<RtpCodecCapability> capabilitiesArrayView = MakeArrayView(capabilities.data(), capabilities.size());
+    vector<RtpCodecCapability> h264Capabilities;
+    copy_if(
+        m_videoCapabilities.codecs.begin(),
+        m_videoCapabilities.codecs.end(),
+        back_inserter(h264Capabilities),
+        [](RtpCodecCapability capability) { return capability.name == "H264"; });
+    rtc::ArrayView<RtpCodecCapability> capabilitiesArrayView =
+        MakeArrayView(h264Capabilities.data(), h264Capabilities.size());
 
     for (auto& transceiver : m_peerConnection->GetTransceivers())
     {
