@@ -16,7 +16,7 @@ namespace opentera
         std::enable_if_t<!std::is_same<void, std::result_of_t<F()>>::value, std::result_of_t<F()>>;
 
     template<class F>
-    enable_if_void_result_t<F> callSync(rtc::Thread* thread, const F& function)
+    enable_if_void_result_t<F> callSync(rtc::Thread* thread, F&& function)
     {
         if (thread->IsCurrent())
         {
@@ -29,7 +29,7 @@ namespace opentera
                 RTC_FROM_HERE,
                 [&]()
                 {
-                    function();
+                    std::forward<F>(function)();
                     event.Set();
                 });
             event.Wait(rtc::Event::kForever);
@@ -37,7 +37,7 @@ namespace opentera
     }
 
     template<class F>
-    enable_if_not_void_result_t<F> callSync(rtc::Thread* thread, const F& function)
+    enable_if_not_void_result_t<F> callSync(rtc::Thread* thread, F&& function)
     {
         if (thread->IsCurrent())
         {
@@ -51,7 +51,7 @@ namespace opentera
                 RTC_FROM_HERE,
                 [&]()
                 {
-                    returnedValue = std::move(function());
+                    returnedValue = std::move(std::forward<F>(function)());
                     event.Set();
                 });
             event.Wait(rtc::Event::kForever);
@@ -60,9 +60,9 @@ namespace opentera
     }
 
     template<class F>
-    inline void callAsync(rtc::Thread* thread, const F& function)
+    inline void callAsync(rtc::Thread* thread, F&& function)
     {
-        thread->PostTask(RTC_FROM_HERE, [=]() { function(); });
+        thread->PostTask(RTC_FROM_HERE, [function = std::forward<F>(function)]() { function(); });
     }
 }
 
