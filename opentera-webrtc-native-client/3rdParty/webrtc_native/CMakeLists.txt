@@ -118,7 +118,6 @@ if(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
 	endif()
 endif()
 
-set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 if(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
 	set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
 	set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/jetson_webrtc_native/webrtc_headers CACHE INTERNAL "")
