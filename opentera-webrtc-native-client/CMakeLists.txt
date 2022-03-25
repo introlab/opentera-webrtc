@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.14.0)
 
 
 if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
-    if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+    if (OPENTERA_WEBRTC_ENABLE_EXAMPLES)
         set(_OpenCV_extra_modules_examples "highgui" "imgcodecs")
-    else()
+    else ()
         set(_OpenCV_extra_modules_examples "")
-    endif()
+    endif ()
 
     find_package(OpenCV REQUIRED core imgproc ${_OpenCV_extra_modules_examples})
     message(STATUS "OpenCV library status:")
@@ -16,7 +16,7 @@ if (OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
     unset(_OpenCV_extra_modules_examples)
-endif()
+endif ()
 
 project(opentera-webrtc-native-client)
 
@@ -46,8 +46,8 @@ if (Python_FOUND)
     set(PythonLibsNew_FIND_REQUIRED 0 CACHE INTERNAL "")
     set(PYTHON_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-else()
+else ()
     message(FATAL_ERROR "Python3 is not found")
-endif()
+endif ()
 
 add_subdirectory(OpenteraWebrtcNativeClient)

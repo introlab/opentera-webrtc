@@ -46,18 +46,21 @@ add_definitions(-DCPPHTTPLIB_OPENSSL_SUPPORT)
 file(GLOB_RECURSE
         source_files
         src/*
-        include/*)
+        include/*
+)
 
 add_library(OpenteraWebrtcNativeClient
         STATIC
-        ${source_files})
+        ${source_files}
+)
 
 target_link_libraries(OpenteraWebrtcNativeClient
         sioclient
         ${webrtc_native_LIBRARY}
         ${boringssl_LIBRARY}
         ${libyuv_LIBRARY}
-        ${OpenCV_LIBRARIES})
+        ${OpenCV_LIBRARIES}
+)
 
 if (WIN32)
     target_link_libraries(OpenteraWebrtcNativeClient
@@ -67,7 +70,7 @@ if (WIN32)
             wmcodecdspuuid
             msdmo
             strmiids
-            )
+    )
 endif ()
 
 set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)

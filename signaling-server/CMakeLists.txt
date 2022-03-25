@@ -26,12 +26,12 @@ pip_configure_setup(setup.py.in)
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 
 set(SOURCE
-    opentera_webrtc/signaling_server/__init__.py
-    opentera_webrtc/signaling_server/room_manager.py
-    opentera_webrtc/signaling_server/signaling_server.py
+        opentera_webrtc/signaling_server/__init__.py
+        opentera_webrtc/signaling_server/room_manager.py
+        opentera_webrtc/signaling_server/signaling_server.py
 
-    opentera-signaling-server
-    README.md
+        opentera-signaling-server
+        README.md
 )
 # Same relative tree between CMAKE_CURRENT_SOURCE_DIR and PYTHON_PACKAGE_DIR for files in SOURCE will work as expected with this command
 pip_configure_package_file_hierarchy(${SOURCE})
@@ -43,26 +43,26 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.tx
 pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-build-requirements REQUIREMENTS_FILE ${BUILD_REQUIREMENTS_FILE})
 pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-run-requirements REQUIREMENTS_FILE ${RUN_REQUIREMENTS_FILE})
 pip_add_html_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-html
-    DEPENDS
-        ${PIP_CONFIGURE_OUTPUT_FILES}
-        ${${PYTHON_SUBPACKAGE_NAME}-run-requirements}
-    DOC_DEPENDS
-        ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
-        ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
-    ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
+        NAME ${PYTHON_SUBPACKAGE_NAME}-html
+        DEPENDS
+            ${PIP_CONFIGURE_OUTPUT_FILES}
+            ${${PYTHON_SUBPACKAGE_NAME}-run-requirements}
+        DOC_DEPENDS
+            ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
+            ${PIP_CONFIGURE_OUTPUT_DOC_FILES}
+        ENABLE_HTML_DOC ${ENABLE_HTML_DOC}
 )
 pip_add_dist_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-dist
-    DEPENDS
-        ${${PYTHON_SUBPACKAGE_NAME}-html}
-        ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
+        NAME ${PYTHON_SUBPACKAGE_NAME}-dist
+        DEPENDS
+            ${${PYTHON_SUBPACKAGE_NAME}-html}
+            ${${PYTHON_SUBPACKAGE_NAME}-build-requirements}
 )
 pip_add_install_target(
-    NAME ${PYTHON_SUBPACKAGE_NAME}-install
-    DEPENDS
-        ${${PYTHON_SUBPACKAGE_NAME}-dist}
-    INSTALL_ON_BUILD ${INSTALL_ON_BUILD}
-    PIP_DEVEL_PREFIX ${PIP_DEVEL_PREFIX}
-    PIP_INSTALL_PREFIX ${PIP_INSTALL_PREFIX}
+        NAME ${PYTHON_SUBPACKAGE_NAME}-install
+        DEPENDS
+            ${${PYTHON_SUBPACKAGE_NAME}-dist}
+        INSTALL_ON_BUILD ${INSTALL_ON_BUILD}
+        PIP_DEVEL_PREFIX ${PIP_DEVEL_PREFIX}
+        PIP_INSTALL_PREFIX ${PIP_INSTALL_PREFIX}
 )

@@ -7,7 +7,7 @@ list(GET VERSION_LIST 1 OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MINOR)
 list(GET VERSION_LIST 2 OPENTERA_WEBRTC_NATIVE_CLIENT_PATCH)
 
 set(OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MINOR}.${OPENTERA_WEBRTC_NATIVE_CLIENT_PATCH}
-CACHE INTERNAL "")
+        CACHE INTERNAL "")
 
 message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
@@ -33,35 +33,35 @@ option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
 
 # Default behavior is to install only on "install" target
 option(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
-    "If ON, install the native client python library on build instead of install"
-    OFF
-    )
+        OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
+        "If ON, install the native client python library on build instead of install"
+        OFF
+)
 
 # Default behavior is to install to --user in both cases
 set(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
-    ""
-    CACHE STRING
-    "Pip install '--prefix' when building. If empty, no prefix is used; if '--user', --user is used"
+        OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
+        ""
+        CACHE STRING
+        "Pip install '--prefix' when building. If empty, no prefix is used; if '--user', --user is used"
 )
 set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
-    ""
-    CACHE STRING
-    "Pip install '--prefix' when installing. If empty, no prefix is used; if '--user', --user is used"
+        ""
+        CACHE STRING
+        "Pip install '--prefix' when installing. If empty, no prefix is used; if '--user', --user is used"
 )
 set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
-    ""
-    CACHE STRING
-    "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
+        ""
+        CACHE STRING
+        "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
 )
 
 if (UNIX AND EXISTS /etc/nv_tegra_release)
     message(STATUS "Use NVIDIA hardware acceleration in WebRTC Native on Jetson platforms")
     set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON ON)
-else()
+else ()
     set(OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON OFF)
-endif()
+endif ()
 
 if (POLICY CMP0014)
     cmake_policy(SET CMP0014 NEW)
@@ -86,9 +86,9 @@ if (Python_FOUND)
     set(PythonLibsNew_FIND_REQUIRED 0 CACHE INTERNAL "")
     set(PYTHON3_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-else()
+else ()
     message(FATAL_ERROR "Python3 is not found")
-endif()
+endif ()
 
 if (WIN32)
     add_compile_definitions(WEBRTC_WIN NOMINMAX _WIN32_WINNT=0x0A00)
@@ -97,8 +97,8 @@ elseif (UNIX)
     add_compile_definitions(WEBRTC_POSIX)
     if (APPLE)
         add_compile_definitions(WEBRTC_MAC)
-    endif(APPLE)
-else()
+    endif (APPLE)
+else ()
     message(FATAL_ERROR "Unsupported operating system.")
 endif (WIN32)
 
@@ -118,7 +118,7 @@ endif (MSVC)
 add_subdirectory(opentera-webrtc-native-client)
 add_subdirectory(signaling-server)
 
-if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
+if (OPENTERA_WEBRTC_ENABLE_EXAMPLES)
     add_subdirectory(examples/cpp-data-channel-client)
     add_subdirectory(examples/cpp-stream-client)
-endif()
+endif ()
