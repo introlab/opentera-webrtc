@@ -9,7 +9,7 @@
 namespace opentera
 {
     template<class F>
-    using enable_if_void_result_t = std::enable_if_t<std::is_same<void, std::result_of_t<F()>>::value>;
+    using enable_if_void_result_t = std::enable_if_t<std::is_same<void, std::result_of_t<F()>>::value, void>;
 
     template<class F>
     using enable_if_not_void_result_t =
