@@ -185,6 +185,5 @@ unique_ptr<PeerConnectionHandler>
         onAddRemoteStream,
         onRemoveRemoteStream,
         m_onVideoFrameReceived,
-        m_onAudioFrameReceived,
-        videoCapabilities);
+        m_onAudioFrameReceived);
 }

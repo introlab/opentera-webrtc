@@ -25,8 +25,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     function<void(const Client&)> onAddRemoteStream,
     function<void(const Client&)> onRemoveRemoteStream,
     const VideoFrameReceivedCallback& onVideoFrameReceived,
-    const AudioFrameReceivedCallback& onAudioFrameReceived,
-    const webrtc::RtpCapabilities& videoCapabilities)
+    const AudioFrameReceivedCallback& onAudioFrameReceived)
     : PeerConnectionHandler(
           move(id),
           move(peerClient),
@@ -40,8 +39,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
       m_videoTrack(move(videoTrack)),
       m_audioTrack(move(audioTrack)),
       m_onAddRemoteStream(move(onAddRemoteStream)),
-      m_onRemoveRemoteStream(move(onRemoveRemoteStream)),
-      m_videoCapabilities(videoCapabilities)
+      m_onRemoveRemoteStream(move(onRemoveRemoteStream))
 {
     if (onVideoFrameReceived)
     {
@@ -94,7 +92,6 @@ void StreamPeerConnectionHandler::setPeerConnection(const scoped_refptr<PeerConn
     {
         addTransceiver(cricket::MEDIA_TYPE_VIDEO, m_videoTrack, m_offerToReceiveVideo);
         addTransceiver(cricket::MEDIA_TYPE_AUDIO, m_audioTrack, m_offerToReceiveAudio);
-        setVideoCodecPreferences();
     }
 }
 
@@ -179,8 +176,6 @@ void StreamPeerConnectionHandler::addTransceiver(
         init.direction = RtpTransceiverDirection::kRecvOnly;
         m_peerConnection->AddTransceiver(type, init);
     }
-
-    setVideoCodecPreferences();
 }
 
 void StreamPeerConnectionHandler::updateTransceiver(
@@ -220,32 +215,6 @@ void StreamPeerConnectionHandler::updateTransceiver(
         init.direction = RtpTransceiverDirection::kSendOnly;
         m_peerConnection->AddTransceiver(move(track), init);
     }
-
-    setVideoCodecPreferences();
-}
-
-void StreamPeerConnectionHandler::setVideoCodecPreferences()
-{
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_FORCE_H264
-    vector<RtpCodecCapability> h264Capabilities;
-    copy_if(
-        m_videoCapabilities.codecs.begin(),
-        m_videoCapabilities.codecs.end(),
-        back_inserter(h264Capabilities),
-        [](RtpCodecCapability capability) { return capability.name == "H264"; });
-    rtc::ArrayView<RtpCodecCapability> capabilitiesArrayView =
-        MakeArrayView(h264Capabilities.data(), h264Capabilities.size());
-
-    for (auto& transceiver : m_peerConnection->GetTransceivers())
-    {
-        if (transceiver->media_type() != cricket::MEDIA_TYPE_VIDEO)
-        {
-            continue;
-        }
-
-        transceiver->SetCodecPreferences(capabilitiesArrayView);
-    }
-#endif
 }
 
 void StreamPeerConnectionHandler::setAllTracksEnabled(const char* kind, bool enabled)

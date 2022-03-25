@@ -6,6 +6,10 @@
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
+#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+#include <modules/video_coding/codecs/nvidia/NvVideoEncoderFactory.h>
+#endif
+
 using namespace opentera;
 using namespace std;
 
@@ -58,6 +62,13 @@ SignalingClient::SignalingClient(
     m_audioDeviceModule =
         rtc::scoped_refptr<OpenteraAudioDeviceModule>(new rtc::RefCountedObject<OpenteraAudioDeviceModule>);
     m_audioProcessing = webrtc::AudioProcessingBuilder().Create();
+
+#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+    auto videoEncoderFactory = webrtc::CreateNvVideoEncoderFactory();
+#else
+    auto videoEncoderFactory = webrtc::CreateBuiltinVideoEncoderFactory();
+#endif
+
     m_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(
         m_networkThread.get(),
         m_workerThread.get(),
@@ -65,7 +76,7 @@ SignalingClient::SignalingClient(
         m_audioDeviceModule,
         webrtc::CreateBuiltinAudioEncoderFactory(),
         webrtc::CreateBuiltinAudioDecoderFactory(),
-        webrtc::CreateBuiltinVideoEncoderFactory(),
+        move(videoEncoderFactory),
         webrtc::CreateBuiltinVideoDecoderFactory(),
         nullptr,  // Audio mixer,
         m_audioProcessing);
