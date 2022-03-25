@@ -9,10 +9,14 @@
 namespace opentera
 {
     template<class F>
-    void callSync(
-        rtc::Thread* thread,
-        const F& function,
-        typename std::enable_if<std::is_same<void, typename std::result_of<F()>::type>::value>::type* = nullptr)
+    using enable_if_void_result_t = std::enable_if_t<std::is_same<void, std::result_of_t<F()>>::value>;
+
+    template<class F>
+    using enable_if_not_void_result_t =
+        std::enable_if_t<!std::is_same<void, std::result_of_t<F()>>::value, std::result_of_t<F()>>;
+
+    template<class F>
+    enable_if_void_result_t<F> callSync(rtc::Thread* thread, const F& function)
     {
         if (thread->IsCurrent())
         {
@@ -33,10 +37,7 @@ namespace opentera
     }
 
     template<class F>
-    typename std::result_of<F()>::type callSync(
-        rtc::Thread* thread,
-        const F& function,
-        typename std::enable_if<!std::is_same<void, typename std::result_of<F()>::type>::value>::type* = nullptr)
+    enable_if_not_void_result_t<F> callSync(rtc::Thread* thread, const F& function)
     {
         if (thread->IsCurrent())
         {
@@ -45,7 +46,7 @@ namespace opentera
         else
         {
             rtc::Event event;
-            typename std::result_of<F()>::type returnedValue;
+            std::result_of_t<F()> returnedValue;
             thread->PostTask(
                 RTC_FROM_HERE,
                 [&]()
