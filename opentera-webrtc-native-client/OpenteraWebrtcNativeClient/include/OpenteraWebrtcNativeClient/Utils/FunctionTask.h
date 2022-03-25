@@ -4,70 +4,65 @@
 #include <rtc_base/event.h>
 #include <rtc_base/thread.h>
 
-#include <functional>
+#include <type_traits>
 
 namespace opentera
 {
-    template<class T>
-    class FunctionTask
+    template<class F>
+    void callSync(
+        rtc::Thread* thread,
+        const F& function,
+        typename std::enable_if<std::is_same<void, typename std::result_of<F()>::type>::value>::type* = nullptr)
     {
-    public:
-        FunctionTask() = delete;
-
-        static T callSync(rtc::Thread* thread, const std::function<T()>& function)
+        if (thread->IsCurrent())
         {
-            if (thread->IsCurrent())
-            {
-                return function();
-            }
-            else
-            {
-                rtc::Event event;
-                T returnedValue;
-                thread->PostTask(
-                    RTC_FROM_HERE,
-                    [&]()
-                    {
-                        returnedValue = std::move(function());
-                        event.Set();
-                    });
-                event.Wait(rtc::Event::kForever);
-                return std::move(returnedValue);
-            }
+            return function();
         }
-    };
+        else
+        {
+            rtc::Event event;
+            thread->PostTask(
+                RTC_FROM_HERE,
+                [&]()
+                {
+                    function();
+                    event.Set();
+                });
+            event.Wait(rtc::Event::kForever);
+        }
+    }
 
-    template<>
-    class FunctionTask<void>
+    template<class F>
+    typename std::result_of<F()>::type callSync(
+        rtc::Thread* thread,
+        const F& function,
+        typename std::enable_if<!std::is_same<void, typename std::result_of<F()>::type>::value>::type* = nullptr)
     {
-    public:
-        FunctionTask() = delete;
-
-        static void callSync(rtc::Thread* thread, const std::function<void()>& function)
+        if (thread->IsCurrent())
         {
-            if (thread->IsCurrent())
-            {
-                function();
-            }
-            else
-            {
-                rtc::Event event;
-                thread->PostTask(
-                    RTC_FROM_HERE,
-                    [&]()
-                    {
-                        function();
-                        event.Set();
-                    });
-                event.Wait(rtc::Event::kForever);
-            }
+            return function();
         }
-
-        static void callAsync(rtc::Thread* thread, const std::function<void()>& function)
+        else
         {
-            thread->PostTask(RTC_FROM_HERE, [=]() { function(); });
+            rtc::Event event;
+            typename std::result_of<F()>::type returnedValue;
+            thread->PostTask(
+                RTC_FROM_HERE,
+                [&]()
+                {
+                    returnedValue = std::move(function());
+                    event.Set();
+                });
+            event.Wait(rtc::Event::kForever);
+            return returnedValue;
         }
-    };
+    }
+
+    template<class F>
+    inline void callAsync(rtc::Thread* thread, const F& function)
+    {
+        thread->PostTask(RTC_FROM_HERE, [=]() { function(); });
+    }
 }
 
 #endif

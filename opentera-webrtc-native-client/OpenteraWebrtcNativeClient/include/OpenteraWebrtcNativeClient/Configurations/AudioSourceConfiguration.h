@@ -91,7 +91,6 @@ namespace opentera
      * @param stereoSwapping Enable or disable the stereo swapping
      * @param typingDetection Enable or disable the typing detection
      * @param residualEchoDetector Enable or disable the residual echo detector
-     * @param transientSuppression Enable or disable the transient suppression
      * @return An audio source configuration with the specified values
      */
     inline AudioSourceConfiguration AudioSourceConfiguration::create(

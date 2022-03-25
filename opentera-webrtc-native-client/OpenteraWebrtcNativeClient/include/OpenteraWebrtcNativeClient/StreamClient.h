@@ -77,7 +77,7 @@ namespace opentera
      */
     inline bool StreamClient::isLocalAudioMuted()
     {
-        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]() { return m_isLocalAudioMuted; });
+        return callSync(getInternalClientThread(), [this]() { return m_isLocalAudioMuted; });
     }
 
 
@@ -97,7 +97,7 @@ namespace opentera
      */
     inline bool StreamClient::isLocalVideoMuted()
     {
-        return FunctionTask<bool>::callSync(getInternalClientThread(), [this]() { return m_isLocalVideoMuted; });
+        return callSync(getInternalClientThread(), [this]() { return m_isLocalVideoMuted; });
     }
 
     /**
@@ -124,9 +124,7 @@ namespace opentera
      */
     inline void StreamClient::setOnAddRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onAddRemoteStream = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onAddRemoteStream = callback; });
     }
 
     /**
@@ -143,9 +141,7 @@ namespace opentera
      */
     inline void StreamClient::setOnRemoveRemoteStream(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onRemoveRemoteStream = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onRemoveRemoteStream = callback; });
     }
 
     /**
@@ -164,9 +160,7 @@ namespace opentera
      */
     inline void StreamClient::setOnVideoFrameReceived(const VideoFrameReceivedCallback& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onVideoFrameReceived = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onVideoFrameReceived = callback; });
     }
 
     /**
@@ -188,9 +182,7 @@ namespace opentera
      */
     inline void StreamClient::setOnAudioFrameReceived(const AudioFrameReceivedCallback& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onAudioFrameReceived = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onAudioFrameReceived = callback; });
     }
 
     /**
@@ -212,7 +204,7 @@ namespace opentera
     inline void StreamClient::setOnMixedAudioFrameReceived(const AudioSinkCallback& callback)
     {
         bool hasOnMixedAudioFrameReceivedCallback(callback);
-        FunctionTask<void>::callSync(
+        callSync(
             getInternalClientThread(),
             [this, hasOnMixedAudioFrameReceivedCallback]()
             { m_hasOnMixedAudioFrameReceivedCallback = hasOnMixedAudioFrameReceivedCallback; });

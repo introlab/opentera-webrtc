@@ -28,7 +28,7 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
     constexpr chrono::milliseconds SleepDuration = 100ms;
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    int result = FunctionTask<int>::callSync(
+    int result = callSync(
         m_thread.get(),
         [this, SleepDuration]()
         {
@@ -45,11 +45,11 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
 
 TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
 {
-    int result = FunctionTask<int>::callSync(
+    int result = callSync(
         m_thread.get(),
         [this]()
         {
-            return FunctionTask<int>::callSync(
+            return callSync(
                 m_thread.get(),
                 [this]()
                 {
@@ -67,7 +67,7 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 
     bool flag = false;
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callSync(
+    callSync(
         m_thread.get(),
         [this, SleepDuration, &flag]()
         {
@@ -85,11 +85,11 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldNotLock)
 {
     bool flag = false;
-    FunctionTask<void>::callSync(
+    callSync(
         m_thread.get(),
         [this, &flag]()
         {
-            FunctionTask<void>::callSync(
+            callSync(
                 m_thread.get(),
                 [this, &flag]()
                 {
@@ -107,7 +107,7 @@ TEST_F(FunctionTaskTests, callASync_void_shouldCallTheFunctionAndNotWait)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_thread.get(),
         [this, SleepDuration, &awaiter]()
         {
@@ -127,11 +127,11 @@ TEST_F(FunctionTaskTests, callASync_voidRecursive_shouldCallTheFunction)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_thread.get(),
         [this, SleepDuration, &awaiter]()
         {
-            FunctionTask<void>::callAsync(
+            callAsync(
                 m_thread.get(),
                 [this, SleepDuration, &awaiter]()
                 {
