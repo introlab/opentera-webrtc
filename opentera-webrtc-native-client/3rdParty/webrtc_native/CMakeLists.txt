@@ -1,4 +1,9 @@
-set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
+
+if (OPENTERA_WEBRTC_NATIVE_CLIENT_USE_WEBRTC_FOR_JETSON)
+    set(webrtc_native_build_version "4005.8f22a2.1" CACHE INTERNAL "")
+else ()
+    set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
+endif ()
 
 if (WIN32)
     set(architecture "win64")
