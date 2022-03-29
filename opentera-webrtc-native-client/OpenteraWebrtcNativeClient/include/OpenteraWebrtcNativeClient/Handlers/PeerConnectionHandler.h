@@ -48,11 +48,16 @@ namespace opentera
 
         bool m_onClientDisconnectedCalled;
 
+        bool m_offerToReceiveVideo;
+        bool m_offerToReceiveAudio;
+
     public:
         PeerConnectionHandler(
             std::string&& id,
             Client&& peerClient,
             bool isCaller,
+            bool offerToReceiveVideo,
+            bool offerToReceiveAudio,
             std::function<void(const std::string&, const sio::message::ptr&)>&& sendEvent,
             std::function<void(const std::string&)>&& onError,
             std::function<void(const Client&)>&& onClientConnected,
@@ -72,11 +77,8 @@ namespace opentera
 
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;
 
-        void OnRenegotiationNeeded() override;
-        void OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) override;
-
-        void OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) override;
-        void OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) override;
+        void OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
+        void OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
 
         void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) override;
         void OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) override;
@@ -89,14 +91,7 @@ namespace opentera
 
         void AddRef() const override;
         rtc::RefCountReleaseStatus Release() const override;
-
-    protected:
-        virtual void createAnswer();
     };
-
-    void setTransceiverDirection(
-        const rtc::scoped_refptr<webrtc::RtpTransceiverInterface>& transceiver,
-        webrtc::RtpTransceiverDirection direction);
 }
 
 #endif

@@ -53,9 +53,6 @@ namespace opentera
 
         void OnStateChange() override;
         void OnMessage(const webrtc::DataBuffer& buffer) override;
-
-    protected:
-        void createAnswer() override;
     };
 }
 

@@ -22,7 +22,7 @@ void CreateSessionDescriptionObserverHelper::OnSuccess(webrtc::SessionDescriptio
 
 void CreateSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
 {
-    OnCreateSessionDescriptionObserverFailure(move(error));
+    OnCreateSessionDescriptionObserverFailure(error);
 }
 
 void SetSessionDescriptionObserverHelper::OnSuccess()
@@ -32,13 +32,15 @@ void SetSessionDescriptionObserverHelper::OnSuccess()
 
 void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
 {
-    OnSetSessionDescriptionObserverFailure(move(error));
+    OnSetSessionDescriptionObserverFailure(error);
 }
 
 PeerConnectionHandler::PeerConnectionHandler(
     string&& id,
     Client&& peerClient,
     bool isCaller,
+    bool offerToReceiveVideo,
+    bool offerToReceiveAudio,
     function<void(const string&, const sio::message::ptr&)>&& sendEvent,
     function<void(const string&)>&& onError,
     function<void(const Client&)>&& onClientConnected,
@@ -50,7 +52,9 @@ PeerConnectionHandler::PeerConnectionHandler(
       m_onError(move(onError)),
       m_onClientConnected(move(onClientConnected)),
       m_onClientDisconnected(move(onClientDisconnected)),
-      m_onClientDisconnectedCalled(true)
+      m_onClientDisconnectedCalled(true),
+      m_offerToReceiveVideo(offerToReceiveVideo),
+      m_offerToReceiveAudio(offerToReceiveAudio)
 {
 }
 
@@ -79,7 +83,11 @@ void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::P
 
 void PeerConnectionHandler::makePeerCall()
 {
-    m_peerConnection->CreateOffer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+    webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+    options.offer_to_receive_video = m_offerToReceiveVideo;
+    options.offer_to_receive_audio = m_offerToReceiveAudio;
+
+    m_peerConnection->CreateOffer(this, options);
 }
 
 void PeerConnectionHandler::receivePeerCall(const string& sdp)
@@ -165,13 +173,9 @@ void PeerConnectionHandler::OnIceCandidate(const webrtc::IceCandidateInterface* 
 
 void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) {}
 
-void PeerConnectionHandler::OnRenegotiationNeeded() {}
+void PeerConnectionHandler::OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
 
-void PeerConnectionHandler::OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) {}
-
-void PeerConnectionHandler::OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) {}
-
-void PeerConnectionHandler::OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) {}
+void PeerConnectionHandler::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
 
 void PeerConnectionHandler::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) {}
 
@@ -213,7 +217,11 @@ void PeerConnectionHandler::OnSetSessionDescriptionObserverSuccess()
 {
     if (!m_isCaller)
     {
-        createAnswer();
+        webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+        options.offer_to_receive_video = m_offerToReceiveVideo;
+        options.offer_to_receive_audio = m_offerToReceiveAudio;
+
+        m_peerConnection->CreateAnswer(this, options);
     }
 }
 
@@ -227,20 +235,4 @@ void PeerConnectionHandler::AddRef() const {}
 rtc::RefCountReleaseStatus PeerConnectionHandler::Release() const
 {
     return rtc::RefCountReleaseStatus::kOtherRefsRemained;
-}
-
-void PeerConnectionHandler::createAnswer()
-{
-    m_peerConnection->CreateAnswer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
-}
-
-void opentera::setTransceiverDirection(
-    const rtc::scoped_refptr<webrtc::RtpTransceiverInterface>& transceiver,
-    webrtc::RtpTransceiverDirection direction)
-{
-#ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    transceiver->SetDirection(direction);
-#else
-    transceiver->SetDirectionWithError(direction);
-#endif
 }

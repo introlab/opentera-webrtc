@@ -1,8 +1,10 @@
 #include <OpenteraWebrtcNativeClient/Handlers/DataChannelPeerConnectionHandler.h>
 
 using namespace opentera;
-using namespace webrtc;
 using namespace std;
+
+static constexpr bool OfferToReceiveVideo = false;
+static constexpr bool OfferToReceiveAudio = false;
 
 DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
     string id,
@@ -23,6 +25,8 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
+          OfferToReceiveVideo,
+          OfferToReceiveAudio,
           move(sendEvent),
           move(onError),
           move(onClientConnected),
@@ -119,19 +123,4 @@ void DataChannelPeerConnectionHandler::OnMessage(const webrtc::DataBuffer& buffe
     {
         m_onDataChannelMessageString(m_peerClient, string(buffer.data.data<char>(), buffer.size()));
     }
-}
-
-void DataChannelPeerConnectionHandler::createAnswer()
-{
-    for (auto& transceiver : m_peerConnection->GetTransceivers())
-    {
-        if (transceiver->media_type() != cricket::MEDIA_TYPE_AUDIO &&
-            transceiver->media_type() != cricket::MEDIA_TYPE_VIDEO)
-        {
-            continue;
-        }
-        setTransceiverDirection(transceiver, RtpTransceiverDirection::kInactive);
-    }
-
-    PeerConnectionHandler::createAnswer();
 }

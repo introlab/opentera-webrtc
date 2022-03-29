@@ -18,7 +18,5 @@ WebrtcConfiguration::operator webrtc::PeerConnectionInterface::RTCConfiguration(
         configuration.servers.push_back(static_cast<webrtc::PeerConnectionInterface::IceServer>(iceServer));
     }
 
-    configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
-
     return configuration;
 }
