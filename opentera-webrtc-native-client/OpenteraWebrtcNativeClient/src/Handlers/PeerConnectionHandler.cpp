@@ -22,7 +22,7 @@ void CreateSessionDescriptionObserverHelper::OnSuccess(webrtc::SessionDescriptio
 
 void CreateSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
 {
-    OnCreateSessionDescriptionObserverFailure(error);
+    OnCreateSessionDescriptionObserverFailure(move(error));
 }
 
 void SetSessionDescriptionObserverHelper::OnSuccess()
@@ -32,7 +32,7 @@ void SetSessionDescriptionObserverHelper::OnSuccess()
 
 void SetSessionDescriptionObserverHelper::OnFailure(webrtc::RTCError error)
 {
-    OnSetSessionDescriptionObserverFailure(error);
+    OnSetSessionDescriptionObserverFailure(move(error));
 }
 
 PeerConnectionHandler::PeerConnectionHandler(
