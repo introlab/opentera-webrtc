@@ -173,6 +173,10 @@ void PeerConnectionHandler::OnIceCandidate(const webrtc::IceCandidateInterface* 
 
 void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) {}
 
+void PeerConnectionHandler::OnRenegotiationNeeded() {}
+
+void PeerConnectionHandler::OnIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) {}
+
 void PeerConnectionHandler::OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
 
 void PeerConnectionHandler::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
