@@ -21,7 +21,6 @@ class StreamClient extends SignalingClient {
 
     this._streamConfiguration = streamConfiguration;
     this._rtcConfiguration = rtcConfiguration;
-    this._rtcConfiguration['sdpSemantics'] = 'unified-plan';
 
     this._rtcPeerConnections = {};
     this._remoteStreams = {};
