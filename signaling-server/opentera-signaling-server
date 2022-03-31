@@ -1,4 +1,4 @@
-#!python
+#! /usr/bin/env python3.8
 
 from opentera_webrtc.signaling_server.signaling_server import main
 

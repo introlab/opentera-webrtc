@@ -16,7 +16,7 @@ from aiohttp_index import IndexMiddleware
 import socketio
 import ssl
 
-from .room_manager import RoomManager
+from opentera_webrtc.signaling_server.room_manager import RoomManager
 
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1

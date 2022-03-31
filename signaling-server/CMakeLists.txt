@@ -15,6 +15,15 @@ set(PYTHON_SUBPACKAGE_NAME "signaling_server")
 set(PYTHON_PACKAGE_DIR ${CMAKE_CURRENT_BINARY_DIR}/opentera_webrtc_${PYTHON_SUBPACKAGE_NAME})
 set(PYTHON_PACKAGE_CONTENT_DIR ${PYTHON_PACKAGE_DIR}/opentera_webrtc/${PYTHON_SUBPACKAGE_NAME})
 
+# We need Python 3.8 for the signaling_server
+find_package(Python 3.8 COMPONENTS Interpreter Development REQUIRED)
+if (Python_FOUND)
+    set(PYTHON38_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
+else()
+    message(FATAL_ERROR "Python3.8 is not found")
+endif()
+
+set(PIP_PYTHON_EXECUTABLE PYTHON38_EXECUTABLE)
 include(../cmake/pip_utils.cmake)
 
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../LICENSE)
@@ -66,3 +75,5 @@ pip_add_install_target(
     PIP_DEVEL_PREFIX ${PIP_DEVEL_PREFIX}
     PIP_INSTALL_PREFIX ${PIP_INSTALL_PREFIX}
 )
+
+unset(PIP_PYTHON_EXECUTABLE)
