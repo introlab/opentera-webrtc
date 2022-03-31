@@ -13,49 +13,6 @@ message("opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT
 
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
-# Default behavior is not to use system OpenCV
-option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking" OFF)
-
-# If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
-# Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
-
-# Default behavior is to enable tests
-option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
-
-# Default behavior is to enable examples
-option(OPENTERA_WEBRTC_ENABLE_EXAMPLES "Build examples" ON)
-
-# Default behavior is to enable stub file
-option(OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB "Generate stub file" ON)
-
-# Default behavior is to enable HTML documentation
-option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
-
-# Default behavior is to install only on "install" target
-option(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
-    "If ON, install the native client python library on build instead of install"
-    OFF
-    )
-
-# Default behavior is to install to --user in both cases
-set(
-    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
-    ""
-    CACHE STRING
-    "Pip install '--prefix' when building. If empty, no prefix is used; if '--user', --user is used"
-)
-set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
-    ""
-    CACHE STRING
-    "Pip install '--prefix' when installing. If empty, no prefix is used; if '--user', --user is used"
-)
-set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
-    ""
-    CACHE STRING
-    "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
-)
-
 if (POLICY CMP0014)
     cmake_policy(SET CMP0014 NEW)
 endif (POLICY CMP0014)
@@ -79,9 +36,59 @@ if (Python_FOUND)
     set(PythonLibsNew_FIND_REQUIRED 0 CACHE INTERNAL "")
     set(PYTHON3_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-else()
+else ()
     message(FATAL_ERROR "Python3 is not found")
-endif()
+endif ()
+
+# Default behavior is not to use system OpenCV
+option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking" OFF)
+
+# If OpenCV is not found, you need to set manually the OpenCV_DIR variable with cmake -DOpenCV_DIR=<path>
+# Ex: -DOpenCV_DIR=/lib/x86_64-linux-gnu/cmake/opencv4/
+
+# Default behavior is to enable tests
+option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
+
+# Default behavior is to enable examples
+option(OPENTERA_WEBRTC_ENABLE_EXAMPLES "Build examples" ON)
+
+# Default behavior is to enable stub file
+option(OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB "Generate stub file" ON)
+
+# Default behavior is to enable HTML documentation
+option(OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC "Generate HTML documentation" ON)
+
+# Default behavior is to install only on "install" target
+option(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_INSTALL_ON_BUILD
+    "If ON, install the native client python library on build instead of install"
+    OFF
+)
+
+# Default behavior is to install to --user in both cases
+set(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_DEVEL_PREFIX
+    ""
+    CACHE STRING
+    "Pip install '--prefix' when building. If empty, no prefix is used; if '--user', --user is used"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX
+    ""
+    CACHE STRING
+    "Pip install '--prefix' when installing. If empty, no prefix is used; if '--user', --user is used"
+)
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH
+    ""
+    CACHE STRING
+    "If specified, allow to use a specific lib subpath folder (ex: 'lib/python3/dist-packages' instead of 'lib/python3.8/site-packages')"
+)
+
+# Python executable
+set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PYTHON_EXECUTABLE_SIGNALING_SERVER
+    "${PYTHON3_EXECUTABLE}"
+    CACHE STRING
+    "If specified, use this python executable instead of the one found by CMake for the signaling server python library. Requires at least 3.8"
+)
 
 if (WIN32)
     add_compile_definitions(WEBRTC_WIN NOMINMAX _WIN32_WINNT=0x0A00)

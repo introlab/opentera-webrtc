@@ -41,11 +41,11 @@ endfunction(assign_source_group)
 add_subdirectory(3rdParty)
 
 # Looked up again in case 3rdParty changed it
-find_package(Python 3.6 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
 if (Python_FOUND)
-    set(PYTHON36_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
+    set(PYTHON3_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
 else()
-    message(FATAL_ERROR "Python3.6 is not found")
+    message(FATAL_ERROR "Python3 is not found")
 endif()
 
 add_subdirectory(OpenteraWebrtcNativeClient)
