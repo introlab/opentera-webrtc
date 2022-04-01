@@ -2,7 +2,6 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_VIDEO_ENCODER_FORCE_H264_VIDEO_ENCODER_FACTORY_H
 
 #include <api/video_codecs/video_encoder_factory.h>
-#include <api/video_codecs/video_encoder.h>
 
 namespace opentera
 {
@@ -15,12 +14,14 @@ namespace opentera
         ~ForceH264VideoEncoderFactory() override;
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
-        std::vector<webrtc::SdpVideoFormat> GetImplementations() const override;
 
         CodecInfo QueryVideoEncoder(const webrtc::SdpVideoFormat& format) const override;
         std::unique_ptr<webrtc::VideoEncoder> CreateVideoEncoder(const webrtc::SdpVideoFormat& format) override;
 
+#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+        std::vector<webrtc::SdpVideoFormat> GetImplementations() const override;
         std::unique_ptr<EncoderSelectorInterface> GetEncoderSelector() const override;
+#endif
 
     private:
         static std::vector<webrtc::SdpVideoFormat> filterSdpFormats(const std::vector<webrtc::SdpVideoFormat>& formats);

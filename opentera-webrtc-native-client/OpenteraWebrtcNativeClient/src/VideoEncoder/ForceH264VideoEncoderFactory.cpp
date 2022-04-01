@@ -1,5 +1,8 @@
 #include <OpenteraWebrtcNativeClient/VideoEncoder/ForceH264VideoEncoderFactory.h>
 
+#include <api/video_codecs/video_encoder.h>
+#include <api/video_codecs/sdp_video_format.h>
+
 #include <algorithm>
 
 using namespace opentera;
@@ -17,11 +20,6 @@ vector<webrtc::SdpVideoFormat> ForceH264VideoEncoderFactory::GetSupportedFormats
     return filterSdpFormats(m_videoEncoderFactory->GetSupportedFormats());
 }
 
-vector<webrtc::SdpVideoFormat> ForceH264VideoEncoderFactory::GetImplementations() const
-{
-    return filterSdpFormats(m_videoEncoderFactory->GetImplementations());
-}
-
 ForceH264VideoEncoderFactory::CodecInfo
     ForceH264VideoEncoderFactory::QueryVideoEncoder(const webrtc::SdpVideoFormat& format) const
 {
@@ -33,11 +31,18 @@ unique_ptr<webrtc::VideoEncoder> ForceH264VideoEncoderFactory::CreateVideoEncode
     return m_videoEncoderFactory->CreateVideoEncoder(format);
 }
 
+#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+vector<webrtc::SdpVideoFormat> ForceH264VideoEncoderFactory::GetImplementations() const
+{
+    return filterSdpFormats(m_videoEncoderFactory->GetImplementations());
+}
+
 unique_ptr<ForceH264VideoEncoderFactory::EncoderSelectorInterface>
     ForceH264VideoEncoderFactory::GetEncoderSelector() const
 {
     return m_videoEncoderFactory->GetEncoderSelector();
 }
+#endif
 
 vector<webrtc::SdpVideoFormat>
     ForceH264VideoEncoderFactory::filterSdpFormats(const vector<webrtc::SdpVideoFormat>& formats)
