@@ -7,6 +7,7 @@
 #include <api/video_codecs/builtin_video_encoder_factory.h>
 
 #ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
+#include <OpenteraWebrtcNativeClient/VideoEncoder/ForceH264VideoEncoderFactory.h>
 #include <modules/video_coding/codecs/nvidia/NvVideoEncoderFactory.h>
 #endif
 
@@ -64,7 +65,7 @@ SignalingClient::SignalingClient(
     m_audioProcessing = webrtc::AudioProcessingBuilder().Create();
 
 #ifdef OPENTERA_WEBRTC_NATIVE_CLIENT_JETSON
-    auto videoEncoderFactory = webrtc::CreateNvVideoEncoderFactory();
+    auto videoEncoderFactory = createForceH264VideoEncoderFactory(webrtc::CreateNvVideoEncoderFactory());
 #else
     auto videoEncoderFactory = webrtc::CreateBuiltinVideoEncoderFactory();
 #endif
