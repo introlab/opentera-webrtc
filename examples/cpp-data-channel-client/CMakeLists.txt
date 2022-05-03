@@ -25,4 +25,4 @@ if (NOT WIN32)
     )
 endif()
 
-set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 14)
+set_property(TARGET CppDataChannelClient PROPERTY CXX_STANDARD 17)
