@@ -28,7 +28,7 @@ namespace opentera
         bool m_isPlaying;
         bool m_isRecording;
 
-        std::atomic_bool m_stopped;
+        std::atomic_bool m_playoutThreadStopped;
         std::unique_ptr<std::thread> m_thread;
         webrtc::AudioTransport* m_audioTransport;
         std::mutex m_audioTransportCaptureMutex;
@@ -149,8 +149,8 @@ namespace opentera
         int32_t EnableBuiltInNS(bool enable) override;
 
     private:
-        void stop();
-        void startIfStoppedAndTransportValid();
+        void stopPlayoutThreadIfStarted();
+        void startPlayoutThreadIfStoppedAndTransportValid();
 
         void run();
     };
