@@ -30,4 +30,4 @@ if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     add_dependencies(CppStreamClient opencv_highgui)
 endif()
 
-set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 14)
+set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 17)

@@ -33,7 +33,7 @@ if (WIN32)
     target_compile_definitions(OpenteraWebrtcNativeClientTests PRIVATE WIN32_LEAN_AND_MEAN)
 endif ()
 
-set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 14)
+set_property(TARGET OpenteraWebrtcNativeClientTests PROPERTY CXX_STANDARD 17)
 
 assign_source_group(${source_files})
 

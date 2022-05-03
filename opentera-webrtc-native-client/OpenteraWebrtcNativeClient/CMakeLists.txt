@@ -66,7 +66,7 @@ if (WIN32)
             )
 endif ()
 
-set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 14)
+set_property(TARGET OpenteraWebrtcNativeClient PROPERTY CXX_STANDARD 17)
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     add_dependencies(OpenteraWebrtcNativeClient ${OpenCV_LIBRARIES})
