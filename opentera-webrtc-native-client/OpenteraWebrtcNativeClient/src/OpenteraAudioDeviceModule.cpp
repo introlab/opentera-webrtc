@@ -11,22 +11,29 @@ OpenteraAudioDeviceModule::OpenteraAudioDeviceModule()
       m_isMicrophoneInitialized(false),
       m_isPlaying(false),
       m_isRecording(false),
-      m_stopped(true),
+      m_playoutThreadStopped(true),
       m_audioTransport(nullptr)
 {
 }
 
 OpenteraAudioDeviceModule::~OpenteraAudioDeviceModule()
 {
-    stop();
+    stopPlayoutThreadIfStarted();
 }
 
 void OpenteraAudioDeviceModule::setOnMixedAudioFrameReceived(const AudioSinkCallback& onMixedAudioFrameReceived)
 {
     lock_guard<mutex> lock(m_setCallbackMutex);
-    stop();
-    m_onMixedAudioFrameReceived = onMixedAudioFrameReceived;
-    startIfStoppedAndTransportValid();
+    if (m_playoutThreadStopped.load())
+    {
+        m_onMixedAudioFrameReceived = onMixedAudioFrameReceived;
+    }
+    else
+    {
+        stopPlayoutThreadIfStarted();
+        m_onMixedAudioFrameReceived = onMixedAudioFrameReceived;
+        startPlayoutThreadIfStoppedAndTransportValid();
+    }
 }
 
 void OpenteraAudioDeviceModule::sendFrame(
@@ -67,9 +74,16 @@ int32_t OpenteraAudioDeviceModule::RegisterAudioCallback(webrtc::AudioTransport*
 {
     lock_guard<mutex> setCallbackLock(m_setCallbackMutex);
     lock_guard<mutex> audioTransportCaptureLock(m_audioTransportCaptureMutex);
-    stop();
-    m_audioTransport = audioTransport;
-    startIfStoppedAndTransportValid();
+    if (m_playoutThreadStopped.load())
+    {
+        m_audioTransport = audioTransport;
+    }
+    else
+    {
+        stopPlayoutThreadIfStarted();
+        m_audioTransport = audioTransport;
+        startPlayoutThreadIfStoppedAndTransportValid();
+    }
     return 0;
 }
 
@@ -95,7 +109,7 @@ int16_t OpenteraAudioDeviceModule::PlayoutDevices()
 
 int16_t OpenteraAudioDeviceModule::RecordingDevices()
 {
-    return 0;
+    return 1;
 }
 
 int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(
@@ -104,7 +118,7 @@ int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(
     char guid[webrtc::kAdmMaxGuidSize])
 {
     strcpy(name, "AudioSink");
-    strcpy(guid, "0");
+    strcpy(guid, "cf5c0fef-210b-4689-bff8-2fbf38b0f1cb");
     return 0;
 }
 
@@ -113,6 +127,8 @@ int32_t OpenteraAudioDeviceModule::RecordingDeviceName(
     char name[webrtc::kAdmMaxDeviceNameSize],
     char guid[webrtc::kAdmMaxGuidSize])
 {
+    strcpy(name, "AudioSource");
+    strcpy(guid, "7bbb06ed-067f-4838-b45d-2ecd7710d1bf");
     return 0;
 }
 
@@ -196,12 +212,14 @@ int32_t OpenteraAudioDeviceModule::StartPlayout()
         return -1;
     }
     m_isPlaying = true;
+    startPlayoutThreadIfStoppedAndTransportValid();
     return 0;
 }
 
 int32_t OpenteraAudioDeviceModule::StopPlayout()
 {
     m_isPlaying = false;
+    stopPlayoutThreadIfStarted();
     return 0;
 }
 
@@ -405,21 +423,21 @@ int32_t OpenteraAudioDeviceModule::EnableBuiltInNS(bool enable)
     return -1;
 }
 
-void OpenteraAudioDeviceModule::stop()
+void OpenteraAudioDeviceModule::stopPlayoutThreadIfStarted()
 {
-    if (!m_stopped.load() && m_thread != nullptr)
+    if (!m_playoutThreadStopped.load() && m_thread != nullptr)
     {
-        m_stopped.store(true);
+        m_playoutThreadStopped.store(true);
         m_thread->join();
         m_thread = nullptr;
     }
 }
 
-void OpenteraAudioDeviceModule::startIfStoppedAndTransportValid()
+void OpenteraAudioDeviceModule::startPlayoutThreadIfStoppedAndTransportValid()
 {
-    if (m_stopped.load() && m_audioTransport != nullptr)
+    if (m_playoutThreadStopped.load() && m_audioTransport != nullptr)
     {
-        m_stopped.store(false);
+        m_playoutThreadStopped.store(false);
         m_thread = make_unique<thread>(&OpenteraAudioDeviceModule::run, this);
         setThreadPriority(*m_thread, ThreadPriority::RealTime);
     }
@@ -438,7 +456,7 @@ void OpenteraAudioDeviceModule::run()
     int64_t ntpTimeMs = -1;
 
     vector<uint8_t> data(NSamples * NBytesPerSample * NChannels, 0);
-    while (!m_stopped.load())
+    while (!m_playoutThreadStopped.load())
     {
         auto start = chrono::steady_clock::now();
 
