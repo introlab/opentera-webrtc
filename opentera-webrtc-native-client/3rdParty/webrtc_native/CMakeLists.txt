@@ -68,7 +68,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
 		SHOW_PROGRESS)
 endif()
 
-set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}")
+set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}-${CMAKE_BUILD_TYPE}")
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
@@ -77,15 +77,18 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 			message(FATAL_ERROR "CMake version 3.18.0 or higher is required to extract archives.")
 		endif()
 		execute_process(
-			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+			COMMAND mkdir ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
+			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} -C ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 	else()
-		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
 	endif()
 endif()
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
-	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem} ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}/webrtc-native-build-${webrtc_native_build_version}
+		${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+	file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
 endif()
 
 set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
