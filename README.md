@@ -9,6 +9,9 @@ For the [OpenTera](https://github.com/introlab/opentera) micro-service architect
 * [Python 3 bindings](opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python) that are used as a Python module for clients using our signaling server.
 * [A JavaScript library](opentera-webrtc-web-client) That is used for web client developement and teleoperation interface using our signaling server.
 
+## License
+By default, libwebrtc is built with non-free codecs. See [webrtc-native-build](https://github.com/introlab/webrtc-native-build#license) to build without them.
+
 ## Dependencies
 
 * Most dependencies are part of the project with git submodules in the [opentera-webrtc-native-client/3rdParty](opentera-webrtc-native-client/3rdParty) directory.
