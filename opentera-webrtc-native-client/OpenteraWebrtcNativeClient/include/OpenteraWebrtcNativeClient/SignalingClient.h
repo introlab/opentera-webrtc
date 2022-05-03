@@ -173,7 +173,7 @@ namespace opentera
      */
     inline bool SignalingClient::isConnected()
     {
-        return FunctionTask<bool>::callSync(m_internalClientThread.get(), [this]() { return m_sio.opened(); });
+        return callSync(m_internalClientThread.get(), [this]() { return m_sio.opened(); });
     }
 
     /**
@@ -182,9 +182,7 @@ namespace opentera
      */
     inline bool SignalingClient::isRtcConnected()
     {
-        return FunctionTask<bool>::callSync(
-            m_internalClientThread.get(),
-            [this]() { return !m_peerConnectionHandlersById.empty(); });
+        return callSync(m_internalClientThread.get(), [this]() { return !m_peerConnectionHandlersById.empty(); });
     }
 
     /**
@@ -193,7 +191,7 @@ namespace opentera
      */
     inline std::string SignalingClient::id()
     {
-        return FunctionTask<std::string>::callSync(
+        return callSync(
             m_internalClientThread.get(),
             [this]() { return m_hasClosePending ? "" : m_sio.get_sessionid(); });
     }
@@ -207,7 +205,7 @@ namespace opentera
      */
     inline RoomClient SignalingClient::getRoomClient(const std::string& id)
     {
-        return FunctionTask<RoomClient>::callSync(
+        return callSync(
             m_internalClientThread.get(),
             [this, &id]()
             {
@@ -236,9 +234,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnSignalingConnectionOpened(const std::function<void()>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onSignalingConnectionOpened = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionOpened = callback; });
     }
 
     /**
@@ -250,9 +246,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onSignalingConnectionClosed = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionClosed = callback; });
     }
 
     /**
@@ -269,9 +263,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnSignalingConnectionError(const std::function<void(const std::string&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onSignalingConnectionError = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionError = callback; });
     }
 
     /**
@@ -289,9 +281,7 @@ namespace opentera
     inline void
         SignalingClient::setOnRoomClientsChanged(const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onRoomClientsChanged = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onRoomClientsChanged = callback; });
     }
 
     /**
@@ -311,7 +301,7 @@ namespace opentera
      */
     inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]() { m_callAcceptor = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_callAcceptor = callback; });
     }
 
     /**
@@ -328,9 +318,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onCallRejected = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onCallRejected = callback; });
     }
 
     /**
@@ -347,9 +335,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onClientConnected = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientConnected = callback; });
     }
 
     /**
@@ -366,9 +352,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            m_internalClientThread.get(),
-            [this, &callback]() { m_onClientDisconnected = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientDisconnected = callback; });
     }
 
     /**
@@ -385,7 +369,7 @@ namespace opentera
      */
     inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
-        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]() { m_onError = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onError = callback; });
     }
 
     /**
@@ -402,13 +386,13 @@ namespace opentera
      */
     inline void SignalingClient::setLogger(const std::function<void(const std::string& message)>& callback)
     {
-        FunctionTask<void>::callSync(m_internalClientThread.get(), [this, &callback]() { m_logger = callback; });
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_logger = callback; });
     }
 
     template<class T, class... Types>
     void SignalingClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
-        FunctionTask<void>::callAsync(
+        callAsync(
             m_internalClientThread.get(),
             [=]()
             {
@@ -421,7 +405,7 @@ namespace opentera
 
     inline void SignalingClient::log(const std::string& message)
     {
-        FunctionTask<void>::callAsync(
+        callAsync(
             m_internalClientThread.get(),
             [=]()
             {
