@@ -30,6 +30,9 @@ namespace opentera
 
     class StreamPeerConnectionHandler : public PeerConnectionHandler
     {
+        bool m_offerToReceiveVideo;
+        bool m_offerToReceiveAudio;
+
         rtc::scoped_refptr<webrtc::VideoTrackInterface> m_videoTrack;
         rtc::scoped_refptr<webrtc::AudioTrackInterface> m_audioTrack;
 
@@ -40,7 +43,7 @@ namespace opentera
         std::unique_ptr<EncodedVideoSink> m_encodedVideoSink;
         std::unique_ptr<AudioSink> m_audioSink;
 
-        std::set<rtc::scoped_refptr<webrtc::MediaStreamInterface>> m_streams;
+        std::set<rtc::scoped_refptr<webrtc::MediaStreamTrackInterface>> m_tracks;
 
     public:
         StreamPeerConnectionHandler(
@@ -68,10 +71,22 @@ namespace opentera
         void setAllVideoTracksEnabled(bool enabled);
 
         // Observer methods
-        void OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
-        void OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) override;
+        void OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) override;
+        void OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) override;
+
+    protected:
+        void createAnswer() override;
 
     private:
+        void addTransceiver(
+            cricket::MediaType type,
+            rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track,
+            bool offerToReceive);
+        void updateTransceiver(
+            cricket::MediaType type,
+            rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track,
+            bool offerToReceive);
+
         void setAllTracksEnabled(const char* kind, bool enabled);
     };
 }

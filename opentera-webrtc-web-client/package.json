@@ -33,12 +33,12 @@
   },
   "homepage": "https://github.com/introlab/opentera-webrtc#readme",
   "devDependencies": {
-    "@babel/core": "^7.12.10",
-    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/register": "^7.12.10",
-    "babel-loader": "^8.2.2",
-    "chai": "^4.2.0",
+    "@babel/core": "^7.17.10",
+    "@babel/plugin-proposal-object-rest-spread": "^7.17.3",
+    "@babel/preset-env": "^7.17.10",
+    "@babel/register": "^7.17.7",
+    "babel-loader": "^8.2.5",
+    "chai": "^4.3.6",
     "cross-env": "^6.0.3",
     "eslint": "^7.17.0",
     "eslint-config-google": "^0.14.0",
@@ -55,7 +55,7 @@
   },
   "browserslist": "> 0.5%, last 2 versions, Firefox ESR, not dead",
   "dependencies": {
-    "socket.io-client": "^4.3.2",
-    "webrtc-adapter": "^8.1.0"
+    "socket.io-client": "^4.5.0",
+    "webrtc-adapter": "^8.1.1"
   }
 }

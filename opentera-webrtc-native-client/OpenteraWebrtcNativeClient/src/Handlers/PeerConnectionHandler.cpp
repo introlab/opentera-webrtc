@@ -39,8 +39,6 @@ PeerConnectionHandler::PeerConnectionHandler(
     string&& id,
     Client&& peerClient,
     bool isCaller,
-    bool offerToReceiveVideo,
-    bool offerToReceiveAudio,
     function<void(const string&, const sio::message::ptr&)>&& sendEvent,
     function<void(const string&)>&& onError,
     function<void(const Client&)>&& onClientConnected,
@@ -52,9 +50,7 @@ PeerConnectionHandler::PeerConnectionHandler(
       m_onError(move(onError)),
       m_onClientConnected(move(onClientConnected)),
       m_onClientDisconnected(move(onClientDisconnected)),
-      m_onClientDisconnectedCalled(true),
-      m_offerToReceiveVideo(offerToReceiveVideo),
-      m_offerToReceiveAudio(offerToReceiveAudio)
+      m_onClientDisconnectedCalled(true)
 {
 }
 
@@ -83,11 +79,7 @@ void PeerConnectionHandler::setPeerConnection(const rtc::scoped_refptr<webrtc::P
 
 void PeerConnectionHandler::makePeerCall()
 {
-    webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
-    options.offer_to_receive_video = m_offerToReceiveVideo;
-    options.offer_to_receive_audio = m_offerToReceiveAudio;
-
-    m_peerConnection->CreateOffer(this, options);
+    m_peerConnection->CreateOffer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
 }
 
 void PeerConnectionHandler::receivePeerCall(const string& sdp)
@@ -173,9 +165,9 @@ void PeerConnectionHandler::OnIceCandidate(const webrtc::IceCandidateInterface* 
 
 void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) {}
 
-void PeerConnectionHandler::OnAddStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
+void PeerConnectionHandler::OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) {}
 
-void PeerConnectionHandler::OnRemoveStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream) {}
+void PeerConnectionHandler::OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) {}
 
 void PeerConnectionHandler::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) {}
 
@@ -217,11 +209,7 @@ void PeerConnectionHandler::OnSetSessionDescriptionObserverSuccess()
 {
     if (!m_isCaller)
     {
-        webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
-        options.offer_to_receive_video = m_offerToReceiveVideo;
-        options.offer_to_receive_audio = m_offerToReceiveAudio;
-
-        m_peerConnection->CreateAnswer(this, options);
+        createAnswer();
     }
 }
 
@@ -235,4 +223,17 @@ void PeerConnectionHandler::AddRef() const {}
 rtc::RefCountReleaseStatus PeerConnectionHandler::Release() const
 {
     return rtc::RefCountReleaseStatus::kOtherRefsRemained;
+}
+
+
+void PeerConnectionHandler::createAnswer()
+{
+    m_peerConnection->CreateAnswer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());
+}
+
+void opentera::setTransceiverDirection(
+    const rtc::scoped_refptr<webrtc::RtpTransceiverInterface>& transceiver,
+    webrtc::RtpTransceiverDirection direction)
+{
+    transceiver->SetDirectionWithError(direction);
 }

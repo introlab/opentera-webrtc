@@ -83,9 +83,7 @@ SignalingClient::SignalingClient(
  */
 void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
 {
-    FunctionTask<void>::callAsync(
-        m_internalClientThread.get(),
-        [this, isEnabled]() { m_sio.set_is_tls_verification_enabled(isEnabled); });
+    callAsync(m_internalClientThread.get(), [this, isEnabled]() { m_sio.set_is_tls_verification_enabled(isEnabled); });
 }
 
 /**
@@ -93,7 +91,7 @@ void SignalingClient::setTlsVerificationEnabled(bool isEnabled)
  */
 void SignalingClient::connect()
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -109,7 +107,7 @@ void SignalingClient::connect()
  */
 void SignalingClient::close()
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -124,7 +122,7 @@ void SignalingClient::close()
  */
 void SignalingClient::closeSync()
 {
-    FunctionTask<void>::callSync(
+    callSync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -139,7 +137,7 @@ void SignalingClient::closeSync()
  */
 void SignalingClient::callAll()
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -158,7 +156,7 @@ void SignalingClient::callAll()
  */
 void SignalingClient::callIds(const vector<string>& ids)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, ids]()
         {
@@ -178,7 +176,7 @@ void SignalingClient::callIds(const vector<string>& ids)
  */
 void SignalingClient::hangUpAll()
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -192,9 +190,7 @@ void SignalingClient::hangUpAll()
  */
 void SignalingClient::closeAllRoomPeerConnections()
 {
-    FunctionTask<void>::callAsync(
-        m_internalClientThread.get(),
-        [this]() { m_sio.socket()->emit("close-all-room-peer-connections"); });
+    callAsync(m_internalClientThread.get(), [this]() { m_sio.socket()->emit("close-all-room-peer-connections"); });
 }
 
 /**
@@ -203,7 +199,7 @@ void SignalingClient::closeAllRoomPeerConnections()
  */
 vector<string> SignalingClient::getConnectedRoomClientIds()
 {
-    return FunctionTask<vector<string>>::callSync(
+    return callSync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -223,7 +219,7 @@ vector<string> SignalingClient::getConnectedRoomClientIds()
  */
 vector<RoomClient> SignalingClient::getRoomClients()
 {
-    return FunctionTask<vector<RoomClient>>::callSync(
+    return callSync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -245,11 +241,7 @@ vector<RoomClient> SignalingClient::getRoomClients()
 function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFunction()
 {
     return [this](const string& event, sio::message::ptr message)
-    {
-        FunctionTask<void>::callAsync(
-            m_internalClientThread.get(),
-            [this, event, message]() { m_sio.socket()->emit(event, message); });
-    };
+    { callAsync(m_internalClientThread.get(), [this, event, message]() { m_sio.socket()->emit(event, message); }); };
 }
 
 function<void(const string&)> SignalingClient::getOnErrorFunction()
@@ -266,7 +258,7 @@ function<void(const Client&)> SignalingClient::getOnClientDisconnectedFunction()
 {
     return [this](const Client& client)
     {
-        FunctionTask<void>::callAsync(
+        callAsync(
             m_internalClientThread.get(),
             [this, client]()
             {
@@ -339,7 +331,7 @@ void SignalingClient::onJoinRoomCallback(const sio::message::list& message)
 
 void SignalingClient::onRoomClientsEvent(sio::event& event)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, event]()
         {
@@ -373,7 +365,7 @@ void SignalingClient::onMakePeerCallEvent(sio::event& event)
 
 void SignalingClient::makePeerCall(const string& id)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, id]()
         {
@@ -438,7 +430,7 @@ void SignalingClient::onPeerCallReceivedEvent(sio::event& event)
 
 void SignalingClient::receivePeerCall(const string& fromId, const string& sdp)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, fromId, sdp]()
         {
@@ -483,7 +475,7 @@ void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
 
     if (answerIt == data.end() || answerIt->second->get_flag() != sio::message::flag_object)
     {
-        FunctionTask<void>::callAsync(
+        callAsync(
             m_internalClientThread.get(),
             [this, fromId]()
             {
@@ -514,7 +506,7 @@ void SignalingClient::onPeerCallAnswerReceivedEvent(sio::event& event)
 
 void SignalingClient::receivePeerCallAnswer(const string& fromId, const string& sdp)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, fromId, sdp]()
         {
@@ -588,7 +580,7 @@ void SignalingClient::receiveIceCandidate(
     int sdpMLineIndex,
     const string& sdp)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_internalClientThread.get(),
         [this, fromId, sdpMid, sdpMLineIndex, sdp]()
         {
@@ -606,7 +598,7 @@ void SignalingClient::receiveIceCandidate(
 
 void SignalingClient::closeAllConnections()
 {
-    FunctionTask<void>::callSync(
+    callSync(
         m_internalClientThread.get(),
         [this]()
         {
@@ -625,7 +617,7 @@ void SignalingClient::closeAllConnections()
 
 bool SignalingClient::getCallAcceptance(const string& id)
 {
-    return FunctionTask<bool>::callSync(
+    return callSync(
         m_internalClientThread.get(),
         [this, id]()
         {
@@ -662,7 +654,7 @@ bool SignalingClient::getCallAcceptance(const string& id)
 unique_ptr<PeerConnectionHandler>
     SignalingClient::createConnection(const string& peerId, const Client& peerClient, bool isCaller)
 {
-    return FunctionTask<unique_ptr<PeerConnectionHandler>>::callSync(
+    return callSync(
         m_internalClientThread.get(),
         [&, this]()
         {
@@ -678,7 +670,7 @@ unique_ptr<PeerConnectionHandler>
 
 void SignalingClient::removeConnection(const string& id)
 {
-    FunctionTask<void>::callSync(
+    callSync(
         m_internalClientThread.get(),
         [this, &id]()
         {

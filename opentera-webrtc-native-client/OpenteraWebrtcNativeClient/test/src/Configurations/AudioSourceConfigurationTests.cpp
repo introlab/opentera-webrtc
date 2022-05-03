@@ -56,7 +56,7 @@ TEST(AudioSourceConfigurationTests, create_echoCancellation_shouldSetTheAttribut
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -97,7 +97,7 @@ TEST(AudioSourceConfigurationTests, create_autoGainControl_shouldSetTheAttribute
     EXPECT_EQ(config.gain_controller2.enabled, true);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -138,7 +138,7 @@ TEST(AudioSourceConfigurationTests, create_noiseSuppression_shouldSetTheAttribut
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, true);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -179,7 +179,7 @@ TEST(AudioSourceConfigurationTests, create_highpassFilter_shouldSetTheAttributes
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, true);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -220,7 +220,7 @@ TEST(AudioSourceConfigurationTests, create_stereoSwapping_shouldSetTheAttributes
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -261,7 +261,7 @@ TEST(AudioSourceConfigurationTests, create_typingDetection_shouldSetTheAttribute
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -275,7 +275,7 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
         absl::nullopt,
         absl::nullopt,
         absl::nullopt,
-        false,
+        true,
         absl::nullopt);
 
     EXPECT_EQ(testee.soundCardTotalDelayMs(), 10);
@@ -285,7 +285,7 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
     EXPECT_EQ(testee.highpassFilter(), absl::nullopt);
     EXPECT_EQ(testee.stereoSwapping(), absl::nullopt);
     EXPECT_EQ(testee.typingDetection(), absl::nullopt);
-    EXPECT_EQ(testee.residualEchoDetector(), false);
+    EXPECT_EQ(testee.residualEchoDetector(), true);
     EXPECT_EQ(testee.transientSuppression(), absl::nullopt);
 
     auto options = static_cast<cricket::AudioOptions>(testee);
@@ -295,14 +295,14 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
     EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, false);
+    EXPECT_EQ(options.residual_echo_detector, true);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
+    EXPECT_EQ(config.residual_echo_detector.enabled, true);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -343,6 +343,6 @@ TEST(AudioSourceConfigurationTests, create_transientSuppression_shouldSetTheAttr
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
+    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, true);
 }
