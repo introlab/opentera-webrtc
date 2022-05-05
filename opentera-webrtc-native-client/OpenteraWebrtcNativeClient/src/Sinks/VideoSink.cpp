@@ -16,7 +16,7 @@ using namespace std;
  */
 VideoSink::VideoSink(VideoSinkCallback onFrameReceived) : m_onFrameReceived(move(onFrameReceived))
 {
-    m_wants.rotation_applied = true;
+    m_wants.rotation_applied = false;
 
     // Specify we want resolution to be multiple of 2 for I420
     m_wants.resolution_alignment = 2;
@@ -33,6 +33,11 @@ VideoSink::VideoSink(VideoSinkCallback onFrameReceived) : m_onFrameReceived(move
  */
 void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
 {
+    if (!m_onFrameReceived)
+    {
+        return;
+    }
+
     // Transform data from 3 array in I420 buffer to one cv::Mat in yuv
     m_bgrImg.create(frame.height(), frame.width(), CV_8UC3);
 
@@ -48,10 +53,25 @@ void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
         frame.width(),
         frame.height(),
         libyuv::FOURCC_24BG);
-
-    if (err == 0 && m_onFrameReceived)
+    if (err != 0)
     {
-        // Pass bgr frame to image callback if conversion worked
-        m_onFrameReceived(m_bgrImg, frame.timestamp_us());
+        return;
     }
+
+    switch (frame.rotation())
+    {
+        case webrtc::kVideoRotation_0:
+            m_onFrameReceived(m_bgrImg, frame.timestamp_us());
+            return;
+        case webrtc::kVideoRotation_90:
+            cv::rotate(m_bgrImg, m_bgrRotatedImg, cv::ROTATE_90_CLOCKWISE);
+            break;
+        case webrtc::kVideoRotation_180:
+            cv::rotate(m_bgrImg, m_bgrRotatedImg, cv::ROTATE_180);
+            break;
+        case webrtc::kVideoRotation_270:
+            cv::rotate(m_bgrImg, m_bgrRotatedImg, cv::ROTATE_90_COUNTERCLOCKWISE);
+            break;
+    }
+    m_onFrameReceived(m_bgrRotatedImg, frame.timestamp_us());
 }

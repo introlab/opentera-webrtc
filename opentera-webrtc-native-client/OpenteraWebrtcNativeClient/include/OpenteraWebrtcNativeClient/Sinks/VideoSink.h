@@ -19,6 +19,7 @@ namespace opentera
         VideoSinkCallback m_onFrameReceived;
         rtc::VideoSinkWants m_wants;
         cv::Mat m_bgrImg;
+        cv::Mat m_bgrRotatedImg;
 
     public:
         explicit VideoSink(VideoSinkCallback onFrameReceived);
