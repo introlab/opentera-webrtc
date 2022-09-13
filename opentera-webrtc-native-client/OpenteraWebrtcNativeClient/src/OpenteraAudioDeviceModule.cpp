@@ -436,12 +436,13 @@ void OpenteraAudioDeviceModule::run()
     size_t nSamplesOut = 0;
     int64_t elapsedTimeMs = -1;
     int64_t ntpTimeMs = -1;
+    size_t counter = 0;
+    int64_t lastElapsedTime = -1;
 
     vector<uint8_t> data(NSamples * NBytesPerSample * NChannels, 0);
+    auto start = chrono::steady_clock::now();
     while (!m_stopped.load())
     {
-        auto start = chrono::steady_clock::now();
-
         int32_t result = m_audioTransport->NeedMorePlayData(
             NSamples,
             NBytesPerSample,
@@ -452,12 +453,27 @@ void OpenteraAudioDeviceModule::run()
             &elapsedTimeMs,
             &ntpTimeMs);
 
+        if (elapsedTimeMs > -1 && lastElapsedTime == -1)
+        {
+            start = chrono::steady_clock::now();
+            counter = 0;
+        }
+        ++counter;
+        lastElapsedTime = elapsedTimeMs;
+
         if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
         {
             m_onMixedAudioFrameReceived(data.data(), 8 * NBytesPerSample, SamplesPerSec, NChannels, nSamplesOut);
         }
 
-        chrono::nanoseconds delta = chrono::steady_clock::now() - start;
-        this_thread::sleep_for(FrameDuration - delta);
+        if (elapsedTimeMs == -1)
+        {
+            this_thread::sleep_for(FrameDuration);
+        }
+        else
+        {
+            auto sleep_duration = chrono::duration_cast<chrono::milliseconds>(counter * FrameDuration);
+            this_thread::sleep_until(start + sleep_duration);
+        }
     }
 }
