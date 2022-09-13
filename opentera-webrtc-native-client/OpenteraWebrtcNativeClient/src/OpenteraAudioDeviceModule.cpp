@@ -436,7 +436,8 @@ void OpenteraAudioDeviceModule::run()
     size_t nSamplesOut = 0;
     int64_t elapsedTimeMs = -1;
     int64_t ntpTimeMs = -1;
-    size_t count_iter = 0;
+    size_t counter = 0;
+    int64_t lastElapsedTime = -1;
 
     vector<uint8_t> data(NSamples * NBytesPerSample * NChannels, 0);
     auto start = chrono::steady_clock::now();
@@ -452,15 +453,13 @@ void OpenteraAudioDeviceModule::run()
             &elapsedTimeMs,
             &ntpTimeMs);
 
-        if (elapsedTimeMs == 0)
+        if (elapsedTimeMs > -1 && lastElapsedTime == -1)
         {
             start = chrono::steady_clock::now();
-            count_iter = 1;
+            counter = 0;
         }
-        else
-        {
-            ++count_iter;
-        }
+        ++counter;
+        lastElapsedTime = elapsedTimeMs;
 
         if (result == 0 && elapsedTimeMs != -1 && m_onMixedAudioFrameReceived)
         {
@@ -473,7 +472,7 @@ void OpenteraAudioDeviceModule::run()
         }
         else
         {
-            auto sleep_duration = chrono::duration_cast<chrono::milliseconds>(count_iter * FrameDuration);
+            auto sleep_duration = chrono::duration_cast<chrono::milliseconds>(counter * FrameDuration);
             this_thread::sleep_until(start + sleep_duration);
         }
     }
