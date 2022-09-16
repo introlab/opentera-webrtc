@@ -10,8 +10,6 @@ AudioSourceConfiguration::AudioSourceConfiguration(
     absl::optional<bool> noiseSuppression,
     absl::optional<bool> highpassFilter,
     absl::optional<bool> stereoSwapping,
-    absl::optional<bool> typingDetection,
-    absl::optional<bool> residualEchoDetector,
     absl::optional<bool> transientSuppression)
     : m_soundCardTotalDelayMs(soundCardTotalDelayMs),
       m_echoCancellation(echoCancellation),
