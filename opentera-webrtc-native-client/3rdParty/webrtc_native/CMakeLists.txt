@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "4896.ffd918.154" CACHE INTERNAL "")
+set(webrtc_native_build_version "5195.42be4a.133" CACHE INTERNAL "")
 
 if(WIN32)
 	set(architecture "win64")
@@ -44,8 +44,8 @@ elseif(UNIX)
 			message(FATAL_ERROR "System not supported: ${LSB_RELEASE_ID_SHORT}, must be ubuntu")
 		endif()
 
-		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04")
-			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04 or 20.04.")
+		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "22.04")
+			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04, 20.04 or 22.04.")
 		endif()
 
 		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})

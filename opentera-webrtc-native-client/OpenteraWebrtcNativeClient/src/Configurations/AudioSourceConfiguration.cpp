@@ -19,8 +19,6 @@ AudioSourceConfiguration::AudioSourceConfiguration(
       m_noiseSuppression(noiseSuppression),
       m_highpassFilter(highpassFilter),
       m_stereoSwapping(stereoSwapping),
-      m_typingDetection(typingDetection),
-      m_residualEchoDetector(residualEchoDetector),
       m_transientSuppression(transientSuppression)
 {
 }
@@ -37,8 +35,6 @@ AudioSourceConfiguration::operator cricket::AudioOptions() const
     options.noise_suppression = m_noiseSuppression;
     options.highpass_filter = m_highpassFilter;
     options.stereo_swapping = m_stereoSwapping;
-    options.typing_detection = m_typingDetection;
-    options.residual_echo_detector = m_residualEchoDetector;
 
     return options;
 }
@@ -65,10 +61,6 @@ AudioSourceConfiguration::operator webrtc::AudioProcessing::Config() const
     if (m_highpassFilter.has_value())
     {
         config.high_pass_filter.enabled = m_highpassFilter.value();
-    }
-    if (m_residualEchoDetector.has_value())
-    {
-        config.residual_echo_detector.enabled = m_residualEchoDetector.value();
     }
     if (m_transientSuppression.has_value())
     {

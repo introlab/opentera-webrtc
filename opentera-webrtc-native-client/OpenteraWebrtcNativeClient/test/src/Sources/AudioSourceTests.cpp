@@ -117,8 +117,6 @@ TEST(AudioSourceTests, options_shouldTheSpecifiedValues)
     EXPECT_EQ(options.noise_suppression, true);
     EXPECT_EQ(options.highpass_filter, true);
     EXPECT_EQ(options.stereo_swapping, true);
-    EXPECT_EQ(options.typing_detection, true);
-    EXPECT_EQ(options.residual_echo_detector, true);
 }
 
 TEST(AudioSourceTests, bytesPerSample_shouldTheSpecifiedValue)

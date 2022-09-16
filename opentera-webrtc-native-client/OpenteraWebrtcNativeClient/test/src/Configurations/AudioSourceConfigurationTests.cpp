@@ -48,15 +48,12 @@ TEST(AudioSourceConfigurationTests, create_echoCancellation_shouldSetTheAttribut
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, true);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -89,15 +86,12 @@ TEST(AudioSourceConfigurationTests, create_autoGainControl_shouldSetTheAttribute
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, true);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -130,15 +124,12 @@ TEST(AudioSourceConfigurationTests, create_noiseSuppression_shouldSetTheAttribut
     EXPECT_EQ(options.noise_suppression, true);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, true);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -171,15 +162,12 @@ TEST(AudioSourceConfigurationTests, create_highpassFilter_shouldSetTheAttributes
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, true);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, true);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -212,15 +200,12 @@ TEST(AudioSourceConfigurationTests, create_stereoSwapping_shouldSetTheAttributes
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, true);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -253,15 +238,12 @@ TEST(AudioSourceConfigurationTests, create_typingDetection_shouldSetTheAttribute
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, true);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -294,15 +276,12 @@ TEST(AudioSourceConfigurationTests, create_residualEchoDetector_shouldSetTheAttr
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, true);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, true);
     EXPECT_EQ(config.transient_suppression.enabled, false);
 }
 
@@ -335,14 +314,11 @@ TEST(AudioSourceConfigurationTests, create_transientSuppression_shouldSetTheAttr
     EXPECT_EQ(options.noise_suppression, absl::nullopt);
     EXPECT_EQ(options.highpass_filter, absl::nullopt);
     EXPECT_EQ(options.stereo_swapping, absl::nullopt);
-    EXPECT_EQ(options.typing_detection, absl::nullopt);
-    EXPECT_EQ(options.residual_echo_detector, absl::nullopt);
 
     auto config = static_cast<webrtc::AudioProcessing::Config>(testee);
     EXPECT_EQ(config.echo_canceller.enabled, false);
     EXPECT_EQ(config.gain_controller2.enabled, false);
     EXPECT_EQ(config.noise_suppression.enabled, false);
     EXPECT_EQ(config.high_pass_filter.enabled, false);
-    EXPECT_EQ(config.residual_echo_detector.enabled, false);
     EXPECT_EQ(config.transient_suppression.enabled, true);
 }

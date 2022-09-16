@@ -225,13 +225,13 @@ void StreamPeerConnectionHandler::updateTransceiver(
         if (track != nullptr && offerToReceive)
         {
             setTransceiverDirection(transceiver, RtpTransceiverDirection::kSendRecv);
-            transceiver->sender()->SetTrack(track);
+            transceiver->sender()->SetTrack(track.get());
             isTrackSet = true;
         }
         else if (track != nullptr && !offerToReceive)
         {
             setTransceiverDirection(transceiver, RtpTransceiverDirection::kSendOnly);
-            transceiver->sender()->SetTrack(track);
+            transceiver->sender()->SetTrack(track.get());
             isTrackSet = true;
         }
         else if (!offerToReceive)

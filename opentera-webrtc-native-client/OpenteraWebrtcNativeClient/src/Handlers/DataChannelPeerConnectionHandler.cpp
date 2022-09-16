@@ -59,14 +59,15 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     if (m_isCaller)
     {
         auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
-        m_dataChannel = m_peerConnection->CreateDataChannel(m_room, &configuration);
-        if (m_dataChannel)
+        auto dataChannelOrError = m_peerConnection->CreateDataChannelOrError(m_room, &configuration);
+        if (dataChannelOrError.ok())
         {
+            m_dataChannel = dataChannelOrError.MoveValue();
             m_dataChannel->RegisterObserver(this);
         }
         else
         {
-            m_onError("CreateDataChannel failed");
+            m_onError(std::string("CreateDataChannel failed: ") + dataChannelOrError.error().message());
         }
     }
 }
