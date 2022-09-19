@@ -1,6 +1,8 @@
 set(webrtc_native_build_version "5195.42be4a.133" CACHE INTERNAL "")
 
 if(WIN32)
+	# Currently, no build of 5195.42be4a.133 for Windows
+	set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
 	set(architecture "win64")
 	set(archive_stem webrtc-native-build-msvc-2019-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
 	set(archive_extension "zip")
@@ -46,6 +48,11 @@ elseif(UNIX)
 
 		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "22.04")
 			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04, 20.04 or 22.04.")
+		endif()
+		if (${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04")
+			# Temporary support for Ubuntu 18.04 with older version of WebRTC until all our robots are moved to Ubuntu 20.04
+			set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
+			message(WARNING "Ubuntu 18.04 support will be dropped in the near future, and it currently uses an older version of libwebrtc.")
 		endif()
 
 		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
