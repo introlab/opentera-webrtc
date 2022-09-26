@@ -2,6 +2,8 @@
 name: mac-get-version
 
 on:
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
