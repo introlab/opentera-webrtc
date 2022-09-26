@@ -17,5 +17,14 @@ jobs:
       - name: Version from "/usr/bin/sw_vers"
         run: /usr/bin/sw_vers
 
-      - name: Version from "uname -v"
-        run: uname -v
+      - name: Parsed version from "/usr/bin/sw_vers"
+        run: /usr/bin/sw_vers | perl -0777ne 'print "$1\n" if /(\d+(?:\.\d+)?)\.\d+/'
+
+      - name: Help from "/usr/bin/sw_vers"
+        run: /usr/bin/sw_vers -h
+
+      - name: Help long from "/usr/bin/sw_vers"
+        run: /usr/bin/sw_vers --help
+
+      - name: Version from "sw_vers"
+        run: sw_vers
