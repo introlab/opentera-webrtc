@@ -18,7 +18,7 @@ jobs:
         run: /usr/bin/sw_vers -productVersion
 
       - name: Parsed version from "/usr/bin/sw_vers"
-        run: /usr/bin/sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/
+        run: /usr/bin/sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
 
       - name: Version from "sw_vers"
         run: sw_vers -productVersion
