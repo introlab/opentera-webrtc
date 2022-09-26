@@ -6,7 +6,7 @@
 	url = https://github.com/introlab/socket.io-client-cpp.git
 [submodule "opentera-webrtc-native-client/3rdParty/cpp-subprocess"]
 	path = opentera-webrtc-native-client/3rdParty/cpp-subprocess
-	url = https://github.com/introlab/cpp-subprocess.git
+	url = https://github.com/arun11299/cpp-subprocess.git
 [submodule "opentera-webrtc-native-client/3rdParty/pybind11"]
 	path = opentera-webrtc-native-client/3rdParty/pybind11
 	url = https://github.com/pybind/pybind11.git
