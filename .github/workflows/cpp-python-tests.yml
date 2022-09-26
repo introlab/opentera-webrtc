@@ -40,35 +40,32 @@ jobs:
       - name: Print Version Information
         run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
 
-      - name: Generate OS Release Output (Linux)
+      - name: Generate OS Release Output
         id: generate_os_release_name_output
-        run: echo "::set-output name=os_release_name::${{runner.os}}-$(lsb_release -i -s)"
-        if: runner.os == 'Linux'
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_name::${{runner.os}}-$(lsb_release -i -s)"
+          else
+            echo "::set-output name=os_release_name::${{runner.os}}"
+          fi
 
-      - name: Generate OS Release Output (macOS)
-        id: generate_os_release_name_output
-        run: echo "::set-output name=os_release_name::${{runner.os}}"
-        if: runner.os != 'Linux'
-
-      - name: Generate OS Release Version Output (Linux)
+      - name: Generate OS Release Version Output
         id: generate_os_release_version_output
-        run: echo "::set-output name=os_release_version::$(lsb_release -r -s)"
-        if: runner.os == 'Linux'
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_version::$(lsb_release -r -s)"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "::set-output name=os_release_version::$(cmake -P cmake/get_macos_version_script.cmake)"
+          fi
 
-      - name: Generate OS Release Version Output (macOS)
-        id: generate_os_release_version_output
-        run: echo "::set-output name=os_release_version::$(cmake -P cmake/get_macos_version_script.cmake)"
-        if: runner.os == 'macOS'
-
-      - name: Generate OS Release Architecture Output (Linux)
+      - name: Generate OS Release Architecture Output
         id: generate_os_release_architecture_output
-        run: echo "::set-output name=os_release_architecture::$(uname -i)"
-        if: runner.os == 'Linux'
-
-      - name: Generate OS Release Architecture Output (macOS)
-        id: generate_os_release_architecture_output
-        run: echo "::set-output name=os_release_architecture::$(uname -m)"
-        if: runner.os == 'macOS'
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_architecture::$(uname -i)"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "::set-output name=os_release_architecture::$(uname -m)"
+          fi
 
       - name: Generate Release File Name
         id: generate_release_file_name
