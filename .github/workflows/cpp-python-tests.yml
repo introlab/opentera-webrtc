@@ -99,7 +99,7 @@ jobs:
       - name: Install system dependencies (macOS)
         run: |
           brew update
-          brew install ninja tree
+          brew install ninja tree ca-certificates
         if: runner.os == 'macOS'
 
       - name: Install python dependencies
