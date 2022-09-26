@@ -14,14 +14,8 @@ jobs:
         os: [macos-10.15, macos-11, macos-12]
 
     steps:
-      - name: Version from "/usr/bin/sw_vers"
-        run: /usr/bin/sw_vers -productVersion
-
-      - name: Parsed version from "/usr/bin/sw_vers"
-        run: /usr/bin/sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
-
       - name: Version from "sw_vers"
         run: sw_vers -productVersion
 
       - name: Parsed version from "sw_vers"
-        run: sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
+        run: sw_vers -productVersion | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
