@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
 
@@ -36,31 +36,44 @@ jobs:
       - name: Generate Version Output
         id: generate_version_output
         run: echo "::set-output name=version::$(cat VERSION)"
-        shell: bash
 
       - name: Print Version Information
         run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
-        shell: bash
 
-      - name: Generate OS Release Output
+      - name: Generate OS Release Output (Linux)
         id: generate_os_release_name_output
-        run: echo "::set-output name=os_release_name::$(lsb_release -i -s)"
-        shell: bash
+        run: echo "::set-output name=os_release_name::${{runner.os}}-$(lsb_release -i -s)"
+        if: runner.os == 'Linux'
 
-      - name: Generate OS Release Version Output
+      - name: Generate OS Release Output (macOS)
+        id: generate_os_release_name_output
+        run: echo "::set-output name=os_release_name::${{runner.os}}"
+        if: runner.os != 'Linux'
+
+      - name: Generate OS Release Version Output (Linux)
         id: generate_os_release_version_output
         run: echo "::set-output name=os_release_version::$(lsb_release -r -s)"
-        shell: bash
+        if: runner.os == 'Linux'
 
-      - name: Generate OS Release Architecture Output
+      - name: Generate OS Release Version Output (macOS)
+        id: generate_os_release_version_output
+        run: echo "::set-output name=os_release_version::$(cmake -P cmake/get_macos_version_script.cmake)"
+        if: runner.os == 'macOS'
+
+      - name: Generate OS Release Architecture Output (Linux)
         id: generate_os_release_architecture_output
         run: echo "::set-output name=os_release_architecture::$(uname -i)"
-        shell: bash
+        if: runner.os == 'Linux'
+
+      - name: Generate OS Release Architecture Output (macOS)
+        id: generate_os_release_architecture_output
+        run: echo "::set-output name=os_release_architecture::$(uname -m)"
+        if: runner.os == 'macOS'
 
       - name: Generate Release File Name
         id: generate_release_file_name
         run: |
-          echo "::set-output name=release_file_name::opentera-webrtc-native-client-${{runner.os}}-\
+          echo "::set-output name=release_file_name::\
           ${{ steps.generate_os_release_name_output.outputs.os_release_name }}-\
           ${{ steps.generate_os_release_version_output.outputs.os_release_version }}-\
           ${{ steps.generate_os_release_architecture_output.outputs.os_release_architecture }}-\
@@ -68,7 +81,6 @@ jobs:
 
       - name: Print Release File Name
         run: echo "Release File Name ${{ steps.generate_release_file_name.outputs.release_file_name }}"
-        shell: bash
 
       - name: Install system dependencies
         run: |
