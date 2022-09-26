@@ -5,6 +5,7 @@
 #include <subprocess.hpp>
 
 #include <boost/filesystem.hpp>
+#include <thread>
 
 using namespace opentera;
 using namespace std;
