@@ -24,4 +24,4 @@ jobs:
         run: sw_vers -productVersion
 
       - name: Parsed version from "sw_vers"
-        run: sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/
+        run: sw_vers | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
