@@ -33,6 +33,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Add .local/bin to PATH (macOS, automatic on Linux)
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+        if: runner.os == 'macOS'
+
       - name: Generate Version Output
         id: generate_version_output
         run: echo "::set-output name=version::$(cat VERSION)"
