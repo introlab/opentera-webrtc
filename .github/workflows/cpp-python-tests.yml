@@ -23,7 +23,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: ${{ github.event.inputs.fail_fast }}
+      fail-fast: ${{ github.events.inputs.fail_fast == 'true'}}
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ["3.8", "3.9", "3.10"]
