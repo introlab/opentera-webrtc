@@ -19,3 +19,6 @@ jobs:
 
       - name: Parsed version from "sw_vers"
         run: sw_vers -productVersion | perl -pe 's/(\d+(?:\.\d+)?)\.\d+/$1/'
+
+      - name: Version from CMake
+        run: cmake -P macos_get_version.cmake
