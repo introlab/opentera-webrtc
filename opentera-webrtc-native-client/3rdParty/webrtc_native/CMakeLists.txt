@@ -11,7 +11,7 @@ elseif(UNIX)
 	if(APPLE)
 		set(architecture "osx64")
 
-		include(cmake/macos_get_version.cmake)
+		include(${CMAKE_SOURCE_DIR}/cmake/macos_get_version.cmake)
 		get_macos_sw_vers_product_version()
 
 		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "11" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "12")
