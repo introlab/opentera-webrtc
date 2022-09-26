@@ -6,7 +6,7 @@ function(get_macos_sw_vers_product_version)
 
     execute_process(COMMAND "${SW_VERS_EXEC}" -productVersion OUTPUT_VARIABLE SW_VERS_VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-    string(REGEX REPLACE [=[^(\d+(?:\.\d+)?)\.\d+$]=] "$1" SW_VERS_VERSION_SHORT SW_VERS_VERSION)
+    string(REGEX REPLACE [[^([0-9]+(\.[0-9]+)?)\.[0-9]+$]] "\\1" SW_VERS_VERSION_SHORT "${SW_VERS_VERSION}")
     set(SW_VERS_VERSION_SHORT "${SW_VERS_VERSION_SHORT}" PARENT_SCOPE)
 endfunction()
 
