@@ -104,13 +104,13 @@ jobs:
 
       - name: Install python dependencies
         run: |
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install --user --upgrade setuptools wheel
-          python3 -m pip install --user --upgrade twine
-          python3 -m pip install --user --upgrade pytest
-          python3 -m pip install --user --upgrade sphinx
-          python3 -m pip install --user --upgrade pybind11-stubgen
-          python3 -m pip install --user --upgrade numpy
+          python -m pip install --user --upgrade pip
+          python -m pip install --user --upgrade setuptools wheel
+          python -m pip install --user --upgrade twine
+          python -m pip install --user --upgrade pytest
+          python -m pip install --user --upgrade sphinx
+          python -m pip install --user --upgrade pybind11-stubgen
+          python -m pip install --user --upgrade numpy
 
       - name: Create build directory
         run: |
@@ -119,7 +119,7 @@ jobs:
       - name: Run CMake and build opentera-webrtc
         working-directory: build
         run: |
-          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist
+          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
           make -j2
           make install
 
@@ -148,25 +148,25 @@ jobs:
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v opentera_webrtc/tests
+          python -m pytest -v opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          python3 -m pytest -v
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          python -m pytest -v
 
       # With stdout
       - name: Run Python signaling-server Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v --capture=tee-sys opentera_webrtc/tests
+          python -m pytest -v --capture=tee-sys opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          python3 -m pytest -v --capture=tee-sys
+          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          python -m pytest -v --capture=tee-sys

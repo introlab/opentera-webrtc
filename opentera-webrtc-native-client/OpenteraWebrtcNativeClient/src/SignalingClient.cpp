@@ -660,10 +660,18 @@ unique_ptr<PeerConnectionHandler>
         {
             auto configuration = static_cast<webrtc::PeerConnectionInterface::RTCConfiguration>(m_webrtcConfiguration);
             unique_ptr<PeerConnectionHandler> handler = createPeerConnectionHandler(id(), peerClient, isCaller);
-            auto peerConnection = m_peerConnectionFactory->CreatePeerConnection(
+            auto peerConnection = m_peerConnectionFactory->CreatePeerConnectionOrError(
                 configuration,
                 webrtc::PeerConnectionDependencies(handler.get()));
-            handler->setPeerConnection(peerConnection);
+            if (peerConnection.ok())
+            {
+                handler->setPeerConnection(peerConnection.MoveValue());
+            }
+            else
+            {
+                throw std::runtime_error(
+                    std::string("Failed to create peer connection: ") + peerConnection.error().message());
+            }
             return handler;
         });
 }
