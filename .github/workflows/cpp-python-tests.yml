@@ -111,6 +111,7 @@ jobs:
           python -m pip install --user --upgrade sphinx
           python -m pip install --user --upgrade pybind11-stubgen
           python -m pip install --user --upgrade numpy
+          python -m pip install --user -r signaling-server/requirements.txt
 
       - name: Create build directory
         run: |
