@@ -4,12 +4,12 @@
 
 #include <subprocess.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <thread>
 
 using namespace opentera;
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 constexpr bool VerifyCertificate = false;
 

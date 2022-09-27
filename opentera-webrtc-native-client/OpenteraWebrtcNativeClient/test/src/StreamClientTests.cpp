@@ -6,7 +6,7 @@
 
 #include <subprocess.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <opencv2/core.hpp>
 
@@ -17,7 +17,7 @@
 
 using namespace opentera;
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 class ConstantVideoSource : public VideoSource
 {
