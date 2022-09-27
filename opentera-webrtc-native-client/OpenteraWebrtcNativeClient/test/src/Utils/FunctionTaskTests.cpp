@@ -25,7 +25,7 @@ protected:
 
 TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
 {
-    constexpr chrono::milliseconds SleepDuration = 100ms;
+    constexpr chrono::milliseconds SleepDuration = 500ms;
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
     int result = callSync(
@@ -39,8 +39,8 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_EQ(result, 10);
-    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count());
-    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count() * 2);
+    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration - 100ms).count());
+    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration + 300ms).count());
 }
 
 TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
@@ -63,7 +63,7 @@ TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
 
 TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 {
-    constexpr chrono::milliseconds SleepDuration = 100ms;
+    constexpr chrono::milliseconds SleepDuration = 500ms;
 
     bool flag = false;
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
@@ -78,8 +78,8 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_TRUE(flag);
-    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count());
-    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count() * 2);
+    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration - 100ms).count());
+    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration + 300ms).count());
 }
 
 TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldNotLock)
