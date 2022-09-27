@@ -43,6 +43,15 @@ jobs:
         run: echo "$HOME/.local/bin" >> $GITHUB_PATH
         if: runner.os == 'macOS'
 
+      - name: Use gcc-8 and g++-8 (ubuntu-18.04)
+        run: |
+          sudo apt-get install gcc-8 g++-8
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
+          sudo update-alternatives --set gcc /usr/bin/gcc-8
+          sudo update-alternatives --set g++ /usr/bin/g++-8
+        if: matrix.os == 'ubuntu-18.04'
+
       - name: Generate Version Output
         id: generate_version_output
         run: echo "::set-output name=version::$(cat VERSION)"
