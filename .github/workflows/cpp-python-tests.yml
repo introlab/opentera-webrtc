@@ -132,6 +132,12 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
           make -j2
           make install
+          echo "pip show opentera_webrtc"
+          echo $(python -m pip show opentera_webrtc)
+          echo "pip show opentera_webrtc.native_client"
+          echo $(python -m pip show opentera_webrtc.native_client)
+          echo "pip show opentera_webrtc.signaling_server"
+          echo $(python -m pip show opentera_webrtc.signaling_server)
 
       - name: Python native_client build cleanup
         working-directory: build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client
@@ -164,7 +170,7 @@ jobs:
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
           python -m pytest -v
 
       # With stdout
@@ -178,5 +184,5 @@ jobs:
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
           python -m pytest -v --capture=tee-sys
