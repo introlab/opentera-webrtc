@@ -131,7 +131,7 @@ jobs:
         run: |
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist\
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'\
-          -OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION='${{ matrix.python-version }}'
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION='${{ matrix.python-version }}'
           make -j2
           make install
           echo "pip show opentera_webrtc"
