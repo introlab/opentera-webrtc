@@ -106,7 +106,9 @@ jobs:
       - name: Run CMake and build opentera-webrtc
         working-directory: build
         run: |
-          cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=dist -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
+          cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=dist\
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'\
+          -OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION='${{ matrix.python-version }}'
           make -j2
           make install
 
@@ -138,7 +140,7 @@ jobs:
       - name: Run Python webrtc-native-client Tests
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then python -m pip install -r requirements.txt; fi
+          if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
           python -m pytest -v
 
       - name: Create Release
