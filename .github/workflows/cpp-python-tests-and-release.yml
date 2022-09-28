@@ -79,13 +79,13 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build cmake build-essential libssl-dev libboost-all-dev
-          sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
+          sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree perl
         if: runner.os == 'Linux'
 
       - name: Install system dependencies (macOS)
         run: |
           brew update
-          brew install ninja tree ca-certificates
+          brew install ninja tree ca-certificates perl
         if: runner.os == 'macOS'
 
       - name: Install python dependencies
@@ -108,7 +108,7 @@ jobs:
         run: |
           cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=dist \
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
-          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION='${{ matrix.python-version }}'
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python --version | perl -pe 's/Python //')"
           make -j2
           make install
 
