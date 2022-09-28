@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.14.0)
 
-message(STATUS " Python version: ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION}")
-
 file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION VERSION_FROM_FILE)
 string(REPLACE "." ";" VERSION_LIST ${VERSION_FROM_FILE})
 list(GET VERSION_LIST 0 OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION_MAJOR)
@@ -24,7 +22,7 @@ if (POLICY CMP0048)
 endif (POLICY CMP0048)
 
 if (POLICY CMP0094)
-    cmake_policy(SET CMP0094 OLD)
+    cmake_policy(SET CMP0094 NEW)
 endif (POLICY CMP0094)
 
 project(opentera-webrtc)
@@ -40,8 +38,6 @@ set(
     CACHE STRING
     "Specific Python version to use"
 )
-
-message(STATUS " Python version: ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION}")
 
 find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
 if(Python_FOUND)
