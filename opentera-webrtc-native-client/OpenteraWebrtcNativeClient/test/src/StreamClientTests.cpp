@@ -6,7 +6,7 @@
 
 #include <subprocess.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <opencv2/core.hpp>
 
@@ -17,7 +17,7 @@
 
 using namespace opentera;
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 class ConstantVideoSource : public VideoSource
 {
@@ -69,7 +69,7 @@ class SinAudioSource : public AudioSource
 public:
     explicit SinAudioSource(uint16_t amplitude)
         : AudioSource(
-              AudioSourceConfiguration::create(0, false, false, false, false, false, false, false, false),
+              AudioSourceConfiguration::create(0, false, false, false, false, false, false),
               BitsPerSample,
               SampleRate,
               NumberOfChannels),

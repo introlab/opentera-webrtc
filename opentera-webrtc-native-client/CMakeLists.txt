@@ -41,7 +41,7 @@ endfunction(assign_source_group)
 add_subdirectory(3rdParty)
 
 # Looked up again in case 3rdParty changed it
-find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
+find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
 if (Python_FOUND)
     set(PYTHON3_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
 else()

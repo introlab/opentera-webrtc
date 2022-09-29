@@ -6,7 +6,7 @@
 	url = https://github.com/introlab/socket.io-client-cpp.git
 [submodule "opentera-webrtc-native-client/3rdParty/cpp-subprocess"]
 	path = opentera-webrtc-native-client/3rdParty/cpp-subprocess
-	url = https://github.com/introlab/cpp-subprocess.git
+	url = https://github.com/arun11299/cpp-subprocess.git
 [submodule "opentera-webrtc-native-client/3rdParty/pybind11"]
 	path = opentera-webrtc-native-client/3rdParty/pybind11
 	url = https://github.com/pybind/pybind11.git
@@ -16,6 +16,3 @@
 [submodule "opentera-webrtc-native-client/3rdParty/opencv"]
 	path = opentera-webrtc-native-client/3rdParty/opencv
 	url = https://github.com/opencv/opencv.git
-[submodule "opentera-webrtc-native-client/3rdParty/boost-cmake"]
-	path = opentera-webrtc-native-client/3rdParty/boost-cmake
-	url = https://github.com/Orphis/boost-cmake.git

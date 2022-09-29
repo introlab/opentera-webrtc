@@ -31,14 +31,22 @@ if (NOT DEFINED CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "")
 endif ()
 
-find_package(Python 3 COMPONENTS Interpreter Development REQUIRED)
-if (Python_FOUND)
+# Python version
+set(
+    OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION
+    "3"
+    CACHE STRING
+    "Specific Python version to use"
+)
+
+find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
+if(Python_FOUND)
     set(PythonLibsNew_FIND_REQUIRED 0 CACHE INTERNAL "")
     set(PYTHON3_EXECUTABLE ${Python_EXECUTABLE} CACHE INTERNAL "")
     set(PYBIND11_PYTHON_VERSION ${Python_VERSION})
-else ()
+else()
     message(FATAL_ERROR "Python3 is not found")
-endif ()
+endif()
 
 # Default behavior is not to use system OpenCV
 option(OPENTERA_WEBRTC_USE_SYSTEM_OPENCV "Use system OpenCV library for linking" OFF)

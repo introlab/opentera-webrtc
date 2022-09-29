@@ -7,14 +7,6 @@ set (BUILD_SHARED_LIBS OFF)
 # webrtc_native must be first
 add_subdirectory(webrtc_native)
 
-if(WIN32)
-    set(BOOST_URL "https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.zip" CACHE STRING "")
-    set(BOOST_URL_SHA256 "85a94ac71c28e59cf97a96714e4c58a18550c227ac8b0388c260d6c717e47a69" CACHE STRING "")
-else()
-    set(BOOST_URL "https://boostorg.jfrog.io/artifactory/main/release/1.71.0/source/boost_1_71_0.tar.bz2" CACHE STRING "")
-    set(BOOST_URL_SHA256 "d73a8da01e8bf8c7eda40b4c84915071a8c8a0df4a6734537ddde4a8580524ee" CACHE STRING "")
-endif()
-add_subdirectory(boost-cmake)
 add_subdirectory(pybind11)
 add_subdirectory(socket.io-client-cpp)
 

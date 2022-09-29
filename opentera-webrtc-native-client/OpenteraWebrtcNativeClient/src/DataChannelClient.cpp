@@ -22,7 +22,7 @@ DataChannelClient::DataChannelClient(
 
 void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<string>& ids)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         getInternalClientThread(),
         [this, buffer, ids]()
         {
@@ -39,7 +39,7 @@ void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<st
 
 void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
 {
-    FunctionTask<void>::callAsync(
+    callAsync(
         getInternalClientThread(),
         [this, buffer]()
         {

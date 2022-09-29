@@ -1,5 +1,7 @@
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
+#include <functional>
+#include <memory>
 #include <utility>
 
 using namespace opentera;
@@ -30,12 +32,12 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          onVideoFrameReceived || onEncodedVideoFrameReceived,
-          hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived,
           move(sendEvent),
           move(onError),
           move(onClientConnected),
           move(onClientDisconnected)),
+      m_offerToReceiveAudio(hasOnMixedAudioFrameReceivedCallback || onAudioFrameReceived),
+      m_offerToReceiveVideo(static_cast<bool>(onVideoFrameReceived)),
       m_videoTrack(move(videoTrack)),
       m_audioTrack(move(audioTrack)),
       m_onAddRemoteStream(move(onAddRemoteStream)),
@@ -90,38 +92,31 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
 
 StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
 {
-    for (auto& stream : m_streams)
+    for (auto& track : m_tracks)
     {
-        VideoTrackVector videoTracks = stream->GetVideoTracks();
-        if (!videoTracks.empty() && m_videoSink != nullptr)
+        auto videoTrack = dynamic_cast<VideoTrackInterface*>(track.get());
+        if (videoTrack != nullptr)
         {
-            videoTracks.front()->RemoveSink(m_videoSink.get());
-        }
-        if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
-        {
-            videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
+            videoTrack->RemoveSink(m_videoSink.get());
         }
 
-        AudioTrackVector audioTracks = stream->GetAudioTracks();
-        if (!audioTracks.empty() && m_audioSink != nullptr)
+        auto audioTrack = dynamic_cast<AudioTrackInterface*>(track.get());
+        if (audioTrack != nullptr)
         {
-            audioTracks.front()->RemoveSink(m_audioSink.get());
+            audioTrack->RemoveSink(m_audioSink.get());
         }
     }
 }
 
 void StreamPeerConnectionHandler::setPeerConnection(const scoped_refptr<PeerConnectionInterface>& peerConnection)
 {
-    if (m_videoTrack != nullptr)
-    {
-        peerConnection->AddTrack(m_videoTrack, vector<string>());
-    }
-    if (m_audioTrack != nullptr)
-    {
-        peerConnection->AddTrack(m_audioTrack, vector<string>());
-    }
-
     PeerConnectionHandler::setPeerConnection(peerConnection);
+
+    if (m_isCaller)
+    {
+        addTransceiver(cricket::MEDIA_TYPE_VIDEO, m_videoTrack, m_offerToReceiveVideo);
+        addTransceiver(cricket::MEDIA_TYPE_AUDIO, m_audioTrack, m_offerToReceiveAudio);
+    }
 }
 
 void StreamPeerConnectionHandler::setAllAudioTracksEnabled(bool enabled)
@@ -134,47 +129,123 @@ void StreamPeerConnectionHandler::setAllVideoTracksEnabled(bool enabled)
     setAllTracksEnabled(MediaStreamTrackInterface::kVideoKind, enabled);
 }
 
-void StreamPeerConnectionHandler::OnAddStream(scoped_refptr<MediaStreamInterface> stream)
+void StreamPeerConnectionHandler::OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver)
 {
-    m_onAddRemoteStream(m_peerClient);
-    m_streams.insert(stream);
-
-    VideoTrackVector videoTracks = stream->GetVideoTracks();
-    if (!videoTracks.empty() && m_videoSink != nullptr)
+    if (m_tracks.empty())
     {
-        videoTracks.front()->AddOrUpdateSink(m_videoSink.get(), m_videoSink->wants());
+        m_onAddRemoteStream(m_peerClient);
     }
-    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
+    m_tracks.insert(transceiver->receiver()->track());
+
+    auto videoTrack = dynamic_cast<VideoTrackInterface*>(transceiver->receiver()->track().get());
+    if (videoTrack != nullptr && m_videoSink != nullptr)
     {
-        videoTracks.front()->GetSource()->AddEncodedSink(m_encodedVideoSink.get());
+        videoTrack->AddOrUpdateSink(m_videoSink.get(), m_videoSink->wants());
+    }
+    if (videoTrack != nullptr && m_encodedVideoSink != nullptr)
+    {
+        videoTrack->GetSource()->AddEncodedSink(m_encodedVideoSink.get());
     }
 
-    AudioTrackVector audioTracks = stream->GetAudioTracks();
-    if (!audioTracks.empty() && m_audioSink != nullptr)
+    auto audioTrack = dynamic_cast<AudioTrackInterface*>(transceiver->receiver()->track().get());
+    if (audioTrack != nullptr && m_audioSink != nullptr)
     {
-        audioTracks.front()->AddSink(m_audioSink.get());
+        audioTrack->AddSink(m_audioSink.get());
     }
 }
 
-void StreamPeerConnectionHandler::OnRemoveStream(scoped_refptr<MediaStreamInterface> stream)
+void StreamPeerConnectionHandler::OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver)
 {
-    m_onRemoveRemoteStream(m_peerClient);
-    m_streams.erase(stream);
-
-    VideoTrackVector videoTracks = stream->GetVideoTracks();
-    if (!videoTracks.empty() && m_videoSink != nullptr)
+    m_tracks.erase(receiver->track());
+    if (m_tracks.empty())
     {
-        videoTracks.front()->RemoveSink(m_videoSink.get());
-    }
-    if (!videoTracks.empty() && m_encodedVideoSink != nullptr)
-    {
-        videoTracks.front()->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
+        m_onRemoveRemoteStream(m_peerClient);
     }
 
-    AudioTrackVector audioTracks = stream->GetAudioTracks();
-    if (!audioTracks.empty() && m_audioSink != nullptr)
+    auto videoTrack = dynamic_cast<VideoTrackInterface*>(receiver->track().get());
+    if (videoTrack != nullptr && m_videoSink != nullptr)
     {
-        audioTracks.front()->RemoveSink(m_audioSink.get());
+        videoTrack->RemoveSink(m_videoSink.get());
+    }
+    if (videoTrack != nullptr && m_encodedVideoSink != nullptr)
+    {
+        videoTrack->GetSource()->RemoveEncodedSink(m_encodedVideoSink.get());
+    }
+
+    auto audioTrack = dynamic_cast<AudioTrackInterface*>(receiver->track().get());
+    if (audioTrack != nullptr && m_audioSink != nullptr)
+    {
+        audioTrack->RemoveSink(m_audioSink.get());
+    }
+}
+
+void StreamPeerConnectionHandler::createAnswer()
+{
+    updateTransceiver(cricket::MEDIA_TYPE_VIDEO, m_videoTrack, m_offerToReceiveVideo);
+    updateTransceiver(cricket::MEDIA_TYPE_AUDIO, m_audioTrack, m_offerToReceiveAudio);
+    PeerConnectionHandler::createAnswer();
+}
+
+void StreamPeerConnectionHandler::addTransceiver(
+    cricket::MediaType type,
+    rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track,
+    bool offerToReceive)
+{
+    RtpTransceiverInit init;
+
+    if (track != nullptr && offerToReceive)
+    {
+        init.direction = RtpTransceiverDirection::kSendRecv;
+        m_peerConnection->AddTransceiver(move(track), init);
+    }
+    else if (track != nullptr && !offerToReceive)
+    {
+        init.direction = RtpTransceiverDirection::kSendOnly;
+        m_peerConnection->AddTransceiver(move(track), init);
+    }
+    else if (offerToReceive)
+    {
+        init.direction = RtpTransceiverDirection::kRecvOnly;
+        m_peerConnection->AddTransceiver(type, init);
+    }
+}
+
+void StreamPeerConnectionHandler::updateTransceiver(
+    cricket::MediaType type,
+    rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> track,
+    bool offerToReceive)
+{
+    bool isTrackSet = false;
+    for (auto& transceiver : m_peerConnection->GetTransceivers())
+    {
+        if (transceiver->media_type() != type)
+        {
+            continue;
+        }
+
+        if (track != nullptr && offerToReceive)
+        {
+            setTransceiverDirection(transceiver, RtpTransceiverDirection::kSendRecv);
+            transceiver->sender()->SetTrack(track.get());
+            isTrackSet = true;
+        }
+        else if (track != nullptr && !offerToReceive)
+        {
+            setTransceiverDirection(transceiver, RtpTransceiverDirection::kSendOnly);
+            transceiver->sender()->SetTrack(track.get());
+            isTrackSet = true;
+        }
+        else if (!offerToReceive)
+        {
+            setTransceiverDirection(transceiver, RtpTransceiverDirection::kInactive);
+        }
+    }
+
+    if (track != nullptr && !isTrackSet)
+    {
+        RtpTransceiverInit init;
+        init.direction = RtpTransceiverDirection::kSendOnly;
+        m_peerConnection->AddTransceiver(move(track), init);
     }
 }
 

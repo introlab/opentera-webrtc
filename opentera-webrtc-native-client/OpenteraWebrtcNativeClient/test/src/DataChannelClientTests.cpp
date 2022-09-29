@@ -6,14 +6,14 @@
 
 #include <subprocess.hpp>
 
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #include <memory>
 #include <thread>
 
 using namespace opentera;
 using namespace std;
-namespace fs = boost::filesystem;
+namespace fs = std::filesystem;
 
 static const WebrtcConfiguration DefaultWebrtcConfiguration =
     WebrtcConfiguration::create({IceServer("stun:stun.l.google.com:19302")});

@@ -25,10 +25,10 @@ protected:
 
 TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
 {
-    constexpr chrono::milliseconds SleepDuration = 100ms;
+    constexpr chrono::milliseconds SleepDuration = 500ms;
 
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    int result = FunctionTask<int>::callSync(
+    int result = callSync(
         m_thread.get(),
         [this, SleepDuration]()
         {
@@ -39,17 +39,17 @@ TEST_F(FunctionTaskTests, callSync_int_shouldCallTheFunctionAndWaitTheResult)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_EQ(result, 10);
-    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count());
-    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count() * 2);
+    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration - 100ms).count());
+    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration + 300ms).count());
 }
 
 TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
 {
-    int result = FunctionTask<int>::callSync(
+    int result = callSync(
         m_thread.get(),
         [this]()
         {
-            return FunctionTask<int>::callSync(
+            return callSync(
                 m_thread.get(),
                 [this]()
                 {
@@ -63,11 +63,11 @@ TEST_F(FunctionTaskTests, callSync_intRecursive_shouldNotLock)
 
 TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
 {
-    constexpr chrono::milliseconds SleepDuration = 100ms;
+    constexpr chrono::milliseconds SleepDuration = 500ms;
 
     bool flag = false;
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callSync(
+    callSync(
         m_thread.get(),
         [this, SleepDuration, &flag]()
         {
@@ -78,18 +78,18 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndWait)
     chrono::steady_clock::time_point end = chrono::steady_clock::now();
 
     EXPECT_TRUE(flag);
-    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count());
-    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), SleepDuration.count() * 2);
+    EXPECT_GE(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration - 100ms).count());
+    EXPECT_LT(chrono::duration_cast<chrono::milliseconds>(end - begin).count(), (SleepDuration + 300ms).count());
 }
 
 TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldNotLock)
 {
     bool flag = false;
-    FunctionTask<void>::callSync(
+    callSync(
         m_thread.get(),
         [this, &flag]()
         {
-            FunctionTask<void>::callSync(
+            callSync(
                 m_thread.get(),
                 [this, &flag]()
                 {
@@ -107,7 +107,7 @@ TEST_F(FunctionTaskTests, callSync_void_shouldCallTheFunctionAndNotWait)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_thread.get(),
         [this, SleepDuration, &awaiter]()
         {
@@ -127,11 +127,11 @@ TEST_F(FunctionTaskTests, callSync_voidRecursive_shouldCallTheFunction)
 
     CallbackAwaiter awaiter(1, 1s);
     chrono::steady_clock::time_point begin = chrono::steady_clock::now();
-    FunctionTask<void>::callAsync(
+    callAsync(
         m_thread.get(),
         [this, SleepDuration, &awaiter]()
         {
-            FunctionTask<void>::callAsync(
+            callAsync(
                 m_thread.get(),
                 [this, SleepDuration, &awaiter]()
                 {
