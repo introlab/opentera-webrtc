@@ -73,7 +73,7 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
 	file(DOWNLOAD
 		${webrtc_native_build_archive_url}
 		${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
-		TIMEOUT 60 #seconds
+		TIMEOUT 300 #seconds
 		TLS_VERIFY ON
 		SHOW_PROGRESS)
 endif()
