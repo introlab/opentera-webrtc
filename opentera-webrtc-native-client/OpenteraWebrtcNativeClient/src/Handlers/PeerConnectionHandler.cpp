@@ -225,7 +225,6 @@ rtc::RefCountReleaseStatus PeerConnectionHandler::Release() const
     return rtc::RefCountReleaseStatus::kOtherRefsRemained;
 }
 
-
 void PeerConnectionHandler::createAnswer()
 {
     m_peerConnection->CreateAnswer(this, webrtc::PeerConnectionInterface::RTCOfferAnswerOptions());

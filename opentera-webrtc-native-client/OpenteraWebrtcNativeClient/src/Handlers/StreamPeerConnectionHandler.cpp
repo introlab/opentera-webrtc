@@ -1,6 +1,7 @@
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
-#include <algorithm>
+#include <functional>
+#include <memory>
 #include <utility>
 
 using namespace opentera;
