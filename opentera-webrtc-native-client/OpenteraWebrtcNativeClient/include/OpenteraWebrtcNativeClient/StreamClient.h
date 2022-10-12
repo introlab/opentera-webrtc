@@ -55,6 +55,7 @@ namespace opentera
         void muteLocalAudio();
         void unmuteLocalAudio();
         void setLocalAudioMuted(bool muted);
+        void setRemoteAudioMuted(bool muted);
 
         bool isLocalVideoMuted();
         void muteLocalVideo();

@@ -117,7 +117,25 @@ void StreamClient::setLocalAudioMuted(bool muted)
             this->m_isLocalAudioMuted = muted;
             for (auto& pair : m_peerConnectionHandlersById)
             {
-                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllLocalAudioTracksEnabled(!muted);
+            }
+        });
+}
+
+/**
+ * @brief Mutes or unmutes the remote audio.
+ * @param muted indicates if the remote audio is muted or not
+ */
+void StreamClient::setRemoteAudioMuted(bool muted)
+{
+    FunctionTask<void>::callSync(
+        getInternalClientThread(),
+        [this, muted]()
+        {
+            this->m_isLocalAudioMuted = muted;
+            for (auto& pair : m_peerConnectionHandlersById)
+            {
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllRemoteAudioTracksEnabled(!muted);
             }
         });
 }
