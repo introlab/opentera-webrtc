@@ -25,7 +25,7 @@ target_link_libraries(_opentera_webrtc_native_client PRIVATE
         ${PYTHON_LIBRARIES}
         )
 
-set_property(TARGET _opentera_webrtc_native_client PROPERTY CXX_STANDARD 14)
+set_property(TARGET _opentera_webrtc_native_client PROPERTY CXX_STANDARD 17)
 
 assign_source_group(${source_files})
 

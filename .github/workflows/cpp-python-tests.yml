@@ -13,13 +13,19 @@ on:
         required: false
         type: boolean
         default: false
+      fail_fast:
+        description: "Should stop the workflow as soon as one configuration fails"
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: ${{ github.event.inputs.fail_fast != 'false'}}
       matrix:
-        os: [ubuntu-20.04, ubuntu-18.04]
+        os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
 
@@ -33,34 +39,57 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Add .local/bin to PATH (macOS, automatic on Linux)
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
+        if: runner.os == 'macOS'
+
+      - name: Use gcc-8 and g++-8 (ubuntu-18.04)
+        run: |
+          sudo apt-get install gcc-8 g++-8
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 100
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 100
+          sudo update-alternatives --set gcc /usr/bin/gcc-8
+          sudo update-alternatives --set g++ /usr/bin/g++-8
+        if: matrix.os == 'ubuntu-18.04'
+
       - name: Generate Version Output
         id: generate_version_output
         run: echo "::set-output name=version::$(cat VERSION)"
-        shell: bash
 
       - name: Print Version Information
         run: echo "Version ${{ steps.generate_version_output.outputs.version }}"
-        shell: bash
 
       - name: Generate OS Release Output
         id: generate_os_release_name_output
-        run: echo "::set-output name=os_release_name::$(lsb_release -i -s)"
-        shell: bash
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_name::${{runner.os}}-$(lsb_release -i -s)"
+          else
+            echo "::set-output name=os_release_name::${{runner.os}}"
+          fi
 
       - name: Generate OS Release Version Output
         id: generate_os_release_version_output
-        run: echo "::set-output name=os_release_version::$(lsb_release -r -s)"
-        shell: bash
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_version::$(lsb_release -r -s)"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "::set-output name=os_release_version::$(cmake -P cmake/macos_get_version_script.cmake)"
+          fi
 
       - name: Generate OS Release Architecture Output
         id: generate_os_release_architecture_output
-        run: echo "::set-output name=os_release_architecture::$(uname -i)"
-        shell: bash
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            echo "::set-output name=os_release_architecture::$(uname -i)"
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            echo "::set-output name=os_release_architecture::$(uname -m)"
+          fi
 
       - name: Generate Release File Name
         id: generate_release_file_name
         run: |
-          echo "::set-output name=release_file_name::opentera-webrtc-native-client-${{runner.os}}-\
+          echo "::set-output name=release_file_name::\
           ${{ steps.generate_os_release_name_output.outputs.os_release_name }}-\
           ${{ steps.generate_os_release_version_output.outputs.os_release_version }}-\
           ${{ steps.generate_os_release_architecture_output.outputs.os_release_architecture }}-\
@@ -68,23 +97,30 @@ jobs:
 
       - name: Print Release File Name
         run: echo "Release File Name ${{ steps.generate_release_file_name.outputs.release_file_name }}"
-        shell: bash
 
-      - name: Install system dependencies
+      - name: Install system dependencies (Linux)
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build cmake build-essential libssl-dev libboost-all-dev
-          sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
+          sudo apt-get install libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree perl
+        if: runner.os == 'Linux'
+
+      - name: Install system dependencies (macOS)
+        run: |
+          brew update
+          brew install ninja tree ca-certificates perl
+        if: runner.os == 'macOS'
 
       - name: Install python dependencies
         run: |
-          python3 -m pip install --user --upgrade pip
-          python3 -m pip install --user --upgrade setuptools wheel
-          python3 -m pip install --user --upgrade twine
-          python3 -m pip install --user --upgrade pytest
-          python3 -m pip install --user --upgrade sphinx
-          python3 -m pip install --user --upgrade pybind11-stubgen
-          python3 -m pip install --user --upgrade numpy
+          python -m pip install --user --upgrade pip
+          python -m pip install --user --upgrade setuptools wheel
+          python -m pip install --user --upgrade twine
+          python -m pip install --user --upgrade pytest
+          python -m pip install --user --upgrade sphinx
+          python -m pip install --user --upgrade pybind11-stubgen
+          python -m pip install --user --upgrade numpy
+          python -m pip install --user -r signaling-server/requirements.txt
 
       - name: Create build directory
         run: |
@@ -93,7 +129,10 @@ jobs:
       - name: Run CMake and build opentera-webrtc
         working-directory: build
         run: |
-          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist
+          cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist \
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python --version | perl -pe 's/Python //')" \
+          -DPython_ROOT_DIR="${{ env.pythonLocation }}"
           make -j2
           make install
 
@@ -122,25 +161,25 @@ jobs:
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v opentera_webrtc/tests
+          python -m pytest -v opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests
         if: ${{ !github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          python3 -m pytest -v
+          if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
+          python -m pytest -v
 
       # With stdout
       - name: Run Python signaling-server Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: signaling-server
         run: |
-          python3 -m pytest -v --capture=tee-sys opentera_webrtc/tests
+          python -m pytest -v --capture=tee-sys opentera_webrtc/tests
 
       - name: Run Python webrtc-native-client Tests with STDOUT
         if: ${{ github.event.inputs.pytest_stdout }}
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
-          if [ -f requirements.txt ]; then pip3 install -r requirements.txt; fi
-          python3 -m pytest -v --capture=tee-sys
+          if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
+          python -m pytest -v --capture=tee-sys

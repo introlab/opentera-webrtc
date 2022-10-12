@@ -31,8 +31,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
                 absl::optional<bool>,
                 absl::optional<bool>,
                 absl::optional<bool>,
-                absl::optional<bool>,
-                absl::optional<bool>,
                 absl::optional<bool>>(&AudioSourceConfiguration::create),
             "Creates an audio source configuration with the specified values.\n"
             "\n"
@@ -43,9 +41,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             ":param noise_suppression: Enable or disable the noise suppression\n"
             ":param highpass_filter: Enable or disable the highpass filter\n"
             ":param stereo_swapping: Enable or disable the stereo swapping\n"
-            ":param typing_detection: Enable or disable the typing detection\n"
-            ":param residual_echo_detector: Enable or disable the residual echo "
-            "detector\n"
             ":param transient_suppression: Enable or disable the transient "
             "suppression\n"
             ":return: An audio source configuration with the specified values",
@@ -55,8 +50,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             py::arg("noise_suppression"),
             py::arg("highpass_filter"),
             py::arg("stereo_swapping"),
-            py::arg("typing_detection"),
-            py::arg("residual_echo_detector"),
             py::arg("transient_suppression"))
 
         .def_property_readonly(
@@ -89,16 +82,6 @@ void opentera::initAudioSourceConfigurationPython(py::module& m)
             &AudioSourceConfiguration::stereoSwapping,
             "Indicates if the stereo swapping is enabled.\n"
             ":return: true if the stereo swapping is enabled")
-        .def_property_readonly(
-            "typing_detection",
-            &AudioSourceConfiguration::typingDetection,
-            "Indicates if the typing detection is enabled.\n"
-            ":return: True if the typing detection is enabled")
-        .def_property_readonly(
-            "residual_echo_detector",
-            &AudioSourceConfiguration::residualEchoDetector,
-            "Indicates if the residual echo detector is enabled.\n"
-            ":return: True if the residual echo detector is enabled")
         .def_property_readonly(
             "transient_suppression",
             &AudioSourceConfiguration::transientSuppression,

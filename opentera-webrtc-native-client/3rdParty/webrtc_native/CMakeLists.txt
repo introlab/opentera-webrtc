@@ -1,14 +1,24 @@
-set(webrtc_native_build_version "4389.e7d9f7.130" CACHE INTERNAL "")
+set(webrtc_native_build_version "5195.42be4a.133" CACHE INTERNAL "")
 
 if(WIN32)
+	# Currently not supported
+	message(FATAL_ERROR "Windows not supported at this moment.")
 	set(architecture "win64")
-	set(archive_stem webrtc-native-build-msvc-2019-${architecture}-Release-${webrtc_native_build_version})
+	set(archive_stem webrtc-native-build-msvc-2019-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
 	set(archive_extension "zip")
 elseif(UNIX)
 	set(archive_extension "tar.gz")
 	if(APPLE)
 		set(architecture "osx64")
-		set(archive_stem webrtc-native-build-macos-10.15-${architecture}-Release-${webrtc_native_build_version})
+
+		include(${CMAKE_SOURCE_DIR}/cmake/macos_get_version.cmake)
+		get_macos_sw_vers_product_version()
+
+		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "11" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "12")
+			message(FATAL_ERROR "MacOS version not supported: ${SW_VERS_VERSION_SHORT}, must be 11 or 12.")
+		endif()
+
+		set(archive_stem webrtc-native-build-macos-${SW_VERS_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
 	else(APPLE)
 		# Taken from : https://stackoverflow.com/questions/26919334/detect-underlying-platform-flavour-in-cmake
 		function(get_linux_lsb_release_information)
@@ -44,11 +54,11 @@ elseif(UNIX)
 			message(FATAL_ERROR "System not supported: ${LSB_RELEASE_ID_SHORT}, must be ubuntu")
 		endif()
 
-		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04")
-			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04 or 20.04.")
+		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "18.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "22.04")
+			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 18.04, 20.04 or 22.04.")
 		endif()
 
-		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-Release-${webrtc_native_build_version})
+		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
 	endif(APPLE)
 else()
     message(FATAL_ERROR "Unsupported operating system.")
@@ -63,12 +73,12 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
 	file(DOWNLOAD
 		${webrtc_native_build_archive_url}
 		${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
-		TIMEOUT 60 #seconds
+		TIMEOUT 300 #seconds
 		TLS_VERIFY ON
 		SHOW_PROGRESS)
 endif()
 
-set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}")
+set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}-${CMAKE_BUILD_TYPE}")
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
@@ -77,15 +87,18 @@ if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
 			message(FATAL_ERROR "CMake version 3.18.0 or higher is required to extract archives.")
 		endif()
 		execute_process(
-			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+			COMMAND mkdir ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
+			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} -C ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 	else()
-		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR})
+		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
 	endif()
 endif()
 
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
-	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem} ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}/webrtc-native-build-${webrtc_native_build_version}
+		${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
+	file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
 endif()
 
 set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")

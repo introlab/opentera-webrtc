@@ -107,9 +107,7 @@ namespace opentera
      */
     inline void DataChannelClient::setOnDataChannelOpened(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onDataChannelOpened = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onDataChannelOpened = callback; });
     }
 
     /**
@@ -126,9 +124,7 @@ namespace opentera
      */
     inline void DataChannelClient::setOnDataChannelClosed(const std::function<void(const Client&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onDataChannelClosed = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onDataChannelClosed = callback; });
     }
 
     /**
@@ -147,9 +143,7 @@ namespace opentera
     inline void
         DataChannelClient::setOnDataChannelError(const std::function<void(const Client&, const std::string&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onDataChannelError = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onDataChannelError = callback; });
     }
 
     /**
@@ -169,9 +163,7 @@ namespace opentera
     inline void DataChannelClient::setOnDataChannelMessageBinary(
         const std::function<void(const Client&, const uint8_t*, std::size_t)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onDataChannelMessageBinary = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onDataChannelMessageBinary = callback; });
     }
 
     /**
@@ -190,9 +182,7 @@ namespace opentera
     inline void DataChannelClient::setOnDataChannelMessageString(
         const std::function<void(const Client&, const std::string&)>& callback)
     {
-        FunctionTask<void>::callSync(
-            getInternalClientThread(),
-            [this, &callback]() { m_onDataChannelMessageString = callback; });
+        callSync(getInternalClientThread(), [this, &callback]() { m_onDataChannelMessageString = callback; });
     }
 }
 

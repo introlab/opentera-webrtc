@@ -18,6 +18,7 @@ class DataChannelClient extends SignalingClient {
 
     this._dataChannelConfiguration = dataChannelConfiguration;
     this._rtcConfiguration = rtcConfiguration;
+    this._rtcConfiguration['sdpSemantics'] = 'unified-plan';
 
     this._dataChannels = {};
 

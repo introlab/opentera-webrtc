@@ -3,9 +3,6 @@
 using namespace opentera;
 using namespace std;
 
-static constexpr bool OfferToReceiveVideo = false;
-static constexpr bool OfferToReceiveAudio = false;
-
 DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
     string id,
     Client peerClient,
@@ -25,8 +22,6 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          OfferToReceiveVideo,
-          OfferToReceiveAudio,
           move(sendEvent),
           move(onError),
           move(onClientConnected),
@@ -64,14 +59,15 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     if (m_isCaller)
     {
         auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
-        m_dataChannel = m_peerConnection->CreateDataChannel(m_room, &configuration);
-        if (m_dataChannel)
+        auto dataChannelOrError = m_peerConnection->CreateDataChannelOrError(m_room, &configuration);
+        if (dataChannelOrError.ok())
         {
+            m_dataChannel = dataChannelOrError.MoveValue();
             m_dataChannel->RegisterObserver(this);
         }
         else
         {
-            m_onError("CreateDataChannel failed");
+            m_onError(std::string("CreateDataChannel failed: ") + dataChannelOrError.error().message());
         }
     }
 }
@@ -127,4 +123,19 @@ void DataChannelPeerConnectionHandler::OnMessage(const webrtc::DataBuffer& buffe
     {
         m_onDataChannelMessageString(m_peerClient, string(buffer.data.data<char>(), buffer.size()));
     }
+}
+
+void DataChannelPeerConnectionHandler::createAnswer()
+{
+    for (auto& transceiver : m_peerConnection->GetTransceivers())
+    {
+        if (transceiver->media_type() != cricket::MEDIA_TYPE_AUDIO &&
+            transceiver->media_type() != cricket::MEDIA_TYPE_VIDEO)
+        {
+            continue;
+        }
+        setTransceiverDirection(transceiver, webrtc::RtpTransceiverDirection::kInactive);
+    }
+
+    PeerConnectionHandler::createAnswer();
 }
