@@ -3,7 +3,6 @@
 #include <functional>
 #include <memory>
 #include <utility>
-#include <iostream>
 
 using namespace opentera;
 using namespace rtc;

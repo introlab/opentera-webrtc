@@ -128,7 +128,7 @@ void StreamClient::setLocalAudioMuted(bool muted)
  */
 void StreamClient::setRemoteAudioMuted(bool muted)
 {
-    FunctionTask<void>::callSync(
+    callSync(
         getInternalClientThread(),
         [this, muted]()
         {
