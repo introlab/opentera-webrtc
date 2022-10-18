@@ -245,7 +245,7 @@ class SignalingClient {
       case 'connected':
         this._logger('RtcPeerConnection connected event id=', id);
 
-        this._onClientConnect(id, this.getClientName(id), this.getClientData(id));
+        this._onClientConnect();
         break;
 
       case 'disconnected':
@@ -271,7 +271,7 @@ class SignalingClient {
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
       delete this._rtcPeerConnections[id];
       this._alreadyAcceptedCalls = this._alreadyAcceptedCalls.filter(x => x != id);
-      this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
+      this._onClientDisconnect(id);
     }
   }
 
@@ -315,7 +315,7 @@ class SignalingClient {
     for (let id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
-      this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
+      this._onClientDisconnect(id);
       delete this._rtcPeerConnections[id];
     }
     this._alreadyAcceptedCalls = [];

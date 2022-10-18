@@ -61,7 +61,7 @@ class DataChannelClient extends SignalingClient {
 
   _connectDataChannelEvents(id, dataChannel) {
     dataChannel.onmessage = event => {
-      this._onDataChannelMessage(id, this.getClientName(id), this.getClientData(id), event.data);
+      this._onDataChannelMessage(event.data);
     };
     dataChannel.onopen = () => {
       this._logger('onDataChannelOpen, id=', id);
