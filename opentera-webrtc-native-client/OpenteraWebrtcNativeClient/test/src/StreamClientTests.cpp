@@ -177,30 +177,52 @@ TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
         DefaultWebrtcConfiguration);
 
     EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isRemoteAudioMuted());
     EXPECT_FALSE(client->isLocalVideoMuted());
 
     client->muteLocalAudio();
     EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isRemoteAudioMuted());
     EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->muteRemoteAudio();
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isRemoteAudioMuted());
+    EXPECT_FALSE(client->isRemoteVideoMuted());
 
     client->muteLocalVideo();
     EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isRemoteAudioMuted());
     EXPECT_TRUE(client->isLocalVideoMuted());
 
     client->unmuteLocalAudio();
     EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isRemoteAudioMuted());
+    EXPECT_TRUE(client->isLocalVideoMuted());
+
+    client->unmuteRemoteAudio();
+    EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isRemoteAudioMuted());
     EXPECT_TRUE(client->isLocalVideoMuted());
 
     client->unmuteLocalVideo();
     EXPECT_FALSE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isRemoteAudioMuted());
     EXPECT_FALSE(client->isLocalVideoMuted());
 
     client->setLocalAudioMuted(true);
     EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_FALSE(client->isRemoteAudioMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
+
+    client->setRemoteAudioMuted(true);
+    EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isRemoteAudioMuted());
     EXPECT_FALSE(client->isLocalVideoMuted());
 
     client->setLocalVideoMuted(true);
     EXPECT_TRUE(client->isLocalAudioMuted());
+    EXPECT_TRUE(client->isRemoteAudioMuted());
     EXPECT_TRUE(client->isLocalVideoMuted());
 }
 

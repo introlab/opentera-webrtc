@@ -228,6 +228,22 @@ void opentera::initStreamClientPython(pybind11::module& m)
             "Unmutes the local audio.")
 
         .def_property(
+            "is_remote_audio_muted",
+            GilScopedRelease<StreamClient>::guard(&StreamClient::isRemoteAudioMuted),
+            GilScopedRelease<StreamClient>::guard(&StreamClient::setRemoteAudioMuted),
+            "Indicates if the remote audio is muted.")
+        .def(
+            "mute_remote_audio",
+            &StreamClient::muteRemoteAudio,
+            py::call_guard<py::gil_scoped_release>(),
+            "Mutes the remote audio.")
+        .def(
+            "unmute_remote_audio",
+            &StreamClient::unmuteRemoteAudio,
+            py::call_guard<py::gil_scoped_release>(),
+            "Unmutes the remote audio.")
+
+        .def_property(
             "is_local_video_muted",
             GilScopedRelease<StreamClient>::guard(&StreamClient::isLocalVideoMuted),
             GilScopedRelease<StreamClient>::guard(&StreamClient::setLocalVideoMuted),

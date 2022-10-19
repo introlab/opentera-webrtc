@@ -131,28 +131,50 @@ class StreamClientTestCase(FailureTestCase):
             webrtc.WebrtcConfiguration.create())
 
         self.assertFalse(client.is_local_audio_muted)
+        self.assertFalse(client.is_remote_audio_muted)
         self.assertFalse(client.is_local_video_muted)
 
         client.mute_local_audio()
         self.assertTrue(client.is_local_audio_muted)
+        self.assertFalse(client.is_remote_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.mute_remote_audio()
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_remote_audio_muted)
         self.assertFalse(client.is_local_video_muted)
 
         client.mute_local_video()
         self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_remote_audio_muted)
         self.assertTrue(client.is_local_video_muted)
 
         client.unmute_local_audio()
         self.assertFalse(client.is_local_audio_muted)
+        self.assertTrue(client.is_remote_audio_muted)
+        self.assertTrue(client.is_local_video_muted)
+
+        client.unmute_remote_audio()
+        self.assertFalse(client.is_local_audio_muted)
+        self.assertFalse(client.is_remote_audio_muted)
         self.assertTrue(client.is_local_video_muted)
 
         client.unmute_local_video()
         self.assertFalse(client.is_local_audio_muted)
+        self.assertFalse(client.is_remote_audio_muted)
         self.assertFalse(client.is_local_video_muted)
 
         client.is_local_audio_muted = True
         self.assertTrue(client.is_local_audio_muted)
+        self.assertFalse(client.is_remote_audio_muted)
+        self.assertFalse(client.is_local_video_muted)
+
+        client.is_remote_audio_muted = True
+        self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_remote_audio_muted)
         self.assertFalse(client.is_local_video_muted)
 
         client.is_local_video_muted = True
         self.assertTrue(client.is_local_audio_muted)
+        self.assertTrue(client.is_remote_audio_muted)
         self.assertTrue(client.is_local_video_muted)

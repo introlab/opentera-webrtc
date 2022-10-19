@@ -132,7 +132,7 @@ void StreamClient::setRemoteAudioMuted(bool muted)
         getInternalClientThread(),
         [this, muted]()
         {
-            this->m_isLocalAudioMuted = muted;
+            this->m_isRemoteAudioMuted = muted;
             for (auto& pair : m_peerConnectionHandlersById)
             {
                 dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllRemoteAudioTracksEnabled(!muted);
