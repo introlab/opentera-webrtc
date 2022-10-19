@@ -188,7 +188,7 @@ TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
     client->muteRemoteAudio();
     EXPECT_TRUE(client->isLocalAudioMuted());
     EXPECT_TRUE(client->isRemoteAudioMuted());
-    EXPECT_FALSE(client->isRemoteVideoMuted());
+    EXPECT_FALSE(client->isLocalVideoMuted());
 
     client->muteLocalVideo();
     EXPECT_TRUE(client->isLocalAudioMuted());
