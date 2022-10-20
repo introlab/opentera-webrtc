@@ -16,6 +16,7 @@ StreamClient::StreamClient(
     : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
 }
@@ -36,6 +37,7 @@ StreamClient::StreamClient(
       m_videoSource(move(videoSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
 }
@@ -56,6 +58,7 @@ StreamClient::StreamClient(
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
@@ -84,6 +87,7 @@ StreamClient::StreamClient(
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)

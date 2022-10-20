@@ -125,7 +125,7 @@ class StreamClientTestCase(FailureTestCase):
         self.assertAlmostEqual(self._mean_color_2[1], 0, delta=15)
         self.assertAlmostEqual(self._mean_color_2[2], 255, delta=15)
 
-    def mute_methods__should_set_the_flag_accordingly(self):
+    def test_mute_methods__should_set_the_flag_accordingly(self):
         client = webrtc.StreamClient(
             webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create())
