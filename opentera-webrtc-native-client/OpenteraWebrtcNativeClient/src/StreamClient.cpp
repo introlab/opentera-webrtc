@@ -16,6 +16,7 @@ StreamClient::StreamClient(
     : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
 }
@@ -36,6 +37,7 @@ StreamClient::StreamClient(
       m_videoSource(move(videoSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
 }
@@ -56,6 +58,7 @@ StreamClient::StreamClient(
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
@@ -84,6 +87,7 @@ StreamClient::StreamClient(
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
+      m_isRemoteAudioMuted(false),
       m_isLocalVideoMuted(false)
 {
     if (m_audioSource != nullptr)
@@ -117,7 +121,25 @@ void StreamClient::setLocalAudioMuted(bool muted)
             this->m_isLocalAudioMuted = muted;
             for (auto& pair : m_peerConnectionHandlersById)
             {
-                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllAudioTracksEnabled(!muted);
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllLocalAudioTracksEnabled(!muted);
+            }
+        });
+}
+
+/**
+ * @brief Mutes or unmutes the remote audio.
+ * @param muted indicates if the remote audio is muted or not
+ */
+void StreamClient::setRemoteAudioMuted(bool muted)
+{
+    callSync(
+        getInternalClientThread(),
+        [this, muted]()
+        {
+            this->m_isRemoteAudioMuted = muted;
+            for (auto& pair : m_peerConnectionHandlersById)
+            {
+                dynamic_cast<StreamPeerConnectionHandler*>(pair.second.get())->setAllRemoteAudioTracksEnabled(!muted);
             }
         });
 }

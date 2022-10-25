@@ -189,6 +189,10 @@ class StreamDataChannelClient extends SignalingClient {
     return this._isLocalAudioMuted;
   }
 
+  get isRemoteAudioMuted() {
+    return this._isRemoteAudioMuted;
+  }
+
   get isLocalVideoMuted() {
     return this._isLocalVideoMuted;
   }
@@ -204,6 +208,19 @@ class StreamDataChannelClient extends SignalingClient {
   setLocalAudioMuted(muted) {
     this._isLocalAudioMuted = muted;
     this._setAllLocalTracksEnabled('audio', !muted);
+  }
+
+  muteRemoteAudio() {
+    this.setRemoteAudioMuted(true);
+  }
+
+  unmuteRemoteAudio() {
+    this.setRemoteAudioMuted(false);
+  }
+
+  setLocalRemoteMuted(muted) {
+    this._isRemoteAudioMuted = muted;
+    this._setAllRemoteTracksEnabled('audio', !muted);
   }
 
   muteLocalVideo() {
@@ -225,6 +242,17 @@ class StreamDataChannelClient extends SignalingClient {
       senders.forEach(sender => {
         if (sender.track.kind == kind) {
           sender.track.enabled = enabled;
+        }
+      });
+    });
+  }
+
+  _setAllRemoteTracksEnabled(kind, enabled) {
+    this._getAllRtcPeerConnection().forEach(rtcPeerConnection => {
+      let receivers = rtcPeerConnection.getReceivers();
+      receivers.forEach(receiver => {
+        if (receiver.track.kind == kind) {
+          receiver.track.enabled = enabled;
         }
       });
     });

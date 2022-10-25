@@ -27,6 +27,7 @@ namespace opentera
         AudioFrameReceivedCallback m_onAudioFrameReceived;
 
         bool m_isLocalAudioMuted;
+        bool m_isRemoteAudioMuted;
         bool m_isLocalVideoMuted;
 
     public:
@@ -55,6 +56,11 @@ namespace opentera
         void muteLocalAudio();
         void unmuteLocalAudio();
         void setLocalAudioMuted(bool muted);
+        
+        bool isRemoteAudioMuted();
+        void muteRemoteAudio();
+        void unmuteRemoteAudio();
+        void setRemoteAudioMuted(bool muted);
 
         bool isLocalVideoMuted();
         void muteLocalVideo();
@@ -92,6 +98,25 @@ namespace opentera
      * @brief Unmutes the local audio.
      */
     inline void StreamClient::unmuteLocalAudio() { setLocalAudioMuted(false); }
+    
+    /**
+     * @brief Indicates if the remote audio is muted.
+     * @return true if the remote audio is muted.
+     */
+    inline bool StreamClient::isRemoteAudioMuted()
+    {
+        return callSync(getInternalClientThread(), [this]() { return m_isRemoteAudioMuted; });
+    }
+
+    /**
+     * @brief Mutes the remote audio.
+     */
+    inline void StreamClient::muteRemoteAudio() { setRemoteAudioMuted(true); }
+
+    /**
+     * @brief Unmutes the remote audio.
+     */
+    inline void StreamClient::unmuteRemoteAudio() { setRemoteAudioMuted(false); }
 
     /**
      * @brief Indicates if the local video is muted.

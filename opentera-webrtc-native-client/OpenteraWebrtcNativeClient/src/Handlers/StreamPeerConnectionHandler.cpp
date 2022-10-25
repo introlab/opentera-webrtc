@@ -119,14 +119,19 @@ void StreamPeerConnectionHandler::setPeerConnection(const scoped_refptr<PeerConn
     }
 }
 
-void StreamPeerConnectionHandler::setAllAudioTracksEnabled(bool enabled)
+void StreamPeerConnectionHandler::setAllLocalAudioTracksEnabled(bool enabled)
 {
-    setAllTracksEnabled(MediaStreamTrackInterface::kAudioKind, enabled);
+    setAllLocalTracksEnabled(MediaStreamTrackInterface::kAudioKind, enabled);
+}
+
+void StreamPeerConnectionHandler::setAllRemoteAudioTracksEnabled(bool enabled)
+{
+    setAllRemoteTracksEnabled(MediaStreamTrackInterface::kAudioKind, enabled);
 }
 
 void StreamPeerConnectionHandler::setAllVideoTracksEnabled(bool enabled)
 {
-    setAllTracksEnabled(MediaStreamTrackInterface::kVideoKind, enabled);
+    setAllLocalTracksEnabled(MediaStreamTrackInterface::kVideoKind, enabled);
 }
 
 void StreamPeerConnectionHandler::OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver)
@@ -249,11 +254,23 @@ void StreamPeerConnectionHandler::updateTransceiver(
     }
 }
 
-void StreamPeerConnectionHandler::setAllTracksEnabled(const char* kind, bool enabled)
+void StreamPeerConnectionHandler::setAllLocalTracksEnabled(const char* kind, bool enabled)
 {
     for (auto& sender : m_peerConnection->GetSenders())
     {
         auto track = sender->track();
+        if (track && track->kind() == kind)
+        {
+            track->set_enabled(enabled);
+        }
+    }
+}
+
+void StreamPeerConnectionHandler::setAllRemoteTracksEnabled(const char* kind, bool enabled)
+{
+    for (auto& receiver : m_peerConnection->GetReceivers())
+    {
+        auto track = receiver->track();
         if (track && track->kind() == kind)
         {
             track->set_enabled(enabled);
