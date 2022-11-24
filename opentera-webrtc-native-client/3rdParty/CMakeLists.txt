@@ -51,6 +51,5 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
 
 endif()
 
-
 install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include
     	FILES_MATCHING PATTERN "*.h")

@@ -5,6 +5,7 @@
 #include <api/create_peerconnection_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
+#include "FactoryBuilders.h"
 
 using namespace opentera;
 using namespace std;
@@ -67,6 +68,7 @@ SignalingClient::SignalingClient(
         webrtc::CreateBuiltinAudioDecoderFactory(),
         webrtc::CreateBuiltinVideoEncoderFactory(),
         webrtc::CreateBuiltinVideoDecoderFactory(),
+        //        opentera::createGStreamerVideoDecoderFactory(),
         nullptr,  // Audio mixer,
         m_audioProcessing);
 
