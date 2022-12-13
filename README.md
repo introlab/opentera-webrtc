@@ -52,6 +52,7 @@ By default, libwebrtc is built with non-free codecs. See [webrtc-native-build](h
 * Cédric Godin (@godced)
 * Dominic Létourneau (@doumdi)
 * Philippe Warren (@philippewarren)
+* Ian-Mathieu Joly (@joli-1801)
 
 ## License
 
