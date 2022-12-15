@@ -1,13 +1,27 @@
+/*
+ *  Copyright 2022 IntRoLab
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #pragma once
 
 #include <memory>
 #include <type_traits>
-extern "C"
-{
+#include <iostream>
+
 #include <gst/gst.h>
 #include <gst/video/video.h>
-}
-#include <iostream>
 
 namespace gst
 {
@@ -17,7 +31,7 @@ namespace gst
         // Gst type that we wish to delete
         // Everything else won't compile, so that we can catch undefined deleters and add
         // them to this list
-        // This templated functiom is then used by a class gst::gst_delete, which is
+        // This templated function is then used by a class gst::gst_delete, which is
         // implemented based on the standard std::default_delete
         template<typename T>
         inline void gst_deleter(T*) = delete;
@@ -37,8 +51,14 @@ namespace gst
         template<>
         inline void gst_deleter<GstElement>(GstElement* element)
         {
-            std::cout << "Set element to null state and delete\n";
-            gst_element_set_state(element, GST_STATE_NULL);
+            std::cout << "Delete element\n";
+            gst_object_unref(element);
+        }
+        template<>
+        inline void gst_deleter<GstPipeline>(GstPipeline* element)
+        {
+            std::cout << "Set pipeline to null state and delete\n";
+            gst_element_set_state(GST_ELEMENT(element), GST_STATE_NULL);
             gst_object_unref(element);
         }
         template<>
@@ -75,7 +95,7 @@ namespace gst
         template<>
         inline void gst_deleter<GstSample>(GstSample* element)
         {
-            std::cout << "Delete sample\n";
+            std::cout << "Delete sample " << std::hex << element << std::dec << "\n";
             gst_sample_unref(element);
         }
         template<>
@@ -102,68 +122,7 @@ namespace gst
             return static_cast<T>(static_cast<int>(a) | static_cast<int>(b));
         }
 
-    }
-
-    // Inspired from std::out_ptr_t in the C++23 standard
-    // (cppreference: https://en.cppreference.com/w/cpp/memory/out_ptr_t)
-    // (MSVC implementation:
-    // https://github.com/microsoft/STL/blob/2f03bdf361f7f153b4216c60a0d9491c0be13a73/stl/inc/memory)
-    // (Pete Woods/Canonical implementation for GStreamer for Unity:
-    // https://github.com/pete-woods/unity-api/blob/master/include/unity/util/GlibMemory.h)
-    template<typename Smart, typename P>
-    class out_ptr_t
-    {
-    public:
-        using ElementType = std::remove_pointer_t<P>;
-
-        explicit out_ptr_t(Smart& s) noexcept : smart_(s) {}
-
-        out_ptr_t(const out_ptr_t&) = delete;
-        out_ptr_t& operator=(const out_ptr_t&) = delete;
-
-        out_ptr_t(out_ptr_t&& other) noexcept : smart_(other.smart_), ptr_(other.ptr_)
-        {
-            if (this != &other)
-            {
-                other.ptr_ = nullptr;
-            }
-        }
-        out_ptr_t& operator=(out_ptr_t&& other) noexcept
-        {
-            if (this != &other)
-            {
-                smart_ = other.smart_;
-                ptr_ = other.ptr_;
-                other.ptr_ = nullptr;
-            }
-            return *this;
-        }
-        ~out_ptr_t() noexcept { smart_.reset(ptr_); }
-
-        operator P*() noexcept { return std::addressof(ptr_); }
-
-    private:
-        Smart& smart_;
-        P ptr_ = nullptr;
-    };
-
-    // Inspired from std::out_ptr in the C++23 standard
-    // (cppreference: https://en.cppreference.com/w/cpp/memory/out_ptr_t/out_ptr)
-    template<typename Pointer = void, typename Smart>
-    inline auto out_ptr(Smart& s)
-    {
-        std::cout << "Creating out_ptr\n";
-        if constexpr (!std::is_void_v<Pointer>)
-        {
-            std::cout << "Using Pointer\n";
-            return out_ptr_t<Smart, Pointer>(s);
-        }
-        else
-        {
-            std::cout << "Using Smart::pointer\n";
-            return out_ptr_t<Smart, typename Smart::pointer>(s);
-        }
-    }
+    }  // namespace internal
 
     // RAII wrapper for GStreamer initialization/deinitialization
     class Gst
@@ -188,39 +147,30 @@ namespace gst
     // Interface inspired from std::default_delete
     // (cppreference: https://en.cppreference.com/w/cpp/memory/default_delete)
     template<typename T>
-    class gst_delete
+    struct gst_delete
     {
-    public:
-        constexpr gst_delete() noexcept = default;
-
-        template<typename U, typename = std::enable_if_t<std::is_convertible<U*, T*>::value>>
-        gst_delete(const gst_delete<U>& d) noexcept : gst_delete(d)
-        {
-        }
-
-        template<typename U, typename = std::enable_if_t<std::is_convertible<U (*)[], T (*)[]>::value>>
-        gst_delete(const gst_delete<U[]>& d) noexcept : gst_delete(d)
-        {
-        }
-
         void operator()(T* element) const { gst::internal::gst_deleter<T>(element); }
     };
 
     // Our own unique_ptr specialization that uses gst_delete as deleter
     template<typename T>
     using unique_ptr = std::unique_ptr<T, gst::gst_delete<T>>;
-    // // Easily create a gst::unique_ptr from a raw pointer using TAD, while
+
+    // Easily create a gst::unique_ptr from a raw pointer using TAD, while
     // default-constructing the deleter
     template<typename T>
     inline auto unique_from_ptr(T* ptr)
     {
         return gst::unique_ptr<T>(ptr);
     }
+
+    // Easily create a std::shared_ptr from a raw pointer using TAD, using a gst::gst_delete deleter
     template<typename T>
     inline auto shared_from_ptr(T* ptr)
     {
         return std::shared_ptr<T>(ptr, gst::gst_delete<T>{});
     }
+
     // RAII wrapper for request pads, which need a reference to the element from which
     // they come for cleanup
     class GstRequestPad
@@ -246,7 +196,7 @@ namespace gst
         GstElement* element_;
         gst::unique_ptr<GstPad> pad_;
     };
-}
+}  // namespace gst
 
 // Remove required static_cast when using some GStreamer enums as bitmasks/flags
 inline GstMessageType operator|(GstMessageType a, GstMessageType b)

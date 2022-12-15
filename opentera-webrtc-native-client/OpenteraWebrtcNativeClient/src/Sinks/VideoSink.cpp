@@ -41,9 +41,6 @@ void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
     // Transform data from 3 array in I420 buffer to one cv::Mat in yuv
     m_bgrImg.create(frame.height(), frame.width(), CV_8UC3);
 
-    frame.video_frame_buffer();
-    auto i420 = frame.video_frame_buffer()->GetI420();
-
     int err = libyuv::ConvertFromI420(
         frame.video_frame_buffer()->GetI420()->DataY(),
         frame.video_frame_buffer()->GetI420()->StrideY(),

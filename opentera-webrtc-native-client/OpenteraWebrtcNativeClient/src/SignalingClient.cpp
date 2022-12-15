@@ -66,9 +66,10 @@ SignalingClient::SignalingClient(
         m_audioDeviceModule,
         webrtc::CreateBuiltinAudioEncoderFactory(),
         webrtc::CreateBuiltinAudioDecoderFactory(),
-        webrtc::CreateBuiltinVideoEncoderFactory(),
-        webrtc::CreateBuiltinVideoDecoderFactory(),
-        //        opentera::createGStreamerVideoDecoderFactory(),
+        // webrtc::CreateBuiltinVideoEncoderFactory(),
+        opentera::createGStreamerVideoEncoderFactoryOrFallbackToBuiltin(),
+        // webrtc::CreateBuiltinVideoDecoderFactory(),
+        opentera::createGStreamerVideoDecoderFactory(),
         nullptr,  // Audio mixer,
         m_audioProcessing);
 
