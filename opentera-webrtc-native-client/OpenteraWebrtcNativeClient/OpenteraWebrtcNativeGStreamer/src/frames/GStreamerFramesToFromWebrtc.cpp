@@ -23,13 +23,8 @@
  */
 
 #include "GStreamerFramesToFromWebrtc.h"
-#include <gst/video/video.h>
-#include <api/video/video_frame.h>
-#include <api/video/i420_buffer.h>
-#include <common_video/include/video_frame_buffer.h>
+
 #include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-#include "gst/gst.h"
-#include <thread>
 
 // TODO: Split this file
 

@@ -15,7 +15,3 @@ These have no dependency whatsoever on the Apple files.
 Every source file is identified with a header comment that contains the license.
 
 The component as a whole is therefore licensed under the LGPLv3.
-
-# WebCore
-
-The files from WebCore were taken from [here](https://opensource.apple.com/source/WebCore/WebCore-7611.3.10.0.1/platform/mediastream/libwebrtc/).

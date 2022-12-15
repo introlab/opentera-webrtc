@@ -25,21 +25,18 @@
 #include "GStreamerVideoDecoderFactory.h"
 
 #include <gst/gst.h>
-#include <glib.h>
 #include <gst/app/gstappsink.h>
 #include <gst/app/gstappsrc.h>
-#include <api/video_codecs/video_decoder.h>
-#include "utils/gstreamer_helpers.h"
-#include <memory>
-#include "modules/video_coding/include/video_codec_interface.h"
-#include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-#include "frames/GStreamerFramesToFromWebrtc.h"
-#include <media/base/codec.h>
-#include <fmt/ranges.h>
-#include <thread>
 
-#include "utils/thread.h"
+#include <api/video_codecs/video_decoder.h>
+#include <modules/video_coding/include/video_codec_interface.h>
+#include <media/base/codec.h>
+
+#include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
+
+#include "frames/GStreamerFramesToFromWebrtc.h"
 #include "pipeline/GStreamerAppPipeline.h"
+#include "utils/gstreamer_helpers.h"
 
 // TODO: Split this file
 

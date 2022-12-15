@@ -14,11 +14,10 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #pragma once
 
-#include <gst/gst.h>
 #include <api/video_codecs/video_decoder_factory.h>
-#include "utils/gstreamer_helpers.h"
 
 namespace opentera
 {

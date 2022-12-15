@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include <memory>
 #include <string_view>
 
 #include <utils/gstreamer_helpers.h>

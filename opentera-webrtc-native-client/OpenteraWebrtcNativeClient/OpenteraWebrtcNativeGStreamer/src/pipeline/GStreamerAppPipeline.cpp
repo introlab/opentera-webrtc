@@ -14,26 +14,13 @@
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 #include "GStreamerAppPipeline.h"
 
-#include <memory>
-#include <thread>
-
-#include <fmt/ranges.h>
-
 #include <gst/gst.h>
-#include <glib.h>
-#include <gst/app/gstappsink.h>
-#include <gst/app/gstappsrc.h>
 
-#include <api/video_codecs/video_decoder.h>
 #include <modules/video_coding/include/video_codec_interface.h>
-#include <media/base/codec.h>
 
-#include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-
-#include "frames/GStreamerFramesToFromWebrtc.h"
-#include "utils/gstreamer_helpers.h"
 #include "utils/out_ptr.h"
 #include "utils/gstreamer_message_handling.h"
 

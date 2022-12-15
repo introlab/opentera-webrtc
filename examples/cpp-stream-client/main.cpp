@@ -203,22 +203,18 @@ int main(int argc, char* argv[])
            size_t numberOfFrames)
         {
             // This callback is called from a WebRTC processing thread.
-            //        cout << "OnAudioFrameReceived:" << endl;
-            //        cout << "\tid=" << client.id() << ", name=" << client.name()
-            //        << endl; cout << "\tbitsPerSample=" << bitsPerSample << ",
-            //        sampleRate=" << sampleRate; cout << ", numberOfChannels=" <<
-            //        numberOfChannels << ", numberOfFrames=" << numberOfFrames <<
-            //        endl;
+            cout << "OnAudioFrameReceived:" << endl;
+            cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
+            cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate = " << sampleRate;
+            cout << ", numberOfChannels = " << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
         });
     client.setOnMixedAudioFrameReceived(
         [](const void* audioData, int bitsPerSample, int sampleRate, size_t numberOfChannels, size_t numberOfFrames)
         {
             // This callback is called from the audio device module thread.
-            //        cout << "OnMixedAudioFrameReceived:" << endl;
-            //        cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate="
-            //        << sampleRate; cout << ", numberOfChannels=" <<
-            //        numberOfChannels << ", numberOfFrames=" << numberOfFrames <<
-            //        endl;
+            cout << "OnMixedAudioFrameReceived:" << endl;
+            cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
+            cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
         });
 
     client.connect();

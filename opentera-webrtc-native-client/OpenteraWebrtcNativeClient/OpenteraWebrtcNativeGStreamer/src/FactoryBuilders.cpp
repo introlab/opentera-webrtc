@@ -17,13 +17,19 @@
 
 #include "FactoryBuilders.h"
 
-// TODO: IFDEF USE_GSTREAMER for headers
+// TODO: Move this logic (ifdef USE_GSTREAMER) out of this component, so that OpenteraWebrtcNativeClient can be built
+// completely without OpenteraWebrtcNativeGStreamer
+#ifdef USE_GSTREAMER
+#include "factories/GStreamerVideoDecoderFactory.h"
+#endif
+
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
-#include "factories/GStreamerVideoDecoderFactory.h"
 
 namespace opentera
 {
+// TODO: Move this logic (ifdef USE_GSTREAMER) out of this component, so that OpenteraWebrtcNativeClient can be built
+// completely without OpenteraWebrtcNativeGStreamer
 #ifdef USE_GSTREAMER
     std::unique_ptr<webrtc::VideoDecoderFactory> createGStreamerVideoDecoderFactory()
     {

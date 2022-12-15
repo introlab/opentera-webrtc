@@ -24,13 +24,15 @@
 
 #pragma once
 
-#include "utils/gstreamer_helpers.h"
-#include <gst/gst.h>
 #include <gst/video/video.h>
-#include <memory>
-#include <api/frame_transformer_interface.h>
+
+// #include <common_video/include/video_frame_buffer_pool.h>
+#include <api/video/i420_buffer.h>
+#include <api/video/video_frame.h>
+
 // #include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-#include <common_video/include/video_frame_buffer_pool.h>
+
+#include "utils/gstreamer_helpers.h"
 
 namespace opentera
 {
@@ -52,6 +54,8 @@ namespace opentera
               m_i420{}
         {
         }
+
+        // TODO: Add or delete copy/move constructors/assignments
 
         ~GStreamerVideoFrameLibWebRTC() override = default;
 
