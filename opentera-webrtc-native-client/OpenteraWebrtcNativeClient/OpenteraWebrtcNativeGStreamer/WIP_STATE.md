@@ -25,7 +25,7 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [x] Create conversion functions between webrtc and gstreamer frames
 - [x] Create a simple working GStreamer decoder
 - [ ] Create a simple working GStreamer encoder
-- [x] Support building without GStreamer
+- [ ] (PARTIAL) Support building without GStreamer
 - [x] Fallback to default webrtc software decoder/encoder or fail if no hardware dec/enc available
 - [ ] Add setting to disable fallback to default webrtc software decoder/encoder or fail if no hardware dec/enc available
 - [ ] Create a compounded decoder factory that instantiates an available decoder for the platform if it can
@@ -36,18 +36,22 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [ ] Validate that the keyframes logic (waiting for keyframe) works or make it work in decoder
 - [ ] Handle multiple clients connected, and deconnection then reconnection of clients (shared gst::Gst and all)
 - [ ] Check if Python wrapper works with the GStreamer decoder/encoder (with .so/.dll/.dylib)
-
+- [ ] Add tests for GStreamer decoder/encoder
 
 ## Codecs support
 
-- [x] Initial simple test decoder support using software decoder in GStreamer (using VP9)
+- [x] Initial simple test decoder support using software decoder in GStreamer
 - [ ] Initial simple test encoder support using software encoder in GStreamer
-- [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (vaapi)
+- [x] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (vaapi)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (raspberry pi)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (jetson xavier nx / jetson agx xavier / jetson orin agx)
+- [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (Windows platform API)
+- [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (MacOS platform API)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (vaapi)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (raspberry pi)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (jetson xavier nx / jetson agx xavier / jetson orin agx)
+- [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (Windows platform API)
+- [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (MacOS platform API)
 - [ ] Support forcing a specific decoder/encoder type (specific codec)
 - [ ] Support forcing a specific decoder/encoder element (using gstreamer element name)
 
@@ -57,7 +61,7 @@ Note that AV1 us currently supported by WebRTC, but H265 is not.
 
 - [ ] Support Linux (x86_64)
 - [ ] Support Linux (arm64)
-- [ ] Support Windows (x86_64)
-- [ ] Support Windows (arm64)
-- [ ] Support macOS (x86_64)
-- [ ] Support macOS (arm64)
+- [ ] (MAYBE) Support Windows (x86_64)
+- [ ] (MAYBE) Support Windows (arm64)
+- [ ] (MAYBE) Support macOS (x86_64)
+- [ ] (MAYBE) Support macOS (arm64)
