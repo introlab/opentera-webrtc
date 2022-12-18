@@ -9,7 +9,8 @@ using namespace std;
 // TODO check supported codec
 vector<webrtc::SdpVideoFormat> WebRtcGStreamerVideoDecoderFactory::GetSupportedFormats() const
 {
-    return {webrtc::SdpVideoFormat(cricket::kH264CodecName)};
+    // Check if we need to set other parameters
+    return {webrtc::SdpVideoFormat(GStreamerVideoDecoder::Name())};
 }
 
 unique_ptr<webrtc::VideoDecoder> WebRtcGStreamerVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)

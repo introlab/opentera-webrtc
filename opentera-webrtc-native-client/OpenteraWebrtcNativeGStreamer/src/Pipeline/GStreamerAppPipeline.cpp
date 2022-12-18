@@ -77,9 +77,9 @@ int32_t GStreamerAppPipeline::init(std::string_view caps_str)
                               // R"( ! vaapivp9dec name=decode ! vaapipostproc)"
                               // R"( ! vaapivp8dec name=decode ! vaapipostproc)"
                               //R"( ! vaapih264dec name=decode ! vaapipostproc)"
-                              // R"( ! vp8dec name=decode)"
-                              // R"( ! vp9dec name=decode)"
-                              R"( ! h264parse ! avdec_h264 name=decode)"
+                              R"( ! vp8dec name=decode)"
+                              //R"( ! vp9dec name=decode)"
+                              //R"( ! h264parse ! avdec_h264 name=decode)"
 
                               R"( ! capsfilter caps=video/x-raw,format=(string)I420)"
 
