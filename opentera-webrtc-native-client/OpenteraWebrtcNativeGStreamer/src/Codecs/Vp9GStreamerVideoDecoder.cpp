@@ -21,7 +21,7 @@ using namespace opentera;
 using namespace std;
 
 Vp9GStreamerVideoDecoder::Vp9GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder("video/x-vp9", codecName(), move(decoderPipeline))
+      GStreamerVideoDecoder("video/x-vp9", move(decoderPipeline))
 {
 }
 

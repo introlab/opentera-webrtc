@@ -20,7 +20,7 @@
 #include <memory>
 #include <iostream>
 
-namespace opentera::internal
+namespace opentera
 {
     // Inspired from std::out_ptr_t in the C++23 standard
     // (cppreference: https://en.cppreference.com/w/cpp/memory/out_ptr_t)
@@ -58,6 +58,6 @@ namespace opentera::internal
             return out_ptr_t<Smart, typename Smart::pointer>(s);
         }
     }
-}  // namespace opentera::internal
+}
 
 #endif

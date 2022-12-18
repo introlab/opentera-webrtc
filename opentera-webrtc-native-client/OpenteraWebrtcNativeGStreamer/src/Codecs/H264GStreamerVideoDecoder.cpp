@@ -21,7 +21,7 @@ using namespace opentera;
 using namespace std;
 
 H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder("video/x-h264", codecName(), move(decoderPipeline))
+      GStreamerVideoDecoder("video/x-h264", move(decoderPipeline))
 {
 }
 

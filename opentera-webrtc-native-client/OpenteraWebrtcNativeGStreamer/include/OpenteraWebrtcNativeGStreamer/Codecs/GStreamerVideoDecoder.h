@@ -42,9 +42,9 @@ namespace opentera
     class GStreamerVideoDecoder : public webrtc::VideoDecoder
     {
         std::string m_mediaTypeCaps;
-        std::string m_codecName;
         std::string m_decoderPipeline;
         std::unique_ptr<GStreamerDecoderPipeline> m_gstDecoderPipeline;
+        gst::unique_ptr<GstBufferPool> m_bufferPool;
 
         bool m_keyframeNeeded;
         GstClockTime m_firstBufferPts;
@@ -55,12 +55,10 @@ namespace opentera
         gst::unique_ptr<GstCaps> m_caps;
 
         webrtc::DecodedImageCallback* m_imageReadyCb;
-
-        gst::unique_ptr<GstBuffer> m_buffer;
         webrtc::VideoFrameBufferPool m_webrtcBufferPool;
 
     public:
-        GStreamerVideoDecoder(std::string mediaTypeCaps, std::string codecName, std::string decoderPipeline);
+        GStreamerVideoDecoder(std::string mediaTypeCaps, std::string decoderPipeline);
         ~GStreamerVideoDecoder() override = default;
 
         DECLARE_NOT_COPYABLE(GStreamerVideoDecoder);

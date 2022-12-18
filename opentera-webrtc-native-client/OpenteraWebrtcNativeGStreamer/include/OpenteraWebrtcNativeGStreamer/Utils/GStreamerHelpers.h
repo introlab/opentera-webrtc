@@ -22,7 +22,6 @@
 
 #include <memory>
 #include <type_traits>
-#include <iostream>
 
 namespace gst
 {
@@ -40,75 +39,68 @@ namespace gst
         template<>
         inline void gst_deleter<GstMessage>(GstMessage* element)
         {
-            std::cout << "Delete message\n";
             gst_message_unref(element);
         }
         template<>
         inline void gst_deleter<GstBus>(GstBus* element)
         {
-            std::cout << "Delete bus\n";
             gst_object_unref(element);
         }
         template<>
         inline void gst_deleter<GstElement>(GstElement* element)
         {
-            std::cout << "Delete element\n";
             gst_object_unref(element);
         }
         template<>
         inline void gst_deleter<GstPipeline>(GstPipeline* element)
         {
-            std::cout << "Set pipeline to null state and delete\n";
             gst_element_set_state(GST_ELEMENT(element), GST_STATE_NULL);
             gst_object_unref(element);
         }
         template<>
         inline void gst_deleter<GstCaps>(GstCaps* element)
         {
-            std::cout << "Delete caps\n";
             gst_caps_unref(element);
         }
 
         template<>
         inline void gst_deleter<GstPad>(GstPad* element)
         {
-            std::cout << "Delete pad\n";
             gst_object_unref(element);
         }
         template<>
         inline void gst_deleter<GstQuery>(GstQuery* element)
         {
-            std::cout << "Delete query\n";
             gst_query_unref(element);
         }
         template<>
         inline void gst_deleter<gchar>(gchar* element)
         {
-            std::cout << "Delete gchar*\n";
             g_free(element);
         }
         template<>
         inline void gst_deleter<GError>(GError* element)
         {
-            std::cout << "Delete error\n";
             g_clear_error(&element);
         }
         template<>
         inline void gst_deleter<GstSample>(GstSample* element)
         {
-            std::cout << "Delete sample " << std::hex << element << std::dec << "\n";
             gst_sample_unref(element);
         }
         template<>
         inline void gst_deleter<GstBuffer>(GstBuffer* element)
         {
-            std::cout << "Delete buffer\n";
             gst_buffer_unref(element);
+        }
+        template<>
+        inline void gst_deleter<GstBufferPool>(GstBufferPool* element)
+        {
+            gst_object_unref(element);
         }
         template<>
         inline void gst_deleter<GstVideoConverter>(GstVideoConverter* element)
         {
-            std::cout << "Delete video converter\n";
             gst_video_converter_free(element);
         }
 
@@ -187,7 +179,6 @@ namespace gst
         {
             if (pad_ && element_ != nullptr)
             {
-                std::cout << "Release request pad\n";
                 gst_element_release_request_pad(GST_ELEMENT(element_), pad_.get());
             }
         }

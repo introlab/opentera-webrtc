@@ -25,15 +25,17 @@
 
 #include <OpenteraWebrtcNativeGStreamer/Codecs/GStreamerVideoDecoder.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GstMappedFrame.h>
+#include <OpenteraWebrtcNativeGStreamer/Utils/out_ptr.h>
 
 #include <libyuv.h>
 
 using namespace opentera;
 using namespace std;
 
-GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string codecName, string decoderPipeline)
+constexpr size_t GST_DECODER_BUFFER_SIZE = 10 * 1024 * 1024;
+
+GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string decoderPipeline)
     : m_mediaTypeCaps{move(mediaTypeCaps)},
-      m_codecName(move(codecName)),
       m_decoderPipeline(move(decoderPipeline)),
       m_gstDecoderPipeline{},
       m_keyframeNeeded{true},
@@ -89,18 +91,32 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         m_firstBufferDts = (static_cast<guint64>(inputImage.Timestamp())) * GST_MSECOND;
     }
 
-    // TODO- Use a GstBufferPool.
-    m_buffer = gst::unique_from_ptr(
-        gst_buffer_new_wrapped(g_memdup(inputImage.data(), inputImage.size()), inputImage.size()));
+    gst::unique_ptr<GstBuffer> buffer;
+    switch (gst_buffer_pool_acquire_buffer(m_bufferPool.get(), out_ptr(buffer), nullptr))
+    {
+        case GST_FLOW_OK:
+            break;
+        case GST_FLOW_FLUSHING:
+            return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
+        default:
+            return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+    if (inputImage.size() > gst_buffer_get_size(buffer.get()))
+    {
+        GST_ERROR("The buffer is too small");
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+    gst_buffer_fill(buffer.get(), 0, inputImage.data(), inputImage.size());
+    gst_buffer_set_size(buffer.get(), inputImage.size());
 
-    GST_BUFFER_DTS(m_buffer.get()) =
+    GST_BUFFER_DTS(buffer.get()) =
         (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
-    GST_BUFFER_PTS(m_buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
+    GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
     InputTimestamps timestamps = {inputImage.Timestamp(), renderTimeMs};
-    m_dtsPtsMap[GST_BUFFER_PTS(m_buffer.get())] = timestamps;
+    m_dtsPtsMap[GST_BUFFER_PTS(buffer.get())] = timestamps;
 
     auto sample =
-        gst::unique_from_ptr(gst_sample_new(m_buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
+        gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 
     /** Uncomment to help debugging */
     // GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
@@ -143,6 +159,15 @@ bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& sett
         {
             return false;
         }
+    }
+
+    m_bufferPool = gst::unique_from_ptr(gst_buffer_pool_new());
+    GstStructure* bufferPoolConfig = gst_buffer_pool_get_config(m_bufferPool.get());
+    gst_buffer_pool_config_set_params(bufferPoolConfig, nullptr, GST_DECODER_BUFFER_SIZE, 1, 0);
+    if (!gst_buffer_pool_set_config(m_bufferPool.get(), bufferPoolConfig) ||
+        !gst_buffer_pool_set_active(m_bufferPool.get(), true))
+    {
+        return false;
     }
 
     return true;
@@ -257,9 +282,12 @@ int32_t GStreamerVideoDecoder::pullSample()
 
 GstCaps* GStreamerVideoDecoder::getCapsForFrame(const webrtc::EncodedImage& image)
 {
+    gint lastWidth = m_width;
+    gint lastHeight = m_height;
     m_width = image._encodedWidth != 0 ? image._encodedWidth : m_width;
     m_height = image._encodedHeight != 0 ? image._encodedHeight : m_height;
-    if (!m_caps)
+
+    if (!m_caps || lastWidth != m_width || lastHeight != m_height)
     {
         m_caps = gst::unique_from_ptr(gst_caps_new_simple(
             m_mediaTypeCaps.c_str(),
