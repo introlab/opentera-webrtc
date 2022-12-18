@@ -16,6 +16,7 @@
 */
 
 #include <OpenteraWebrtcNativeGStreamer/Codecs/Vp8GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
 
 using namespace opentera;
 using namespace std;
@@ -44,6 +45,11 @@ webrtc::VideoDecoder::DecoderInfo SoftwareVp8GStreamerVideoDecoder::GetDecoderIn
     return info;
 }
 
+bool SoftwareVp8GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("vp8dec");
+}
+
 
 VaapiVp8GStreamerVideoDecoder::VaapiVp8GStreamerVideoDecoder() :
       Vp8GStreamerVideoDecoder("vaapivp8dec name=decode ! vaapipostproc")
@@ -56,4 +62,9 @@ webrtc::VideoDecoder::DecoderInfo VaapiVp8GStreamerVideoDecoder::GetDecoderInfo(
     info.implementation_name = "GStreamer vaapivp8dec";
     info.is_hardware_accelerated = true;
     return info;
+}
+
+bool VaapiVp8GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("vaapivp8dec") && gst::elementFactoryExists("vaapipostproc");
 }

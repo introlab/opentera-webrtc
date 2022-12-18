@@ -16,6 +16,7 @@
 */
 
 #include <OpenteraWebrtcNativeGStreamer/Codecs/H264GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
 
 using namespace opentera;
 using namespace std;
@@ -30,6 +31,7 @@ const char* H264GStreamerVideoDecoder::codecName()
     return cricket::kH264CodecName;
 }
 
+
 SoftwareH264GStreamerVideoDecoder::SoftwareH264GStreamerVideoDecoder() :
       H264GStreamerVideoDecoder("h264parse ! avdec_h264 name=decode")
 {
@@ -43,6 +45,12 @@ webrtc::VideoDecoder::DecoderInfo SoftwareH264GStreamerVideoDecoder::GetDecoderI
     return info;
 }
 
+bool SoftwareH264GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("h264parse") && gst::elementFactoryExists("avdec_h264");
+}
+
+
 VaapiH264GStreamerVideoDecoder::VaapiH264GStreamerVideoDecoder() :
       H264GStreamerVideoDecoder("vaapih264dec name=decode ! vaapipostproc")
 {
@@ -54,4 +62,9 @@ webrtc::VideoDecoder::DecoderInfo VaapiH264GStreamerVideoDecoder::GetDecoderInfo
     info.implementation_name = "GStreamer vaapih264dec";
     info.is_hardware_accelerated = true;
     return info;
+}
+
+bool VaapiH264GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("vaapih264dec") && gst::elementFactoryExists("vaapipostproc");
 }

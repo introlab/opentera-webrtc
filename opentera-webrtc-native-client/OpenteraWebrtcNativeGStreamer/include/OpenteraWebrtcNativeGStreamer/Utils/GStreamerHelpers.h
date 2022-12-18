@@ -52,6 +52,11 @@ namespace gst
             gst_object_unref(element);
         }
         template<>
+        inline void gst_deleter<GstElementFactory>(GstElementFactory* element)
+        {
+            gst_object_unref(element);
+        }
+        template<>
         inline void gst_deleter<GstPipeline>(GstPipeline* element)
         {
             gst_element_set_state(GST_ELEMENT(element), GST_STATE_NULL);
@@ -116,27 +121,6 @@ namespace gst
         }
 
     }  // namespace internal
-
-    // RAII wrapper for GStreamer initialization/deinitialization
-    class Gst
-    {
-    public:
-        explicit Gst(int* argc, char** argv[])
-        {
-            // TODO ref counting with condition variable
-            if (!gst_is_initialized())
-            {
-                gst_init(argc, argv);
-            }
-        }
-        ~Gst()
-        {
-            if (gst_is_initialized())
-            {
-                gst_deinit();
-            }
-        }
-    };
 
     // Interface inspired from std::default_delete
     // (cppreference: https://en.cppreference.com/w/cpp/memory/default_delete)

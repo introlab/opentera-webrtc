@@ -28,8 +28,7 @@ using namespace opentera::internal;
 using namespace std;
 
 GStreamerDecoderPipeline::GStreamerDecoderPipeline()
-    : m_gst{nullptr, nullptr},
-      m_pipeline{nullptr},
+    : m_pipeline{nullptr},
       m_src{nullptr},
       m_sink{nullptr},
       m_width{0},
@@ -76,14 +75,14 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
 
                               " ! capsfilter caps=video/x-raw,format=(string)I420"
 
-                              /** Comment to disable the gstreamer alternative display */
-                              " ! tee name=tee"
+                              /** Uncomment to enable the gstreamer alternative display */
+                              //" ! tee name=tee"
 
                               " ! queue"
-                              " ! appsink name=sink emit-signals=true sync=false"
+                              " ! appsink name=sink emit-signals=true sync=false";
 
-                              /** Comment to disable the gstreamer alternative display */
-                              " tee. ! queue ! fpsdisplaysink sync=false";
+                              /** Uncomment to enable the gstreamer alternative display */
+                              //" tee. ! queue ! fpsdisplaysink sync=false";
 
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
 
@@ -104,7 +103,8 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
-    GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline"); // TODO remove or only debug?
+    /** Uncomment to generate the pipeline dot file */
+    //GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
 
     return WEBRTC_VIDEO_CODEC_OK;
 }

@@ -26,7 +26,6 @@ namespace opentera
 {
     class GStreamerDecoderPipeline
     {
-        gst::Gst m_gst;
         gst::unique_ptr<GstPipeline> m_pipeline;
         gst::unique_ptr<GstElement> m_src;
         gst::unique_ptr<GstElement> m_sink;

@@ -190,11 +190,11 @@ int main(int argc, char* argv[])
         [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
         {
             // This callback is called from a WebRTC processing thread.
-            cout << "OnVideoFrameReceived:" << endl;
+            //cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
         });
-    client.setOnAudioFrameReceived(
+    /*client.setOnAudioFrameReceived(
         [](const Client& client,
            const void* audioData,
            int bitsPerSample,
@@ -215,7 +215,7 @@ int main(int argc, char* argv[])
             cout << "OnMixedAudioFrameReceived:" << endl;
             cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
             cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
-        });
+        });*/
 
     client.connect();
 

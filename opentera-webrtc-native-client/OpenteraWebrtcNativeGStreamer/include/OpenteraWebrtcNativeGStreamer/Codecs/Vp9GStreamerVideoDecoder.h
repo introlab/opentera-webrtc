@@ -39,7 +39,7 @@ namespace opentera
 
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
-        // TODO add is supported
+        static bool isSupported();
     };
 
     class VaapiVp9GStreamerVideoDecoder : public Vp9GStreamerVideoDecoder
@@ -50,7 +50,7 @@ namespace opentera
 
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
-        // TODO add is supported
+        static bool isSupported();
     };
 }
 

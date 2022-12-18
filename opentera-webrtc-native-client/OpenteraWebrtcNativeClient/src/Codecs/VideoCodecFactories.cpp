@@ -11,7 +11,10 @@ using namespace std;
 
 unique_ptr<webrtc::VideoDecoderFactory> opentera::createVideoDecoderFactory()
 {
-    return make_unique<WebRtcGStreamerVideoDecoderFactory>();
+    // TODO parameters
+    bool forceHardwareAcceleration = false;
+    bool useGStreamerSoftwareDecoder = true;
+    return make_unique<WebRtcGStreamerVideoDecoderFactory>(forceHardwareAcceleration, useGStreamerSoftwareDecoder);
 }
 
 unique_ptr<webrtc::VideoEncoderFactory> opentera::createVideoEncoderFactory()

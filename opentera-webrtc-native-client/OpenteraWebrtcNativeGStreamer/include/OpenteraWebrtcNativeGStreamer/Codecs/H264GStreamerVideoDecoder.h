@@ -39,7 +39,7 @@ namespace opentera
 
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
-        // TODO add is supported
+        static bool isSupported();
     };
 
     class VaapiH264GStreamerVideoDecoder : public H264GStreamerVideoDecoder
@@ -50,7 +50,7 @@ namespace opentera
 
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
-        // TODO add is supported
+        static bool isSupported();
     };
 }
 

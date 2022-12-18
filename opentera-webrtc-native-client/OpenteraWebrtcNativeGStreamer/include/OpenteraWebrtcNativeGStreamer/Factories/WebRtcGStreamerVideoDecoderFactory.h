@@ -17,21 +17,53 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_WEBRTC_GSTREAMER_VIDEO_DECODER_FACOTRY_H
 #define OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_WEBRTC_GSTREAMER_VIDEO_DECODER_FACOTRY_H
 
-#include <memory>
-#include <vector>
-
 #include <api/video_codecs/sdp_video_format.h>
 #include <api/video_codecs/video_decoder.h>
 #include <api/video_codecs/video_decoder_factory.h>
+#include <api/video_codecs/builtin_video_decoder_factory.h>
+
+#include <memory>
+#include <vector>
+#include <unordered_map>
+#include <functional>
 
 namespace opentera
 {
     class WebRtcGStreamerVideoDecoderFactory : public webrtc::VideoDecoderFactory
     {
+        struct DecoderFactory
+        {
+            int priority;
+            std::function<std::unique_ptr<webrtc::VideoDecoder>(const webrtc::SdpVideoFormat&)> factory;
+        };
+
+        std::unique_ptr<VideoDecoderFactory> m_builtinVideoDecoderFactory;
+        std::vector<webrtc::SdpVideoFormat> m_builtinSupportedFormats;
+        std::unordered_map<std::string, DecoderFactory> m_decoderFactories;
+
     public:
+        WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
+
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
         std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
+
+    private:
+        void addH264Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
+        void addVp8Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
+        void addVp9Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
+
+        template<class Decoder>
+        DecoderFactory createDecoderFactory(int priority);
+
+        bool builtinVideoDecoderFactorySupports(std::string_view codecName);
+        DecoderFactory createBuiltinDecoderFactory(int priority);
     };
+
+    template<class Decoder>
+    WebRtcGStreamerVideoDecoderFactory::DecoderFactory WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
+    {
+        return {priority, [](auto _){return std::make_unique<Decoder>();}};
+    }
 }
 
 #endif
