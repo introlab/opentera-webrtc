@@ -1,11 +1,11 @@
 #include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/Codecs/VideoCodecFactories.h>
 
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
 #include <api/create_peerconnection_factory.h>
 #include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/builtin_video_encoder_factory.h>
-#include "FactoryBuilders.h"
 
 using namespace opentera;
 using namespace std;
@@ -66,10 +66,8 @@ SignalingClient::SignalingClient(
         m_audioDeviceModule,
         webrtc::CreateBuiltinAudioEncoderFactory(),
         webrtc::CreateBuiltinAudioDecoderFactory(),
-        // webrtc::CreateBuiltinVideoEncoderFactory(),
-        opentera::createGStreamerVideoEncoderFactoryOrFallbackToBuiltin(),
-        // webrtc::CreateBuiltinVideoDecoderFactory(),
-        opentera::createGStreamerVideoDecoderFactory(),
+        createVideoEncoderFactory(),
+        createVideoDecoderFactory(),
         nullptr,  // Audio mixer,
         m_audioProcessing);
 
@@ -241,9 +239,9 @@ vector<RoomClient> SignalingClient::getRoomClients()
         });
 }
 
-function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFunction()
+function<void(const string&, const sio::message::ptr&)> SignalingClient::getSendEventFunction()
 {
-    return [this](const string& event, sio::message::ptr message)
+    return [this](const string& event, const sio::message::ptr& message)
     { callAsync(m_internalClientThread.get(), [this, event, message]() { m_sio.socket()->emit(event, message); }); };
 }
 

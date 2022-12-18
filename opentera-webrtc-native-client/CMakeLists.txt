@@ -48,4 +48,8 @@ else()
     message(FATAL_ERROR "Python3 is not found")
 endif()
 
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    add_subdirectory(OpenteraWebrtcNativeGStreamer)
+endif()
+
 add_subdirectory(OpenteraWebrtcNativeClient)

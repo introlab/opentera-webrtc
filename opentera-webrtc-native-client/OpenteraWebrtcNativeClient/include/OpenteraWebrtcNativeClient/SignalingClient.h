@@ -122,7 +122,7 @@ namespace opentera
         virtual std::unique_ptr<PeerConnectionHandler>
             createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) = 0;
 
-        std::function<void(const std::string&, sio::message::ptr)> getSendEventFunction();
+        std::function<void(const std::string&, const sio::message::ptr&)> getSendEventFunction();
         std::function<void(const std::string&)> getOnErrorFunction();
         std::function<void(const Client&)> getOnClientConnectedFunction();
         std::function<void(const Client&)> getOnClientDisconnectedFunction();

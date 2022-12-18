@@ -22,11 +22,10 @@
  *  https://opensource.apple.com/source/WebCore/WebCore-7611.3.10.0.1/platform/mediastream/gstreamer/GStreamerVideoFrameLibWebRTC.cpp.auto.html
  */
 
-#include "GStreamerFramesToFromWebrtc.h"
+#include <OpenteraWebrtcNativeGStreamer/Frames/GStreamerFramesToFromWebrtc.h>
+#include <OpenteraWebrtcNativeGStreamer/Utils/ClassMacro.h>
 
-#include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-
-// TODO: Split this file
+// TODO: Remove this file
 
 namespace opentera
 {
@@ -38,7 +37,6 @@ namespace opentera
             m_isValid = gst_video_frame_map(&m_frame, &info, buffer, flags);
         }
 
-        // TODO: Choose if we keep these or define move/copy operations
         DECLARE_NOT_COPYABLE(GstMappedFrame);
         DECLARE_NOT_MOVABLE(GstMappedFrame);
 

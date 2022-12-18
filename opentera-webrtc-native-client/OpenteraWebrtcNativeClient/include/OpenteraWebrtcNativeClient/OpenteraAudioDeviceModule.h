@@ -61,7 +61,7 @@ namespace opentera
         // Main initialization and termination
         int32_t Init() override;
         int32_t Terminate() override;
-        bool Initialized() const override;
+        [[nodiscard]] bool Initialized() const override;
 
         // Device enumeration
         int16_t PlayoutDevices() override;
@@ -84,24 +84,24 @@ namespace opentera
         // Audio transport initialization
         int32_t PlayoutIsAvailable(bool* available) override;
         int32_t InitPlayout() override;
-        bool PlayoutIsInitialized() const override;
+        [[nodiscard]] bool PlayoutIsInitialized() const override;
         int32_t RecordingIsAvailable(bool* available) override;
         int32_t InitRecording() override;
-        bool RecordingIsInitialized() const override;
+        [[nodiscard]] bool RecordingIsInitialized() const override;
 
         // Audio transport control
         int32_t StartPlayout() override;
         int32_t StopPlayout() override;
-        bool Playing() const override;
+        [[nodiscard]] bool Playing() const override;
         int32_t StartRecording() override;
         int32_t StopRecording() override;
-        bool Recording() const override;
+        [[nodiscard]] bool Recording() const override;
 
         // Audio mixer initialization
         int32_t InitSpeaker() override;
-        bool SpeakerIsInitialized() const override;
+        [[nodiscard]] bool SpeakerIsInitialized() const override;
         int32_t InitMicrophone() override;
-        bool MicrophoneIsInitialized() const override;
+        [[nodiscard]] bool MicrophoneIsInitialized() const override;
 
         // Speaker volume controls
         int32_t SpeakerVolumeIsAvailable(bool* available) override;
@@ -139,9 +139,9 @@ namespace opentera
         int32_t PlayoutDelay(uint16_t* delayMS) const override;
 
         // Only supported on Android.
-        bool BuiltInAECIsAvailable() const override;
-        bool BuiltInAGCIsAvailable() const override;
-        bool BuiltInNSIsAvailable() const override;
+        [[nodiscard]] bool BuiltInAECIsAvailable() const override;
+        [[nodiscard]] bool BuiltInAGCIsAvailable() const override;
+        [[nodiscard]] bool BuiltInNSIsAvailable() const override;
 
         // Enables the built-in audio effects. Only supported on Android.
         int32_t EnableBuiltInAEC(bool enable) override;

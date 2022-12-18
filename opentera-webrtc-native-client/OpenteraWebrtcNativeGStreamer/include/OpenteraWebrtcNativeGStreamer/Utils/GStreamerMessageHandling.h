@@ -22,9 +22,10 @@
  *  https://opensource.apple.com/source/WebCore/WebCore-7611.3.10.0.1/platform/graphics/gstreamer/GStreamerCommon.cpp.auto.html
  */
 
-#pragma once
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_MESSAGE_HANDLING_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_MESSAGE_HANDLING_H
 
-#include "utils/gstreamer_helpers.h"
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
 
 namespace opentera::internal
 {
@@ -77,3 +78,5 @@ namespace opentera::internal
         g_signal_handlers_disconnect_by_func(bus.get(), reinterpret_cast<gpointer>(busMessageCallback), pipeline.get());
     }
 }  // namespace opentera::internal
+
+#endif

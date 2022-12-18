@@ -85,7 +85,8 @@ if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(test)
 endif ()
 
-# TODO: Parametrize this to choose between using GStreamer or not
-include_directories(OpenteraWebrtcNativeGStreamer/include)
-add_subdirectory(OpenteraWebrtcNativeGStreamer)
-target_link_libraries(OpenteraWebrtcNativeClient OpenteraWebrtcNativeGStreamer)
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    include_directories(../OpenteraWebrtcNativeGStreamer/include)
+    target_compile_definitions(OpenteraWebrtcNativeClient PUBLIC USE_GSTREAMER)
+    target_link_libraries(OpenteraWebrtcNativeClient OpenteraWebrtcNativeGStreamer)
+endif()

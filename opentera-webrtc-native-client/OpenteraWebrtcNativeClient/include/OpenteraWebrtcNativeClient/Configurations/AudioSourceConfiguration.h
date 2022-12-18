@@ -43,13 +43,13 @@ namespace opentera
             absl::optional<bool> stereoSwapping,
             absl::optional<bool> transientSuppression);
 
-        uint32_t soundCardTotalDelayMs() const;
-        absl::optional<bool> echoCancellation() const;
-        absl::optional<bool> autoGainControl() const;
-        absl::optional<bool> noiseSuppression() const;
-        absl::optional<bool> highpassFilter() const;
-        absl::optional<bool> stereoSwapping() const;
-        absl::optional<bool> transientSuppression() const;
+        [[nodiscard]] uint32_t soundCardTotalDelayMs() const;
+        [[nodiscard]] absl::optional<bool> echoCancellation() const;
+        [[nodiscard]] absl::optional<bool> autoGainControl() const;
+        [[nodiscard]] absl::optional<bool> noiseSuppression() const;
+        [[nodiscard]] absl::optional<bool> highpassFilter() const;
+        [[nodiscard]] absl::optional<bool> stereoSwapping() const;
+        [[nodiscard]] absl::optional<bool> transientSuppression() const;
 
         explicit operator cricket::AudioOptions() const;
         explicit operator webrtc::AudioProcessing::Config() const;
@@ -65,14 +65,14 @@ namespace opentera
      */
     inline AudioSourceConfiguration AudioSourceConfiguration::create(uint32_t soundCardTotalDelayMs)
     {
-        return AudioSourceConfiguration(
+        return {
             soundCardTotalDelayMs,
             absl::nullopt,
             absl::nullopt,
             absl::nullopt,
             absl::nullopt,
             absl::nullopt,
-            absl::nullopt);
+            absl::nullopt};
     }
 
     /**
@@ -96,14 +96,14 @@ namespace opentera
         absl::optional<bool> stereoSwapping,
         absl::optional<bool> transientSuppression)
     {
-        return AudioSourceConfiguration(
+        return {
             soundCardTotalDelayMs,
             echoCancellation,
             autoGainControl,
             noiseSuppression,
             highpassFilter,
             stereoSwapping,
-            transientSuppression);
+            transientSuppression};
     }
 
     /**

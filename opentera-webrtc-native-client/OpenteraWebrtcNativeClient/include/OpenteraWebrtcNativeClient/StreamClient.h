@@ -31,6 +31,7 @@ namespace opentera
         bool m_isLocalVideoMuted;
 
     public:
+        // TODO add StreamConfiguration containing force hardware accelerated codec and force codecs
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration);
@@ -56,7 +57,7 @@ namespace opentera
         void muteLocalAudio();
         void unmuteLocalAudio();
         void setLocalAudioMuted(bool muted);
-        
+
         bool isRemoteAudioMuted();
         void muteRemoteAudio();
         void unmuteRemoteAudio();
@@ -98,7 +99,7 @@ namespace opentera
      * @brief Unmutes the local audio.
      */
     inline void StreamClient::unmuteLocalAudio() { setLocalAudioMuted(false); }
-    
+
     /**
      * @brief Indicates if the remote audio is muted.
      * @return true if the remote audio is muted.

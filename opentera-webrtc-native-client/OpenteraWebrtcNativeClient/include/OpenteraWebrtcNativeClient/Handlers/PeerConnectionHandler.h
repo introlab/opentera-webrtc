@@ -85,7 +85,7 @@ namespace opentera
         void OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) override;
 
         void AddRef() const override;
-        rtc::RefCountReleaseStatus Release() const override;
+        [[nodiscard]] rtc::RefCountReleaseStatus Release() const override;
 
     protected:
         virtual void createAnswer();

@@ -14,14 +14,15 @@
  *  limitations under the License.
  */
 
-#pragma once
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_HELPERS_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_HELPERS_H
+
+#include <gst/gst.h>
+#include <gst/video/video.h>
 
 #include <memory>
 #include <type_traits>
 #include <iostream>
-
-#include <gst/gst.h>
-#include <gst/video/video.h>
 
 namespace gst
 {
@@ -130,6 +131,7 @@ namespace gst
     public:
         explicit Gst(int* argc, char** argv[])
         {
+            // TODO ref counting with condition variable
             if (!gst_is_initialized())
             {
                 gst_init(argc, argv);
@@ -211,3 +213,5 @@ inline GstMemoryFlags operator|(GstMemoryFlags a, GstMemoryFlags b)
 {
     return gst::internal::bitmask_or(a, b);
 }
+
+#endif

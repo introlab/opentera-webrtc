@@ -42,11 +42,11 @@ namespace opentera
             std::string room,
             std::string password);
 
-        const std::string& url() const;
-        const std::string& clientName() const;
-        sio::message::ptr clientData() const;
-        const std::string& room() const;
-        const std::string& password() const;
+        [[nodiscard]] const std::string& url() const;
+        [[nodiscard]] const std::string& clientName() const;
+        [[nodiscard]] sio::message::ptr clientData() const;
+        [[nodiscard]] const std::string& room() const;
+        [[nodiscard]] const std::string& password() const;
 
         SignalingServerConfiguration& operator=(const SignalingServerConfiguration& other) = default;
         SignalingServerConfiguration& operator=(SignalingServerConfiguration&& other) = default;
@@ -63,12 +63,12 @@ namespace opentera
     inline SignalingServerConfiguration
         SignalingServerConfiguration::create(std::string url, std::string clientName, std::string room)
     {
-        return SignalingServerConfiguration(
+        return {
             std::move(url),
             std::move(clientName),
             sio::null_message::create(),
             std::move(room),
-            "");
+            ""};
     }
 
     /**
@@ -86,12 +86,12 @@ namespace opentera
         sio::message::ptr clientData,
         std::string room)
     {
-        return SignalingServerConfiguration(
+        return {
             std::move(url),
             std::move(clientName),
             std::move(clientData),
             std::move(room),
-            "");
+            ""};
     }
 
     /**
@@ -109,12 +109,12 @@ namespace opentera
         std::string room,
         std::string password)
     {
-        return SignalingServerConfiguration(
+        return {
             std::move(url),
             std::move(clientName),
             sio::null_message::create(),
             std::move(room),
-            std::move(password));
+            std::move(password)};
     }
 
     /**
@@ -134,12 +134,12 @@ namespace opentera
         std::string room,
         std::string password)
     {
-        return SignalingServerConfiguration(
+        return {
             std::move(url),
             std::move(clientName),
             std::move(clientData),
             std::move(room),
-            std::move(password));
+            std::move(password)};
     }
 
     /**

@@ -22,17 +22,15 @@
  *  https://opensource.apple.com/source/WebCore/WebCore-7611.3.10.0.1/platform/mediastream/gstreamer/GStreamerVideoFrameLibWebRTC.h.auto.html
  */
 
-#pragma once
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_FRAMES_GSTREAMER_FRAMES_TO_FROM_WEBRTC_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_FRAMES_GSTREAMER_FRAMES_TO_FROM_WEBRTC_H
+
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
 
 #include <gst/video/video.h>
 
-// #include <common_video/include/video_frame_buffer_pool.h>
 #include <api/video/i420_buffer.h>
 #include <api/video/video_frame.h>
-
-// #include "OpenteraWebrtcNativeClient/Utils/ClassMacro.h"
-
-#include "utils/gstreamer_helpers.h"
 
 namespace opentera
 {
@@ -50,7 +48,6 @@ namespace opentera
         GStreamerVideoFrameLibWebRTC(GstSample* sample, GstVideoInfo info)
             : m_sample{gst::shared_from_ptr(sample)},
               m_info{info},
-              //   m_bufferPool{},
               m_i420{}
         {
         }
@@ -79,8 +76,10 @@ namespace opentera
 
         std::shared_ptr<GstSample> m_sample;
         GstVideoInfo m_info;
-        // FIXME: Useful for reuse of buffers?
-        // mutable webrtc::VideoFrameBufferPool m_bufferPool;
+        // TODO: Useful for reuse of buffers?
+        //== mutable webrtc::VideoFrameBufferPool m_bufferPool;
         mutable rtc::scoped_refptr<webrtc::I420Buffer> m_i420;
     };
 }
+
+#endif

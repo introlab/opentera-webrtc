@@ -27,9 +27,9 @@ namespace opentera
         Client(Client&& other) = default;
         virtual ~Client() = default;
 
-        const std::string& id() const;
-        const std::string& name() const;
-        const sio::message::ptr& data() const;
+        [[nodiscard]] const std::string& id() const;
+        [[nodiscard]] const std::string& name() const;
+        [[nodiscard]] const sio::message::ptr& data() const;
 
         static bool isValid(const sio::message::ptr& message);
 
@@ -86,17 +86,17 @@ namespace opentera
         bool m_isConnected;
 
     public:
-        RoomClient() = default;
+        RoomClient();
         RoomClient(std::string id, std::string name, sio::message::ptr data, bool isConnected);
         RoomClient(const Client& client, bool isConnected);
         RoomClient(const RoomClient& other) = default;
         RoomClient(RoomClient&& other) = default;
         virtual ~RoomClient() = default;
 
-        const std::string& id() const;
-        const std::string& name() const;
-        const sio::message::ptr& data() const;
-        bool isConnected() const;
+        [[nodiscard]] const std::string& id() const;
+        [[nodiscard]] const std::string& name() const;
+        [[nodiscard]] const sio::message::ptr& data() const;
+        [[nodiscard]] bool isConnected() const;
 
         explicit operator Client() const;
 
@@ -130,7 +130,7 @@ namespace opentera
      */
     inline bool RoomClient::isConnected() const { return m_isConnected; }
 
-    inline RoomClient::operator Client() const { return Client(m_id, m_name, m_data); }
+    inline RoomClient::operator Client() const { return {m_id, m_name, m_data}; }
 
     inline bool operator==(const RoomClient& c1, const RoomClient& c2)
     {

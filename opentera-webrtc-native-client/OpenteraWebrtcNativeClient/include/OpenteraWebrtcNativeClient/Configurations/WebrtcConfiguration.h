@@ -24,9 +24,9 @@ namespace opentera
         static WebrtcConfiguration create();
         static WebrtcConfiguration create(std::vector<IceServer> iceServers);
 
-        const std::vector<IceServer>& iceServers() const;
+        [[nodiscard]] const std::vector<IceServer>& iceServers() const;
 
-        operator webrtc::PeerConnectionInterface::RTCConfiguration() const;
+        explicit operator webrtc::PeerConnectionInterface::RTCConfiguration() const;
 
         WebrtcConfiguration& operator=(const WebrtcConfiguration& other) = default;
         WebrtcConfiguration& operator=(WebrtcConfiguration&& other) = default;

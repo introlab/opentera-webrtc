@@ -44,10 +44,10 @@ namespace opentera
         static DataChannelConfiguration createMaxRetransmits(int maxRetransmits, std::string protocol);
         static DataChannelConfiguration createMaxRetransmits(bool ordered, int maxRetransmits, std::string protocol);
 
-        bool ordered() const;
-        const absl::optional<int>& maxPacketLifeTime() const;
-        const absl::optional<int>& maxRetransmits() const;
-        const std::string& protocol() const;
+        [[nodiscard]] bool ordered() const;
+        [[nodiscard]] const absl::optional<int>& maxPacketLifeTime() const;
+        [[nodiscard]] const absl::optional<int>& maxRetransmits() const;
+        [[nodiscard]] const std::string& protocol() const;
 
         explicit operator webrtc::DataChannelInit() const;
 
@@ -61,7 +61,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::create()
     {
-        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, "");
+        return {true, absl::nullopt, absl::nullopt, ""};
     }
 
     /**
@@ -72,7 +72,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, "");
+        return {ordered, absl::nullopt, absl::nullopt, ""};
     }
 
     /**
@@ -83,7 +83,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::createProtocol(std::string protocol)
     {
-        return DataChannelConfiguration(true, absl::nullopt, absl::nullopt, std::move(protocol));
+        return {true, absl::nullopt, absl::nullopt, std::move(protocol)};
     }
 
     /**
@@ -95,7 +95,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::create(bool ordered, std::string protocol)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, absl::nullopt, std::move(protocol));
+        return {ordered, absl::nullopt, absl::nullopt, std::move(protocol)};
     }
 
     /**
@@ -106,7 +106,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime)
     {
-        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, "");
+        return {true, maxPacketLifeTime, absl::nullopt, ""};
     }
 
     /**
@@ -119,7 +119,7 @@ namespace opentera
     inline DataChannelConfiguration
         DataChannelConfiguration::createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime)
     {
-        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, "");
+        return {ordered, maxPacketLifeTime, absl::nullopt, ""};
     }
 
     /**
@@ -132,7 +132,7 @@ namespace opentera
     inline DataChannelConfiguration
         DataChannelConfiguration::createMaxPacketLifeTime(int maxPacketLifeTime, std::string protocol)
     {
-        return DataChannelConfiguration(true, maxPacketLifeTime, absl::nullopt, std::move(protocol));
+        return {true, maxPacketLifeTime, absl::nullopt, std::move(protocol)};
     }
 
     /**
@@ -146,7 +146,7 @@ namespace opentera
     inline DataChannelConfiguration
         DataChannelConfiguration::createMaxPacketLifeTime(bool ordered, int maxPacketLifeTime, std::string protocol)
     {
-        return DataChannelConfiguration(ordered, maxPacketLifeTime, absl::nullopt, std::move(protocol));
+        return {ordered, maxPacketLifeTime, absl::nullopt, std::move(protocol)};
     }
 
     /**
@@ -157,7 +157,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(int maxRetransmits)
     {
-        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, "");
+        return {true, absl::nullopt, maxRetransmits, ""};
     }
 
     /**
@@ -169,7 +169,7 @@ namespace opentera
      */
     inline DataChannelConfiguration DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, "");
+        return {ordered, absl::nullopt, maxRetransmits, ""};
     }
 
     /**
@@ -182,7 +182,7 @@ namespace opentera
     inline DataChannelConfiguration
         DataChannelConfiguration::createMaxRetransmits(int maxRetransmits, std::string protocol)
     {
-        return DataChannelConfiguration(true, absl::nullopt, maxRetransmits, std::move(protocol));
+        return {true, absl::nullopt, maxRetransmits, std::move(protocol)};
     }
 
     /**
@@ -196,7 +196,7 @@ namespace opentera
     inline DataChannelConfiguration
         DataChannelConfiguration::createMaxRetransmits(bool ordered, int maxRetransmits, std::string protocol)
     {
-        return DataChannelConfiguration(ordered, absl::nullopt, maxRetransmits, std::move(protocol));
+        return {ordered, absl::nullopt, maxRetransmits, std::move(protocol)};
     }
 
     /**

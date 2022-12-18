@@ -14,7 +14,8 @@
  *  limitations under the License.
  */
 
-#pragma once
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_OUT_PTR_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_OUT_PTR_H
 
 #include <memory>
 #include <iostream>
@@ -48,6 +49,7 @@ namespace opentera::internal
     template<typename Pointer = void, typename Smart>
     inline auto out_ptr(Smart& s)
     {
+        // TODO remove cout
         std::cout << "Creating out_ptr\n";
         if constexpr (!std::is_void_v<Pointer>)
         {
@@ -61,3 +63,5 @@ namespace opentera::internal
         }
     }
 }  // namespace opentera::internal
+
+#endif

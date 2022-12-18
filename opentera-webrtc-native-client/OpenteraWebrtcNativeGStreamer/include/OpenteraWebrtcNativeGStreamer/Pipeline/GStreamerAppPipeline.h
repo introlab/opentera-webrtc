@@ -15,13 +15,14 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_APP_PIPELINE_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_APP_PIPELINE_H
+
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
 
 #include <string_view>
 
-#include <utils/gstreamer_helpers.h>
-
-namespace opentera::internal
+namespace opentera
 {
     // TODO: Generalize this class to be able to use it for both encoding and decoding, and any encoder/encoder
     class GStreamerAppPipeline
@@ -38,6 +39,9 @@ namespace opentera::internal
 
         int32_t init(std::string_view caps_str);
 
+    protected:
+
+
     private:
         // TODO: Share gst::Gst with all encoders/decoders to keep gstreamer alive as long as any of them is alive
         gst::Gst m_gst;
@@ -50,3 +54,5 @@ namespace opentera::internal
         bool m_ready;
     };
 }
+
+#endif

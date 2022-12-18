@@ -17,7 +17,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
 
     try
     {
-        httplib::Client cli(host.c_str());
+        httplib::Client cli(host);
 #if defined(__APPLE__)
         /*
             TODO : Remove the certificate path on macosx with new version of
@@ -34,7 +34,7 @@ bool Http::get(const string& url, string& response, multimap<string, string> hea
         cli.set_ca_cert_path("C:\\msys64\\usr\\ssl\\cert.pem");
 #endif
         cli.enable_server_certificate_verification(verifyCertificate);
-        auto res = cli.Get(target.c_str(), httplib::Headers(headers.begin(), headers.end()));
+        auto res = cli.Get(target, httplib::Headers(headers.begin(), headers.end()));
         if (res == nullptr || res->status != 200)
         {
             return false;
