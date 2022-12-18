@@ -28,12 +28,14 @@
 
 #include <libyuv.h>
 
-#include <iostream> // TODO remove
-
 using namespace opentera;
+using namespace std;
 
-GStreamerVideoDecoder::GStreamerVideoDecoder()
-    : m_gstAppPipeline{},
+GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string codecName, string decoderPipeline)
+    : m_mediaTypeCaps{move(mediaTypeCaps)},
+      m_codecName(move(codecName)),
+      m_decoderPipeline(move(decoderPipeline)),
+      m_gstDecoderPipeline{},
       m_keyframeNeeded{true},
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
@@ -46,12 +48,12 @@ GStreamerVideoDecoder::GStreamerVideoDecoder()
 
 int32_t GStreamerVideoDecoder::Release()
 {
-    if (m_gstAppPipeline && m_gstAppPipeline->pipeline())
+    if (m_gstDecoderPipeline && m_gstDecoderPipeline->pipeline())
     {
-        auto bus = gst::unique_from_ptr(gst_pipeline_get_bus(GST_PIPELINE(m_gstAppPipeline->pipeline())));
+        auto bus = gst::unique_from_ptr(gst_pipeline_get_bus(GST_PIPELINE(m_gstDecoderPipeline->pipeline())));
         gst_bus_set_sync_handler(bus.get(), nullptr, nullptr, nullptr);
 
-        m_gstAppPipeline.reset();
+        m_gstDecoderPipeline.reset();
     }
     return WEBRTC_VIDEO_CODEC_OK;
 }
@@ -71,7 +73,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         }
     }
 
-    if (!m_gstAppPipeline)
+    if (!m_gstDecoderPipeline)
     {
         GST_ERROR("No source set, can't decode.");
         return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
@@ -82,7 +84,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     if (!GST_CLOCK_TIME_IS_VALID(m_firstBufferPts))
     {
         gst::unique_ptr<GstPad> srcpad =
-            gst::unique_from_ptr(gst_element_get_static_pad(m_gstAppPipeline->src(), "src"));
+            gst::unique_from_ptr(gst_element_get_static_pad(m_gstDecoderPipeline->src(), "src"));
         m_firstBufferPts = (static_cast<guint64>(renderTimeMs)) * GST_MSECOND;
         m_firstBufferDts = (static_cast<guint64>(inputImage.Timestamp())) * GST_MSECOND;
     }
@@ -105,7 +107,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     // GST_WARNING("Width: %d, Height: %d, Size: %lu", m_width, m_height,
     // gst_buffer_get_size(m_buffer.get()));
 
-    switch (gst_app_src_push_sample(GST_APP_SRC(m_gstAppPipeline->src()), sample.get()))
+    switch (gst_app_src_push_sample(GST_APP_SRC(m_gstDecoderPipeline->src()), sample.get()))
     {
         case GST_FLOW_OK:
             break;
@@ -120,25 +122,17 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     //     GST_BIN(m_gstAppPipeline->pipeline()),
     //     GST_DEBUG_GRAPH_SHOW_ALL,
     //     "pipeline-push-sample");
-    // std::cout << "Sample (push) is " << std::hex << sample.get() << std::dec << std::endl;
+    // cout << "Sample (push) is " << hex << sample.get() << dec << endl;
 
     return pullSample();
-}
-
-webrtc::VideoDecoder::DecoderInfo GStreamerVideoDecoder::GetDecoderInfo() const
-{
-    webrtc::VideoDecoder::DecoderInfo info;
-    info.is_hardware_accelerated = true; // TODO set only if is_hardware_accelerated
-    info.implementation_name = "GStreamer"; // TODO add the codec name
-    return info;
 }
 
 bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& settings)
 {
     m_keyframeNeeded = true;
 
-    m_gstAppPipeline = std::make_unique<GStreamerAppPipeline>();
-    if (WEBRTC_VIDEO_CODEC_OK != m_gstAppPipeline->init(Caps()))
+    m_gstDecoderPipeline = make_unique<GStreamerDecoderPipeline>();
+    if (WEBRTC_VIDEO_CODEC_OK != m_gstDecoderPipeline->init(m_mediaTypeCaps, m_decoderPipeline))
     {
         return false;
     }
@@ -164,7 +158,7 @@ int32_t GStreamerVideoDecoder::pullSample()
 {
     GstState state;
     GstState pending;
-    gst_element_get_state(m_gstAppPipeline->sink(), &state, &pending, GST_SECOND / 100);
+    gst_element_get_state(m_gstDecoderPipeline->sink(), &state, &pending, GST_SECOND / 100);
 
     /** Uncomment to help debugging */
     // GST_ERROR("State: %s; Pending: %s", gst_element_state_get_name(state),
@@ -178,11 +172,11 @@ int32_t GStreamerVideoDecoder::pullSample()
     //     "pipeline-pull-sample");
 
     auto sample = gst::unique_from_ptr(
-        gst_app_sink_try_pull_sample(GST_APP_SINK(m_gstAppPipeline->sink()), GST_SECOND / 100));
+        gst_app_sink_try_pull_sample(GST_APP_SINK(m_gstDecoderPipeline->sink()), GST_SECOND / 100));
 
     if (!sample)
     {
-        if (!m_gstAppPipeline->ready() || state != GST_STATE_PLAYING)
+        if (!m_gstDecoderPipeline->ready() || state != GST_STATE_PLAYING)
         {
             GST_ERROR("Not ready");
             return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
@@ -194,10 +188,10 @@ int32_t GStreamerVideoDecoder::pullSample()
         }
     }
 
-    m_gstAppPipeline->setReady(true);
+    m_gstDecoderPipeline->setReady(true);
 
     /** Uncomment to help debugging */
-    // std::cout << "Sample (pull) is " << std::hex << sample.get() << std::dec << std::endl;
+    // cout << "Sample (pull) is " << hex << sample.get() << dec << endl;
 
     auto buffer = gst_sample_get_buffer(sample.get());
 
@@ -218,7 +212,12 @@ int32_t GStreamerVideoDecoder::pullSample()
     if (!mappedFrame)
     {
         GST_ERROR("Could not map frame");
-        return WEBRTC_VIDEO_CODEC_NO_OUTPUT;
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+    if (mappedFrame.format() != GST_VIDEO_FORMAT_I420)
+    {
+        GST_ERROR("Wrong format: It must be I420");
+        return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
     auto i420Buffer = m_webrtcBufferPool.CreateI420Buffer(mappedFrame.width(), mappedFrame.height());
@@ -263,7 +262,7 @@ GstCaps* GStreamerVideoDecoder::getCapsForFrame(const webrtc::EncodedImage& imag
     if (!m_caps)
     {
         m_caps = gst::unique_from_ptr(gst_caps_new_simple(
-            Caps(),
+            m_mediaTypeCaps.c_str(),
             "width",
             G_TYPE_INT,
             m_width,

@@ -24,11 +24,19 @@
 
 namespace opentera
 {
-    // TODO: Generalize this class to be able to use it for both encoding and decoding, and any encoder/encoder
-    class GStreamerAppPipeline
+    class GStreamerDecoderPipeline
     {
+        gst::Gst m_gst;
+        gst::unique_ptr<GstPipeline> m_pipeline;
+        gst::unique_ptr<GstElement> m_src;
+        gst::unique_ptr<GstElement> m_sink;
+        gst::unique_ptr<GError> m_error;
+        gint m_width;
+        gint m_height;
+        bool m_ready;
+
     public:
-        GStreamerAppPipeline();
+        GStreamerDecoderPipeline();
 
         GstElement* pipeline();
         GstElement* src();
@@ -37,21 +45,7 @@ namespace opentera
         [[nodiscard]] bool ready() const;
         void setReady(bool ready);
 
-        int32_t init(std::string_view caps_str);
-
-    protected:
-
-
-    private:
-        // TODO: Share gst::Gst with all encoders/decoders to keep gstreamer alive as long as any of them is alive
-        gst::Gst m_gst;
-        gst::unique_ptr<GstPipeline> m_pipeline;
-        gst::unique_ptr<GstElement> m_appsrc;
-        gst::unique_ptr<GstElement> m_appsink;
-        gst::unique_ptr<GError> m_error;
-        gint m_width;
-        gint m_height;
-        bool m_ready;
+        int32_t init(std::string_view capsStr, std::string_view decoderPipeline);
     };
 }
 

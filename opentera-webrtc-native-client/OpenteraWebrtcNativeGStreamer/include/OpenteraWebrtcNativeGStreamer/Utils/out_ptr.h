@@ -49,16 +49,12 @@ namespace opentera::internal
     template<typename Pointer = void, typename Smart>
     inline auto out_ptr(Smart& s)
     {
-        // TODO remove cout
-        std::cout << "Creating out_ptr\n";
         if constexpr (!std::is_void_v<Pointer>)
         {
-            std::cout << "Using Pointer\n";
             return out_ptr_t<Smart, Pointer>(s);
         }
         else
         {
-            std::cout << "Using Smart::pointer\n";
             return out_ptr_t<Smart, typename Smart::pointer>(s);
         }
     }

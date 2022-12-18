@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <OpenteraWebrtcNativeGStreamer/Pipeline/GStreamerAppPipeline.h>
+#include <OpenteraWebrtcNativeGStreamer/Pipeline/GStreamerDecoderPipeline.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/out_ptr.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerMessageHandling.h>
 
@@ -25,44 +25,45 @@
 
 using namespace opentera;
 using namespace opentera::internal;
+using namespace std;
 
-GStreamerAppPipeline::GStreamerAppPipeline()
+GStreamerDecoderPipeline::GStreamerDecoderPipeline()
     : m_gst{nullptr, nullptr},
       m_pipeline{nullptr},
-      m_appsrc{nullptr},
-      m_appsink{nullptr},
+      m_src{nullptr},
+      m_sink{nullptr},
       m_width{0},
       m_height{0},
       m_ready{false}
 {
 }
 
-GstElement* GStreamerAppPipeline::pipeline()
+GstElement* GStreamerDecoderPipeline::pipeline()
 {
     return GST_ELEMENT(m_pipeline.get());
 }
-GstElement* GStreamerAppPipeline::src()
+GstElement* GStreamerDecoderPipeline::src()
 {
-    return m_appsrc.get();
+    return m_src.get();
 }
-GstElement* GStreamerAppPipeline::sink()
+GstElement* GStreamerDecoderPipeline::sink()
 {
-    return m_appsink.get();
+    return m_sink.get();
 }
 
-[[nodiscard]] bool GStreamerAppPipeline::ready() const
+[[nodiscard]] bool GStreamerDecoderPipeline::ready() const
 {
     return m_ready;
 }
-void GStreamerAppPipeline::setReady(bool ready)
+void GStreamerDecoderPipeline::setReady(bool ready)
 {
     m_ready = ready;
 }
 
-int32_t GStreamerAppPipeline::init(std::string_view caps_str)
+int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderPipeline)
 {
-    std::string pipelineStr = std::string(R"(appsrc name=src emit-signals=true is-live=true format=time caps=)") +
-                              std::string(caps_str) +
+    string pipelineStr = string("appsrc name=src emit-signals=true is-live=true format=time caps=") +
+                              string(capsStr) +
 
                               /** Uncomment to use a test source */
                               // R"( ! queue ! fakesink sync=false)"
@@ -70,29 +71,19 @@ int32_t GStreamerAppPipeline::init(std::string_view caps_str)
                               // R"( ! videoconvert)"
                               // R"( ! vaapih264enc)"
 
-                              R"( ! queue name=q2)"
+                              " ! queue name=q2 ! " +
+                              string(decoderPipeline) +
 
-                              // TODO: Should be dynamic
-                              /** Uncomment to choose decoder to use */
-                              // R"( ! vaapivp9dec name=decode ! vaapipostproc)"
-                              // R"( ! vaapivp8dec name=decode ! vaapipostproc)"
-                              //R"( ! vaapih264dec name=decode ! vaapipostproc)"
-                              R"( ! vp8dec name=decode)"
-                              //R"( ! vp9dec name=decode)"
-                              //R"( ! h264parse ! avdec_h264 name=decode)"
-
-                              R"( ! capsfilter caps=video/x-raw,format=(string)I420)"
+                              " ! capsfilter caps=video/x-raw,format=(string)I420"
 
                               /** Comment to disable the gstreamer alternative display */
-                              R"( ! tee name=tee)"
+                              " ! tee name=tee"
 
-                              R"( ! queue)"
-                              R"( ! appsink name=sink emit-signals=true sync=false)"
+                              " ! queue"
+                              " ! appsink name=sink emit-signals=true sync=false"
 
                               /** Comment to disable the gstreamer alternative display */
-                              R"( tee. ! queue ! fpsdisplaysink sync=false)"
-
-                              "";
+                              " tee. ! queue ! fpsdisplaysink sync=false";
 
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
 
@@ -102,8 +93,8 @@ int32_t GStreamerAppPipeline::init(std::string_view caps_str)
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
-    m_appsrc = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "src"));
-    m_appsink = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "sink"));
+    m_src = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "src"));
+    m_sink = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "sink"));
 
     connectBusMessageCallback(m_pipeline);
 

@@ -18,7 +18,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_GSTREAMER_VIDEO_DECODER_FACTORY_H
 #define OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_GSTREAMER_VIDEO_DECODER_FACTORY_H
 
-#include <OpenteraWebrtcNativeGStreamer/Pipeline/GStreamerAppPipeline.h>
+#include <OpenteraWebrtcNativeGStreamer/Pipeline/GStreamerDecoderPipeline.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/ClassMacro.h>
 
@@ -41,10 +41,11 @@ namespace opentera
 
     class GStreamerVideoDecoder : public webrtc::VideoDecoder
     {
-        // TODO: dependency injection for the pipeline to choose encoder/decoder and codec
-        std::unique_ptr<GStreamerAppPipeline> m_gstAppPipeline; // TODO rename to gstAppPipeline
+        std::string m_mediaTypeCaps;
+        std::string m_codecName;
+        std::string m_decoderPipeline;
+        std::unique_ptr<GStreamerDecoderPipeline> m_gstDecoderPipeline;
 
-        // TODO: keyframe handling
         bool m_keyframeNeeded;
         GstClockTime m_firstBufferPts;
         GstClockTime m_firstBufferDts;
@@ -59,7 +60,7 @@ namespace opentera
         webrtc::VideoFrameBufferPool m_webrtcBufferPool;
 
     public:
-        GStreamerVideoDecoder();
+        GStreamerVideoDecoder(std::string mediaTypeCaps, std::string codecName, std::string decoderPipeline);
         ~GStreamerVideoDecoder() override = default;
 
         DECLARE_NOT_COPYABLE(GStreamerVideoDecoder);
@@ -68,17 +69,6 @@ namespace opentera
         int32_t Release() final;
 
         int32_t Decode(const webrtc::EncodedImage& inputImage, bool missingFrames, int64_t renderTimeMs) final;
-
-        // TODO: Should be attributes
-        /** Uncomment matchings Caps() and Name() as needed based on the decoder used */
-        //static const gchar* Caps() { return "video/x-h264"; }
-        //static const gchar* Name() { return cricket::kH264CodecName; }
-        static const gchar* Caps() { return "video/x-vp8"; }
-        static const gchar* Name() { return cricket::kVp8CodecName; }
-        //static const gchar* Caps() { return "video/x-vp9"; }
-        //static const gchar* Name() { return cricket::kVp9CodecName; }
-
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         bool Configure(const webrtc::VideoDecoder::Settings& settings) override;
 
