@@ -80,20 +80,20 @@ function(pip_add_so_target)
     cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     add_custom_command(
-        OUTPUT ${WORKING_DIR}/so.stamp
+        OUTPUT ${WORKING_DIR}/${ARGS_NAME}.stamp
         DEPENDS ${ARGS_SO_NAME} ${ARGS_DEPENDS}
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${ARGS_SO_NAME}> ${PYTHON_PACKAGE_CONTENT_DIR}/$<TARGET_FILE_NAME:${ARGS_SO_NAME}>
-        COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/so.stamp
+        COMMAND ${CMAKE_COMMAND} -E touch ${WORKING_DIR}/${ARGS_NAME}.stamp
         WORKING_DIRECTORY ${PYTHON_PACKAGE_DIR}
         VERBATIM
     )
     add_custom_target(
         ${ARGS_NAME}-target
         ALL
-        DEPENDS ${WORKING_DIR}/so.stamp
+        DEPENDS ${WORKING_DIR}/${ARGS_NAME}.stamp
         VERBATIM
     )
-    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/so.stamp PARENT_SCOPE)
+    set(${ARGS_NAME} ${ARGS_NAME}-target ${WORKING_DIR}/${ARGS_NAME}.stamp PARENT_SCOPE)
 endfunction()
 
 function(pip_add_stub_target)

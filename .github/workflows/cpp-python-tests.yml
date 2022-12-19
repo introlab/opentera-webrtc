@@ -28,6 +28,7 @@ jobs:
         os: [ubuntu-18.04, ubuntu-20.04, ubuntu-22.04]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
+        enable-gstreamer: [ON, OFF]
 
     steps:
       - uses: actions/checkout@v2
@@ -132,7 +133,8 @@ jobs:
           cmake ../ -DCMAKE_BUILD_TYPE=${{ matrix.build-type }} -DCMAKE_INSTALL_PREFIX=dist \
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python --version | perl -pe 's/Python //')" \
-          -DPython_ROOT_DIR="${{ env.pythonLocation }}"
+          -DPython_ROOT_DIR="${{ env.pythonLocation }}" \
+          -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=${{ matrix.enable-gstreamer }}
           make -j2
           make install
 
