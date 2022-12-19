@@ -10,6 +10,9 @@
 using namespace opentera;
 using namespace std;
 
+constexpr int HardwarePriority = 1;
+constexpr int SoftwarePriority = 2;
+
 WebRtcGStreamerVideoDecoderFactory::WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder) :
       m_builtinVideoDecoderFactory(webrtc::CreateBuiltinVideoDecoderFactory())
 {
@@ -54,21 +57,25 @@ void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(bool forceHardwareAccel
 
     if (VaapiH264GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<VaapiH264GStreamerVideoDecoder>(1);
+        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<VaapiH264GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (TegraH264GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<TegraH264GStreamerVideoDecoder>(1);
+        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<TegraH264GStreamerVideoDecoder>(HardwarePriority);
+    }
+    else if (V4l2H264GStreamerVideoDecoder::isSupported())
+    {
+        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<V4l2H264GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareDecoder && SoftwareH264GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<SoftwareH264GStreamerVideoDecoder>(2);
+            m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<SoftwareH264GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(H264_CODEC_NAME))
         {
-            m_decoderFactories[H264_CODEC_NAME] = createBuiltinDecoderFactory(2);
+            m_decoderFactories[H264_CODEC_NAME] = createBuiltinDecoderFactory(SoftwarePriority);
         }
     }
 }
@@ -79,21 +86,21 @@ void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(bool forceHardwareAccele
 
     if (VaapiVp8GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<VaapiVp8GStreamerVideoDecoder>(1);
+        m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<VaapiVp8GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (TegraVp8GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<TegraVp8GStreamerVideoDecoder>(1);
+        m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<TegraVp8GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareDecoder && SoftwareVp8GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<SoftwareVp8GStreamerVideoDecoder>(2);
+            m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<SoftwareVp8GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(VP8_CODEC_NAME))
         {
-            m_decoderFactories[VP8_CODEC_NAME] = createBuiltinDecoderFactory(2);
+            m_decoderFactories[VP8_CODEC_NAME] = createBuiltinDecoderFactory(SoftwarePriority);
         }
     }
 }
@@ -104,21 +111,21 @@ void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(bool forceHardwareAccele
 
     if (VaapiVp9GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<VaapiVp9GStreamerVideoDecoder>(1);
+        m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<VaapiVp9GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (TegraVp9GStreamerVideoDecoder::isSupported())
     {
-        m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<TegraVp9GStreamerVideoDecoder>(1);
+        m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<TegraVp9GStreamerVideoDecoder>(HardwarePriority);
     }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareDecoder && SoftwareVp9GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<SoftwareVp9GStreamerVideoDecoder>(3);
+            m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<SoftwareVp9GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(VP9_CODEC_NAME))
         {
-            m_decoderFactories[VP9_CODEC_NAME] = createBuiltinDecoderFactory(2);
+            m_decoderFactories[VP9_CODEC_NAME] = createBuiltinDecoderFactory(SoftwarePriority);
         }
     }
 }

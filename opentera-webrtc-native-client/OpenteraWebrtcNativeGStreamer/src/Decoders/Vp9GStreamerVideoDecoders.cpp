@@ -37,7 +37,7 @@ const char* Vp9GStreamerVideoDecoder::codecName()
 }
 
 SoftwareVp9GStreamerVideoDecoder::SoftwareVp9GStreamerVideoDecoder() :
-      Vp9GStreamerVideoDecoder("vp9dec name=decode")
+      Vp9GStreamerVideoDecoder("vp9dec")
 {
 }
 
@@ -56,7 +56,7 @@ bool SoftwareVp9GStreamerVideoDecoder::isSupported()
 
 
 VaapiVp9GStreamerVideoDecoder::VaapiVp9GStreamerVideoDecoder() :
-      Vp9GStreamerVideoDecoder("vaapivp9dec name=decode ! vaapipostproc")
+      Vp9GStreamerVideoDecoder("vaapivp9dec ! vaapipostproc")
 {
 }
 

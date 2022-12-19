@@ -38,7 +38,7 @@ const char* H264GStreamerVideoDecoder::codecName()
 
 
 SoftwareH264GStreamerVideoDecoder::SoftwareH264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("h264parse ! avdec_h264 name=decode")
+      H264GStreamerVideoDecoder("h264parse ! avdec_h264")
 {
 }
 
@@ -57,7 +57,7 @@ bool SoftwareH264GStreamerVideoDecoder::isSupported()
 
 
 VaapiH264GStreamerVideoDecoder::VaapiH264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("vaapih264dec name=decode ! vaapipostproc")
+      H264GStreamerVideoDecoder("vaapih264dec ! vaapipostproc")
 {
 }
 
@@ -94,4 +94,23 @@ bool TegraH264GStreamerVideoDecoder::isSupported()
            gst::elementFactoryExists("nvv4l2decoder") &&
            gst::elementFactoryExists("nvvidconv") &&
            gst::testEncoderDecoderPipeline("x264enc ! h264parse ! nvv4l2decoder ! nvvidconv");
+}
+
+
+V4l2H264GStreamerVideoDecoder::V4l2H264GStreamerVideoDecoder() :
+      H264GStreamerVideoDecoder("h264parse ! v4l2h264dec")
+{
+}
+
+webrtc::VideoDecoder::DecoderInfo V4l2H264GStreamerVideoDecoder::GetDecoderInfo() const
+{
+    webrtc::VideoDecoder::DecoderInfo info;
+    info.implementation_name = "GStreamer v4l2h264dec";
+    info.is_hardware_accelerated = true;
+    return info;
+}
+
+bool V4l2H264GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("h264parse") && gst::elementFactoryExists("v4l2h264dec");
 }

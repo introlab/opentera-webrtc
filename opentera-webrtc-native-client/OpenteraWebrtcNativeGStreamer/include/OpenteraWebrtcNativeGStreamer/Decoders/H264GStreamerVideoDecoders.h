@@ -64,6 +64,17 @@ namespace opentera
 
         static bool isSupported();
     };
+
+    class V4l2H264GStreamerVideoDecoder : public H264GStreamerVideoDecoder
+    {
+    public:
+        V4l2H264GStreamerVideoDecoder();
+        ~V4l2H264GStreamerVideoDecoder() override = default;
+
+        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+
+        static bool isSupported();
+    };
 }
 
 #endif

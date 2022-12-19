@@ -42,7 +42,8 @@ bool gst::testEncoderDecoderPipeline(std::string_view encoderDecoderPipeline)
     }
 
     GstState state;
-    if (gst_element_get_state(GST_ELEMENT(pipeline.get()), &state, nullptr, Timeout) != GST_STATE_CHANGE_SUCCESS)
+    if (gst_element_get_state(GST_ELEMENT(pipeline.get()), &state, nullptr, Timeout) != GST_STATE_CHANGE_SUCCESS ||
+        state != GST_STATE_PLAYING)
     {
         return false;
     }

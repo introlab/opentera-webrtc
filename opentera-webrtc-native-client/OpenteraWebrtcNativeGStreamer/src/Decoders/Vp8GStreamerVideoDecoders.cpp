@@ -38,7 +38,7 @@ const char* Vp8GStreamerVideoDecoder::codecName()
 
 
 SoftwareVp8GStreamerVideoDecoder::SoftwareVp8GStreamerVideoDecoder() :
-      Vp8GStreamerVideoDecoder("vp8dec name=decode")
+      Vp8GStreamerVideoDecoder("vp8dec")
 {
 }
 
@@ -57,7 +57,7 @@ bool SoftwareVp8GStreamerVideoDecoder::isSupported()
 
 
 VaapiVp8GStreamerVideoDecoder::VaapiVp8GStreamerVideoDecoder() :
-      Vp8GStreamerVideoDecoder("vaapivp8dec name=decode ! vaapipostproc")
+      Vp8GStreamerVideoDecoder("vaapivp8dec ! vaapipostproc")
 {
 }
 
