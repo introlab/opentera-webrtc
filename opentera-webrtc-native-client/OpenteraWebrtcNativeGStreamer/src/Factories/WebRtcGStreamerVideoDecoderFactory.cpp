@@ -38,6 +38,26 @@ vector<webrtc::SdpVideoFormat> WebRtcGStreamerVideoDecoderFactory::GetSupportedF
     return supportedFormats;
 }
 
+webrtc::VideoDecoderFactory::CodecSupport WebRtcGStreamerVideoDecoderFactory::QueryCodecSupport(const webrtc::SdpVideoFormat& format,
+                                                                                                bool referenceScaling) const
+{
+    CodecSupport codecSupport;
+
+    auto it = m_decoderFactories.find(format.name);
+    if (it == m_decoderFactories.end())
+    {
+        codecSupport.is_supported = false;
+        codecSupport.is_power_efficient = false;
+    }
+    else
+    {
+        codecSupport.is_supported = !referenceScaling;
+        codecSupport.is_power_efficient = it->second.isHardwareAccelerated;
+    }
+
+    return codecSupport;
+}
+
 unique_ptr<webrtc::VideoDecoder> WebRtcGStreamerVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)
 {
     auto it = m_decoderFactories.find(format.name);
@@ -142,6 +162,7 @@ WebRtcGStreamerVideoDecoderFactory::DecoderFactory WebRtcGStreamerVideoDecoderFa
 {
     return {
         priority,
-            [this](const webrtc::SdpVideoFormat& format){return m_builtinVideoDecoderFactory->CreateVideoDecoder(format);}
+        false,
+        [this](const webrtc::SdpVideoFormat& format){return m_builtinVideoDecoderFactory->CreateVideoDecoder(format);}
     };
 }

@@ -60,7 +60,7 @@ protected:
         }
     }
 
-    void SetUp()
+    void SetUp() override
     {
         m_tlsTestEnable = GetParam();
 

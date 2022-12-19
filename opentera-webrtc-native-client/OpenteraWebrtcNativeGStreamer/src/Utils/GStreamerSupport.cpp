@@ -6,6 +6,8 @@
 #include <gst/app/gstappsink.h>
 
 #include <string>
+#include <shared_mutex>
+#include <unordered_map>
 
 using namespace opentera;
 using namespace opentera::internal;
@@ -17,13 +19,13 @@ bool gst::elementFactoryExists(const char* name)
     return factory != nullptr;
 }
 
-bool gst::testEncoderDecoderPipeline(std::string_view encoderDecoderPipeline)
+static bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline)
 {
     constexpr GstClockTime Timeout = GST_SECOND / 10;
 
     string pipelineStr = "videotestsrc num-buffers=1 ! "
                          "capsfilter caps=video/x-raw,format=(string)I420,width=(int)64,height=(int)64 ! " +
-                         string(encoderDecoderPipeline) +
+                         encoderDecoderPipeline +
                          " ! appsink name=sink";
 
     gst::unique_ptr<GError> error;
@@ -50,4 +52,26 @@ bool gst::testEncoderDecoderPipeline(std::string_view encoderDecoderPipeline)
 
     auto sample = gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(sink.get()), Timeout));
     return sample != nullptr;
+}
+
+bool gst::testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline)
+{
+    static unordered_map<string, bool> cache;
+    static shared_mutex mutex;
+
+    {
+        shared_lock lock(mutex);
+        auto it = cache.find(encoderDecoderPipeline);
+        if (it != cache.end())
+        {
+            return it->second;
+        }
+    }
+
+    {
+        shared_lock lock(mutex);
+        bool ok = ::testEncoderDecoderPipeline(encoderDecoderPipeline);
+        cache[encoderDecoderPipeline] = ok;
+        return ok;
+    }
 }

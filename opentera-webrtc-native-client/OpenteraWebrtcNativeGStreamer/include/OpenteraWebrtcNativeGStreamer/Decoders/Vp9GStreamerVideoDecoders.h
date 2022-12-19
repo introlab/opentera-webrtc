@@ -41,6 +41,7 @@ namespace opentera
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
+        static bool isHardwareAccelerated();
     };
 
     class VaapiVp9GStreamerVideoDecoder : public Vp9GStreamerVideoDecoder
@@ -52,6 +53,7 @@ namespace opentera
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
+        static bool isHardwareAccelerated();
     };
 
     class TegraVp9GStreamerVideoDecoder : public Vp9GStreamerVideoDecoder
@@ -63,6 +65,7 @@ namespace opentera
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
+        static bool isHardwareAccelerated();
     };
 }
 

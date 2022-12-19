@@ -25,16 +25,16 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [x] Create conversion functions between webrtc and gstreamer frames
 - [x] Create a simple working GStreamer decoder
 - [ ] Create a simple working GStreamer encoder
-- [ ] (PARTIAL) Support building without GStreamer
+- [x] (PARTIAL) Support building without GStreamer
 - [x] Fallback to default webrtc software decoder/encoder or fail if no hardware dec/enc available
-- [ ] Add setting to disable fallback to default webrtc software decoder/encoder or fail if no hardware dec/enc available
-- [ ] Create a compounded decoder factory that instantiates an available decoder for the platform if it can
+- [x] Add setting to disable fallback to default webrtc software decoder/encoder or fail if no hardware dec/enc available
+- [x] Create a compounded decoder factory that instantiates an available decoder for the platform if it can
 - [ ] Create a compounded encoder factory that instantiates an available encoder for the platform if it can
-- [ ] Refactor GStreamerVideoFrameLibWebRTC to reuse I420Buffers if possible instead of allocating anew for each frame (using a buffer pool of sorts)
+- [x] Refactor GStreamerVideoFrameLibWebRTC to reuse I420Buffers if possible instead of allocating anew for each frame (using a buffer pool of sorts)
 - [ ] Refactor logging and verbosity (like current deleters for GStreamer types are all verbose)
 - [ ] Lots of cleanup to do (comments and all)
-- [ ] Validate that the keyframes logic (waiting for keyframe) works or make it work in decoder
-- [ ] Handle multiple clients connected, and deconnection then reconnection of clients (shared gst::Gst and all)
+- [x] Validate that the keyframes logic (waiting for keyframe) works or make it work in decoder
+- [x] Handle multiple clients connected, and deconnection then reconnection of clients (shared gst::Gst and all)
 - [ ] Check if Python wrapper works with the GStreamer decoder/encoder (with .so/.dll/.dylib)
 - [ ] Add tests for GStreamer decoder/encoder
 
@@ -43,8 +43,8 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [x] Initial simple test decoder support using software decoder in GStreamer
 - [ ] Initial simple test encoder support using software encoder in GStreamer
 - [x] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (vaapi)
-- [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (raspberry pi)
-- [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (jetson xavier nx / jetson agx xavier / jetson orin agx)
+- [x] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (raspberry pi)
+- [x] Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (jetson xavier nx / jetson agx xavier / jetson orin agx)
 - [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (Windows platform API)
 - [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware decoders (MacOS platform API)
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (vaapi)

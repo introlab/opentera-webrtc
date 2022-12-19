@@ -34,7 +34,8 @@ constexpr int SignalingProtocolVersion = 1;
 
 SignalingClient::SignalingClient(
     SignalingServerConfiguration&& signalingServerConfiguration,
-    WebrtcConfiguration&& webrtcConfiguration)
+    WebrtcConfiguration&& webrtcConfiguration,
+    VideoStreamConfiguration&& videoStreamConfiguration)
     : m_signalingServerConfiguration(move(signalingServerConfiguration)),
       m_webrtcConfiguration(move(webrtcConfiguration)),
       m_hasClosePending(false)
@@ -66,8 +67,8 @@ SignalingClient::SignalingClient(
         m_audioDeviceModule,
         webrtc::CreateBuiltinAudioEncoderFactory(),
         webrtc::CreateBuiltinAudioDecoderFactory(),
-        createVideoEncoderFactory(),
-        createVideoDecoderFactory(),
+        createVideoEncoderFactory(videoStreamConfiguration),
+        createVideoDecoderFactory(videoStreamConfiguration),
         nullptr,  // Audio mixer,
         m_audioProcessing);
 

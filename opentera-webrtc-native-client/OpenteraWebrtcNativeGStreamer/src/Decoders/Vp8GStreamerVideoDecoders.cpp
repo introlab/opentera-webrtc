@@ -55,6 +55,11 @@ bool SoftwareVp8GStreamerVideoDecoder::isSupported()
     return gst::elementFactoryExists("vp8dec");
 }
 
+bool SoftwareVp8GStreamerVideoDecoder::isHardwareAccelerated()
+{
+    return false;
+}
+
 
 VaapiVp8GStreamerVideoDecoder::VaapiVp8GStreamerVideoDecoder() :
       Vp8GStreamerVideoDecoder("vaapivp8dec ! vaapipostproc")
@@ -74,6 +79,11 @@ bool VaapiVp8GStreamerVideoDecoder::isSupported()
     return gst::elementFactoryExists("vaapivp8dec") && gst::elementFactoryExists("vaapipostproc");
 }
 
+bool VaapiVp8GStreamerVideoDecoder::isHardwareAccelerated()
+{
+    return true;
+}
+
 
 TegraVp8GStreamerVideoDecoder::TegraVp8GStreamerVideoDecoder() :
       Vp8GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv")
@@ -90,7 +100,13 @@ webrtc::VideoDecoder::DecoderInfo TegraVp8GStreamerVideoDecoder::GetDecoderInfo(
 
 bool TegraVp8GStreamerVideoDecoder::isSupported()
 {
-    return gst::elementFactoryExists("nvv4l2decoder") &&
+    return gst::elementFactoryExists("vp8enc") &&
+           gst::elementFactoryExists("nvv4l2decoder") &&
            gst::elementFactoryExists("nvvidconv") &&
            gst::testEncoderDecoderPipeline("vp8enc ! nvv4l2decoder ! nvvidconv");
+}
+
+bool TegraVp8GStreamerVideoDecoder::isHardwareAccelerated()
+{
+    return true;
 }

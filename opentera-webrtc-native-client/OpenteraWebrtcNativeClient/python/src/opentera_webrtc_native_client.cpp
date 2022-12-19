@@ -2,6 +2,7 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/DataChannelConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/SignalingServerConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/VideoSourceConfigurationPython.h>
+#include <OpenteraWebrtcNativeClientPython/Configurations/VideoStreamConfigurationPython.h>
 #include <OpenteraWebrtcNativeClientPython/Configurations/WebrtcConfigurationPython.h>
 
 #include <OpenteraWebrtcNativeClientPython/Utils/ClientPython.h>
@@ -23,6 +24,7 @@ PYBIND11_MODULE(_opentera_webrtc_native_client, m)
     initDataChannelConfigurationPython(m);
     initSignalingServerConfigurationPython(m);
     initVideoSourceConfigurationPython(m);
+    initVideoStreamConfigurationPython(m);
     initWebrtcConfigurationPython(m);
 
     initClientPython(m);

@@ -62,7 +62,7 @@ protected:
         }
     }
 
-    void SetUp()
+    void SetUp() override
     {
         m_tlsTestEnable = GetParam();
 
@@ -75,8 +75,6 @@ protected:
             m_baseUrl = "http://localhost:8080";
         }
     }
-
-    void TearDown() {}
 };
 
 unique_ptr<subprocess::Popen> DataChannelClientTests::m_signalingServerProcess = nullptr;

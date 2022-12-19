@@ -113,9 +113,10 @@ int main(int argc, char* argv[])
     auto signalingServerConfiguration =
         SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
+    auto videoStreamConfiguration = VideoStreamConfiguration::create();
     auto videoSource = make_shared<NoiseVideoSource>();
     auto audioSource = make_shared<SinAudioSource>();
-    StreamClient client(signalingServerConfiguration, webrtcConfiguration, videoSource, audioSource);
+    StreamClient client(signalingServerConfiguration, webrtcConfiguration, videoStreamConfiguration, videoSource, audioSource);
 
     client.setOnSignalingConnectionOpened(
         []()

@@ -34,6 +34,7 @@ namespace opentera
         struct DecoderFactory
         {
             int priority;
+            bool isHardwareAccelerated;
             std::function<std::unique_ptr<webrtc::VideoDecoder>(const webrtc::SdpVideoFormat&)> factory;
         };
 
@@ -42,9 +43,11 @@ namespace opentera
         std::unordered_map<std::string, DecoderFactory> m_decoderFactories;
 
     public:
-        WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
+        WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration,
+                                           bool useGStreamerSoftwareDecoder);
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
+        CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool reference_scaling) const override;
         std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
 
     private:
@@ -62,7 +65,9 @@ namespace opentera
     template<class Decoder>
     WebRtcGStreamerVideoDecoderFactory::DecoderFactory WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
     {
-        return {priority, [](auto _){return std::make_unique<Decoder>();}};
+        return {priority,
+                Decoder::isHardwareAccelerated(),
+                [](auto _){return std::make_unique<Decoder>();}};
     }
 }
 

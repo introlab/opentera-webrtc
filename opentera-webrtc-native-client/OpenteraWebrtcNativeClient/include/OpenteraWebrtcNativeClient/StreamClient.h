@@ -31,21 +31,24 @@ namespace opentera
         bool m_isLocalVideoMuted;
 
     public:
-        // TODO add StreamConfiguration containing force hardware accelerated codec and force codecs
-        StreamClient(
-            SignalingServerConfiguration signalingServerConfiguration,
-            WebrtcConfiguration webrtcConfiguration);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration);
+        StreamClient(
+            SignalingServerConfiguration signalingServerConfiguration,
+            WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<VideoSource> videoSource);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<AudioSource> audioSource);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<VideoSource> videoSource,
             std::shared_ptr<AudioSource> audioSource);
         ~StreamClient() override;

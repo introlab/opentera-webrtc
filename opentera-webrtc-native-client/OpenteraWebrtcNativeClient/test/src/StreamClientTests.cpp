@@ -19,8 +19,6 @@ using namespace opentera;
 using namespace std;
 namespace fs = std::filesystem;
 
-// TODO test with gstreamer
-
 class ConstantVideoSource : public VideoSource
 {
     atomic_bool m_stopped;
@@ -110,14 +108,28 @@ private:
 static const WebrtcConfiguration DefaultWebrtcConfiguration =
     WebrtcConfiguration::create({IceServer("stun:stun.l.google.com:19302")});
 
-class StreamClientTests : public ::testing::TestWithParam<bool>
+struct StreamClientTestsParameters
+{
+    bool tlsTestEnable;
+    bool useGStreamerSoftwareEncoderDecoder;
+};
+
+void PrintTo(const StreamClientTestsParameters& parameters, std::ostream* os)
+{
+    *os << "tlsTestEnable=" << parameters.tlsTestEnable;
+    *os << ", useGStreamerSoftwareEncoderDecoder=" << parameters.useGStreamerSoftwareEncoderDecoder;
+}
+
+class StreamClientTests : public ::testing::TestWithParam<StreamClientTestsParameters>
 {
     static unique_ptr<subprocess::Popen> m_signalingServerProcess;
     static unique_ptr<subprocess::Popen> m_signalingServerProcessTLS;
 
 protected:
-    bool m_tlsTestEnable;
+    VideoStreamConfiguration m_videoStreamConfiguration;
     string m_baseUrl;
+
+    StreamClientTests() : m_videoStreamConfiguration(VideoStreamConfiguration::create()) {}
 
     static void SetUpTestSuite()
     {
@@ -153,11 +165,13 @@ protected:
         }
     }
 
-    void SetUp()
+    void SetUp() override
     {
-        m_tlsTestEnable = GetParam();
+        StreamClientTestsParameters parameters = GetParam();
+        m_videoStreamConfiguration =
+            VideoStreamConfiguration::create({}, false, parameters.useGStreamerSoftwareEncoderDecoder);
 
-        if (m_tlsTestEnable)
+        if (parameters.tlsTestEnable)
         {
             m_baseUrl = "https://localhost:8081/thepath";
         }
@@ -166,8 +180,6 @@ protected:
             m_baseUrl = "http://localhost:8080/thepath";
         }
     }
-
-    void TearDown() {}
 };
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcess = nullptr;
 unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcessTLS = nullptr;
@@ -176,7 +188,8 @@ TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
 {
     unique_ptr<StreamClient> client = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
-        DefaultWebrtcConfiguration);
+        DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration);
 
     EXPECT_FALSE(client->isLocalAudioMuted());
     EXPECT_FALSE(client->isRemoteAudioMuted());
@@ -238,10 +251,12 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         videoSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -345,10 +360,12 @@ TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         videoSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -435,10 +452,12 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         videoSource);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
-        DefaultWebrtcConfiguration);
+        DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration);
 
     client1->setTlsVerificationEnabled(false);
     client2->setTlsVerificationEnabled(false);
@@ -537,10 +556,12 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         audioSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -683,10 +704,12 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         audioSource2);
 
     client1->setTlsVerificationEnabled(false);
@@ -827,10 +850,12 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
         DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration,
         audioSource);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
         SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
-        DefaultWebrtcConfiguration);
+        DefaultWebrtcConfiguration,
+        m_videoStreamConfiguration);
 
     client1->setTlsVerificationEnabled(false);
     client2->setTlsVerificationEnabled(false);
@@ -886,4 +911,10 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
     EXPECT_EQ(onAddRemoteStreamClient->name(), "c1");
 }
 
-INSTANTIATE_TEST_SUITE_P(StreamClientTests, StreamClientTests, ::testing::Values(false, true));
+INSTANTIATE_TEST_SUITE_P(
+    StreamClientTests,
+    StreamClientTests,
+    ::testing::Values(
+        StreamClientTestsParameters{false, false},
+        StreamClientTestsParameters{true, false},
+        StreamClientTestsParameters{false, true}));

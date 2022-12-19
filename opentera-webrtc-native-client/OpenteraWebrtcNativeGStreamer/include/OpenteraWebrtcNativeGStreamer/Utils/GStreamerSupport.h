@@ -22,7 +22,7 @@
 namespace gst
 {
     bool elementFactoryExists(const char* name);
-    bool testEncoderDecoderPipeline(std::string_view encoderDecoderPipeline);
+    bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline);
 }
 
 #endif

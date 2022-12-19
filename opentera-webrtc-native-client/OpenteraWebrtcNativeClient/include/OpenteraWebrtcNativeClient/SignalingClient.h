@@ -3,6 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/VideoStreamConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
@@ -70,7 +71,8 @@ namespace opentera
     public:
         SignalingClient(
             SignalingServerConfiguration&& signalingServerConfiguration,
-            WebrtcConfiguration&& webrtcConfiguration);
+            WebrtcConfiguration&& webrtcConfiguration,
+            VideoStreamConfiguration&& videoStreamConfiguration);
         virtual ~SignalingClient() = default;
 
         DECLARE_NOT_COPYABLE(SignalingClient);
