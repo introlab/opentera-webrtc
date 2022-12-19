@@ -23,7 +23,7 @@
  *  https://opensource.apple.com/source/WebCore/WebCore-7611.3.10.0.1/platform/mediastream/gstreamer/GStreamerVideoFrameLibWebRTC.h.auto.html
  */
 
-#include <OpenteraWebrtcNativeGStreamer/Codecs/GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/GStreamerVideoDecoder.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GstMappedFrame.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/out_ptr.h>
 
@@ -32,7 +32,8 @@
 using namespace opentera;
 using namespace std;
 
-constexpr size_t GST_DECODER_BUFFER_SIZE = 10 * 1024 * 1024;
+constexpr size_t GstDecoderBufferSize = 10 * 1024 * 1024;
+constexpr size_t WebrtcBufferPoolSize = 300;
 
 GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string decoderPipeline)
     : m_mediaTypeCaps{move(mediaTypeCaps)},
@@ -44,7 +45,7 @@ GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string decode
       m_width{0},
       m_height{0},
       m_imageReadyCb{nullptr},
-      m_webrtcBufferPool{false, 300 /* max_number_of_buffers*/}
+      m_webrtcBufferPool{false, WebrtcBufferPoolSize}
 {
 }
 
@@ -163,7 +164,7 @@ bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& sett
 
     m_bufferPool = gst::unique_from_ptr(gst_buffer_pool_new());
     GstStructure* bufferPoolConfig = gst_buffer_pool_get_config(m_bufferPool.get());
-    gst_buffer_pool_config_set_params(bufferPoolConfig, nullptr, GST_DECODER_BUFFER_SIZE, 1, 0);
+    gst_buffer_pool_config_set_params(bufferPoolConfig, nullptr, GstDecoderBufferSize, 1, 0);
     if (!gst_buffer_pool_set_config(m_bufferPool.get(), bufferPoolConfig) ||
         !gst_buffer_pool_set_active(m_bufferPool.get(), true))
     {

@@ -19,6 +19,8 @@ using namespace opentera;
 using namespace std;
 namespace fs = std::filesystem;
 
+// TODO test with gstreamer
+
 class ConstantVideoSource : public VideoSource
 {
     atomic_bool m_stopped;

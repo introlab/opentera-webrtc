@@ -1,7 +1,7 @@
 #include <OpenteraWebrtcNativeGStreamer/Factories/WebRtcGStreamerVideoDecoderFactory.h>
-#include <OpenteraWebrtcNativeGStreamer/Codecs/H264GStreamerVideoDecoder.h>
-#include <OpenteraWebrtcNativeGStreamer/Codecs/Vp8GStreamerVideoDecoder.h>
-#include <OpenteraWebrtcNativeGStreamer/Codecs/Vp9GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/H264GStreamerVideoDecoders.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/Vp8GStreamerVideoDecoders.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/Vp9GStreamerVideoDecoders.h>
 
 #include <media/base/codec.h>
 
@@ -23,6 +23,7 @@ WebRtcGStreamerVideoDecoderFactory::WebRtcGStreamerVideoDecoderFactory(bool forc
 vector<webrtc::SdpVideoFormat> WebRtcGStreamerVideoDecoderFactory::GetSupportedFormats() const
 {
     vector<webrtc::SdpVideoFormat> supportedFormats;
+    supportedFormats.reserve(m_decoderFactories.size());
     for(auto& kv : m_decoderFactories)
     {
         supportedFormats.emplace_back(kv.first);
@@ -55,6 +56,10 @@ void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(bool forceHardwareAccel
     {
         m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<VaapiH264GStreamerVideoDecoder>(1);
     }
+    else if (TegraH264GStreamerVideoDecoder::isSupported())
+    {
+        m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<TegraH264GStreamerVideoDecoder>(1);
+    }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareDecoder && SoftwareH264GStreamerVideoDecoder::isSupported())
@@ -76,6 +81,10 @@ void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(bool forceHardwareAccele
     {
         m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<VaapiVp8GStreamerVideoDecoder>(1);
     }
+    else if (TegraVp8GStreamerVideoDecoder::isSupported())
+    {
+        m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<TegraVp8GStreamerVideoDecoder>(1);
+    }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareDecoder && SoftwareVp8GStreamerVideoDecoder::isSupported())
@@ -96,6 +105,10 @@ void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(bool forceHardwareAccele
     if (VaapiVp9GStreamerVideoDecoder::isSupported())
     {
         m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<VaapiVp9GStreamerVideoDecoder>(1);
+    }
+    else if (TegraVp9GStreamerVideoDecoder::isSupported())
+    {
+        m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<TegraVp9GStreamerVideoDecoder>(1);
     }
     else if (!forceHardwareAcceleration)
     {

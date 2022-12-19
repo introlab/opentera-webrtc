@@ -17,9 +17,12 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_SUPPORT_H
 #define OPENTERA_WEBRTC_NATIVE_GSTREAMER_UTILS_GSTREAMER_SUPPORT_H
 
+#include <string_view>
+
 namespace gst
 {
     bool elementFactoryExists(const char* name);
+    bool testEncoderDecoderPipeline(std::string_view encoderDecoderPipeline);
 }
 
 #endif

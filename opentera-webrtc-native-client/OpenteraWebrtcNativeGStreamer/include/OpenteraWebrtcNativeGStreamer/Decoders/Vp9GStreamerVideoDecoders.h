@@ -18,7 +18,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_GSTREAMER_VP9_VIDEO_DECODER_FACTORY_H
 #define OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_GSTREAMER_VP9_VIDEO_DECODER_FACTORY_H
 
-#include <OpenteraWebrtcNativeGStreamer/Codecs/GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/GStreamerVideoDecoder.h>
 
 namespace opentera
 {
@@ -28,6 +28,7 @@ namespace opentera
         Vp9GStreamerVideoDecoder(std::string decoderPipeline);
         ~Vp9GStreamerVideoDecoder() override = default;
 
+        static const char* mediaTypeCaps();
         static const char* codecName();
     };
 
@@ -47,6 +48,17 @@ namespace opentera
     public:
         VaapiVp9GStreamerVideoDecoder();
         ~VaapiVp9GStreamerVideoDecoder() override = default;
+
+        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+
+        static bool isSupported();
+    };
+
+    class TegraVp9GStreamerVideoDecoder : public Vp9GStreamerVideoDecoder
+    {
+    public:
+        TegraVp9GStreamerVideoDecoder();
+        ~TegraVp9GStreamerVideoDecoder() override = default;
 
         webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 

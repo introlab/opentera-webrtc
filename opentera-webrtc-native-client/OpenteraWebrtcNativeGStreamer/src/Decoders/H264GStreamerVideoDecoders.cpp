@@ -15,15 +15,20 @@
 *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <OpenteraWebrtcNativeGStreamer/Codecs/H264GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/H264GStreamerVideoDecoders.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
 
 using namespace opentera;
 using namespace std;
 
 H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder("video/x-h264", move(decoderPipeline))
+      GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
 {
+}
+
+const char* H264GStreamerVideoDecoder::mediaTypeCaps()
+{
+    return "video/x-h264";
 }
 
 const char* H264GStreamerVideoDecoder::codecName()
@@ -67,4 +72,26 @@ webrtc::VideoDecoder::DecoderInfo VaapiH264GStreamerVideoDecoder::GetDecoderInfo
 bool VaapiH264GStreamerVideoDecoder::isSupported()
 {
     return gst::elementFactoryExists("vaapih264dec") && gst::elementFactoryExists("vaapipostproc");
+}
+
+
+TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder() :
+      H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv")
+{
+}
+
+webrtc::VideoDecoder::DecoderInfo TegraH264GStreamerVideoDecoder::GetDecoderInfo() const
+{
+    webrtc::VideoDecoder::DecoderInfo info;
+    info.implementation_name = "GStreamer nvv4l2decoder h264";
+    info.is_hardware_accelerated = true;
+    return info;
+}
+
+bool TegraH264GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("h264parse") &&
+           gst::elementFactoryExists("nvv4l2decoder") &&
+           gst::elementFactoryExists("nvvidconv") &&
+           gst::testEncoderDecoderPipeline("x264enc ! h264parse ! nvv4l2decoder ! nvvidconv");
 }

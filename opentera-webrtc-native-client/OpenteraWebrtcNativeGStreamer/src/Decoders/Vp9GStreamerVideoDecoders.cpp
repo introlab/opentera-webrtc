@@ -15,15 +15,20 @@
 *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <OpenteraWebrtcNativeGStreamer/Codecs/Vp9GStreamerVideoDecoder.h>
+#include <OpenteraWebrtcNativeGStreamer/Decoders/Vp9GStreamerVideoDecoders.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
 
 using namespace opentera;
 using namespace std;
 
 Vp9GStreamerVideoDecoder::Vp9GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder("video/x-vp9", move(decoderPipeline))
+      GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
 {
+}
+
+const char* Vp9GStreamerVideoDecoder::mediaTypeCaps()
+{
+    return "video/x-vp9";
 }
 
 const char* Vp9GStreamerVideoDecoder::codecName()
@@ -66,4 +71,25 @@ webrtc::VideoDecoder::DecoderInfo VaapiVp9GStreamerVideoDecoder::GetDecoderInfo(
 bool VaapiVp9GStreamerVideoDecoder::isSupported()
 {
     return gst::elementFactoryExists("vaapivp9dec") && gst::elementFactoryExists("vaapipostproc");
+}
+
+
+TegraVp9GStreamerVideoDecoder::TegraVp9GStreamerVideoDecoder() :
+      Vp9GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv")
+{
+}
+
+webrtc::VideoDecoder::DecoderInfo TegraVp9GStreamerVideoDecoder::GetDecoderInfo() const
+{
+    webrtc::VideoDecoder::DecoderInfo info;
+    info.implementation_name = "GStreamer nvv4l2decoder vp9";
+    info.is_hardware_accelerated = true;
+    return info;
+}
+
+bool TegraVp9GStreamerVideoDecoder::isSupported()
+{
+    return gst::elementFactoryExists("nvv4l2decoder") &&
+           gst::elementFactoryExists("nvvidconv") &&
+           gst::testEncoderDecoderPipeline("vp9enc ! nvv4l2decoder ! nvvidconv");
 }

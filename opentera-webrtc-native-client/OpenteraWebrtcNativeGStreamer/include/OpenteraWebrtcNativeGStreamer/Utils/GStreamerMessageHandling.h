@@ -29,15 +29,16 @@
 
 namespace opentera::internal
 {
-    void busMessageCallback(GstBus*, GstMessage* message, GstBin* pipeline)
+    inline void busMessageCallback(GstBus*, GstMessage* message, GstBin* pipeline)
     {
         switch (GST_MESSAGE_TYPE(message))
         {
             case GST_MESSAGE_ERROR:
                 GST_ERROR_OBJECT(pipeline, "Got message: %" GST_PTR_FORMAT, message);
                 {
-                    std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_error";
-                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline, GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
+                    /** Uncomment to help debugging */
+                    //std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_error";
+                    //GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline, GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
                 }
                 break;
             case GST_MESSAGE_STATE_CHANGED:
@@ -53,11 +54,11 @@ namespace opentera::internal
                         gst_element_state_get_name(newState),
                         gst_element_state_get_name(pending));
 
-                    std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_" +
-                                              gst_element_state_get_name(oldState) + "_" +
-                                              gst_element_state_get_name(newState);
-
-                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
+                    /** Uncomment to help debugging */
+                    //std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_" +
+                    //                          gst_element_state_get_name(oldState) + "_" +
+                    //                          gst_element_state_get_name(newState);
+                    //GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
                 }
                 break;
             default:
@@ -65,14 +66,14 @@ namespace opentera::internal
         }
     }
 
-    void connectBusMessageCallback(gst::unique_ptr<GstPipeline>& pipeline)
+    inline void connectBusMessageCallback(gst::unique_ptr<GstPipeline>& pipeline)
     {
         auto bus = gst::unique_from_ptr(gst_pipeline_get_bus(GST_PIPELINE(pipeline.get())));
         gst_bus_add_signal_watch_full(bus.get(), 100);
         g_signal_connect(bus.get(), "message", G_CALLBACK(busMessageCallback), pipeline.get());
     }
 
-    void disconnectBusMessageCallback(gst::unique_ptr<GstPipeline>& pipeline)
+    inline void disconnectBusMessageCallback(gst::unique_ptr<GstPipeline>& pipeline)
     {
         auto bus = gst::unique_from_ptr(gst_pipeline_get_bus(GST_PIPELINE(pipeline.get())));
         g_signal_handlers_disconnect_by_func(bus.get(), reinterpret_cast<gpointer>(busMessageCallback), pipeline.get());

@@ -79,7 +79,7 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
                               //" ! tee name=tee"
 
                               " ! queue"
-                              " ! appsink name=sink emit-signals=true sync=false";
+                              " ! appsink name=sink sync=false";
 
                               /** Uncomment to enable the gstreamer alternative display */
                               //" tee. ! queue ! fpsdisplaysink sync=false";
