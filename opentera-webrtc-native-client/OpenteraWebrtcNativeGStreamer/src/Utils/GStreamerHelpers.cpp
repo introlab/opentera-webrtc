@@ -4,14 +4,8 @@
 class GstInit
 {
 public:
-    GstInit()
-    {
-        gst_init(nullptr, nullptr);
-    }
-    ~GstInit()
-    {
-        gst_deinit();
-    }
+    GstInit() { gst_init(nullptr, nullptr); }
+    ~GstInit() { gst_deinit(); }
 };
 
 GstInit gstInitInstance;

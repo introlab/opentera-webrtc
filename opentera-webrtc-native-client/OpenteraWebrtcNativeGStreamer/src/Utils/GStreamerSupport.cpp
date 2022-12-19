@@ -25,8 +25,7 @@ static bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline
 
     string pipelineStr = "videotestsrc num-buffers=1 ! "
                          "capsfilter caps=video/x-raw,format=(string)I420,width=(int)64,height=(int)64 ! " +
-                         encoderDecoderPipeline +
-                         " ! appsink name=sink";
+                         encoderDecoderPipeline + " ! appsink name=sink";
 
     gst::unique_ptr<GError> error;
     auto pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(error))));

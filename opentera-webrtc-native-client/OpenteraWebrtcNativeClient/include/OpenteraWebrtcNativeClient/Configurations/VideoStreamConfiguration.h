@@ -23,7 +23,7 @@ namespace opentera
      */
     class VideoStreamConfiguration
     {
-        std::unordered_set<VideoStreamCodec> m_forcedCodecs; // Empty means all
+        std::unordered_set<VideoStreamCodec> m_forcedCodecs;  // Empty means all
         bool m_forceGStreamerHardwareAcceleration;
         bool m_useGStreamerSoftwareEncoderDecoder;
 
@@ -39,9 +39,10 @@ namespace opentera
 
         static VideoStreamConfiguration create();
         static VideoStreamConfiguration create(std::unordered_set<VideoStreamCodec> forcedCodecs);
-        static VideoStreamConfiguration create(std::unordered_set<VideoStreamCodec> forcedCodecs,
-                                                  bool forceGStreamerHardwareAcceleration,
-                                                  bool useGStreamerSoftwareEncoderDecoder);
+        static VideoStreamConfiguration create(
+            std::unordered_set<VideoStreamCodec> forcedCodecs,
+            bool forceGStreamerHardwareAcceleration,
+            bool useGStreamerSoftwareEncoderDecoder);
 
         [[nodiscard]] const std::unordered_set<VideoStreamCodec>& forcedCodecs() const;
         [[nodiscard]] bool forceGStreamerHardwareAcceleration() const;
@@ -55,10 +56,7 @@ namespace opentera
      * @brief Creates a stream configuration with default values.
      * @return A stream configuration with default values
      */
-    inline VideoStreamConfiguration VideoStreamConfiguration::create()
-    {
-        return {{}, false, false};
-    }
+    inline VideoStreamConfiguration VideoStreamConfiguration::create() { return {{}, false, false}; }
 
     /**
      * @brief Creates a video stream configuration with the specified value.
@@ -75,13 +73,16 @@ namespace opentera
      * @brief Creates a video stream configuration with the specified values.
      *
      * @param forcedCodecs Indicates the codecs that must be used. An empty set means all codecs.
-     * @param forceGStreamerHardwareAcceleration Indicates that hardware accelerated codecs must be used. It has no effect when the library is not built with GStreamer.
-     * @param useGStreamerSoftwareEncoderDecoder Indicates to use GStreamer software codecs instead of WebRTC ones. It has no effect when the library is not built with GStreamer.
+     * @param forceGStreamerHardwareAcceleration Indicates that hardware accelerated codecs must be used. It has no
+     * effect when the library is not built with GStreamer.
+     * @param useGStreamerSoftwareEncoderDecoder Indicates to use GStreamer software codecs instead of WebRTC ones. It
+     * has no effect when the library is not built with GStreamer.
      * @return A video stream channel configuration with the specified values
      */
-    inline VideoStreamConfiguration VideoStreamConfiguration::create(std::unordered_set<VideoStreamCodec> forcedCodecs,
-                                                                   bool forceGStreamerHardwareAcceleration,
-                                                                   bool useGStreamerSoftwareEncoderDecoder)
+    inline VideoStreamConfiguration VideoStreamConfiguration::create(
+        std::unordered_set<VideoStreamCodec> forcedCodecs,
+        bool forceGStreamerHardwareAcceleration,
+        bool useGStreamerSoftwareEncoderDecoder)
     {
         return {std::move(forcedCodecs), forceGStreamerHardwareAcceleration, useGStreamerSoftwareEncoderDecoder};
     }
@@ -90,7 +91,10 @@ namespace opentera
      * @brief Returns the codecs that must be used. An empty set means all codecs.
      * @return The codecs that must be used
      */
-    inline const std::unordered_set<VideoStreamCodec>& VideoStreamConfiguration::forcedCodecs() const { return m_forcedCodecs; }
+    inline const std::unordered_set<VideoStreamCodec>& VideoStreamConfiguration::forcedCodecs() const
+    {
+        return m_forcedCodecs;
+    }
 
     /**
      * @brief Indicates that hardware accelerated codecs must be used.
@@ -105,7 +109,10 @@ namespace opentera
      * @brief Indicates to use GStreamer software codecs instead of WebRTC ones.
      * @return true if GStreamer software codecs must be used instead of WebRTC ones.
      */
-    inline bool VideoStreamConfiguration::useGStreamerSoftwareEncoderDecoder() const { return m_useGStreamerSoftwareEncoderDecoder; }
+    inline bool VideoStreamConfiguration::useGStreamerSoftwareEncoderDecoder() const
+    {
+        return m_useGStreamerSoftwareEncoderDecoder;
+    }
 
 }
 

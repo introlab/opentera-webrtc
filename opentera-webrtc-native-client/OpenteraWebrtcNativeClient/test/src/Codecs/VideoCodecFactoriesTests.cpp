@@ -174,8 +174,7 @@ TEST(VideoCodecFactoriesTests, QueryCodecSupport_scaling_shouldReturnNotSupporte
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
 
     auto decoderSupport = decoderFactory.QueryCodecSupport(webrtc::SdpVideoFormat(cricket::kVp8CodecName), true);
-    auto encoderSupport =
-        encoderFactory.QueryCodecSupport(webrtc::SdpVideoFormat(cricket::kVp9CodecName), "");
+    auto encoderSupport = encoderFactory.QueryCodecSupport(webrtc::SdpVideoFormat(cricket::kVp9CodecName), "");
 
     EXPECT_FALSE(decoderSupport.is_supported);
     EXPECT_TRUE(decoderSupport.is_power_efficient);

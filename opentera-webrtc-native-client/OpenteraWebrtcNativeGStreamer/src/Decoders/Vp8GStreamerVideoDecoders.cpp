@@ -1,19 +1,19 @@
 /*
-*  Copyright (C) 2022 IntRoLab
-*
-*  This library is free software; you can redistribute it and/or
-*  modify it under the terms of the GNU Lesser General Public
-*  License as published by the Free Software Foundation; either
-*  version 3 of the License, or (at your option) any later version.
-*
-*  This library is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*  Library General Public License for more details.
-*
-*  You should have received a copy of the GNU Lesser General Public License
-*  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ *  Copyright (C) 2022 IntRoLab
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 #include <OpenteraWebrtcNativeGStreamer/Decoders/Vp8GStreamerVideoDecoders.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
@@ -21,8 +21,8 @@
 using namespace opentera;
 using namespace std;
 
-Vp8GStreamerVideoDecoder::Vp8GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
+Vp8GStreamerVideoDecoder::Vp8GStreamerVideoDecoder(string decoderPipeline)
+    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
 {
 }
 
@@ -37,10 +37,7 @@ const char* Vp8GStreamerVideoDecoder::codecName()
 }
 
 
-SoftwareVp8GStreamerVideoDecoder::SoftwareVp8GStreamerVideoDecoder() :
-      Vp8GStreamerVideoDecoder("vp8dec")
-{
-}
+SoftwareVp8GStreamerVideoDecoder::SoftwareVp8GStreamerVideoDecoder() : Vp8GStreamerVideoDecoder("vp8dec") {}
 
 webrtc::VideoDecoder::DecoderInfo SoftwareVp8GStreamerVideoDecoder::GetDecoderInfo() const
 {
@@ -61,8 +58,7 @@ bool SoftwareVp8GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-VaapiVp8GStreamerVideoDecoder::VaapiVp8GStreamerVideoDecoder() :
-      Vp8GStreamerVideoDecoder("vaapivp8dec ! vaapipostproc")
+VaapiVp8GStreamerVideoDecoder::VaapiVp8GStreamerVideoDecoder() : Vp8GStreamerVideoDecoder("vaapivp8dec ! vaapipostproc")
 {
 }
 
@@ -85,8 +81,7 @@ bool VaapiVp8GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-TegraVp8GStreamerVideoDecoder::TegraVp8GStreamerVideoDecoder() :
-      Vp8GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv")
+TegraVp8GStreamerVideoDecoder::TegraVp8GStreamerVideoDecoder() : Vp8GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv")
 {
 }
 
@@ -100,8 +95,7 @@ webrtc::VideoDecoder::DecoderInfo TegraVp8GStreamerVideoDecoder::GetDecoderInfo(
 
 bool TegraVp8GStreamerVideoDecoder::isSupported()
 {
-    return gst::elementFactoryExists("vp8enc") &&
-           gst::elementFactoryExists("nvv4l2decoder") &&
+    return gst::elementFactoryExists("vp8enc") && gst::elementFactoryExists("nvv4l2decoder") &&
            gst::elementFactoryExists("nvvidconv") &&
            gst::testEncoderDecoderPipeline("vp8enc ! nvv4l2decoder ! nvvidconv");
 }

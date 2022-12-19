@@ -110,14 +110,12 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     gst_buffer_fill(buffer.get(), 0, inputImage.data(), inputImage.size());
     gst_buffer_set_size(buffer.get(), inputImage.size());
 
-    GST_BUFFER_DTS(buffer.get()) =
-        (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
+    GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
     GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
     InputTimestamps timestamps = {inputImage.Timestamp(), renderTimeMs};
     m_dtsPtsMap[GST_BUFFER_PTS(buffer.get())] = timestamps;
 
-    auto sample =
-        gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
+    auto sample = gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 
     /** Uncomment to help debugging */
     // GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
@@ -253,13 +251,21 @@ int32_t GStreamerVideoDecoder::pullSample()
         return WEBRTC_VIDEO_CODEC_NO_OUTPUT;
     }
 
-    libyuv::I420Copy(mappedFrame.componentData(0), mappedFrame.componentStride(0),
-                     mappedFrame.componentData(1), mappedFrame.componentStride(1),
-                     mappedFrame.componentData(2), mappedFrame.componentStride(2),
-                     i420Buffer->MutableDataY(), i420Buffer->StrideY(),
-                     i420Buffer->MutableDataU(), i420Buffer->StrideU(),
-                     i420Buffer->MutableDataV(), i420Buffer->StrideV(),
-                     mappedFrame.width(), mappedFrame.height());
+    libyuv::I420Copy(
+        mappedFrame.componentData(0),
+        mappedFrame.componentStride(0),
+        mappedFrame.componentData(1),
+        mappedFrame.componentStride(1),
+        mappedFrame.componentData(2),
+        mappedFrame.componentStride(2),
+        i420Buffer->MutableDataY(),
+        i420Buffer->StrideY(),
+        i420Buffer->MutableDataU(),
+        i420Buffer->StrideU(),
+        i420Buffer->MutableDataV(),
+        i420Buffer->StrideV(),
+        mappedFrame.width(),
+        mappedFrame.height());
 
     /** Uncomment to help debugging */
     // GST_LOG_OBJECT(
@@ -271,10 +277,10 @@ int32_t GStreamerVideoDecoder::pullSample()
     if (m_imageReadyCb)
     {
         webrtc::VideoFrame decodedImage = webrtc::VideoFrame::Builder()
-                                           .set_video_frame_buffer(i420Buffer)
-                                           .set_timestamp_rtp(static_cast<uint32_t>(timestamps.timestamp))
-                                           .set_timestamp_ms(timestamps.renderTimeMs)
-                                           .build();
+                                              .set_video_frame_buffer(i420Buffer)
+                                              .set_timestamp_rtp(static_cast<uint32_t>(timestamps.timestamp))
+                                              .set_timestamp_ms(timestamps.renderTimeMs)
+                                              .build();
         m_imageReadyCb->Decoded(decodedImage, absl::nullopt, absl::nullopt);
     }
 

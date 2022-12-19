@@ -1,18 +1,18 @@
 /*
-*  Copyright 2022 IntRoLab
-*
-*  Licensed under the Apache License, Version 2.0 (the "License");
-*  you may not use this file except in compliance with the License.
-*  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-*  Unless required by applicable law or agreed to in writing, software
-*  distributed under the License is distributed on an "AS IS" BASIS,
-*  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-*  See the License for the specific language governing permissions and
-*  limitations under the License.
-*/
+ *  Copyright 2022 IntRoLab
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 #ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_WEBRTC_GSTREAMER_VIDEO_DECODER_FACOTRY_H
 #define OPENTERA_WEBRTC_NATIVE_GSTREAMER_FACTORIES_WEBRTC_GSTREAMER_VIDEO_DECODER_FACOTRY_H
@@ -43,8 +43,7 @@ namespace opentera
         std::unordered_map<std::string, DecoderFactory> m_decoderFactories;
 
     public:
-        WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration,
-                                           bool useGStreamerSoftwareDecoder);
+        WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
         CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool reference_scaling) const override;
@@ -63,11 +62,10 @@ namespace opentera
     };
 
     template<class Decoder>
-    WebRtcGStreamerVideoDecoderFactory::DecoderFactory WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
+    WebRtcGStreamerVideoDecoderFactory::DecoderFactory
+        WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
     {
-        return {priority,
-                Decoder::isHardwareAccelerated(),
-                [](auto _){return std::make_unique<Decoder>();}};
+        return {priority, Decoder::isHardwareAccelerated(), [](auto _) { return std::make_unique<Decoder>(); }};
     }
 }
 

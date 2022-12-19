@@ -63,12 +63,7 @@ namespace opentera
     inline SignalingServerConfiguration
         SignalingServerConfiguration::create(std::string url, std::string clientName, std::string room)
     {
-        return {
-            std::move(url),
-            std::move(clientName),
-            sio::null_message::create(),
-            std::move(room),
-            ""};
+        return {std::move(url), std::move(clientName), sio::null_message::create(), std::move(room), ""};
     }
 
     /**
@@ -86,12 +81,7 @@ namespace opentera
         sio::message::ptr clientData,
         std::string room)
     {
-        return {
-            std::move(url),
-            std::move(clientName),
-            std::move(clientData),
-            std::move(room),
-            ""};
+        return {std::move(url), std::move(clientName), std::move(clientData), std::move(room), ""};
     }
 
     /**
@@ -134,12 +124,7 @@ namespace opentera
         std::string room,
         std::string password)
     {
-        return {
-            std::move(url),
-            std::move(clientName),
-            std::move(clientData),
-            std::move(room),
-            std::move(password)};
+        return {std::move(url), std::move(clientName), std::move(clientData), std::move(room), std::move(password)};
     }
 
     /**

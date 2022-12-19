@@ -15,8 +15,9 @@ namespace opentera
         std::unordered_set<VideoStreamCodec> m_forcedCodecs;
 
     public:
-        ForcedCodecVideoDecoderFactory(std::unique_ptr<webrtc::VideoDecoderFactory> factory,
-                                       std::unordered_set<VideoStreamCodec> forcedCodecs);
+        ForcedCodecVideoDecoderFactory(
+            std::unique_ptr<webrtc::VideoDecoderFactory> factory,
+            std::unordered_set<VideoStreamCodec> forcedCodecs);
         ~ForcedCodecVideoDecoderFactory() override = default;
 
         DECLARE_NOT_COPYABLE(ForcedCodecVideoDecoderFactory);
@@ -33,8 +34,9 @@ namespace opentera
         std::unordered_set<VideoStreamCodec> m_forcedCodecs;
 
     public:
-        ForcedCodecVideoEncoderFactory(std::unique_ptr<webrtc::VideoEncoderFactory> factory,
-                                       std::unordered_set<VideoStreamCodec> forcedCodecs);
+        ForcedCodecVideoEncoderFactory(
+            std::unique_ptr<webrtc::VideoEncoderFactory> factory,
+            std::unordered_set<VideoStreamCodec> forcedCodecs);
         ~ForcedCodecVideoEncoderFactory() override = default;
 
         DECLARE_NOT_COPYABLE(ForcedCodecVideoEncoderFactory);
@@ -42,14 +44,18 @@ namespace opentera
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
 
-        CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, absl::optional<std::string> scalabilityMode) const override;
+        CodecSupport QueryCodecSupport(
+            const webrtc::SdpVideoFormat& format,
+            absl::optional<std::string> scalabilityMode) const override;
 
         // Creates a VideoEncoder for the specified format.
         std::unique_ptr<webrtc::VideoEncoder> CreateVideoEncoder(const webrtc::SdpVideoFormat& format) override;
     };
 
-    std::unique_ptr<webrtc::VideoDecoderFactory> createVideoDecoderFactory(const VideoStreamConfiguration& configuration);
-    std::unique_ptr<webrtc::VideoEncoderFactory> createVideoEncoderFactory(const VideoStreamConfiguration& configuration);
+    std::unique_ptr<webrtc::VideoDecoderFactory>
+        createVideoDecoderFactory(const VideoStreamConfiguration& configuration);
+    std::unique_ptr<webrtc::VideoEncoderFactory>
+        createVideoEncoderFactory(const VideoStreamConfiguration& configuration);
 }
 
 #endif

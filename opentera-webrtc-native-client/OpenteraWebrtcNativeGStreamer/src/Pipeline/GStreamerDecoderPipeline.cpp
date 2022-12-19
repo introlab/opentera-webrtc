@@ -61,28 +61,26 @@ void GStreamerDecoderPipeline::setReady(bool ready)
 
 int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderPipeline)
 {
-    string pipelineStr = string("appsrc name=src emit-signals=true is-live=true format=time caps=") +
-                              string(capsStr) +
+    string pipelineStr = string("appsrc name=src emit-signals=true is-live=true format=time caps=") + string(capsStr) +
 
-                              /** Uncomment to use a test source */
-                              // R"( ! queue ! fakesink sync=false)"
-                              // R"( videotestsrc is-live=true ! capsfilter caps=video/x-raw,width=640,height=480)"
-                              // R"( ! videoconvert)"
-                              // R"( ! vaapih264enc)"
+                         /** Uncomment to use a test source */
+                         // R"( ! queue ! fakesink sync=false)"
+                         // R"( videotestsrc is-live=true ! capsfilter caps=video/x-raw,width=640,height=480)"
+                         // R"( ! videoconvert)"
+                         // R"( ! vaapih264enc)"
 
-                              " ! queue name=q2 ! " +
-                              string(decoderPipeline) +
+                         " ! queue name=q2 ! " + string(decoderPipeline) +
 
-                              " ! capsfilter caps=video/x-raw,format=(string)I420"
+                         " ! capsfilter caps=video/x-raw,format=(string)I420"
 
-                              /** Uncomment to enable the gstreamer alternative display */
-                              //" ! tee name=tee"
+                         /** Uncomment to enable the gstreamer alternative display */
+                         //" ! tee name=tee"
 
-                              " ! queue"
-                              " ! appsink name=sink sync=false";
+                         " ! queue"
+                         " ! appsink name=sink sync=false";
 
-                              /** Uncomment to enable the gstreamer alternative display */
-                              //" tee. ! queue ! fpsdisplaysink sync=false";
+    /** Uncomment to enable the gstreamer alternative display */
+    //" tee. ! queue ! fpsdisplaysink sync=false";
 
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
 
@@ -104,7 +102,7 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
     }
 
     /** Uncomment to generate the pipeline dot file */
-    //GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
+    // GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
 
     return WEBRTC_VIDEO_CODEC_OK;
 }

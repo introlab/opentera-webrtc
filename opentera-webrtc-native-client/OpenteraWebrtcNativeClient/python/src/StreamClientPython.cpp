@@ -170,7 +170,11 @@ void opentera::initStreamClientPython(pybind11::module& m)
             py::arg("webrtc_configuration"),
             py::arg("video_stream_configuration"))
         .def(
-            py::init<SignalingServerConfiguration, WebrtcConfiguration, VideoStreamConfiguration, shared_ptr<VideoSource>>(),
+            py::init<
+                SignalingServerConfiguration,
+                WebrtcConfiguration,
+                VideoStreamConfiguration,
+                shared_ptr<VideoSource>>(),
             "Creates a stream client\n"
             "\n"
             ":param signaling_server_configuration: The configuration to "
@@ -184,7 +188,11 @@ void opentera::initStreamClientPython(pybind11::module& m)
             py::arg("video_stream_configuration"),
             py::arg("video_source"))
         .def(
-            py::init<SignalingServerConfiguration, WebrtcConfiguration, VideoStreamConfiguration, shared_ptr<AudioSource>>(),
+            py::init<
+                SignalingServerConfiguration,
+                WebrtcConfiguration,
+                VideoStreamConfiguration,
+                shared_ptr<AudioSource>>(),
             "Creates a stream client\n"
             "\n"
             ":param signaling_server_configuration: The configuration to "

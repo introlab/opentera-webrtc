@@ -110,55 +110,37 @@ namespace opentera
      * @brief Returns the sum of the playback and recording delays.
      * @return The sum of the playback and recording delays
      */
-    inline uint32_t AudioSourceConfiguration::soundCardTotalDelayMs() const
-    {
-        return m_soundCardTotalDelayMs;
-    }
+    inline uint32_t AudioSourceConfiguration::soundCardTotalDelayMs() const { return m_soundCardTotalDelayMs; }
 
     /**
      * @brief Indicates if the echo cancellation is enabled.
      * @return true if the echo cancellation is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::echoCancellation() const
-    {
-        return m_echoCancellation;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::echoCancellation() const { return m_echoCancellation; }
 
     /**
      * @brief Indicates if the auto gain control is enabled.
      * @return true if the auto gain control is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::autoGainControl() const
-    {
-        return m_autoGainControl;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::autoGainControl() const { return m_autoGainControl; }
 
     /**
      * @brief Indicates if the noise suppression is enabled.
      * @return true if the noise suppression is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::noiseSuppression() const
-    {
-        return m_noiseSuppression;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::noiseSuppression() const { return m_noiseSuppression; }
 
     /**
      * @brief Indicates if the highpass filter is enabled.
      * @return true if the highpass filter is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::highpassFilter() const
-    {
-        return m_highpassFilter;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::highpassFilter() const { return m_highpassFilter; }
 
     /**
      * @brief Indicates if the stereo swapping is enabled.
      * @return true if the stereo swapping is enabled
      */
-    inline absl::optional<bool> AudioSourceConfiguration::stereoSwapping() const
-    {
-        return m_stereoSwapping;
-    }
+    inline absl::optional<bool> AudioSourceConfiguration::stereoSwapping() const { return m_stereoSwapping; }
 
     /**
      * @brief Indicates if the transient suppression is enabled.

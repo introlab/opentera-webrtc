@@ -15,10 +15,7 @@ void opentera::initVideoStreamConfigurationPython(py::module& m)
         .value("VP9", VideoStreamCodec::VP9)
         .value("H264", VideoStreamCodec::H264);
 
-    py::class_<VideoStreamConfiguration>(
-        m,
-        "VideoStreamConfiguration",
-        "Represents a video stream configuration")
+    py::class_<VideoStreamConfiguration>(m, "VideoStreamConfiguration", "Represents a video stream configuration")
         .def_static(
             "create",
             py::overload_cast<>(&VideoStreamConfiguration::create),
@@ -39,8 +36,10 @@ void opentera::initVideoStreamConfigurationPython(py::module& m)
             "Creates a video stream configuration with the specified values.\n"
             "\n"
             ":param forced_codecs: Indicates the codecs that must be used. An empty set means all codecs.\n"
-            ":param force_gstreamer_hardware_acceleration: Indicates that hardware accelerated codecs must be used. It has no effect when the library is not built with GStreamer.\n"
-            ":param use_gstreamer_software_encoder_decoder: Indicates to use GStreamer software codecs instead of WebRTC ones. It has no effect when the library is not built with GStreamer.\n"
+            ":param force_gstreamer_hardware_acceleration: Indicates that hardware accelerated codecs must be used. It "
+            "has no effect when the library is not built with GStreamer.\n"
+            ":param use_gstreamer_software_encoder_decoder: Indicates to use GStreamer software codecs instead of "
+            "WebRTC ones. It has no effect when the library is not built with GStreamer.\n"
             ":return: A video stream configuration with the specified values",
             py::arg("forced_codecs"),
             py::arg("force_gstreamer_hardware_acceleration"),

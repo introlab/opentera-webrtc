@@ -1,19 +1,19 @@
 /*
-*  Copyright (C) 2022 IntRoLab
-*
-*  This library is free software; you can redistribute it and/or
-*  modify it under the terms of the GNU Lesser General Public
-*  License as published by the Free Software Foundation; either
-*  version 3 of the License, or (at your option) any later version.
-*
-*  This library is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-*  Library General Public License for more details.
-*
-*  You should have received a copy of the GNU Lesser General Public License
-*  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+ *  Copyright (C) 2022 IntRoLab
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 3 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 
 #include <OpenteraWebrtcNativeGStreamer/Decoders/H264GStreamerVideoDecoders.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerSupport.h>
@@ -21,8 +21,8 @@
 using namespace opentera;
 using namespace std;
 
-H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline) :
-      GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
+H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline)
+    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
 {
 }
 
@@ -37,8 +37,8 @@ const char* H264GStreamerVideoDecoder::codecName()
 }
 
 
-SoftwareH264GStreamerVideoDecoder::SoftwareH264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("h264parse ! avdec_h264")
+SoftwareH264GStreamerVideoDecoder::SoftwareH264GStreamerVideoDecoder()
+    : H264GStreamerVideoDecoder("h264parse ! avdec_h264")
 {
 }
 
@@ -61,8 +61,8 @@ bool SoftwareH264GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-VaapiH264GStreamerVideoDecoder::VaapiH264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("vaapih264dec ! vaapipostproc")
+VaapiH264GStreamerVideoDecoder::VaapiH264GStreamerVideoDecoder()
+    : H264GStreamerVideoDecoder("vaapih264dec ! vaapipostproc")
 {
 }
 
@@ -85,8 +85,8 @@ bool VaapiH264GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv")
+TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder()
+    : H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv")
 {
 }
 
@@ -100,10 +100,8 @@ webrtc::VideoDecoder::DecoderInfo TegraH264GStreamerVideoDecoder::GetDecoderInfo
 
 bool TegraH264GStreamerVideoDecoder::isSupported()
 {
-    return gst::elementFactoryExists("x264enc") &&
-           gst::elementFactoryExists("h264parse") &&
-           gst::elementFactoryExists("nvv4l2decoder") &&
-           gst::elementFactoryExists("nvvidconv") &&
+    return gst::elementFactoryExists("x264enc") && gst::elementFactoryExists("h264parse") &&
+           gst::elementFactoryExists("nvv4l2decoder") && gst::elementFactoryExists("nvvidconv") &&
            gst::testEncoderDecoderPipeline("x264enc ! h264parse ! nvv4l2decoder ! nvvidconv");
 }
 
@@ -113,10 +111,7 @@ bool TegraH264GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-V4l2H264GStreamerVideoDecoder::V4l2H264GStreamerVideoDecoder() :
-      H264GStreamerVideoDecoder("h264parse ! v4l2h264dec")
-{
-}
+V4l2H264GStreamerVideoDecoder::V4l2H264GStreamerVideoDecoder() : H264GStreamerVideoDecoder("h264parse ! v4l2h264dec") {}
 
 webrtc::VideoDecoder::DecoderInfo V4l2H264GStreamerVideoDecoder::GetDecoderInfo() const
 {

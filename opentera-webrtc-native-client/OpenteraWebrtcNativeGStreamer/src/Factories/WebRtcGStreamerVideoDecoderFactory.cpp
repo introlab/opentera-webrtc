@@ -13,8 +13,10 @@ using namespace std;
 constexpr int HardwarePriority = 1;
 constexpr int SoftwarePriority = 2;
 
-WebRtcGStreamerVideoDecoderFactory::WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder) :
-      m_builtinVideoDecoderFactory(webrtc::CreateBuiltinVideoDecoderFactory())
+WebRtcGStreamerVideoDecoderFactory::WebRtcGStreamerVideoDecoderFactory(
+    bool forceHardwareAcceleration,
+    bool useGStreamerSoftwareDecoder)
+    : m_builtinVideoDecoderFactory(webrtc::CreateBuiltinVideoDecoderFactory())
 {
     m_builtinSupportedFormats = m_builtinVideoDecoderFactory->GetSupportedFormats();
 
@@ -27,19 +29,21 @@ vector<webrtc::SdpVideoFormat> WebRtcGStreamerVideoDecoderFactory::GetSupportedF
 {
     vector<webrtc::SdpVideoFormat> supportedFormats;
     supportedFormats.reserve(m_decoderFactories.size());
-    for(auto& kv : m_decoderFactories)
+    for (auto& kv : m_decoderFactories)
     {
         supportedFormats.emplace_back(kv.first);
     }
-    sort(supportedFormats.begin(), supportedFormats.end(), [this](const webrtc::SdpVideoFormat& a, const webrtc::SdpVideoFormat& b)
-    {
-         return m_decoderFactories.at(a.name).priority < m_decoderFactories.at(b.name).priority;
-    });
+    sort(
+        supportedFormats.begin(),
+        supportedFormats.end(),
+        [this](const webrtc::SdpVideoFormat& a, const webrtc::SdpVideoFormat& b)
+        { return m_decoderFactories.at(a.name).priority < m_decoderFactories.at(b.name).priority; });
     return supportedFormats;
 }
 
-webrtc::VideoDecoderFactory::CodecSupport WebRtcGStreamerVideoDecoderFactory::QueryCodecSupport(const webrtc::SdpVideoFormat& format,
-                                                                                                bool referenceScaling) const
+webrtc::VideoDecoderFactory::CodecSupport WebRtcGStreamerVideoDecoderFactory::QueryCodecSupport(
+    const webrtc::SdpVideoFormat& format,
+    bool referenceScaling) const
 {
     CodecSupport codecSupport;
 
@@ -58,7 +62,8 @@ webrtc::VideoDecoderFactory::CodecSupport WebRtcGStreamerVideoDecoderFactory::Qu
     return codecSupport;
 }
 
-unique_ptr<webrtc::VideoDecoder> WebRtcGStreamerVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)
+unique_ptr<webrtc::VideoDecoder>
+    WebRtcGStreamerVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)
 {
     auto it = m_decoderFactories.find(format.name);
     if (it == m_decoderFactories.end())
@@ -71,7 +76,9 @@ unique_ptr<webrtc::VideoDecoder> WebRtcGStreamerVideoDecoderFactory::CreateVideo
     }
 }
 
-void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder)
+void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(
+    bool forceHardwareAcceleration,
+    bool useGStreamerSoftwareDecoder)
 {
     auto H264_CODEC_NAME = H264GStreamerVideoDecoder::codecName();
 
@@ -91,7 +98,8 @@ void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(bool forceHardwareAccel
     {
         if (useGStreamerSoftwareDecoder && SoftwareH264GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[H264_CODEC_NAME] = createDecoderFactory<SoftwareH264GStreamerVideoDecoder>(SoftwarePriority);
+            m_decoderFactories[H264_CODEC_NAME] =
+                createDecoderFactory<SoftwareH264GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(H264_CODEC_NAME))
         {
@@ -100,7 +108,9 @@ void WebRtcGStreamerVideoDecoderFactory::addH264Decoders(bool forceHardwareAccel
     }
 }
 
-void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder)
+void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(
+    bool forceHardwareAcceleration,
+    bool useGStreamerSoftwareDecoder)
 {
     auto VP8_CODEC_NAME = Vp8GStreamerVideoDecoder::codecName();
 
@@ -116,7 +126,8 @@ void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(bool forceHardwareAccele
     {
         if (useGStreamerSoftwareDecoder && SoftwareVp8GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[VP8_CODEC_NAME] = createDecoderFactory<SoftwareVp8GStreamerVideoDecoder>(SoftwarePriority);
+            m_decoderFactories[VP8_CODEC_NAME] =
+                createDecoderFactory<SoftwareVp8GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(VP8_CODEC_NAME))
         {
@@ -125,7 +136,9 @@ void WebRtcGStreamerVideoDecoderFactory::addVp8Decoders(bool forceHardwareAccele
     }
 }
 
-void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder)
+void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(
+    bool forceHardwareAcceleration,
+    bool useGStreamerSoftwareDecoder)
 {
     auto VP9_CODEC_NAME = Vp9GStreamerVideoDecoder::codecName();
 
@@ -141,7 +154,8 @@ void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(bool forceHardwareAccele
     {
         if (useGStreamerSoftwareDecoder && SoftwareVp9GStreamerVideoDecoder::isSupported())
         {
-            m_decoderFactories[VP9_CODEC_NAME] = createDecoderFactory<SoftwareVp9GStreamerVideoDecoder>(SoftwarePriority);
+            m_decoderFactories[VP9_CODEC_NAME] =
+                createDecoderFactory<SoftwareVp9GStreamerVideoDecoder>(SoftwarePriority);
         }
         else if (!useGStreamerSoftwareDecoder && builtinVideoDecoderFactorySupports(VP9_CODEC_NAME))
         {
@@ -152,17 +166,16 @@ void WebRtcGStreamerVideoDecoderFactory::addVp9Decoders(bool forceHardwareAccele
 
 bool WebRtcGStreamerVideoDecoderFactory::builtinVideoDecoderFactorySupports(string_view codecName)
 {
-    return any_of(m_builtinSupportedFormats.begin(), m_builtinSupportedFormats.end(), [codecName](const webrtc::SdpVideoFormat& format)
-           {
-                return format.name == codecName;
-           });
+    return any_of(
+        m_builtinSupportedFormats.begin(),
+        m_builtinSupportedFormats.end(),
+        [codecName](const webrtc::SdpVideoFormat& format) { return format.name == codecName; });
 }
 
-WebRtcGStreamerVideoDecoderFactory::DecoderFactory WebRtcGStreamerVideoDecoderFactory::createBuiltinDecoderFactory(int priority)
+WebRtcGStreamerVideoDecoderFactory::DecoderFactory
+    WebRtcGStreamerVideoDecoderFactory::createBuiltinDecoderFactory(int priority)
 {
-    return {
-        priority,
-        false,
-        [this](const webrtc::SdpVideoFormat& format){return m_builtinVideoDecoderFactory->CreateVideoDecoder(format);}
-    };
+    return {priority, false, [this](const webrtc::SdpVideoFormat& format) {
+                return m_builtinVideoDecoderFactory->CreateVideoDecoder(format);
+            }};
 }
