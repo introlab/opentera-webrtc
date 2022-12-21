@@ -164,6 +164,7 @@ jobs:
       - name: Run CPP Tests
         working-directory: build/bin
         run: |
+          ls -l
           ./OpenteraWebrtcNativeClientTests
 
       # Without stdout
