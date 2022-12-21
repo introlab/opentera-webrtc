@@ -35,7 +35,7 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [ ] Lots of cleanup to do (comments and all)
 - [x] Validate that the keyframes logic (waiting for keyframe) works or make it work in decoder
 - [x] Handle multiple clients connected, and deconnection then reconnection of clients (shared gst::Gst and all)
-- [ ] Check if Python wrapper works with the GStreamer decoder/encoder (with .so/.dll/.dylib)
+- [x] Check if Python wrapper works with the GStreamer decoder/encoder (with .so/.dll/.dylib)
 - [ ] Add tests for GStreamer decoder/encoder
 
 ## Codecs support
@@ -52,7 +52,7 @@ Only lists tested elements, all tested on Ubuntu 20.04 amd64.
 - [ ] Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (jetson xavier nx / jetson agx xavier / jetson orin agx)
 - [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (Windows platform API)
 - [ ] (MAYBE) Support VP8, VP9, H264, (H265?, AV1?) with hardware encoders (MacOS platform API)
-- [ ] Support forcing a specific decoder/encoder type (specific codec)
+- [x] Support forcing a specific decoder/encoder type (specific codec)
 - [ ] Support forcing a specific decoder/encoder element (using gstreamer element name)
 
 Note that AV1 us currently supported by WebRTC, but H265 is not.

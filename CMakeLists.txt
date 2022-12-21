@@ -60,8 +60,6 @@ option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 # Default behavior is to enable examples
 option(OPENTERA_WEBRTC_ENABLE_EXAMPLES "Build examples" ON)
 
-# TODO: Use this option to enable/disable the use of the GStreamer component
-# TODO: Set this option to ON in opentera_webrtc_ros
 # Default behavior is to disable GStreamer examples
 option(OPENTERA_WEBRTC_ENABLE_GSTREAMER "Compile with GStreamer support" OFF)
 

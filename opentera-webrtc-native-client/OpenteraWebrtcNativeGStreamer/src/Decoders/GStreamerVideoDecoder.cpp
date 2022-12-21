@@ -29,6 +29,10 @@
 
 #include <libyuv.h>
 
+#ifdef DEBUG_GSTREAMER
+#include <iostream>
+#endif
+
 using namespace opentera;
 using namespace std;
 
@@ -117,10 +121,11 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
 
     auto sample = gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 
-    /** Uncomment to help debugging */
-    // GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
-    // GST_WARNING("Width: %d, Height: %d, Size: %lu", m_width, m_height,
-    // gst_buffer_get_size(m_buffer.get()));
+#ifdef DEBUG_GSTREAMER
+    GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
+    GST_WARNING("Width: %d, Height: %d, Size: %lu", m_width, m_height,
+    gst_buffer_get_size(m_buffer.get()));
+#endif
 
     switch (gst_app_src_push_sample(GST_APP_SRC(m_gstDecoderPipeline->src()), sample.get()))
     {
@@ -132,12 +137,13 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
             return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
-    /** Uncomment to help debugging */
-    // GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(
-    //     GST_BIN(m_gstAppPipeline->pipeline()),
-    //     GST_DEBUG_GRAPH_SHOW_ALL,
-    //     "pipeline-push-sample");
-    // cout << "Sample (push) is " << hex << sample.get() << dec << endl;
+#ifdef DEBUG_GSTREAMER
+    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(
+        GST_BIN(m_gstAppPipeline->pipeline()),
+        GST_DEBUG_GRAPH_SHOW_ALL,
+        "pipeline-push-sample");
+    cout << "Sample (push) is " << hex << sample.get() << dec << endl;
+#endif
 
     return pullSample();
 }
@@ -184,16 +190,15 @@ int32_t GStreamerVideoDecoder::pullSample()
     GstState pending;
     gst_element_get_state(m_gstDecoderPipeline->sink(), &state, &pending, GST_SECOND / 100);
 
-    /** Uncomment to help debugging */
-    // GST_ERROR("State: %s; Pending: %s", gst_element_state_get_name(state),
-    // gst_element_state_get_name(pending));
+#ifdef DEBUG_GSTREAMER
+    GST_ERROR("State: %s; Pending: %s", gst_element_state_get_name(state),
+    gst_element_state_get_name(pending));
 
-    /** Uncomment to help debugging */
-    // fmt::print("Pulling sample from sink: {}\n", fmt::ptr(m_gstAppPipeline->sink()));
-    // GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(
-    //     GST_BIN(m_gstAppPipeline->pipeline()),
-    //     GST_DEBUG_GRAPH_SHOW_ALL,
-    //     "pipeline-pull-sample");
+    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(
+        GST_BIN(m_gstAppPipeline->pipeline()),
+        GST_DEBUG_GRAPH_SHOW_ALL,
+        "pipeline-pull-sample");
+#endif
 
     auto sample = gst::unique_from_ptr(
         gst_app_sink_try_pull_sample(GST_APP_SINK(m_gstDecoderPipeline->sink()), GST_SECOND / 100));
@@ -214,8 +219,9 @@ int32_t GStreamerVideoDecoder::pullSample()
 
     m_gstDecoderPipeline->setReady(true);
 
-    /** Uncomment to help debugging */
-    // cout << "Sample (pull) is " << hex << sample.get() << dec << endl;
+#ifdef DEBUG_GSTREAMER
+    cout << "Sample (pull) is " << hex << sample.get() << dec << endl;
+#endif
 
     auto buffer = gst_sample_get_buffer(sample.get());
 
@@ -225,12 +231,13 @@ int32_t GStreamerVideoDecoder::pullSample()
     auto timestamps = m_dtsPtsMap[GST_BUFFER_PTS(buffer)];
     m_dtsPtsMap.erase(GST_BUFFER_PTS(buffer));
 
-    /** Uncomment to help debugging */
-    // GST_WARNING("Pulling sample: %" GST_PTR_FORMAT, sample.get());
-    // GST_WARNING("With size: %lu", gst_buffer_get_size(buffer));
-    // GstVideoInfo info;
-    // gst_video_info_from_caps(&info, gst_sample_get_caps(sample.get()));
-    // GST_VIDEO_INFO_FORMAT(&info);
+#ifdef DEBUG_GSTREAMER
+    GST_WARNING("Pulling sample: %" GST_PTR_FORMAT, sample.get());
+    GST_WARNING("With size: %lu", gst_buffer_get_size(buffer));
+    GstVideoInfo info;
+    gst_video_info_from_caps(&info, gst_sample_get_caps(sample.get()));
+    GST_VIDEO_INFO_FORMAT(&info);
+#endif
 
     GstMappedFrame mappedFrame(sample.get(), GST_MAP_READ);
     if (!mappedFrame)
@@ -267,12 +274,13 @@ int32_t GStreamerVideoDecoder::pullSample()
         mappedFrame.width(),
         mappedFrame.height());
 
-    /** Uncomment to help debugging */
-    // GST_LOG_OBJECT(
-    //     m_gstAppPipeline->pipeline(),
-    //     "Output decoded frame! %d -> %" GST_PTR_FORMAT,
-    //     frame.timestamp(),
-    //     buffer);
+#ifdef DEBUG_GSTREAMER
+    GST_LOG_OBJECT(
+        m_gstAppPipeline->pipeline(),
+        "Output decoded frame! %d -> %" GST_PTR_FORMAT,
+        frame.timestamp(),
+        buffer);
+#endif
 
     if (m_imageReadyCb)
     {

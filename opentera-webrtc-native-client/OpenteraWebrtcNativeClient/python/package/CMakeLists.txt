@@ -30,6 +30,22 @@ include(../../../../cmake/pip_utils.cmake)
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../LICENSE)
 set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
+# Set the variable for the target file name of OpenteraWebrtcNativeGStreamer
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    file(
+            GENERATE
+            OUTPUT ${WORKING_DIR}/TargetFileNameOpenteraWebrtcNativeGStreamer.txt
+            INPUT TargetFileNameOpenteraWebrtcNativeGStreamer.txt.in
+    )
+    file(
+            STRINGS
+            "${WORKING_DIR}/TargetFileNameOpenteraWebrtcNativeGStreamer.txt"
+            OPENTERA_WEBRTC_NATIVE_GSTEAMER_TARGET_FILE_NAME
+    )
+else()
+    set(OPENTERA_WEBRTC_NATIVE_GSTEAMER_TARGET_FILE_NAME "")
+endif()
+
 pip_configure_setup(setup.py.in)
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)

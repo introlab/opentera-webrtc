@@ -36,9 +36,10 @@ namespace opentera::internal
             case GST_MESSAGE_ERROR:
                 GST_ERROR_OBJECT(pipeline, "Got message: %" GST_PTR_FORMAT, message);
                 {
-                    /** Uncomment to help debugging */
-                    // std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_error";
-                    // GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline, GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
+#ifdef DEBUG_GSTREAMER
+                    std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_error";
+                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(pipeline, GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
+#endif
                 }
                 break;
             case GST_MESSAGE_STATE_CHANGED:
@@ -54,12 +55,13 @@ namespace opentera::internal
                         gst_element_state_get_name(newState),
                         gst_element_state_get_name(pending));
 
-                    /** Uncomment to help debugging */
-                    // std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_" +
-                    //                           gst_element_state_get_name(oldState) + "_" +
-                    //                           gst_element_state_get_name(newState);
-                    // GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL,
-                    // dotFileName.c_str());
+#ifdef DEBUG_GSTREAMER
+                    std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_" +
+                                              gst_element_state_get_name(oldState) + "_" +
+                                              gst_element_state_get_name(newState);
+                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL,
+                    dotFileName.c_str());
+#endif
                 }
                 break;
             default:
