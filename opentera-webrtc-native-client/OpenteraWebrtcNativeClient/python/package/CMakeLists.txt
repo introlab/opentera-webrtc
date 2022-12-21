@@ -32,6 +32,7 @@ set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
 # Set the variable for the target file name of OpenteraWebrtcNativeGStreamer
 if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    file(MAKE_DIRECTORY ${WORKING_DIR})
     file(
             GENERATE
             OUTPUT ${WORKING_DIR}/TargetFileNameOpenteraWebrtcNativeGStreamer.txt
