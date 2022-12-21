@@ -17,6 +17,7 @@ namespace opentera
         VP9,
         H264
     };
+    absl::optional<VideoStreamCodec> stringToVideoStreamCodec(std::string_view value);
 
     /**
      * @brief Represents a video stream configuration.

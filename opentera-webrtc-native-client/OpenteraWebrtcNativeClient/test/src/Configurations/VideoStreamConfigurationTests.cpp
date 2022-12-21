@@ -4,6 +4,24 @@
 using namespace opentera;
 using namespace std;
 
+TEST(VideoStreamConfigurationTests, stringToVideoStreamCodec)
+{
+    EXPECT_EQ(stringToVideoStreamCodec("VP8"), VideoStreamCodec::VP8);
+    EXPECT_EQ(stringToVideoStreamCodec("VP9"), VideoStreamCodec::VP9);
+    EXPECT_EQ(stringToVideoStreamCodec("H264"), VideoStreamCodec::H264);
+
+    EXPECT_EQ(stringToVideoStreamCodec("vp8"), VideoStreamCodec::VP8);
+    EXPECT_EQ(stringToVideoStreamCodec("vp9"), VideoStreamCodec::VP9);
+    EXPECT_EQ(stringToVideoStreamCodec("h264"), VideoStreamCodec::H264);
+
+    EXPECT_EQ(stringToVideoStreamCodec("Vp8"), VideoStreamCodec::VP8);
+    EXPECT_EQ(stringToVideoStreamCodec("Vp9"), VideoStreamCodec::VP9);
+    EXPECT_EQ(stringToVideoStreamCodec("vP8"), VideoStreamCodec::VP8);
+    EXPECT_EQ(stringToVideoStreamCodec("vP9"), VideoStreamCodec::VP9);
+
+    EXPECT_EQ(stringToVideoStreamCodec("asd"), absl::nullopt);
+}
+
 TEST(VideoStreamConfigurationTests, create_shouldSetTheAttributes)
 {
     VideoStreamConfiguration testee = VideoStreamConfiguration::create();
