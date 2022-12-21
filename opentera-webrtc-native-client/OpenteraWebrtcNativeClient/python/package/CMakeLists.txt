@@ -35,7 +35,7 @@ if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
     file(
             GENERATE
             OUTPUT ${WORKING_DIR}/TargetFileNameOpenteraWebrtcNativeGStreamer.txt
-            INPUT TargetFileNameOpenteraWebrtcNativeGStreamer.txt.in
+            INPUT ${CMAKE_CURRENT_SOURCE_DIR}/TargetFileNameOpenteraWebrtcNativeGStreamer.txt.in
     )
     file(
             STRINGS
