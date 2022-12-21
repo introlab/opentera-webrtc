@@ -56,7 +56,6 @@ jobs:
 
       - name: Generate Version Output
         id: generate_version_output
-        # run: echo "::set-output name=version::$(cat VERSION)"
         run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
 
       - name: Print Version Information
@@ -67,10 +66,8 @@ jobs:
         run: |
           if [[ "${{ runner.os }}" == "Linux" ]]; then
             echo "os_release_name=${{runner.os}}-$(lsb_release -i -s)" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_name::${{runner.os}}-$(lsb_release -i -s)"
           else
             echo "os_release_name=${{runner.os}}" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_name::${{runner.os}}"
           fi
 
       - name: Generate OS Release Version Output
@@ -78,10 +75,8 @@ jobs:
         run: |
           if [[ "${{ runner.os }}" == "Linux" ]]; then
             echo "os_release_version=$(lsb_release -r -s)" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_version::$(lsb_release -r -s)"
           elif [[ "${{ runner.os }}" == "macOS" ]]; then
             echo "os_release_version=$(cmake -P cmake/macos_get_version_script.cmake)" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_version::$(cmake -P cmake/macos_get_version_script.cmake)"
           fi
 
       - name: Generate OS Release Architecture Output
@@ -89,16 +84,13 @@ jobs:
         run: |
           if [[ "${{ runner.os }}" == "Linux" ]]; then
             echo "os_release_architecture=$(uname -i)" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_architecture::$(uname -i)"
           elif [[ "${{ runner.os }}" == "macOS" ]]; then
             echo "os_release_architecture=$(uname -m)" >> $GITHUB_OUTPUT
-            # echo "::set-output name=os_release_architecture::$(uname -m)"
           fi
 
       - name: Generate Release File Name
         id: generate_release_file_name
         run: |
-          # echo "::set-output name=release_file_name::\
           echo "release_file_name=\
           ${{ steps.generate_os_release_name_output.outputs.os_release_name }}-\
           ${{ steps.generate_os_release_version_output.outputs.os_release_version }}-\
