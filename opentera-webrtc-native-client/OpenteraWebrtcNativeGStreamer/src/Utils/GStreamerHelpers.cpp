@@ -11,14 +11,6 @@ public:
             gst_init(nullptr, nullptr);
         }
     }
-
-    ~GstInit()
-    {
-        if (gst_is_initialized())
-        {
-            gst_deinit();
-        }
-    }
 };
 
 GstInit gstInitInstance;
