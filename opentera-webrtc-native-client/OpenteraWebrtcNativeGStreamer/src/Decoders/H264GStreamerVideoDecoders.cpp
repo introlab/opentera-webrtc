@@ -46,7 +46,7 @@ webrtc::VideoDecoder::DecoderInfo SoftwareH264GStreamerVideoDecoder::GetDecoderI
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer avdec_h264";
-    info.is_hardware_accelerated = false;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
@@ -70,7 +70,7 @@ webrtc::VideoDecoder::DecoderInfo VaapiH264GStreamerVideoDecoder::GetDecoderInfo
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer vaapih264dec";
-    info.is_hardware_accelerated = true;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
@@ -94,7 +94,7 @@ webrtc::VideoDecoder::DecoderInfo TegraH264GStreamerVideoDecoder::GetDecoderInfo
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer nvv4l2decoder h264";
-    info.is_hardware_accelerated = true;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
@@ -117,7 +117,7 @@ webrtc::VideoDecoder::DecoderInfo V4l2H264GStreamerVideoDecoder::GetDecoderInfo(
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer v4l2h264dec";
-    info.is_hardware_accelerated = true;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 

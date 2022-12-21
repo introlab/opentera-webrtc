@@ -116,7 +116,8 @@ int main(int argc, char* argv[])
     auto videoStreamConfiguration = VideoStreamConfiguration::create();
     auto videoSource = make_shared<NoiseVideoSource>();
     auto audioSource = make_shared<SinAudioSource>();
-    StreamClient client(signalingServerConfiguration, webrtcConfiguration, videoStreamConfiguration, videoSource, audioSource);
+    StreamClient
+        client(signalingServerConfiguration, webrtcConfiguration, videoStreamConfiguration, videoSource, audioSource);
 
     client.setOnSignalingConnectionOpened(
         []()
@@ -191,7 +192,7 @@ int main(int argc, char* argv[])
         [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
         {
             // This callback is called from a WebRTC processing thread.
-            //cout << "OnVideoFrameReceived:" << endl;
+            // cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
         });

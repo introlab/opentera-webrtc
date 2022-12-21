@@ -123,8 +123,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
 
 #ifdef DEBUG_GSTREAMER
     GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
-    GST_WARNING("Width: %d, Height: %d, Size: %lu", m_width, m_height,
-    gst_buffer_get_size(m_buffer.get()));
+    GST_WARNING("Width: %d, Height: %d, Size: %lu", m_width, m_height, gst_buffer_get_size(m_buffer.get()));
 #endif
 
     switch (gst_app_src_push_sample(GST_APP_SRC(m_gstDecoderPipeline->src()), sample.get()))
@@ -191,8 +190,7 @@ int32_t GStreamerVideoDecoder::pullSample()
     gst_element_get_state(m_gstDecoderPipeline->sink(), &state, &pending, GST_SECOND / 100);
 
 #ifdef DEBUG_GSTREAMER
-    GST_ERROR("State: %s; Pending: %s", gst_element_state_get_name(state),
-    gst_element_state_get_name(pending));
+    GST_ERROR("State: %s; Pending: %s", gst_element_state_get_name(state), gst_element_state_get_name(pending));
 
     GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(
         GST_BIN(m_gstAppPipeline->pipeline()),

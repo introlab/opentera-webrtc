@@ -42,7 +42,7 @@ webrtc::VideoDecoder::DecoderInfo SoftwareVp9GStreamerVideoDecoder::GetDecoderIn
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer vp9dec";
-    info.is_hardware_accelerated = false;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
@@ -65,7 +65,7 @@ webrtc::VideoDecoder::DecoderInfo VaapiVp9GStreamerVideoDecoder::GetDecoderInfo(
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer vaapivp9dec";
-    info.is_hardware_accelerated = true;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
@@ -88,7 +88,7 @@ webrtc::VideoDecoder::DecoderInfo TegraVp9GStreamerVideoDecoder::GetDecoderInfo(
 {
     webrtc::VideoDecoder::DecoderInfo info;
     info.implementation_name = "GStreamer nvv4l2decoder vp9";
-    info.is_hardware_accelerated = true;
+    info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
