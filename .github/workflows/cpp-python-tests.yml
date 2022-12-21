@@ -162,7 +162,7 @@ jobs:
           rm -rfv _build
 
       - name: Run CPP Tests
-        working-directory: build/bin
+        working-directory: build/dist/bin
         run: |
           ls -l
           ./OpenteraWebrtcNativeClientTests
