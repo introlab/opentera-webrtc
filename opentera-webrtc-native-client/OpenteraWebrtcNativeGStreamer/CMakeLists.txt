@@ -27,3 +27,4 @@ target_link_libraries(OpenteraWebrtcNativeGStreamer PRIVATE
         ${GSTREAMER_LIBRARIES}
         ${GSTREAMER_VIDEO_LIBRARIES}
         ${GSTREAMER_APP_LIBRARIES})
+install(TARGETS OpenteraWebrtcNativeGStreamer DESTINATION bin)
