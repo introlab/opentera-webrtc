@@ -29,6 +29,7 @@ jobs:
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
+        enable-system-opencv: [ON, OFF]
 
     steps:
       - uses: actions/checkout@v2
@@ -141,6 +142,7 @@ jobs:
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python --version | perl -pe 's/Python //')" \
           -DPython_ROOT_DIR="${{ env.pythonLocation }}" \
           -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=${{ matrix.enable-gstreamer }}
+          -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=${{ matrix.enable-system-opencv }}
           make -j2
           make install
 
