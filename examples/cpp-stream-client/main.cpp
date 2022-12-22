@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
         });
-    /*client.setOnAudioFrameReceived(
+    client.setOnAudioFrameReceived(
         [](const Client& client,
            const void* audioData,
            int bitsPerSample,
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
             cout << "OnMixedAudioFrameReceived:" << endl;
             cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
             cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
-        });*/
+        });
 
     client.connect();
 
