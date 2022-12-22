@@ -39,9 +39,12 @@ using namespace std;
 constexpr size_t GstDecoderBufferSize = 10 * 1024 * 1024;
 constexpr size_t WebrtcBufferPoolSize = 300;
 
-GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, string decoderPipeline)
+GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, 
+    string decoderPipeline,
+    bool resetPipelineOnSizeChanges)
     : m_mediaTypeCaps{move(mediaTypeCaps)},
       m_decoderPipeline(move(decoderPipeline)),
+      m_resetPipelineOnSizeChanges(resetPipelineOnSizeChanges),
       m_gstDecoderPipeline{},
       m_keyframeNeeded{true},
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
@@ -76,6 +79,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         }
         else
         {
+            initializeBufferTimestamps(renderTimeMs, inputImage.Timestamp());
             m_keyframeNeeded = false;
         }
     }
@@ -86,14 +90,13 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         return WEBRTC_VIDEO_CODEC_UNINITIALIZED;
     }
 
-
-    // No idea why this is needed, taken from WebKit implementation
-    if (!GST_CLOCK_TIME_IS_VALID(m_firstBufferPts))
+    if (m_resetPipelineOnSizeChanges &&
+        inputImage._frameType == webrtc::VideoFrameType::kVideoFrameKey && 
+        m_width != 0 && m_height != 0 &&
+        (m_width != inputImage._encodedWidth || m_height != inputImage._encodedHeight))
     {
-        gst::unique_ptr<GstPad> srcpad =
-            gst::unique_from_ptr(gst_element_get_static_pad(m_gstDecoderPipeline->src(), "src"));
-        m_firstBufferPts = (static_cast<guint64>(renderTimeMs)) * GST_MSECOND;
-        m_firstBufferDts = (static_cast<guint64>(inputImage.Timestamp())) * GST_MSECOND;
+        initializePipeline();
+        initializeBufferTimestamps(renderTimeMs, inputImage.Timestamp());
     }
 
     gst::unique_ptr<GstBuffer> buffer;
@@ -151,12 +154,10 @@ bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& sett
 {
     m_keyframeNeeded = true;
 
-    m_gstDecoderPipeline = make_unique<GStreamerDecoderPipeline>();
-    if (WEBRTC_VIDEO_CODEC_OK != m_gstDecoderPipeline->init(m_mediaTypeCaps, m_decoderPipeline))
+    if (!initializePipeline())
     {
         return false;
     }
-
     if (settings.buffer_pool_size().has_value())
     {
         if (!m_webrtcBufferPool.Resize(*settings.buffer_pool_size()))
@@ -181,6 +182,27 @@ int32_t GStreamerVideoDecoder::RegisterDecodeCompleteCallback(webrtc::DecodedIma
 {
     m_imageReadyCb = callback;
     return WEBRTC_VIDEO_CODEC_OK;
+}
+
+bool GStreamerVideoDecoder::initializePipeline()
+{
+    m_gstDecoderPipeline = make_unique<GStreamerDecoderPipeline>();
+    return m_gstDecoderPipeline->init(m_mediaTypeCaps, m_decoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
+}
+
+bool GStreamerVideoDecoder::initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp)
+{
+    gst::unique_ptr<GstPad> srcpad =
+        gst::unique_from_ptr(gst_element_get_static_pad(m_gstDecoderPipeline->src(), "src"));
+    if (!srcpad)
+    {
+        return false;
+    }
+
+    m_firstBufferPts = (static_cast<guint64>(renderTimeMs)) * GST_MSECOND;
+    m_firstBufferDts = (static_cast<guint64>(imageTimestamp)) * GST_MSECOND;
+
+    return true;
 }
 
 int32_t GStreamerVideoDecoder::pullSample()

@@ -29,9 +29,12 @@ vector<webrtc::SdpVideoFormat> WebRtcGStreamerVideoDecoderFactory::GetSupportedF
 {
     vector<webrtc::SdpVideoFormat> supportedFormats;
     supportedFormats.reserve(m_decoderFactories.size());
-    for (auto& kv : m_decoderFactories)
+    for (auto& f : m_builtinSupportedFormats)
     {
-        supportedFormats.emplace_back(kv.first);
+        if (m_decoderFactories.find(f.name) != m_decoderFactories.end())
+        {
+            supportedFormats.emplace_back(f);
+        }
     }
     sort(
         supportedFormats.begin(),

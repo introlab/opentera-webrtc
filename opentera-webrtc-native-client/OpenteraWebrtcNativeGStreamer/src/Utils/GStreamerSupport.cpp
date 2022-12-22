@@ -21,10 +21,10 @@ bool gst::elementFactoryExists(const char* name)
 
 static bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline)
 {
-    constexpr GstClockTime Timeout = GST_SECOND / 10;
+    constexpr GstClockTime Timeout = GST_SECOND;
 
     string pipelineStr = "videotestsrc num-buffers=1 ! "
-                         "capsfilter caps=video/x-raw,format=(string)I420,width=(int)64,height=(int)64 ! " +
+                         "capsfilter caps=video/x-raw,format=(string)I420,width=(int)256,height=(int)256 ! " +
                          encoderDecoderPipeline + " ! appsink name=sink";
 
     gst::unique_ptr<GError> error;

@@ -21,8 +21,9 @@
 using namespace opentera;
 using namespace std;
 
-H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline)
-    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
+H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline,
+            bool resetPipelineOnSizeChanges)
+    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline), resetPipelineOnSizeChanges)
 {
 }
 
@@ -86,7 +87,7 @@ bool VaapiH264GStreamerVideoDecoder::isHardwareAccelerated()
 
 
 TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder()
-    : H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv")
+    : H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv", true)
 {
 }
 

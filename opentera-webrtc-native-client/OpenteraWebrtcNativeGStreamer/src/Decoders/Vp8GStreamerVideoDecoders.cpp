@@ -21,8 +21,9 @@
 using namespace opentera;
 using namespace std;
 
-Vp8GStreamerVideoDecoder::Vp8GStreamerVideoDecoder(string decoderPipeline)
-    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline))
+Vp8GStreamerVideoDecoder::Vp8GStreamerVideoDecoder(string decoderPipeline,
+            bool resetPipelineOnSizeChanges)
+    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline), resetPipelineOnSizeChanges)
 {
 }
 
@@ -81,7 +82,7 @@ bool VaapiVp8GStreamerVideoDecoder::isHardwareAccelerated()
 }
 
 
-TegraVp8GStreamerVideoDecoder::TegraVp8GStreamerVideoDecoder() : Vp8GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv")
+TegraVp8GStreamerVideoDecoder::TegraVp8GStreamerVideoDecoder() : Vp8GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv", true)
 {
 }
 

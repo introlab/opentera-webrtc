@@ -43,6 +43,7 @@ namespace opentera
     {
         std::string m_mediaTypeCaps;
         std::string m_decoderPipeline;
+        bool m_resetPipelineOnSizeChanges;
         std::unique_ptr<GStreamerDecoderPipeline> m_gstDecoderPipeline;
         gst::unique_ptr<GstBufferPool> m_bufferPool;
 
@@ -58,7 +59,9 @@ namespace opentera
         webrtc::VideoFrameBufferPool m_webrtcBufferPool;
 
     public:
-        GStreamerVideoDecoder(std::string mediaTypeCaps, std::string decoderPipeline);
+        GStreamerVideoDecoder(std::string mediaTypeCaps, 
+            std::string decoderPipeline,
+            bool resetPipelineOnSizeChanges = false);
         ~GStreamerVideoDecoder() override = default;
 
         DECLARE_NOT_COPYABLE(GStreamerVideoDecoder);
@@ -73,6 +76,9 @@ namespace opentera
         int32_t RegisterDecodeCompleteCallback(webrtc::DecodedImageCallback* callback) final;
 
     private:
+        bool initializePipeline();
+        bool initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp);
+
         int32_t pullSample();
         GstCaps* getCapsForFrame(const webrtc::EncodedImage& image);
     };

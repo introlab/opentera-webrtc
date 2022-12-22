@@ -12,7 +12,6 @@
 
 #include <unordered_map>
 #include <algorithm>
-
 using namespace opentera;
 using namespace std;
 

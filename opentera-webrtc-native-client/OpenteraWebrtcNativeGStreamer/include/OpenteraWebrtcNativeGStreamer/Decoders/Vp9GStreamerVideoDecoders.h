@@ -25,7 +25,8 @@ namespace opentera
     class Vp9GStreamerVideoDecoder : public GStreamerVideoDecoder
     {
     public:
-        Vp9GStreamerVideoDecoder(std::string decoderPipeline);
+        explicit Vp9GStreamerVideoDecoder(std::string decoderPipeline,
+            bool resetPipelineOnSizeChanges = false);
         ~Vp9GStreamerVideoDecoder() override = default;
 
         static const char* mediaTypeCaps();
