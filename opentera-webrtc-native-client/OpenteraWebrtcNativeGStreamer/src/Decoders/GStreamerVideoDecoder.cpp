@@ -119,8 +119,6 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
 
     GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
     GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
-    InputTimestamps timestamps = {inputImage.Timestamp(), renderTimeMs};
-    m_dtsPtsMap[GST_BUFFER_PTS(buffer.get())] = timestamps;
 
     auto sample = gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 
@@ -147,7 +145,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     cout << "Sample (push) is " << hex << sample.get() << dec << endl;
 #endif
 
-    return pullSample();
+    return pullSample(renderTimeMs, inputImage.Timestamp());
 }
 
 bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& settings)
@@ -205,7 +203,7 @@ bool GStreamerVideoDecoder::initializeBufferTimestamps(int64_t renderTimeMs, uin
     return true;
 }
 
-int32_t GStreamerVideoDecoder::pullSample()
+int32_t GStreamerVideoDecoder::pullSample(int64_t renderTimeMs, uint32_t imageTimestamp)
 {
     GstState state;
     GstState pending;
@@ -244,12 +242,6 @@ int32_t GStreamerVideoDecoder::pullSample()
 #endif
 
     auto buffer = gst_sample_get_buffer(sample.get());
-
-    // Make sure that the frame.timestamp == previsouly input_frame._timeStamp
-    // as it is required by the VideoDecoder baseclass.
-    // Taken from the WebKit implementation
-    auto timestamps = m_dtsPtsMap[GST_BUFFER_PTS(buffer)];
-    m_dtsPtsMap.erase(GST_BUFFER_PTS(buffer));
 
 #ifdef DEBUG_GSTREAMER
     GST_WARNING("Pulling sample: %" GST_PTR_FORMAT, sample.get());
@@ -306,8 +298,8 @@ int32_t GStreamerVideoDecoder::pullSample()
     {
         webrtc::VideoFrame decodedImage = webrtc::VideoFrame::Builder()
                                               .set_video_frame_buffer(i420Buffer)
-                                              .set_timestamp_rtp(static_cast<uint32_t>(timestamps.timestamp))
-                                              .set_timestamp_ms(timestamps.renderTimeMs)
+                                              .set_timestamp_rtp(imageTimestamp)
+                                              .set_timestamp_ms(renderTimeMs)
                                               .build();
         m_imageReadyCb->Decoded(decodedImage, absl::nullopt, absl::nullopt);
     }

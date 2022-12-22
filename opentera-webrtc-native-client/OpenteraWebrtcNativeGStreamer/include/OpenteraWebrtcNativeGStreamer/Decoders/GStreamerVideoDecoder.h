@@ -33,12 +33,6 @@
 
 namespace opentera
 {
-    struct InputTimestamps
-    {
-        uint64_t timestamp;
-        int64_t renderTimeMs;
-    };
-
     class GStreamerVideoDecoder : public webrtc::VideoDecoder
     {
         std::string m_mediaTypeCaps;
@@ -50,7 +44,6 @@ namespace opentera
         bool m_keyframeNeeded;
         GstClockTime m_firstBufferPts;
         GstClockTime m_firstBufferDts;
-        std::map<GstClockTime, InputTimestamps> m_dtsPtsMap;
         gint m_width;
         gint m_height;
         gst::unique_ptr<GstCaps> m_caps;
@@ -79,7 +72,7 @@ namespace opentera
         bool initializePipeline();
         bool initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp);
 
-        int32_t pullSample();
+        int32_t pullSample(int64_t renderTimeMs, uint32_t imageTimestamp);
         GstCaps* getCapsForFrame(const webrtc::EncodedImage& image);
     };
 }
