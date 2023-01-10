@@ -20,6 +20,8 @@
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerMessageHandling.h>
 
 #include <gst/gst.h>
+#include <gst/app/gstappsink.h>
+#include <gst/app/gstappsrc.h>
 
 #include <modules/video_coding/include/video_codec_interface.h>
 
@@ -31,39 +33,43 @@ GStreamerDecoderPipeline::GStreamerDecoderPipeline()
     : m_pipeline{nullptr},
       m_src{nullptr},
       m_sink{nullptr},
-      m_width{0},
-      m_height{0},
       m_ready{false}
 {
 }
 
-GstElement* GStreamerDecoderPipeline::pipeline()
+GStreamerDecoderPipeline::~GStreamerDecoderPipeline()
 {
-    return GST_ELEMENT(m_pipeline.get());
-}
-GstElement* GStreamerDecoderPipeline::src()
-{
-    return m_src.get();
-}
-GstElement* GStreamerDecoderPipeline::sink()
-{
-    return m_sink.get();
+    if (m_pipeline)
+    {
+        disconnectBusMessageCallback(m_pipeline);
+    }
 }
 
-[[nodiscard]] bool GStreamerDecoderPipeline::ready() const
+GstFlowReturn GStreamerDecoderPipeline::pushSample(gst::unique_ptr<GstSample>& sample)
 {
-    return m_ready;
+    return gst_app_src_push_sample(GST_APP_SRC(m_src.get()), sample.get());
 }
-void GStreamerDecoderPipeline::setReady(bool ready)
+
+void GStreamerDecoderPipeline::getSinkState(GstState& state, GstState& pending)
 {
-    m_ready = ready;
+    gst_element_get_state(m_sink.get(), &state, &pending, GST_SECOND / 100);
+}
+
+gst::unique_ptr<GstSample> GStreamerDecoderPipeline::tryPullSample()
+{
+    return gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(m_sink.get()), GST_SECOND / 100));
 }
 
 int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderPipeline)
 {
+    if (m_pipeline)
+    {
+        disconnectBusMessageCallback(m_pipeline);
+    }
+
     string pipelineStr = string("appsrc name=src emit-signals=true is-live=true format=time caps=") + string(capsStr) +
 
-                         " ! queue name=q2 ! " + string(decoderPipeline) +
+                         " ! queue ! " + string(decoderPipeline) +
 
                          " ! capsfilter caps=video/x-raw,format=(string)I420"
 
@@ -78,14 +84,14 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
-    m_src = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "src"));
-    m_sink = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(pipeline()), "sink"));
+    m_src = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(m_pipeline.get()), "src"));
+    m_sink = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(m_pipeline.get()), "sink"));
 
     connectBusMessageCallback(m_pipeline);
 
-    if (gst_element_set_state(pipeline(), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
+    if (gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
     {
-        GST_ERROR_OBJECT(pipeline(), "Could not set state to PLAYING.");
+        GST_ERROR_OBJECT(m_pipeline.get(), "Could not set state to PLAYING.");
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
 

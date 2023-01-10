@@ -20,11 +20,8 @@
 
 #include <OpenteraWebrtcNativeGStreamer/Pipeline/GStreamerDecoderPipeline.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
+#include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerBufferPool.h>
 #include <OpenteraWebrtcNativeGStreamer/Utils/ClassMacro.h>
-
-#include <gst/gst.h>
-#include <gst/app/gstappsink.h>
-#include <gst/app/gstappsrc.h>
 
 #include <api/video_codecs/video_decoder.h>
 #include <modules/video_coding/include/video_codec_interface.h>
@@ -39,7 +36,7 @@ namespace opentera
         std::string m_decoderPipeline;
         bool m_resetPipelineOnSizeChanges;
         std::unique_ptr<GStreamerDecoderPipeline> m_gstDecoderPipeline;
-        gst::unique_ptr<GstBufferPool> m_bufferPool;
+        GStreamerBufferPool m_gstreamerBufferPool;
 
         bool m_keyframeNeeded;
         GstClockTime m_firstBufferPts;
@@ -52,7 +49,8 @@ namespace opentera
         webrtc::VideoFrameBufferPool m_webrtcBufferPool;
 
     public:
-        GStreamerVideoDecoder(std::string mediaTypeCaps,
+        GStreamerVideoDecoder(
+            std::string mediaTypeCaps,
             std::string decoderPipeline,
             bool resetPipelineOnSizeChanges = false);
         ~GStreamerVideoDecoder() override = default;
@@ -70,7 +68,7 @@ namespace opentera
 
     private:
         bool initializePipeline();
-        bool initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp);
+        void initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp);
 
         int32_t pullSample(int64_t renderTimeMs, uint32_t imageTimestamp, webrtc::VideoRotation rotation);
         GstCaps* getCapsForFrame(const webrtc::EncodedImage& image);

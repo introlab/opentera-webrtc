@@ -21,8 +21,7 @@
 using namespace opentera;
 using namespace std;
 
-H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline,
-            bool resetPipelineOnSizeChanges)
+H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline, bool resetPipelineOnSizeChanges)
     : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline), resetPipelineOnSizeChanges)
 {
 }

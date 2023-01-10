@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_APP_PIPELINE_H
-#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_APP_PIPELINE_H
+#ifndef OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_DECODER_PIPELINE_H
+#define OPENTERA_WEBRTC_NATIVE_GSTREAMER_PIPELINE_GSTREAMER_DECODER_PIPELINE_H
 
 #include <OpenteraWebrtcNativeGStreamer/Utils/GStreamerHelpers.h>
 
@@ -30,22 +30,25 @@ namespace opentera
         gst::unique_ptr<GstElement> m_src;
         gst::unique_ptr<GstElement> m_sink;
         gst::unique_ptr<GError> m_error;
-        gint m_width;
-        gint m_height;
         bool m_ready;
 
     public:
         GStreamerDecoderPipeline();
+        ~GStreamerDecoderPipeline();
 
-        GstElement* pipeline();
-        GstElement* src();
-        GstElement* sink();
+        GstFlowReturn pushSample(gst::unique_ptr<GstSample>& sample);
+        void getSinkState(GstState& state, GstState& pending);
+        gst::unique_ptr<GstSample> tryPullSample();
 
         [[nodiscard]] bool ready() const;
         void setReady(bool ready);
 
         int32_t init(std::string_view capsStr, std::string_view decoderPipeline);
     };
+
+    [[nodiscard]] inline bool GStreamerDecoderPipeline::ready() const { return m_ready; }
+
+    inline void GStreamerDecoderPipeline::setReady(bool ready) { m_ready = ready; }
 }
 
 #endif

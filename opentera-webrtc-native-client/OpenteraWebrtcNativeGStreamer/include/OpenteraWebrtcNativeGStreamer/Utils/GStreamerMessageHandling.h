@@ -59,8 +59,7 @@ namespace opentera::internal
                     std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_" +
                                               gst_element_state_get_name(oldState) + "_" +
                                               gst_element_state_get_name(newState);
-                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL,
-                    dotFileName.c_str());
+                    GST_DEBUG_BIN_TO_DOT_FILE_WITH_TS(GST_BIN(pipeline), GST_DEBUG_GRAPH_SHOW_ALL, dotFileName.c_str());
 #endif
                 }
                 break;
