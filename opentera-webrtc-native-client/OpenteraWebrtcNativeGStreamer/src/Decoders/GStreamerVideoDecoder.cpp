@@ -39,7 +39,7 @@ using namespace std;
 constexpr size_t GstDecoderBufferSize = 10 * 1024 * 1024;
 constexpr size_t WebrtcBufferPoolSize = 300;
 
-GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps, 
+GStreamerVideoDecoder::GStreamerVideoDecoder(string mediaTypeCaps,
     string decoderPipeline,
     bool resetPipelineOnSizeChanges)
     : m_mediaTypeCaps{move(mediaTypeCaps)},
@@ -91,7 +91,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     }
 
     if (m_resetPipelineOnSizeChanges &&
-        inputImage._frameType == webrtc::VideoFrameType::kVideoFrameKey && 
+        inputImage._frameType == webrtc::VideoFrameType::kVideoFrameKey &&
         m_width != 0 && m_height != 0 &&
         (m_width != inputImage._encodedWidth || m_height != inputImage._encodedHeight))
     {
@@ -145,7 +145,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     cout << "Sample (push) is " << hex << sample.get() << dec << endl;
 #endif
 
-    return pullSample(renderTimeMs, inputImage.Timestamp());
+    return pullSample(renderTimeMs, inputImage.Timestamp(), inputImage.rotation_);
 }
 
 bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& settings)
@@ -203,7 +203,7 @@ bool GStreamerVideoDecoder::initializeBufferTimestamps(int64_t renderTimeMs, uin
     return true;
 }
 
-int32_t GStreamerVideoDecoder::pullSample(int64_t renderTimeMs, uint32_t imageTimestamp)
+int32_t GStreamerVideoDecoder::pullSample(int64_t renderTimeMs, uint32_t imageTimestamp, webrtc::VideoRotation rotation)
 {
     GstState state;
     GstState pending;
@@ -300,6 +300,7 @@ int32_t GStreamerVideoDecoder::pullSample(int64_t renderTimeMs, uint32_t imageTi
                                               .set_video_frame_buffer(i420Buffer)
                                               .set_timestamp_rtp(imageTimestamp)
                                               .set_timestamp_ms(renderTimeMs)
+                                              .set_rotation(rotation)
                                               .build();
         m_imageReadyCb->Decoded(decodedImage, absl::nullopt, absl::nullopt);
     }
