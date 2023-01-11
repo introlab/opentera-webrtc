@@ -58,17 +58,19 @@ namespace opentera
         DECLARE_NOT_COPYABLE(GStreamerVideoDecoder);
         DECLARE_NOT_MOVABLE(GStreamerVideoDecoder);
 
-        int32_t Release() final;
+        int32_t Release() override;
 
-        int32_t Decode(const webrtc::EncodedImage& inputImage, bool missingFrames, int64_t renderTimeMs) final;
+        int32_t Decode(const webrtc::EncodedImage& inputImage, bool missingFrames, int64_t renderTimeMs) override;
 
         bool Configure(const webrtc::VideoDecoder::Settings& settings) override;
 
-        int32_t RegisterDecodeCompleteCallback(webrtc::DecodedImageCallback* callback) final;
+        int32_t RegisterDecodeCompleteCallback(webrtc::DecodedImageCallback* callback) override;
 
     private:
         bool initializePipeline();
         void initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp);
+
+        gst::unique_ptr<GstSample> toGstSample(const webrtc::EncodedImage& inputImage, int64_t renderTimeMs);
 
         int32_t pullSample(int64_t renderTimeMs, uint32_t imageTimestamp, webrtc::VideoRotation rotation);
         GstCaps* getCapsForFrame(const webrtc::EncodedImage& image);

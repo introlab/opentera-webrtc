@@ -2,6 +2,7 @@
 
 #ifdef USE_GSTREAMER
 #include <OpenteraWebrtcNativeGStreamer/Factories/WebRtcGStreamerVideoDecoderFactory.h>
+#include <OpenteraWebrtcNativeGStreamer/Factories/WebRtcGStreamerVideoEncoderFactory.h>
 #endif
 
 #include <api/video_codecs/builtin_video_decoder_factory.h>
@@ -148,9 +149,12 @@ unique_ptr<webrtc::VideoDecoderFactory>
 unique_ptr<webrtc::VideoEncoderFactory>
     opentera::createVideoEncoderFactory(const VideoStreamConfiguration& configuration)
 {
-    // TODO change to GStreamer
+    auto gstreamerVideoEncoderFactory = make_unique<WebRtcGStreamerVideoEncoderFactory>(
+        configuration.forceGStreamerHardwareAcceleration(),
+        configuration.useGStreamerSoftwareEncoderDecoder());
+
     return make_unique<ForcedCodecVideoEncoderFactory>(
-        webrtc::CreateBuiltinVideoEncoderFactory(),
+        move(gstreamerVideoEncoderFactory),
         configuration.forcedCodecs());
 }
 

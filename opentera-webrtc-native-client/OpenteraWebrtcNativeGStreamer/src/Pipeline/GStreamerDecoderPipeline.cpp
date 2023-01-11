@@ -52,15 +52,15 @@ GstFlowReturn GStreamerDecoderPipeline::pushSample(gst::unique_ptr<GstSample>& s
 
 void GStreamerDecoderPipeline::getSinkState(GstState& state, GstState& pending)
 {
-    gst_element_get_state(m_sink.get(), &state, &pending, GST_SECOND / 100);
+    gst_element_get_state(m_sink.get(), &state, &pending, GST_SECOND / 10);
 }
 
 gst::unique_ptr<GstSample> GStreamerDecoderPipeline::tryPullSample()
 {
-    return gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(m_sink.get()), GST_SECOND / 100));
+    return gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(m_sink.get()), GST_SECOND / 10));
 }
 
-int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderPipeline)
+int32_t GStreamerDecoderPipeline::initialize(string_view capsStr, string_view decoderPipeline)
 {
     if (m_pipeline)
     {
@@ -71,13 +71,12 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
 
                          " ! queue ! " + string(decoderPipeline) +
 
-                         " ! capsfilter caps=video/x-raw,format=(string)I420"
+                         " ! capsfilter caps=video/x-raw,format=I420"
 
                          " ! queue"
                          " ! appsink name=sink sync=false";
 
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
-
     if (m_error)
     {
         GST_ERROR("Failed to create pipeline: %s", m_error->message);
@@ -85,7 +84,18 @@ int32_t GStreamerDecoderPipeline::init(string_view capsStr, string_view decoderP
     }
 
     m_src = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(m_pipeline.get()), "src"));
+    if (!m_src)
+    {
+        GST_ERROR_OBJECT(m_pipeline.get(), "The pipeline must contain an appsrc named src.");
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+
     m_sink = gst::unique_from_ptr(gst_bin_get_by_name(GST_BIN(m_pipeline.get()), "sink"));
+    if (!m_sink)
+    {
+        GST_ERROR_OBJECT(m_pipeline.get(), "The pipeline must contain an appsink named sink.");
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
 
     connectBusMessageCallback(m_pipeline);
 

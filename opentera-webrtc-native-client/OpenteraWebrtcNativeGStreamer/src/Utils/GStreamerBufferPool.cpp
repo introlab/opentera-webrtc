@@ -4,7 +4,7 @@ using namespace opentera;
 
 GStreamerBufferPool::GStreamerBufferPool() = default;
 
-bool GStreamerBufferPool::init(size_t bufferSize)
+bool GStreamerBufferPool::initialize(size_t bufferSize)
 {
     m_bufferPool = gst::unique_from_ptr(gst_buffer_pool_new());
     GstStructure* bufferPoolConfig = gst_buffer_pool_get_config(m_bufferPool.get());

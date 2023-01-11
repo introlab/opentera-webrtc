@@ -40,6 +40,7 @@ namespace opentera
 
     public:
         GstMappedFrame(GstSample* sample, GstMapFlags flags);
+        GstMappedFrame(GstBuffer* buffer, GstVideoInfo* info, GstMapFlags flags);
         ~GstMappedFrame();
 
         DECLARE_NOT_COPYABLE(GstMappedFrame);
@@ -70,6 +71,11 @@ namespace opentera
         }
     }
 
+    inline GstMappedFrame::GstMappedFrame(GstBuffer* buffer, GstVideoInfo* info, GstMapFlags flags)
+    {
+        m_isValid = gst_video_frame_map(&m_frame, info, buffer, flags);
+    }
+
     inline GstMappedFrame::~GstMappedFrame()
     {
         if (m_isValid)
@@ -83,13 +89,16 @@ namespace opentera
     {
         return m_isValid ? GST_VIDEO_FRAME_COMP_DATA(&m_frame, comp) : nullptr;
     }
+
     inline int GstMappedFrame::componentStride(int stride)
     {
         return m_isValid ? GST_VIDEO_FRAME_COMP_STRIDE(&m_frame, stride) : -1;
     }
 
     inline int GstMappedFrame::width() { return m_isValid ? GST_VIDEO_FRAME_WIDTH(&m_frame) : -1; }
+
     inline int GstMappedFrame::height() { return m_isValid ? GST_VIDEO_FRAME_HEIGHT(&m_frame) : -1; }
+
     inline int GstMappedFrame::format()
     {
         return m_isValid ? GST_VIDEO_FRAME_FORMAT(&m_frame) : GST_VIDEO_FORMAT_UNKNOWN;

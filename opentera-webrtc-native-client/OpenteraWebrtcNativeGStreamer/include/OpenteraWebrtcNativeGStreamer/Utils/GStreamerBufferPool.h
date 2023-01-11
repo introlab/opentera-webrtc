@@ -29,7 +29,7 @@ namespace opentera
     public:
         GStreamerBufferPool();
 
-        bool init(size_t bufferSize);
+        bool initialize(size_t bufferSize);
         gst::unique_ptr<GstBuffer> acquireBuffer();
     };
 

@@ -46,7 +46,7 @@ namespace opentera
         WebRtcGStreamerVideoDecoderFactory(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
-        CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool reference_scaling) const override;
+        CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool referenceScaling) const override;
         std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
 
     private:

@@ -38,7 +38,7 @@ namespace opentera
         SoftwareH264GStreamerVideoDecoder();
         ~SoftwareH264GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
@@ -50,7 +50,7 @@ namespace opentera
         VaapiH264GStreamerVideoDecoder();
         ~VaapiH264GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
@@ -62,7 +62,7 @@ namespace opentera
         TegraH264GStreamerVideoDecoder();
         ~TegraH264GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
@@ -74,7 +74,7 @@ namespace opentera
         V4l2H264GStreamerVideoDecoder();
         ~V4l2H264GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();

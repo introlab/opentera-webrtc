@@ -38,7 +38,7 @@ namespace opentera
         SoftwareVp9GStreamerVideoDecoder();
         ~SoftwareVp9GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
@@ -50,7 +50,7 @@ namespace opentera
         VaapiVp9GStreamerVideoDecoder();
         ~VaapiVp9GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
@@ -62,7 +62,7 @@ namespace opentera
         TegraVp9GStreamerVideoDecoder();
         ~TegraVp9GStreamerVideoDecoder() override = default;
 
-        webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();

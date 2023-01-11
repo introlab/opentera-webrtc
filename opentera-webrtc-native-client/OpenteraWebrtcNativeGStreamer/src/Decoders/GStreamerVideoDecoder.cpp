@@ -46,7 +46,6 @@ GStreamerVideoDecoder::GStreamerVideoDecoder(
     : m_mediaTypeCaps{move(mediaTypeCaps)},
       m_decoderPipeline(move(decoderPipeline)),
       m_resetPipelineOnSizeChanges(resetPipelineOnSizeChanges),
-      m_gstDecoderPipeline{},
       m_keyframeNeeded{true},
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
@@ -95,23 +94,11 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         initializeBufferTimestamps(renderTimeMs, inputImage.Timestamp());
     }
 
-    gst::unique_ptr<GstBuffer> buffer = m_gstreamerBufferPool.acquireBuffer();
-    if (!buffer)
+    auto sample = toGstSample(inputImage, renderTimeMs);
+    if (!sample)
     {
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
-    if (inputImage.size() > gst_buffer_get_size(buffer.get()))
-    {
-        GST_ERROR("The buffer is too small");
-        return WEBRTC_VIDEO_CODEC_ERROR;
-    }
-    gst_buffer_fill(buffer.get(), 0, inputImage.data(), inputImage.size());
-    gst_buffer_set_size(buffer.get(), static_cast<gssize>(inputImage.size()));
-
-    GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
-    GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
-
-    auto sample = gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 
 #ifdef DEBUG_GSTREAMER
     GST_WARNING("Pushing sample: %" GST_PTR_FORMAT, sample.get());
@@ -155,7 +142,7 @@ bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& sett
         }
     }
 
-    return m_gstreamerBufferPool.init(GstDecoderBufferSize);
+    return m_gstreamerBufferPool.initialize(GstDecoderBufferSize);
 }
 
 int32_t GStreamerVideoDecoder::RegisterDecodeCompleteCallback(webrtc::DecodedImageCallback* callback)
@@ -167,13 +154,36 @@ int32_t GStreamerVideoDecoder::RegisterDecodeCompleteCallback(webrtc::DecodedIma
 bool GStreamerVideoDecoder::initializePipeline()
 {
     m_gstDecoderPipeline = make_unique<GStreamerDecoderPipeline>();
-    return m_gstDecoderPipeline->init(m_mediaTypeCaps, m_decoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
+    return m_gstDecoderPipeline->initialize(m_mediaTypeCaps, m_decoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
 }
 
 void GStreamerVideoDecoder::initializeBufferTimestamps(int64_t renderTimeMs, uint32_t imageTimestamp)
 {
     m_firstBufferPts = (static_cast<guint64>(renderTimeMs)) * GST_MSECOND;
     m_firstBufferDts = (static_cast<guint64>(imageTimestamp)) * GST_MSECOND;
+}
+
+gst::unique_ptr<GstSample>
+    GStreamerVideoDecoder::toGstSample(const webrtc::EncodedImage& inputImage, int64_t renderTimeMs)
+{
+    gst::unique_ptr<GstBuffer> buffer = m_gstreamerBufferPool.acquireBuffer();
+    if (!buffer)
+    {
+        return nullptr;
+    }
+    if (inputImage.size() > gst_buffer_get_size(buffer.get()))
+    {
+        GST_ERROR("The buffer is too small");
+        return nullptr;
+    }
+
+    gst_buffer_fill(buffer.get(), 0, inputImage.data(), inputImage.size());
+    gst_buffer_set_size(buffer.get(), static_cast<gssize>(inputImage.size()));
+
+    GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
+    GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
+
+    return gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));
 }
 
 int32_t GStreamerVideoDecoder::pullSample(int64_t renderTimeMs, uint32_t imageTimestamp, webrtc::VideoRotation rotation)

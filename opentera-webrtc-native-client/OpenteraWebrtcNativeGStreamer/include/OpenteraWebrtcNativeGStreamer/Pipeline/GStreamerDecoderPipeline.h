@@ -43,10 +43,10 @@ namespace opentera
         [[nodiscard]] bool ready() const;
         void setReady(bool ready);
 
-        int32_t init(std::string_view capsStr, std::string_view decoderPipeline);
+        int32_t initialize(std::string_view capsStr, std::string_view decoderPipeline);
     };
 
-    [[nodiscard]] inline bool GStreamerDecoderPipeline::ready() const { return m_ready; }
+    inline bool GStreamerDecoderPipeline::ready() const { return m_ready; }
 
     inline void GStreamerDecoderPipeline::setReady(bool ready) { m_ready = ready; }
 }

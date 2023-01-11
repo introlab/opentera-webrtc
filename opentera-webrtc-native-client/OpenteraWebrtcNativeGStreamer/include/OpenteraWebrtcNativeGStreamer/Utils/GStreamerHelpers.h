@@ -108,6 +108,16 @@ namespace gst
         {
             gst_video_converter_free(element);
         }
+        template<>
+        inline void gst_deleter<GstVideoInfo>(GstVideoInfo* element)
+        {
+            gst_video_info_free(element);
+        }
+        template<>
+        inline void gst_deleter<GstStructure>(GstStructure* element)
+        {
+            gst_structure_free(element);
+        }
 
 
         // Use to remove required static_cast when using some GStreamer enums as

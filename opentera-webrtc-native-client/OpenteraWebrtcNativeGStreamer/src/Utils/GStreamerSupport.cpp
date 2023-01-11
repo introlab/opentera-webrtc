@@ -19,7 +19,7 @@ bool gst::elementFactoryExists(const char* name)
     return factory != nullptr;
 }
 
-static bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline)
+static bool testEncoderDecoderPipeline(const string& encoderDecoderPipeline)
 {
     constexpr GstClockTime Timeout = GST_SECOND;
 
@@ -53,7 +53,7 @@ static bool testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline
     return sample != nullptr;
 }
 
-bool gst::testEncoderDecoderPipeline(const std::string& encoderDecoderPipeline)
+bool gst::testEncoderDecoderPipeline(const string& encoderDecoderPipeline)
 {
     static unordered_map<string, bool> cache;
     static shared_mutex mutex;
