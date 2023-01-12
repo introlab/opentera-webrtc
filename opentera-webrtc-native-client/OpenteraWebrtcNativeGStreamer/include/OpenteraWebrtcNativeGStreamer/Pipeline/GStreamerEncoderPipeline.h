@@ -87,18 +87,17 @@ namespace opentera
             std::string childName = name.substr(dotPosition + 1);
             GST_INFO("Set encoder property - %s.%s=%s", parentName.c_str(), childName.c_str(), valueString.c_str());
 
-            GstStructure* structurePtr;
-            g_object_get(m_encoder.get(), parentName.c_str(), &structurePtr, nullptr);
-            auto structure = gst::unique_from_ptr(structurePtr);
+            GstStructure* structure;
+            g_object_get(m_encoder.get(), parentName.c_str(), &structure, nullptr);
             if (!structure)
             {
-                structure = gst::unique_from_ptr(gst_structure_new_empty(parentName.c_str()));
+                structure = gst_structure_new_empty(parentName.c_str());
             }
 
-            gst_structure_set(structure.get(), childName.c_str(), value, nullptr);
-            g_object_set(m_encoder.get(), parentName.c_str(), structure.get(), nullptr);
+            gst_structure_set(structure, childName.c_str(), value, nullptr);
+            g_object_set(m_encoder.get(), parentName.c_str(), structure, nullptr);
 
-            gchar* parentValues = gst_structure_to_string(structure.get());
+            gchar* parentValues = gst_structure_to_string(structure);
             GST_INFO("Parent values - %s", parentValues);
             g_free(parentValues);
         }
