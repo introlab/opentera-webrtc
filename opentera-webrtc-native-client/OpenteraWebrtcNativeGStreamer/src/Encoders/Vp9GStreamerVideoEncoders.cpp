@@ -93,7 +93,7 @@ void Vp9GStreamerVideoEncoder::populateCodecSpecificInfo(
 SoftwareVp9GStreamerVideoEncoder::SoftwareVp9GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
     : Vp9GStreamerVideoEncoder(
           parameters,
-          "vp9enc name=encoder",
+          "vp9enc name=encoder deadline=1",
           "target-bitrate",
           BitRateUnit::BitPerSec,
           "keyframe-max-dist")

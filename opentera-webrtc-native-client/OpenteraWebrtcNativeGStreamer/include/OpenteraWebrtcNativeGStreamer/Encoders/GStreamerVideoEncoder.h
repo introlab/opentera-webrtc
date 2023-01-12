@@ -34,9 +34,9 @@ namespace opentera
     {
         std::string m_mediaTypeCaps;
         std::string m_encoderPipeline;
-        std::string m_encoderBitratePropertyName;
-        BitRateUnit m_bitRatePropertyUnit;
-        std::string m_keyframeIntervalPropertyName;
+        std::string m_encoderBitRatePropertyName;
+        BitRateUnit m_encoderBitRatePropertyUnit;
+        std::string m_encoderKeyframeIntervalPropertyName;
         bool m_setPipelineStateToReadyOnPropertyChange;
 
         std::unique_ptr<GStreamerEncoderPipeline> m_gstEncoderPipeline;
@@ -55,9 +55,9 @@ namespace opentera
         GStreamerVideoEncoder(
             std::string mediaTypeCaps,
             std::string encoderPipeline,
-            std::string encoderBitratePropertyName,
-            BitRateUnit bitRatePropertyUnit,
-            std::string keyframeIntervalPropertyName,
+            std::string encoderBitRatePropertyName,
+            BitRateUnit encoderBitRatePropertyUnit,
+            std::string encoderKeyframeIntervalPropertyName,
             bool setPipelineStateToReadyOnPropertyChange = false);
         ~GStreamerVideoEncoder() override = default;
 

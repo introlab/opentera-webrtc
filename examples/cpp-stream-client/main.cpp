@@ -49,6 +49,8 @@ private:
                 exit(EXIT_FAILURE);
             }
 
+            auto frameDuration = chrono::microseconds(static_cast<int>(1e6 / cap.get(cv::CAP_PROP_FPS)));
+            auto frameTime = chrono::steady_clock::now();
             while(!m_stopped.load())
             {
                 cap.read(bgrImg);
@@ -60,6 +62,9 @@ private:
                 int64_t timestampUs =
                     chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now().time_since_epoch()).count();
                 sendFrame(bgrImg, timestampUs);
+
+                frameTime += frameDuration;
+                this_thread::sleep_until(frameTime);
             }
         }
     }
@@ -113,8 +118,7 @@ private:
 
             auto start = chrono::steady_clock::now();
             this_thread::sleep_for(SinAudioSourceFrameDuration - SinAudioSourceSleepBuffer);
-            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration)
-                ;
+            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration);
         }
     }
 };
@@ -137,7 +141,7 @@ int main(int argc, char* argv[])
     auto signalingServerConfiguration =
         SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
-    auto videoStreamConfiguration = VideoStreamConfiguration::create();
+    auto videoStreamConfiguration = VideoStreamConfiguration::create({VideoStreamCodec::VP8}, false, true);
     auto videoSource = make_shared<CvVideoCaptureVideoSource>(argv[1]);
     auto audioSource = make_shared<SinAudioSource>();
     StreamClient
@@ -198,7 +202,8 @@ int main(int argc, char* argv[])
             cout << "\t" << error << endl;
         });
 
-    client.setOnAddRemoteStream(
+    // TODO remove comments
+    /*client.setOnAddRemoteStream(
         [](const Client& client)
         {
             // This callback is called from the internal client thread.
@@ -219,8 +224,8 @@ int main(int argc, char* argv[])
             // cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
-        });
-    client.setOnAudioFrameReceived(
+        });*/
+    /*client.setOnAudioFrameReceived(
         [](const Client& client,
            const void* audioData,
            int bitsPerSample,
@@ -241,7 +246,7 @@ int main(int argc, char* argv[])
             cout << "OnMixedAudioFrameReceived:" << endl;
             cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
             cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
-        });
+        });*/
 
     client.connect();
 

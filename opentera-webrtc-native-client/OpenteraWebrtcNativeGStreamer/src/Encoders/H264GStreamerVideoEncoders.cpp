@@ -60,15 +60,15 @@ H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
 string H264GStreamerVideoEncoder::mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
-    if (it == parameters.end() || it->second.find(BaselineProfileLevelIdPrefix))
+    if (it == parameters.end() || it->second.find(BaselineProfileLevelIdPrefix) == 0)
     {
         return "video/x-h264,alignment=au,stream-format=byte-stream,profile=baseline";
     }
-    else if (it->second.find(MainProfileLevelIdPrefix))
+    else if (it->second.find(MainProfileLevelIdPrefix) == 0)
     {
         return "video/x-h264,alignment=au,stream-format=byte-stream,profile=main";
     }
-    else if (it->second.find(High444ProfileLevelIdPrefix))
+    else if (it->second.find(High444ProfileLevelIdPrefix) == 0)
     {
         return "video/x-h264,alignment=au,stream-format=byte-stream,profile=high-4:4:4";
     }
@@ -106,7 +106,7 @@ bool H264GStreamerVideoEncoder::isProfileBaselineOrMainOrHigh444(const webrtc::S
     else
     {
         return it->second.find(BaselineProfileLevelIdPrefix) == 0 || it->second.find(MainProfileLevelIdPrefix) == 0 ||
-               it->second.find(High444ProfileLevelIdPrefix);
+               it->second.find(High444ProfileLevelIdPrefix) == 0;
     }
 }
 
@@ -131,7 +131,7 @@ SoftwareH264GStreamerVideoEncoder::SoftwareH264GStreamerVideoEncoder(
     const webrtc::SdpVideoFormat::Parameters& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
-          "x264enc name=encoder",
+          "x264enc name=encoder tune=zerolatency ! h264parse",
           "bitrate",
           BitRateUnit::KBitPerSec,
           "key-int-max")

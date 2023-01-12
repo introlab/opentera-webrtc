@@ -40,7 +40,7 @@ using namespace opentera::internal;
 using namespace std;
 
 GStreamerEncoderPipeline::GStreamerEncoderPipeline()
-    : m_bitRatePropertyUnit(BitRateUnit::BitPerSec),
+    : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec),
       m_setPipelineStateToReadyOnPropertyChange(false)
 {
 }
@@ -79,7 +79,7 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
     }
 
     gint scaledBitRate = 0;
-    switch (m_bitRatePropertyUnit)
+    switch (m_encoderBitRatePropertyUnit)
     {
         case BitRateUnit::BitPerSec:
             scaledBitRate = static_cast<gint>(bitRate);
@@ -89,7 +89,7 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
             break;
     }
 
-    setEncoderProperty(m_encoderBitratePropertyName, scaledBitRate);
+    setEncoderProperty(m_encoderBitRatePropertyName, scaledBitRate);
 
     if (m_setPipelineStateToReadyOnPropertyChange)
     {
@@ -109,7 +109,7 @@ void GStreamerEncoderPipeline::setKeyframeInterval(int interval)
         gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_READY);
     }
 
-    setEncoderProperty(m_encoderBitratePropertyName, static_cast<guint>(interval));
+    setEncoderProperty(m_encoderKeyframeIntervalPropertyName, static_cast<guint>(interval));
 
     if (m_setPipelineStateToReadyOnPropertyChange)
     {
@@ -124,20 +124,20 @@ GstFlowReturn GStreamerEncoderPipeline::pushSample(gst::unique_ptr<GstSample>& s
 
 gst::unique_ptr<GstSample> GStreamerEncoderPipeline::tryPullSample()
 {
-    return gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(m_sink.get()), GST_SECOND / 10));
+    return gst::unique_from_ptr(gst_app_sink_try_pull_sample(GST_APP_SINK(m_sink.get()), GST_SECOND));
 }
 
 int32_t GStreamerEncoderPipeline::initialize(
-    string encoderBitratePropertyName,
-    BitRateUnit bitRatePropertyUnit,
-    string keyframeIntervalPropertyName,
+    string encoderBitRatePropertyName,
+    BitRateUnit encoderBitRatePropertyUnit,
+    string encoderKeyframeIntervalPropertyName,
     bool setPipelineStateToReadyOnPropertyChange,
     string_view capsStr,
     string_view encoderPipeline)
 {
-    m_encoderBitratePropertyName = move(encoderBitratePropertyName);
-    m_bitRatePropertyUnit = bitRatePropertyUnit;
-    m_keyframeIntervalPropertyName = move(keyframeIntervalPropertyName);
+    m_encoderBitRatePropertyName = move(encoderBitRatePropertyName);
+    m_encoderBitRatePropertyUnit = encoderBitRatePropertyUnit;
+    m_encoderKeyframeIntervalPropertyName = move(encoderKeyframeIntervalPropertyName);
     m_setPipelineStateToReadyOnPropertyChange = setPipelineStateToReadyOnPropertyChange;
 
     if (m_pipeline)
@@ -155,6 +155,13 @@ int32_t GStreamerEncoderPipeline::initialize(
         " ! queue"
         " ! appsink name=sink sync=false";
 
+    // TODO remove
+    /*string pipelineStr =
+        string("appsrc name=src emit-signals=true is-live=true format=time caps=video/x-raw,format=I420") +
+        " ! videoconvert ! autovideosink"
+        " videotestsrc ! vp9enc name=encoder deadline=1 !  appsink name=sink sync=false";*/
+
+    GST_WARNING("Pipeline: %s", pipelineStr.c_str()); // TODO change to INFO
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
     if (m_error)
     {

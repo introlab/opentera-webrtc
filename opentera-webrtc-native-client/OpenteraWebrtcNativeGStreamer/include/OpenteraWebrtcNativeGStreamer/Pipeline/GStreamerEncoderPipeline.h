@@ -33,10 +33,10 @@ namespace opentera
 
     class GStreamerEncoderPipeline
     {
-        std::string m_encoderBitratePropertyName;
-        BitRateUnit m_bitRatePropertyUnit;
+        std::string m_encoderBitRatePropertyName;
+        BitRateUnit m_encoderBitRatePropertyUnit;
+        std::string m_encoderKeyframeIntervalPropertyName;
         bool m_setPipelineStateToReadyOnPropertyChange;
-        std::string m_keyframeIntervalPropertyName;
 
         gst::unique_ptr<GstPipeline> m_pipeline;
         gst::unique_ptr<GstElement> m_src;
@@ -57,7 +57,7 @@ namespace opentera
         gst::unique_ptr<GstSample> tryPullSample();
 
         int32_t initialize(
-            std::string encoderBitratePropertyName,
+            std::string encoderBitRatePropertyName,
             BitRateUnit bitRatePropertyUnit,
             std::string keyframeIntervalPropertyName,
             bool setPipelineStateToReadyOnPropertyChange,

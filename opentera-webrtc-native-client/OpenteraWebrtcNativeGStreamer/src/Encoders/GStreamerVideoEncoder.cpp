@@ -39,15 +39,15 @@ using namespace std;
 GStreamerVideoEncoder::GStreamerVideoEncoder(
     string mediaTypeCaps,
     string encoderPipeline,
-    string encoderBitratePropertyName,
-    BitRateUnit bitRatePropertyUnit,
-    string keyframeIntervalPropertyName,
+    string encoderBitRatePropertyName,
+    BitRateUnit encoderBitRatePropertyUnit,
+    string encoderKeyframeIntervalPropertyName,
     bool setPipelineStateToReadyOnPropertyChange)
     : m_mediaTypeCaps(move(mediaTypeCaps)),
       m_encoderPipeline(move(encoderPipeline)),
-      m_encoderBitratePropertyName(move(encoderBitratePropertyName)),
-      m_bitRatePropertyUnit(bitRatePropertyUnit),
-      m_keyframeIntervalPropertyName(move(keyframeIntervalPropertyName)),
+      m_encoderBitRatePropertyName(move(encoderBitRatePropertyName)),
+      m_encoderBitRatePropertyUnit(encoderBitRatePropertyUnit),
+      m_encoderKeyframeIntervalPropertyName(move(encoderKeyframeIntervalPropertyName)),
       m_setPipelineStateToReadyOnPropertyChange(setPipelineStateToReadyOnPropertyChange),
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
@@ -78,6 +78,7 @@ int GStreamerVideoEncoder::InitEncode(const webrtc::VideoCodec* codecSettings, c
         return WEBRTC_VIDEO_CODEC_ERR_SIMULCAST_PARAMETERS_NOT_SUPPORTED;
     }
 
+    GST_WARNING("Initializing encoder (%s)", GetEncoderInfo().implementation_name.c_str()); // TODO switch to info
     if (!initializePipeline())
     {
         return WEBRTC_VIDEO_CODEC_ERROR;
@@ -140,6 +141,10 @@ int32_t GStreamerVideoEncoder::Encode(const webrtc::VideoFrame& frame, const vec
     }
 
     auto sample = toGstSample(frame);
+    if (!sample)
+    {
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
     m_gstEncoderPipeline->pushSample(sample);
 
     auto encodedSample = m_gstEncoderPipeline->tryPullSample();
@@ -182,9 +187,9 @@ bool GStreamerVideoEncoder::initializePipeline()
 {
     m_gstEncoderPipeline = make_unique<GStreamerEncoderPipeline>();
     return m_gstEncoderPipeline->initialize(
-               m_encoderBitratePropertyName,
-               m_bitRatePropertyUnit,
-               m_keyframeIntervalPropertyName,
+               m_encoderBitRatePropertyName,
+               m_encoderBitRatePropertyUnit,
+               m_encoderKeyframeIntervalPropertyName,
                m_setPipelineStateToReadyOnPropertyChange,
                m_mediaTypeCaps,
                m_encoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
@@ -201,6 +206,7 @@ gst::unique_ptr<GstSample> GStreamerVideoEncoder::toGstSample(const webrtc::Vide
     gst::unique_ptr<GstBuffer> buffer = m_gstreamerBufferPool.acquireBuffer();
     if (!buffer)
     {
+        GST_ERROR("No buffer available");
         return nullptr;
     }
 

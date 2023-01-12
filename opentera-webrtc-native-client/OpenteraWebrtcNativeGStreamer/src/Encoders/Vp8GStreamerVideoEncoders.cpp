@@ -70,7 +70,7 @@ void Vp8GStreamerVideoEncoder::populateCodecSpecificInfo(
 
 
 SoftwareVp8GStreamerVideoEncoder::SoftwareVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
-    : Vp8GStreamerVideoEncoder("vp8enc name=encoder", "target-bitrate", BitRateUnit::BitPerSec, "keyframe-max-dist")
+    : Vp8GStreamerVideoEncoder("vp8enc name=encoder deadline=1", "target-bitrate", BitRateUnit::BitPerSec, "keyframe-max-dist")
 {
 }
 
