@@ -90,6 +90,10 @@ namespace opentera
             GstStructure* structurePtr;
             g_object_get(m_encoder.get(), parentName.c_str(), &structurePtr, nullptr);
             auto structure = gst::unique_from_ptr(structurePtr);
+            if (!structure)
+            {
+                structure = gst::unique_from_ptr(gst_structure_new_empty(parentName.c_str()));
+            }
 
             gst_structure_set(structure.get(), childName.c_str(), value, nullptr);
             g_object_set(m_encoder.get(), parentName.c_str(), structure.get(), nullptr);
