@@ -41,7 +41,7 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     set(BUILD_opencv_stitching OFF)
     set(BUILD_opencv_ts OFF)
     set(BUILD_opencv_video OFF)
-    set(BUILD_opencv_videoio OFF)
+    set(BUILD_opencv_videoio ON)
 
     set(BUILD_JAVA OFF)
     set(BUILD_OBJC OFF)

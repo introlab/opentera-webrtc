@@ -17,6 +17,7 @@ add_executable(CppStreamClient main.cpp)
 
 target_link_libraries(CppStreamClient
     OpenteraWebrtcNativeClient
+    opencv_videoio
     opencv_highgui
 )
 
@@ -27,7 +28,7 @@ if (NOT WIN32)
 endif()
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
-    add_dependencies(CppStreamClient opencv_highgui)
+    add_dependencies(CppStreamClient opencv_highgui opencv_videoio)
 endif()
 
 set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 17)

@@ -1,32 +1,34 @@
 #include <OpenteraWebrtcNativeClient/StreamClient.h>
 
 #include <opencv2/core.hpp>
+#include <opencv2/videoio.hpp>
 #include <opencv2/highgui.hpp>
 
 #include <cmath>
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <cstdlib>
 
 using namespace opentera;
 using namespace std;
 
-constexpr chrono::milliseconds NoiseVideoSourceFrameDuration = 100ms;
-
-class NoiseVideoSource : public VideoSource
+class CvVideoCaptureVideoSource : public VideoSource
 {
     atomic_bool m_stopped;
     thread m_thread;
+    string m_path;
 
 public:
-    NoiseVideoSource()
+    CvVideoCaptureVideoSource(string path)
         : VideoSource(VideoSourceConfiguration::create(false, true)),
           m_stopped(false),
-          m_thread(&NoiseVideoSource::run, this)
+          m_thread(&CvVideoCaptureVideoSource::run, this),
+          m_path(move(path))
     {
     }
 
-    ~NoiseVideoSource() override
+    ~CvVideoCaptureVideoSource() override
     {
         m_stopped.store(true);
         m_thread.join();
@@ -35,14 +37,30 @@ public:
 private:
     void run()
     {
-        cv::Mat bgrImg(480, 640, CV_8UC3, cv::Scalar(0, 0, 255));
+        cv::VideoCapture cap;
+        cv::Mat bgrImg;
+
         while (!m_stopped.load())
         {
-            cv::randu(bgrImg, cv::Scalar(0, 0, 0), cv::Scalar(255, 255, 255));
-            this_thread::sleep_for(NoiseVideoSourceFrameDuration);
-            int64_t timestampUs =
-                chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now().time_since_epoch()).count();
-            sendFrame(bgrImg, timestampUs);
+            cap.open(m_path);
+            if (!cap.isOpened())
+            {
+                cout << "Invalid video file" << endl;
+                exit(EXIT_FAILURE);
+            }
+
+            while(!m_stopped.load())
+            {
+                cap.read(bgrImg);
+                if (bgrImg.empty())
+                {
+                    break;
+                }
+
+                int64_t timestampUs =
+                    chrono::duration_cast<chrono::microseconds>(chrono::steady_clock::now().time_since_epoch()).count();
+                sendFrame(bgrImg, timestampUs);
+            }
         }
     }
 };
@@ -103,6 +121,12 @@ private:
 
 int main(int argc, char* argv[])
 {
+    if (argc != 2)
+    {
+        cout << "Usage: CppStreamClient video_path" << endl;
+        return EXIT_FAILURE;
+    }
+
     vector<IceServer> iceServers;
     if (!IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers))
     {
@@ -114,7 +138,7 @@ int main(int argc, char* argv[])
         SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto videoStreamConfiguration = VideoStreamConfiguration::create();
-    auto videoSource = make_shared<NoiseVideoSource>();
+    auto videoSource = make_shared<CvVideoCaptureVideoSource>(argv[1]);
     auto audioSource = make_shared<SinAudioSource>();
     StreamClient
         client(signalingServerConfiguration, webrtcConfiguration, videoStreamConfiguration, videoSource, audioSource);

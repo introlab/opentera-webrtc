@@ -19,6 +19,7 @@ else ()
     set(OpenCV_INCLUDE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/videoio/include
             ${_OpenCV_include_dirs_examples}
             ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
             )
