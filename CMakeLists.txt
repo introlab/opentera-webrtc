@@ -37,6 +37,7 @@ set(
     "3"
     CACHE STRING
     "Specific Python version to use"
+    FORCE
 )
 
 find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
