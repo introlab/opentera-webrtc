@@ -51,7 +51,7 @@ private:
 
             auto frameDuration = chrono::microseconds(static_cast<int>(1e6 / cap.get(cv::CAP_PROP_FPS)));
             auto frameTime = chrono::steady_clock::now();
-            while(!m_stopped.load())
+            while (!m_stopped.load())
             {
                 cap.read(bgrImg);
                 if (bgrImg.empty())
@@ -118,7 +118,8 @@ private:
 
             auto start = chrono::steady_clock::now();
             this_thread::sleep_for(SinAudioSourceFrameDuration - SinAudioSourceSleepBuffer);
-            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration);
+            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration)
+                ;
         }
     }
 };

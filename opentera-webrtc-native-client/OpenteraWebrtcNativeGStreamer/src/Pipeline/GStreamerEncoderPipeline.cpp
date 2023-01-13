@@ -39,10 +39,7 @@ using namespace opentera;
 using namespace opentera::internal;
 using namespace std;
 
-GStreamerEncoderPipeline::GStreamerEncoderPipeline()
-    : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec)
-{
-}
+GStreamerEncoderPipeline::GStreamerEncoderPipeline() : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec) {}
 
 GStreamerEncoderPipeline::~GStreamerEncoderPipeline()
 {
