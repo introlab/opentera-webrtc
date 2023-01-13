@@ -6,6 +6,7 @@
 #include <gst/app/gstappsink.h>
 
 #include <string>
+#include <mutex>
 #include <shared_mutex>
 #include <unordered_map>
 
