@@ -80,6 +80,6 @@ Note that VP9 is under development, see issue [117](https://github.com/introlab/
 
 ## Sponsor
 
-<img src="images/IntRoLab.png" alt="IntRoLab Logo" style="background-color:white">
+![IntRoLab](images/IntRoLab.png)
 
 [IntRoLab - Intelligent / Interactive / Integrated / Interdisciplinary Robot Lab](https://introlab.3it.usherbrooke.ca)
