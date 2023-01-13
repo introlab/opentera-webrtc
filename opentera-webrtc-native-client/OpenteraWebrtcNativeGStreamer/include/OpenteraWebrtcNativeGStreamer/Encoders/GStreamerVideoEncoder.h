@@ -39,7 +39,7 @@ namespace opentera
         std::string m_encoderBitRatePropertyName;
         BitRateUnit m_encoderBitRatePropertyUnit;
         std::string m_encoderKeyframeIntervalPropertyName;
-        bool m_resetPipelineOnPropertyChange;
+        bool m_setPipelineStateToReadyOnPropertyChange;
 
         std::unique_ptr<GStreamerEncoderPipeline> m_gstEncoderPipeline;
         GStreamerBufferPool m_gstreamerBufferPool;
@@ -63,7 +63,7 @@ namespace opentera
             std::string encoderBitRatePropertyName,
             BitRateUnit encoderBitRatePropertyUnit,
             std::string encoderKeyframeIntervalPropertyName,
-            bool resetPipelineOnPropertyChange = false);
+            bool setPipelineStateToReadyOnPropertyChange = false);
         ~GStreamerVideoEncoder() override = default;
 
         DECLARE_NOT_COPYABLE(GStreamerVideoEncoder);

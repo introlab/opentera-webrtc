@@ -41,7 +41,7 @@ using namespace std;
 
 GStreamerEncoderPipeline::GStreamerEncoderPipeline()
     : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec),
-      m_resetPipelineOnPropertyChange(false)
+      m_setPipelineStateToReadyOnPropertyChange(false)
 {
 }
 
@@ -65,11 +65,16 @@ void GStreamerEncoderPipeline::forceKeyFrame()
             1));
 }
 
-int32_t GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
+void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
 {
     if (!m_encoder)
     {
-        return WEBRTC_VIDEO_CODEC_ERROR;
+        return;
+    }
+
+    if (m_setPipelineStateToReadyOnPropertyChange)
+    {
+        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_READY);
     }
 
     gint scaledBitRate = 0;
@@ -83,60 +88,31 @@ int32_t GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
             break;
     }
 
-    if (!m_resetPipelineOnPropertyChange)
-    {
-        setEncoderProperty(m_encoderBitRatePropertyName, scaledBitRate);
-    }
-    else
-    {
-        if (initializePipelineWithoutChangingState() != WEBRTC_VIDEO_CODEC_OK)
-        {
-            GST_ERROR_OBJECT(m_pipeline.get(), "Could not reinitialize the pipeline.");
-            return WEBRTC_VIDEO_CODEC_ERROR;
-        }
-        setEncoderProperty(m_encoderBitRatePropertyName, scaledBitRate);
-        if (gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
-        {
-            GST_ERROR_OBJECT(m_pipeline.get(), "Could not set state to PLAYING.");
-            return WEBRTC_VIDEO_CODEC_ERROR;
-        }
-    }
+    setEncoderProperty(m_encoderBitRatePropertyName, scaledBitRate);
 
-    if (m_resetPipelineOnPropertyChange)
+    if (m_setPipelineStateToReadyOnPropertyChange)
     {
         gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING);
     }
-
-    return WEBRTC_VIDEO_CODEC_OK;
 }
 
-int32_t GStreamerEncoderPipeline::setKeyframeInterval(int interval)
+void GStreamerEncoderPipeline::setKeyframeInterval(int interval)
 {
     if (!m_encoder)
     {
-        return WEBRTC_VIDEO_CODEC_ERROR;
+        return;
+    }
+    if (m_setPipelineStateToReadyOnPropertyChange)
+    {
+        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_READY);
     }
 
-    if (!m_resetPipelineOnPropertyChange)
-    {
-        setEncoderProperty(m_encoderKeyframeIntervalPropertyName, static_cast<guint>(interval));
-    }
-    else
-    {
-        if (initializePipelineWithoutChangingState() != WEBRTC_VIDEO_CODEC_OK)
-        {
-            GST_ERROR_OBJECT(m_pipeline.get(), "Could not reinitialize the pipeline.");
-            return WEBRTC_VIDEO_CODEC_ERROR;
-        }
-        setEncoderProperty(m_encoderKeyframeIntervalPropertyName, static_cast<guint>(interval));
-        if (gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
-        {
-            GST_ERROR_OBJECT(m_pipeline.get(), "Could not set state to PLAYING.");
-            return WEBRTC_VIDEO_CODEC_ERROR;
-        }
-    }
+    setEncoderProperty(m_encoderKeyframeIntervalPropertyName, static_cast<guint>(interval));
 
-    return WEBRTC_VIDEO_CODEC_OK;
+    if (m_setPipelineStateToReadyOnPropertyChange)
+    {
+        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING);
+    }
 }
 
 GstFlowReturn GStreamerEncoderPipeline::pushSample(gst::unique_ptr<GstSample>& sample)
@@ -153,34 +129,15 @@ int32_t GStreamerEncoderPipeline::initialize(
     string encoderBitRatePropertyName,
     BitRateUnit encoderBitRatePropertyUnit,
     string encoderKeyframeIntervalPropertyName,
-    bool resetPipelineOnPropertyChange,
-    string capsStr,
-    string encoderPipeline)
+    bool setPipelineStateToReadyOnPropertyChange,
+    string_view capsStr,
+    string_view encoderPipeline)
 {
     m_encoderBitRatePropertyName = move(encoderBitRatePropertyName);
     m_encoderBitRatePropertyUnit = encoderBitRatePropertyUnit;
     m_encoderKeyframeIntervalPropertyName = move(encoderKeyframeIntervalPropertyName);
-    m_resetPipelineOnPropertyChange = resetPipelineOnPropertyChange;
-    m_capsStr = move(capsStr);
-    m_encoderPipeline = move(encoderPipeline);
+    m_setPipelineStateToReadyOnPropertyChange = setPipelineStateToReadyOnPropertyChange;
 
-    initializePipelineWithoutChangingState();
-
-    if (gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
-    {
-        GST_ERROR_OBJECT(m_pipeline.get(), "Could not set state to PLAYING.");
-        return WEBRTC_VIDEO_CODEC_ERROR;
-    }
-
-#ifdef DEBUG_GSTREAMER
-    GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
-#endif
-
-    return WEBRTC_VIDEO_CODEC_OK;
-}
-
-int32_t GStreamerEncoderPipeline::initializePipelineWithoutChangingState()
-{
     if (m_pipeline)
     {
         disconnectBusMessageCallback(m_pipeline);
@@ -189,9 +146,9 @@ int32_t GStreamerEncoderPipeline::initializePipelineWithoutChangingState()
     string pipelineStr =
         string("appsrc name=src emit-signals=true is-live=true format=time caps=video/x-raw,format=I420") +
 
-        " ! queue ! " + string(m_encoderPipeline) +
+        " ! queue ! " + string(encoderPipeline) +
 
-        " ! capsfilter caps=" + string(m_capsStr) +
+        " ! capsfilter caps=" + string(capsStr) +
 
         " ! queue"
         " ! appsink name=sink sync=false";
@@ -238,6 +195,16 @@ int32_t GStreamerEncoderPipeline::initializePipelineWithoutChangingState()
     }
 
     connectBusMessageCallback(m_pipeline);
+
+    if (gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING) == GST_STATE_CHANGE_FAILURE)
+    {
+        GST_ERROR_OBJECT(m_pipeline.get(), "Could not set state to PLAYING.");
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+
+#ifdef DEBUG_GSTREAMER
+    GST_DEBUG_BIN_TO_DOT_FILE(GST_BIN(pipeline()), GST_DEBUG_GRAPH_SHOW_ALL, "pipeline");
+#endif
 
     return WEBRTC_VIDEO_CODEC_OK;
 }
