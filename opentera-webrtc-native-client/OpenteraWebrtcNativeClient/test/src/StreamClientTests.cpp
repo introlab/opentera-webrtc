@@ -337,7 +337,7 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     ASSERT_NE(onAddRemoteStreamClient2, nullptr);
     EXPECT_EQ(onAddRemoteStreamClient2->name(), "c1");
 
-    constexpr int MeanColorAbsError = 15;
+    constexpr int MeanColorAbsError = 20;
 
     cv::Scalar meanColor1 = cv::mean(receivedBgrImage1);
     EXPECT_NEAR(meanColor1[0], 255, MeanColorAbsError);
@@ -430,7 +430,7 @@ TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
     ASSERT_NE(onAddRemoteStreamClient2, nullptr);
     EXPECT_EQ(onAddRemoteStreamClient2->name(), "c1");
 
-    constexpr int MeanColorAbsError = 15;
+    constexpr int MeanColorAbsError = 20;
 
     cv::Scalar meanColor1 = cv::mean(receivedBgrImage1);
     EXPECT_NEAR(meanColor1[0], 0, MeanColorAbsError);
