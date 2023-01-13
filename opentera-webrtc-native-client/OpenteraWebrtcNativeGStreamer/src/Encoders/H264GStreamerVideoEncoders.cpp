@@ -36,9 +36,10 @@ H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
     string encoderPipeline,
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
-    string keyframeIntervalPropertyName)
+    string keyframeIntervalPropertyName,
+    const char* additionalMediaTypeCaps)
     : GStreamerVideoEncoder(
-          mediaTypeCaps(parameters),
+          mediaTypeCaps(parameters) + additionalMediaTypeCaps,
           move(encoderPipeline),
           move(encoderBitratePropertyName),
           bitRatePropertyUnit,
@@ -251,7 +252,8 @@ V4l2H264GStreamerVideoEncoder::V4l2H264GStreamerVideoEncoder(const webrtc::SdpVi
           "v4l2h264enc name=encoder ! h264parse",
           "extra-controls.video_bitrate",
           BitRateUnit::BitPerSec,
-          "extra-controls.video_gop_size")
+          "extra-controls.video_gop_size",
+          ",level=(string)4.1")
 {
 }
 
