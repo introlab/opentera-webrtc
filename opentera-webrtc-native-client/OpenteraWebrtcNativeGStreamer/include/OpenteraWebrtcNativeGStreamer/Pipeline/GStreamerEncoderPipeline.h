@@ -63,43 +63,8 @@ namespace opentera
             std::string_view encoderPipeline);
 
     private:
-        template<class T>
-        void setEncoderProperty(const std::string& name, T value);
+        void setEncoderProperty(const std::string& name, guint value);
     };
-
-    template<class T>
-    void GStreamerEncoderPipeline::setEncoderProperty(const std::string& name, T value)
-    {
-        auto dotPosition = name.find('.');
-        auto valueString = std::to_string(value);
-
-        if (dotPosition == std::string::npos)
-        {
-            GST_INFO("Set encoder property - %s=%s", name.c_str(), valueString.c_str());
-            g_object_set(m_encoder.get(), name.c_str(), value, nullptr);
-        }
-        else
-        {
-            // TODO test
-            std::string parentName = name.substr(0, dotPosition);
-            std::string childName = name.substr(dotPosition + 1);
-            GST_INFO("Set encoder property - %s.%s=%s", parentName.c_str(), childName.c_str(), valueString.c_str());
-
-            GstStructure* structure;
-            g_object_get(m_encoder.get(), parentName.c_str(), &structure, nullptr);
-            if (!structure)
-            {
-                structure = gst_structure_new_empty(parentName.c_str());
-            }
-
-            gst_structure_set(structure, childName.c_str(), value, nullptr);
-            g_object_set(m_encoder.get(), parentName.c_str(), structure, nullptr);
-
-            gchar* parentValues = gst_structure_to_string(structure);
-            GST_INFO("Parent values - %s", parentValues);
-            g_free(parentValues);
-        }
-    }
 }
 
 #endif

@@ -234,7 +234,7 @@ bool TegraH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVid
 string TegraH264GStreamerVideoEncoder::profileFromParameters(const webrtc::SdpVideoFormat::Parameters& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
-    if (it != parameters.end() && it->second.find(MainProfileLevelIdPrefix))
+    if (it != parameters.end() && it->second.find(MainProfileLevelIdPrefix) == 0)
     {
         return "2";
     }

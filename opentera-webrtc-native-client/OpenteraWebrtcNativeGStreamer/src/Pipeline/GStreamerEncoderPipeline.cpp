@@ -71,14 +71,14 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
         return;
     }
 
-    gint scaledBitRate = 0;
+    guint scaledBitRate = 0;
     switch (m_encoderBitRatePropertyUnit)
     {
         case BitRateUnit::BitPerSec:
-            scaledBitRate = static_cast<gint>(bitRate);
+            scaledBitRate = static_cast<guint>(bitRate);
             break;
         case BitRateUnit::KBitPerSec:
-            scaledBitRate = static_cast<gint>(round(static_cast<float>(bitRate) / 1000.f));
+            scaledBitRate = static_cast<guint>(round(static_cast<float>(bitRate) / 1000.f));
             break;
     }
 
@@ -185,4 +185,39 @@ int32_t GStreamerEncoderPipeline::initialize(
 #endif
 
     return WEBRTC_VIDEO_CODEC_OK;
+}
+
+void GStreamerEncoderPipeline::setEncoderProperty(const std::string& name, guint value)
+{
+    auto dotPosition = name.find('.');
+    auto valueString = std::to_string(value);
+
+    if (dotPosition == std::string::npos)
+    {
+        GST_INFO("Set encoder property - %s=%s", name.c_str(), valueString.c_str());
+        g_object_set(m_encoder.get(), name.c_str(), value, nullptr);
+    }
+    else
+    {
+        // TODO test
+        std::string parentName = name.substr(0, dotPosition);
+        std::string childName = name.substr(dotPosition + 1);
+        GST_INFO("Set encoder property - %s.%s=%s", parentName.c_str(), childName.c_str(), valueString.c_str());
+
+        GstStructure* structureRaw;
+        g_object_get(m_encoder.get(), parentName.c_str(), &structureRaw, nullptr);
+
+        if (!structureRaw)
+        {
+            structureRaw = gst_structure_new_empty(parentName.c_str());
+        }
+        auto structure = gst::unique_from_ptr(structureRaw);
+
+        gst_structure_set(structure.get(), childName.c_str(), G_TYPE_UINT, value, nullptr);
+        g_object_set(m_encoder.get(), parentName.c_str(), structure.get(), nullptr);
+
+        gchar* parentValues = gst_structure_to_string(structure.get());
+        GST_INFO("Parent values - %s", parentValues);
+        g_free(parentValues);
+    }
 }
