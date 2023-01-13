@@ -36,7 +36,6 @@ namespace opentera
         std::string m_encoderBitRatePropertyName;
         BitRateUnit m_encoderBitRatePropertyUnit;
         std::string m_encoderKeyframeIntervalPropertyName;
-        bool m_setPipelineStateToReadyOnPropertyChange;
 
         gst::unique_ptr<GstPipeline> m_pipeline;
         gst::unique_ptr<GstElement> m_src;
@@ -60,7 +59,6 @@ namespace opentera
             std::string encoderBitRatePropertyName,
             BitRateUnit bitRatePropertyUnit,
             std::string keyframeIntervalPropertyName,
-            bool setPipelineStateToReadyOnPropertyChange,
             std::string_view capsStr,
             std::string_view encoderPipeline);
 

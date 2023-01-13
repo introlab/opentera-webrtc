@@ -41,14 +41,12 @@ GStreamerVideoEncoder::GStreamerVideoEncoder(
     string encoderPipeline,
     string encoderBitRatePropertyName,
     BitRateUnit encoderBitRatePropertyUnit,
-    string encoderKeyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    string encoderKeyframeIntervalPropertyName)
     : m_mediaTypeCaps(move(mediaTypeCaps)),
       m_encoderPipeline(move(encoderPipeline)),
       m_encoderBitRatePropertyName(move(encoderBitRatePropertyName)),
       m_encoderBitRatePropertyUnit(encoderBitRatePropertyUnit),
       m_encoderKeyframeIntervalPropertyName(move(encoderKeyframeIntervalPropertyName)),
-      m_setPipelineStateToReadyOnPropertyChange(setPipelineStateToReadyOnPropertyChange),
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
       m_imageReadyCb{nullptr},
@@ -207,7 +205,6 @@ bool GStreamerVideoEncoder::initializePipeline()
                m_encoderBitRatePropertyName,
                m_encoderBitRatePropertyUnit,
                m_encoderKeyframeIntervalPropertyName,
-               m_setPipelineStateToReadyOnPropertyChange,
                m_mediaTypeCaps,
                m_encoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
 }

@@ -32,8 +32,7 @@ namespace opentera
             std::string encoderPipeline,
             std::string encoderBitratePropertyName,
             BitRateUnit bitRatePropertyUnit,
-            std::string keyframeIntervalPropertyName,
-            bool setPipelineStateToReadyOnPropertyChange = false);
+            std::string keyframeIntervalPropertyName);
         ~H264GStreamerVideoEncoder() override = default;
 
         static std::string mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters);

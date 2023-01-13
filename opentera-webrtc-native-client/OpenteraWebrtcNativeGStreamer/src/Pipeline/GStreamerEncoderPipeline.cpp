@@ -40,8 +40,7 @@ using namespace opentera::internal;
 using namespace std;
 
 GStreamerEncoderPipeline::GStreamerEncoderPipeline()
-    : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec),
-      m_setPipelineStateToReadyOnPropertyChange(false)
+    : m_encoderBitRatePropertyUnit(BitRateUnit::BitPerSec)
 {
 }
 
@@ -72,11 +71,6 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
         return;
     }
 
-    if (m_setPipelineStateToReadyOnPropertyChange)
-    {
-        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_READY);
-    }
-
     gint scaledBitRate = 0;
     switch (m_encoderBitRatePropertyUnit)
     {
@@ -89,11 +83,6 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
     }
 
     setEncoderProperty(m_encoderBitRatePropertyName, scaledBitRate);
-
-    if (m_setPipelineStateToReadyOnPropertyChange)
-    {
-        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING);
-    }
 }
 
 void GStreamerEncoderPipeline::setKeyframeInterval(int interval)
@@ -102,17 +91,8 @@ void GStreamerEncoderPipeline::setKeyframeInterval(int interval)
     {
         return;
     }
-    if (m_setPipelineStateToReadyOnPropertyChange)
-    {
-        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_READY);
-    }
 
     setEncoderProperty(m_encoderKeyframeIntervalPropertyName, static_cast<guint>(interval));
-
-    if (m_setPipelineStateToReadyOnPropertyChange)
-    {
-        gst_element_set_state(GST_ELEMENT(m_pipeline.get()), GST_STATE_PLAYING);
-    }
 }
 
 GstFlowReturn GStreamerEncoderPipeline::pushSample(gst::unique_ptr<GstSample>& sample)
@@ -129,14 +109,12 @@ int32_t GStreamerEncoderPipeline::initialize(
     string encoderBitRatePropertyName,
     BitRateUnit encoderBitRatePropertyUnit,
     string encoderKeyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange,
     string_view capsStr,
     string_view encoderPipeline)
 {
     m_encoderBitRatePropertyName = move(encoderBitRatePropertyName);
     m_encoderBitRatePropertyUnit = encoderBitRatePropertyUnit;
     m_encoderKeyframeIntervalPropertyName = move(encoderKeyframeIntervalPropertyName);
-    m_setPipelineStateToReadyOnPropertyChange = setPipelineStateToReadyOnPropertyChange;
 
     if (m_pipeline)
     {

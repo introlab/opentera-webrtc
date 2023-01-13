@@ -26,15 +26,13 @@ Vp9GStreamerVideoEncoder::Vp9GStreamerVideoEncoder(
     string encoderPipeline,
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
-    string keyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    string keyframeIntervalPropertyName)
     : GStreamerVideoEncoder(
           mediaTypeCaps(parameters),
           move(encoderPipeline),
           move(encoderBitratePropertyName),
           bitRatePropertyUnit,
-          move(keyframeIntervalPropertyName),
-          setPipelineStateToReadyOnPropertyChange)
+          move(keyframeIntervalPropertyName))
 {
 }
 
@@ -131,8 +129,7 @@ TegraVp9GStreamerVideoEncoder::TegraVp9GStreamerVideoEncoder(const webrtc::SdpVi
           "nvvidconv ! nvv4l2vp9enc name=encoder",
           "bitrate",
           BitRateUnit::BitPerSec,
-          "iframeinterval",
-          true)
+          "iframeinterval")
 {
 }
 

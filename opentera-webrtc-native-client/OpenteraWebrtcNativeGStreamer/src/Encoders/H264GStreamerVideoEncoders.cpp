@@ -36,15 +36,13 @@ H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
     string encoderPipeline,
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
-    string keyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    string keyframeIntervalPropertyName)
     : GStreamerVideoEncoder(
           mediaTypeCaps(parameters),
           move(encoderPipeline),
           move(encoderBitratePropertyName),
           bitRatePropertyUnit,
-          move(keyframeIntervalPropertyName),
-          setPipelineStateToReadyOnPropertyChange)
+          move(keyframeIntervalPropertyName))
 {
     auto packetizationModeIt = parameters.find(cricket::kH264FmtpPacketizationMode);
     if (packetizationModeIt == parameters.end() || packetizationModeIt->second == "0")
@@ -204,8 +202,7 @@ TegraH264GStreamerVideoEncoder::TegraH264GStreamerVideoEncoder(const webrtc::Sdp
           "nvvidconv ! nvv4l2h264enc name=encoder profile=" + profileFromParameters(parameters) + " ! h264parse",
           "bitrate",
           BitRateUnit::BitPerSec,
-          "iframeinterval",
-          true)
+          "iframeinterval")
 {
 }
 
