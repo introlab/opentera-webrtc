@@ -68,7 +68,7 @@ bool gst::testEncoderDecoderPipeline(const string& encoderDecoderPipeline)
     }
 
     {
-        shared_lock lock(mutex);
+        unique_lock lock(mutex);
         bool ok = ::testEncoderDecoderPipeline(encoderDecoderPipeline);
         cache[encoderDecoderPipeline] = ok;
         return ok;

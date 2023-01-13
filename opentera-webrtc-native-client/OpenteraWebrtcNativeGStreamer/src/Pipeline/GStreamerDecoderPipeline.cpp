@@ -76,6 +76,7 @@ int32_t GStreamerDecoderPipeline::initialize(string_view capsStr, string_view de
                          " ! queue"
                          " ! appsink name=sink sync=false";
 
+    GST_INFO("Pipeline: %s", pipelineStr.c_str());
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
     if (m_error)
     {
