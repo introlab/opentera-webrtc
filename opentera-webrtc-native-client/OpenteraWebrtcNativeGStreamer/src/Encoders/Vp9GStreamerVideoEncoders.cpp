@@ -27,14 +27,14 @@ Vp9GStreamerVideoEncoder::Vp9GStreamerVideoEncoder(
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
     string keyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    bool resetPipelineOnPropertyChange)
     : GStreamerVideoEncoder(
           mediaTypeCaps(parameters),
           move(encoderPipeline),
           move(encoderBitratePropertyName),
           bitRatePropertyUnit,
           move(keyframeIntervalPropertyName),
-          setPipelineStateToReadyOnPropertyChange)
+          resetPipelineOnPropertyChange)
 {
 }
 

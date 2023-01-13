@@ -36,7 +36,9 @@ namespace opentera
         std::string m_encoderBitRatePropertyName;
         BitRateUnit m_encoderBitRatePropertyUnit;
         std::string m_encoderKeyframeIntervalPropertyName;
-        bool m_setPipelineStateToReadyOnPropertyChange;
+        bool m_resetPipelineOnPropertyChange;
+        std::string m_capsStr;
+        std::string m_encoderPipeline;
 
         gst::unique_ptr<GstPipeline> m_pipeline;
         gst::unique_ptr<GstElement> m_src;
@@ -50,8 +52,8 @@ namespace opentera
         ~GStreamerEncoderPipeline();
 
         void forceKeyFrame();
-        void setBitRate(uint32_t bitRate);
-        void setKeyframeInterval(int interval);
+        int32_t setBitRate(uint32_t bitRate);
+        int32_t setKeyframeInterval(int interval);
 
         GstFlowReturn pushSample(gst::unique_ptr<GstSample>& sample);
         gst::unique_ptr<GstSample> tryPullSample();
@@ -60,13 +62,15 @@ namespace opentera
             std::string encoderBitRatePropertyName,
             BitRateUnit bitRatePropertyUnit,
             std::string keyframeIntervalPropertyName,
-            bool setPipelineStateToReadyOnPropertyChange,
-            std::string_view capsStr,
-            std::string_view encoderPipeline);
+            bool resetPipelineOnPropertyChange,
+            std::string capsStr,
+            std::string encoderPipeline);
 
     private:
         template<class T>
         void setEncoderProperty(const std::string& name, T value);
+
+        int32_t initializePipelineWithoutChangingState();
     };
 
     template<class T>

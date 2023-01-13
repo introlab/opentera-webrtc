@@ -30,7 +30,7 @@ namespace opentera
             std::string encoderBitratePropertyName,
             BitRateUnit bitRatePropertyUnit,
             std::string keyframeIntervalPropertyName,
-            bool setPipelineStateToReadyOnPropertyChange = false);
+            bool resetPipelineOnPropertyChange = false);
         ~Vp8GStreamerVideoEncoder() override = default;
 
         static const char* mediaTypeCaps();

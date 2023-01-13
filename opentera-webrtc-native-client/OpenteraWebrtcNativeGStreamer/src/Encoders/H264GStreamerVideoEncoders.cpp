@@ -37,14 +37,14 @@ H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
     string keyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    bool resetPipelineOnPropertyChange)
     : GStreamerVideoEncoder(
           mediaTypeCaps(parameters),
           move(encoderPipeline),
           move(encoderBitratePropertyName),
           bitRatePropertyUnit,
           move(keyframeIntervalPropertyName),
-          setPipelineStateToReadyOnPropertyChange)
+          resetPipelineOnPropertyChange)
 {
     auto packetizationModeIt = parameters.find(cricket::kH264FmtpPacketizationMode);
     if (packetizationModeIt == parameters.end() || packetizationModeIt->second == "0")

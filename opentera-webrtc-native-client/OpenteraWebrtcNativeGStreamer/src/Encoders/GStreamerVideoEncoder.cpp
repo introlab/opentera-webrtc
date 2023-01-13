@@ -42,13 +42,13 @@ GStreamerVideoEncoder::GStreamerVideoEncoder(
     string encoderBitRatePropertyName,
     BitRateUnit encoderBitRatePropertyUnit,
     string encoderKeyframeIntervalPropertyName,
-    bool setPipelineStateToReadyOnPropertyChange)
+    bool resetPipelineOnPropertyChange)
     : m_mediaTypeCaps(move(mediaTypeCaps)),
       m_encoderPipeline(move(encoderPipeline)),
       m_encoderBitRatePropertyName(move(encoderBitRatePropertyName)),
       m_encoderBitRatePropertyUnit(encoderBitRatePropertyUnit),
       m_encoderKeyframeIntervalPropertyName(move(encoderKeyframeIntervalPropertyName)),
-      m_setPipelineStateToReadyOnPropertyChange(setPipelineStateToReadyOnPropertyChange),
+      m_resetPipelineOnPropertyChange(resetPipelineOnPropertyChange),
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
       m_imageReadyCb{nullptr},
@@ -80,12 +80,12 @@ int GStreamerVideoEncoder::InitEncode(const webrtc::VideoCodec* codecSettings, c
     }
 
     GST_WARNING("Initializing encoder (%s)", GetEncoderInfo().implementation_name.c_str()); // TODO switch to info
-    if (!initializePipeline())
+    if (!initializePipeline() ||
+        m_gstEncoderPipeline->setBitRate(codecSettings->startBitrate * 1000) != WEBRTC_VIDEO_CODEC_OK ||
+        m_gstEncoderPipeline->setKeyframeInterval(getKeyframeInterval(*codecSettings)) != WEBRTC_VIDEO_CODEC_OK)
     {
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
-    m_gstEncoderPipeline->setBitRate(codecSettings->startBitrate * 1000);
-    m_gstEncoderPipeline->setKeyframeInterval(getKeyframeInterval(*codecSettings));
 
     m_inputVideoInfo = gst::unique_from_ptr(gst_video_info_new());
     gst_video_info_set_format(
@@ -146,9 +146,9 @@ int32_t GStreamerVideoEncoder::Encode(const webrtc::VideoFrame& frame, const vec
         return WEBRTC_VIDEO_CODEC_OK;
     }
     auto newBitRate = m_newBitRate.exchange(absl::nullopt);
-    if (newBitRate.has_value())
+    if (newBitRate.has_value() && m_gstEncoderPipeline->setBitRate(*newBitRate) != WEBRTC_VIDEO_CODEC_OK)
     {
-        m_gstEncoderPipeline->setBitRate(*newBitRate);
+        return WEBRTC_VIDEO_CODEC_ERROR;
     }
 
     auto sample = toGstSample(frame);
@@ -207,7 +207,7 @@ bool GStreamerVideoEncoder::initializePipeline()
                m_encoderBitRatePropertyName,
                m_encoderBitRatePropertyUnit,
                m_encoderKeyframeIntervalPropertyName,
-               m_setPipelineStateToReadyOnPropertyChange,
+               m_resetPipelineOnPropertyChange,
                m_mediaTypeCaps,
                m_encoderPipeline) == WEBRTC_VIDEO_CODEC_OK;
 }
