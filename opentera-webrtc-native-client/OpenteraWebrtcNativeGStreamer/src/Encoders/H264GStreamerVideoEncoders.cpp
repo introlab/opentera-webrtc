@@ -119,10 +119,7 @@ void H264GStreamerVideoEncoder::populateCodecSpecificInfo(
     const webrtc::EncodedImage& encodedFrame)
 {
     codecSpecificInfo.codecType = webrtc::kVideoCodecH264;
-
     codecSpecificInfo.codecSpecific.H264.packetization_mode = m_packetizationMode;
-    // TODO update
-    // TODO add missing
 }
 
 

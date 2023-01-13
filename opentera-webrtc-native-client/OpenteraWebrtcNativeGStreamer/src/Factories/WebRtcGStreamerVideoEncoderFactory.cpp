@@ -146,7 +146,8 @@ void WebRtcGStreamerVideoEncoderFactory::addVp9Encoders(
 {
     auto VP9_CODEC_NAME = Vp9GStreamerVideoEncoder::codecName();
 
-    if (TegraVp9GStreamerVideoEncoder::isSupported())
+    // TODO Remove comments when VP9 works.
+    /*if (TegraVp9GStreamerVideoEncoder::isSupported())
     {
         m_encoderFactories[VP9_CODEC_NAME] = createEncoderFactory<TegraVp9GStreamerVideoEncoder>(HardwarePriority);
     }
@@ -161,6 +162,12 @@ void WebRtcGStreamerVideoEncoderFactory::addVp9Encoders(
         {
             m_encoderFactories[VP9_CODEC_NAME] = createBuiltinEncoderFactory(SoftwarePriority);
         }
+    }*/
+
+    // TODO Remove when VP9 works.
+    if (!useGStreamerSoftwareEncoder && builtinVideoEncoderFactorySupports(VP9_CODEC_NAME))
+    {
+        m_encoderFactories[VP9_CODEC_NAME] = createBuiltinEncoderFactory(SoftwarePriority);
     }
 }
 

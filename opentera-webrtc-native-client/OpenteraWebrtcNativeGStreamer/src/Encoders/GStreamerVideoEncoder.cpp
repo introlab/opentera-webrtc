@@ -77,7 +77,7 @@ int GStreamerVideoEncoder::InitEncode(const webrtc::VideoCodec* codecSettings, c
         return WEBRTC_VIDEO_CODEC_ERR_SIMULCAST_PARAMETERS_NOT_SUPPORTED;
     }
 
-    GST_WARNING("Initializing encoder (%s)", GetEncoderInfo().implementation_name.c_str()); // TODO switch to info
+    GST_INFO("Initializing encoder (%s)", GetEncoderInfo().implementation_name.c_str());
     if (!initializePipeline())
     {
         return WEBRTC_VIDEO_CODEC_ERROR;
@@ -167,8 +167,6 @@ int32_t GStreamerVideoEncoder::Encode(const webrtc::VideoFrame& frame, const vec
     {
         return WEBRTC_VIDEO_CODEC_ERROR;
     }
-
-    // TODO set fragmentation info if needed
 
     webrtc::CodecSpecificInfo codecSpecificInfo;
     populateCodecSpecificInfo(codecSpecificInfo, m_encodedFrame);

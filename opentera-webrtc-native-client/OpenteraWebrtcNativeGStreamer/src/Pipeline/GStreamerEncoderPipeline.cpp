@@ -131,13 +131,7 @@ int32_t GStreamerEncoderPipeline::initialize(
         " ! queue"
         " ! appsink name=sink sync=false";
 
-    // TODO remove
-    /*string pipelineStr =
-        string("appsrc name=src emit-signals=true is-live=true format=time caps=video/x-raw,format=I420") +
-        " ! videoconvert ! autovideosink"
-        " videotestsrc ! vp9enc name=encoder deadline=1 !  appsink name=sink sync=false";*/
-
-    GST_WARNING("Pipeline: %s", pipelineStr.c_str()); // TODO change to INFO
+    GST_INFO("Pipeline: %s", pipelineStr.c_str());
     m_pipeline = gst::unique_from_ptr(GST_PIPELINE(gst_parse_launch(pipelineStr.c_str(), out_ptr(m_error))));
     if (m_error)
     {
@@ -199,7 +193,6 @@ void GStreamerEncoderPipeline::setEncoderProperty(const std::string& name, guint
     }
     else
     {
-        // TODO test
         std::string parentName = name.substr(0, dotPosition);
         std::string childName = name.substr(dotPosition + 1);
         GST_INFO("Set encoder property - %s.%s=%s", parentName.c_str(), childName.c_str(), valueString.c_str());

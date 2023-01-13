@@ -21,6 +21,8 @@
 using namespace opentera;
 using namespace std;
 
+// TODO fix VP9
+
 Vp9GStreamerVideoEncoder::Vp9GStreamerVideoEncoder(
     const webrtc::SdpVideoFormat::Parameters& parameters,
     string encoderPipeline,
@@ -82,9 +84,20 @@ void Vp9GStreamerVideoEncoder::populateCodecSpecificInfo(
     const webrtc::EncodedImage& encodedFrame)
 {
     codecSpecificInfo.codecType = webrtc::kVideoCodecVP9;
+
+    codecSpecificInfo.codecSpecific.VP9.first_frame_in_picture = true;
+    codecSpecificInfo.codecSpecific.VP9.flexible_mode = m_isFlexibleMode;
+
     codecSpecificInfo.codecSpecific.VP9.num_spatial_layers = 1;
 
     // TODO add missing
+}
+int Vp9GStreamerVideoEncoder::InitEncode(
+    const webrtc::VideoCodec* codecSettings,
+    const webrtc::VideoEncoder::Settings& settings)
+{
+    m_isFlexibleMode = codecSettings->VP9().flexibleMode;
+    return GStreamerVideoEncoder::InitEncode(codecSettings, settings);
 }
 
 

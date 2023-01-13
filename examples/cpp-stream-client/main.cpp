@@ -141,7 +141,7 @@ int main(int argc, char* argv[])
     auto signalingServerConfiguration =
         SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
-    auto videoStreamConfiguration = VideoStreamConfiguration::create({VideoStreamCodec::VP8}, false, true);
+    auto videoStreamConfiguration = VideoStreamConfiguration::create();
     auto videoSource = make_shared<CvVideoCaptureVideoSource>(argv[1]);
     auto audioSource = make_shared<SinAudioSource>();
     StreamClient
@@ -202,8 +202,7 @@ int main(int argc, char* argv[])
             cout << "\t" << error << endl;
         });
 
-    // TODO remove comments
-    /*client.setOnAddRemoteStream(
+    client.setOnAddRemoteStream(
         [](const Client& client)
         {
             // This callback is called from the internal client thread.
@@ -224,8 +223,8 @@ int main(int argc, char* argv[])
             // cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
-        });*/
-    /*client.setOnAudioFrameReceived(
+        });
+    client.setOnAudioFrameReceived(
         [](const Client& client,
            const void* audioData,
            int bitsPerSample,
@@ -246,7 +245,7 @@ int main(int argc, char* argv[])
             cout << "OnMixedAudioFrameReceived:" << endl;
             cout << "\tbitsPerSample=" << bitsPerSample << ", sampleRate=" << sampleRate;
             cout << ", numberOfChannels=" << numberOfChannels << ", numberOfFrames=" << numberOfFrames << endl;
-        });*/
+        });
 
     client.connect();
 

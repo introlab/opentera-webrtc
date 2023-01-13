@@ -24,6 +24,8 @@ namespace opentera
 {
     class Vp9GStreamerVideoEncoder : public GStreamerVideoEncoder
     {
+        bool m_isFlexibleMode;
+
     public:
         Vp9GStreamerVideoEncoder(
             const webrtc::SdpVideoFormat::Parameters& parameters,
@@ -32,6 +34,8 @@ namespace opentera
             BitRateUnit bitRatePropertyUnit,
             std::string keyframeIntervalPropertyName);
         ~Vp9GStreamerVideoEncoder() override = default;
+
+        int InitEncode(const webrtc::VideoCodec* codecSettings, const Settings& settings) override;
 
         static std::string mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters);
         static const char* codecName();
