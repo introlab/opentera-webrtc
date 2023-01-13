@@ -67,7 +67,6 @@ void GStreamerEncoderPipeline::forceKeyFrame()
 
 void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
 {
-    // TODO check property name and unit
     if (!m_encoder)
     {
         return;
@@ -99,7 +98,6 @@ void GStreamerEncoderPipeline::setBitRate(uint32_t bitRate)
 
 void GStreamerEncoderPipeline::setKeyframeInterval(int interval)
 {
-    // TODO check property name
     if (!m_encoder)
     {
         return;

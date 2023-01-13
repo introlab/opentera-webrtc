@@ -28,6 +28,8 @@
 #include <common_video/include/video_frame_buffer_pool.h>
 #include <media/base/codec.h>
 
+#include <atomic>
+
 namespace opentera
 {
     class GStreamerVideoEncoder : public webrtc::VideoEncoder
@@ -50,6 +52,9 @@ namespace opentera
 
         webrtc::EncodedImage m_encodedFrame;
         webrtc::EncodedImageCallback* m_imageReadyCb;
+
+        bool m_dropNextFrame;
+        std::atomic<absl::optional<uint32_t>> m_newBitRate;
 
     public:
         GStreamerVideoEncoder(

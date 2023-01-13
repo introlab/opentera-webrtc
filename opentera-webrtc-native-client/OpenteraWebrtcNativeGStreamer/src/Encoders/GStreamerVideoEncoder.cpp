@@ -51,7 +51,8 @@ GStreamerVideoEncoder::GStreamerVideoEncoder(
       m_setPipelineStateToReadyOnPropertyChange(setPipelineStateToReadyOnPropertyChange),
       m_firstBufferPts{GST_CLOCK_TIME_NONE},
       m_firstBufferDts{GST_CLOCK_TIME_NONE},
-      m_imageReadyCb{nullptr}
+      m_imageReadyCb{nullptr},
+      m_dropNextFrame(false)
 {
 }
 
@@ -139,6 +140,16 @@ int32_t GStreamerVideoEncoder::Encode(const webrtc::VideoFrame& frame, const vec
     {
         m_gstEncoderPipeline->forceKeyFrame();
     }
+    if (m_dropNextFrame)
+    {
+        m_dropNextFrame = false;
+        return WEBRTC_VIDEO_CODEC_OK;
+    }
+    auto newBitRate = m_newBitRate.exchange(absl::nullopt);
+    if (newBitRate.has_value())
+    {
+        m_gstEncoderPipeline->setBitRate(*newBitRate);
+    }
 
     auto sample = toGstSample(frame);
     if (!sample)
@@ -164,13 +175,19 @@ int32_t GStreamerVideoEncoder::Encode(const webrtc::VideoFrame& frame, const vec
     webrtc::CodecSpecificInfo codecSpecificInfo;
     populateCodecSpecificInfo(codecSpecificInfo, m_encodedFrame);
 
-    m_imageReadyCb->OnEncodedImage(m_encodedFrame, &codecSpecificInfo);
+    auto result = m_imageReadyCb->OnEncodedImage(m_encodedFrame, &codecSpecificInfo);
+    if (result.error != webrtc::EncodedImageCallback::Result::OK)
+    {
+        return WEBRTC_VIDEO_CODEC_ERROR;
+    }
+    m_dropNextFrame = result.drop_next_frame;
+
     return WEBRTC_VIDEO_CODEC_OK;
 }
 
 void GStreamerVideoEncoder::SetRates(const RateControlParameters& parameters)
 {
-    m_gstEncoderPipeline->setBitRate(parameters.bitrate.get_sum_bps());
+    m_newBitRate.store(parameters.bitrate.get_sum_bps());
 }
 
 webrtc::VideoEncoder::EncoderInfo GStreamerVideoEncoder::GetEncoderInfo() const
