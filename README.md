@@ -31,7 +31,7 @@ Platform|VP8|VP9|H.264|
 |Jetson Xavier NX | X | X | nvv4l2h264enc, nvv4l2decoder |
 |Jetson AGX Xavier | X | X | nvv4l2h264enc, nvv4l2decoder |
 |Jetson Orin / Orin Nano / Orin NX | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Raspberry Pi 3/4 | X | X | v4l2h264enc, v4l2h264dec |
+|Raspberry Pi 4 | X | X | v4l2h264enc, v4l2h264dec |
 |VA-API | vaapivp8enc, vaapivp8dec | X | vaapih264enc, vaapih264dec |
 
 Note that VP9 is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
