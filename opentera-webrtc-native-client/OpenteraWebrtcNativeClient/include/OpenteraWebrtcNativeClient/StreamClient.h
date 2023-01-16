@@ -33,18 +33,22 @@ namespace opentera
     public:
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
-            WebrtcConfiguration webrtcConfiguration);
+            WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<VideoSource> videoSource);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<AudioSource> audioSource);
         StreamClient(
             SignalingServerConfiguration signalingServerConfiguration,
             WebrtcConfiguration webrtcConfiguration,
+            VideoStreamConfiguration videoStreamConfiguration,
             std::shared_ptr<VideoSource> videoSource,
             std::shared_ptr<AudioSource> audioSource);
         ~StreamClient() override;
@@ -56,7 +60,7 @@ namespace opentera
         void muteLocalAudio();
         void unmuteLocalAudio();
         void setLocalAudioMuted(bool muted);
-        
+
         bool isRemoteAudioMuted();
         void muteRemoteAudio();
         void unmuteRemoteAudio();
@@ -98,7 +102,7 @@ namespace opentera
      * @brief Unmutes the local audio.
      */
     inline void StreamClient::unmuteLocalAudio() { setLocalAudioMuted(false); }
-    
+
     /**
      * @brief Indicates if the remote audio is muted.
      * @return true if the remote audio is muted.

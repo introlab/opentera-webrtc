@@ -19,7 +19,6 @@ class IceServerTestsWithSignalingServer : public ::testing::TestWithParam<bool>
     static unique_ptr<subprocess::Popen> m_signalingServerProcessTLS;
 
 protected:
-    bool m_tlsTestEnable;
     string m_baseUrl;
 
     static void SetUpTestSuite()
@@ -60,11 +59,11 @@ protected:
         }
     }
 
-    void SetUp()
+    void SetUp() override
     {
-        m_tlsTestEnable = GetParam();
+        bool tlsTestEnable = GetParam();
 
-        if (m_tlsTestEnable)
+        if (tlsTestEnable)
         {
             m_baseUrl = "https://localhost:8081";
         }

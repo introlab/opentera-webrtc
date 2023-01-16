@@ -20,8 +20,8 @@ namespace opentera
 
         static VideoSourceConfiguration create(bool needsDenoising, bool isScreencast);
 
-        bool needsDenoising() const;
-        bool isScreencast() const;
+        [[nodiscard]] bool needsDenoising() const;
+        [[nodiscard]] bool isScreencast() const;
 
         VideoSourceConfiguration& operator=(const VideoSourceConfiguration& other) = default;
         VideoSourceConfiguration& operator=(VideoSourceConfiguration&& other) = default;
@@ -36,7 +36,7 @@ namespace opentera
      */
     inline VideoSourceConfiguration VideoSourceConfiguration::create(bool needsDenoising, bool isScreencast)
     {
-        return VideoSourceConfiguration(needsDenoising, isScreencast);
+        return {needsDenoising, isScreencast};
     }
 
     /**

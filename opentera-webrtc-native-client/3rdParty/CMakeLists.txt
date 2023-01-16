@@ -41,7 +41,7 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     set(BUILD_opencv_stitching OFF)
     set(BUILD_opencv_ts OFF)
     set(BUILD_opencv_video OFF)
-    set(BUILD_opencv_videoio OFF)
+    set(BUILD_opencv_videoio ON)
 
     set(BUILD_JAVA OFF)
     set(BUILD_OBJC OFF)
@@ -50,7 +50,6 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     add_subdirectory(opencv)
 
 endif()
-
 
 install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include
     	FILES_MATCHING PATTERN "*.h")

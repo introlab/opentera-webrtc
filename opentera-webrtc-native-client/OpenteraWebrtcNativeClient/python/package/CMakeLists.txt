@@ -30,7 +30,12 @@ include(../../../../cmake/pip_utils.cmake)
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../LICENSE)
 set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
-pip_configure_setup(setup.py.in)
+# Set the variable for the target file name of OpenteraWebrtcNativeGStreamer
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    pip_configure_setup(setup_gstreamer.py.in)
+else()
+    pip_configure_setup(setup.py.in)
+endif()
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md.in README.md)
@@ -45,6 +50,10 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.tx
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-process-doc.sh)
 
 pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    pip_add_so_target(NAME OpenteraWebrtcNativeGStreamer-so SO_NAME OpenteraWebrtcNativeGStreamer)
+endif()
+
 pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-requirements REQUIREMENTS_FILE ${REQUIREMENTS_FILE})
 pip_add_stub_target(
         NAME ${PYTHON_LIB_NAME}-stub

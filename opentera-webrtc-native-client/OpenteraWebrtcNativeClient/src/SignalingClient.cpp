@@ -1,4 +1,5 @@
 #include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/Codecs/VideoCodecFactories.h>
 
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
@@ -33,7 +34,8 @@ constexpr int SignalingProtocolVersion = 1;
 
 SignalingClient::SignalingClient(
     SignalingServerConfiguration&& signalingServerConfiguration,
-    WebrtcConfiguration&& webrtcConfiguration)
+    WebrtcConfiguration&& webrtcConfiguration,
+    VideoStreamConfiguration&& videoStreamConfiguration)
     : m_signalingServerConfiguration(move(signalingServerConfiguration)),
       m_webrtcConfiguration(move(webrtcConfiguration)),
       m_hasClosePending(false)
@@ -65,8 +67,8 @@ SignalingClient::SignalingClient(
         m_audioDeviceModule,
         webrtc::CreateBuiltinAudioEncoderFactory(),
         webrtc::CreateBuiltinAudioDecoderFactory(),
-        webrtc::CreateBuiltinVideoEncoderFactory(),
-        webrtc::CreateBuiltinVideoDecoderFactory(),
+        createVideoEncoderFactory(videoStreamConfiguration),
+        createVideoDecoderFactory(videoStreamConfiguration),
         nullptr,  // Audio mixer,
         m_audioProcessing);
 
@@ -238,9 +240,9 @@ vector<RoomClient> SignalingClient::getRoomClients()
         });
 }
 
-function<void(const string&, sio::message::ptr)> SignalingClient::getSendEventFunction()
+function<void(const string&, const sio::message::ptr&)> SignalingClient::getSendEventFunction()
 {
-    return [this](const string& event, sio::message::ptr message)
+    return [this](const string& event, const sio::message::ptr& message)
     { callAsync(m_internalClientThread.get(), [this, event, message]() { m_sio.socket()->emit(event, message); }); };
 }
 

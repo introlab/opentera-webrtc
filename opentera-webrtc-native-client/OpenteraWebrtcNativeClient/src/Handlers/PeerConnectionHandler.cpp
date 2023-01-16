@@ -119,7 +119,7 @@ void PeerConnectionHandler::receiveIceCandidate(const string& sdpMid, int sdpMLi
         m_peerConnection->AddIceCandidate(candidate);
         delete candidate;
     }
-    else if (error.line != "")
+    else if (!error.line.empty())
     {
         m_onError(error.line + " - " + error.description);
     }

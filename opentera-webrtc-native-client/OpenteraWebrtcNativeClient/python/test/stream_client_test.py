@@ -37,11 +37,13 @@ class StreamClientTestCase(FailureTestCase):
         client1 = webrtc.StreamClient(
             webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
+            webrtc.VideoStreamConfiguration.create(),
             video_source1)
 
         client2 = webrtc.StreamClient(
             webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
+            webrtc.VideoStreamConfiguration.create(),
             video_source2)
 
         client1.on_signaling_connection_opened = on_signaling_connection_opened
@@ -128,7 +130,8 @@ class StreamClientTestCase(FailureTestCase):
     def test_mute_methods__should_set_the_flag_accordingly(self):
         client = webrtc.StreamClient(
             webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
-            webrtc.WebrtcConfiguration.create())
+            webrtc.WebrtcConfiguration.create(),
+            webrtc.VideoStreamConfiguration.create())
 
         self.assertFalse(client.is_local_audio_muted)
         self.assertFalse(client.is_remote_audio_muted)

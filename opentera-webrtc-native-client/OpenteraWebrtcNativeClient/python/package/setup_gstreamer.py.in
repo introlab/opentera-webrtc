@@ -1,0 +1,61 @@
+from setuptools import setup, dist, find_packages
+from setuptools.command.install import install
+import os
+
+def read_file(name):
+    with open(name, "r", encoding="utf-8") as fh:
+        return fh.read()
+
+
+def get_doc_files():
+    files = {}
+    for root, _, filenames in os.walk('_doc'):
+        for filename in filenames:
+            rootless = root.replace('_doc', os.path.join('doc', 'opentera', 'webrtc', 'native_client'))
+            if not rootless in files.keys():
+                files[rootless] = []
+            files[rootless].append(os.path.join(root, filename))
+    return list(files.items())
+
+
+long_description = read_file("README.md")
+
+
+class BinaryDistribution(dist.Distribution):
+    """Force setuptools to recognize that this is actually a binary distribution"""
+    def has_ext_modules(self):
+        return True
+
+
+setup(
+    name="opentera_webrtc_native_client",
+    version="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}",
+    author="Marc-Antoine Maheux, Cedric Godin, Dominic Letourneau",
+    author_email="marc-antoine.maheux@usherbrooke.ca, cedric.godin@usherbrooke.ca, dominic.letourneau@usherbrooke.ca",
+    description="OpenTera WebRTC Client Library for Python",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/introlab/opentera-webrtc",
+    packages=['opentera_webrtc.native_client'],
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Development Status :: 4 - Beta",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX",
+    ],
+    license="Apache Software License",
+    distclass=BinaryDistribution,
+    platforms=['linux_x86_64'],
+    # python_requires='==3.8',
+    package_data={
+        'opentera_webrtc.native_client': [
+            "$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>",
+            "$<TARGET_FILE_NAME:OpenteraWebrtcNativeGStreamer>",
+            $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/py.typed"$<COMMA>,>
+            $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/__init__.pyi"$<COMMA>,>
+        ],
+    },
+    $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>
+    include_package_data=True,
+    zip_safe=False,
+)

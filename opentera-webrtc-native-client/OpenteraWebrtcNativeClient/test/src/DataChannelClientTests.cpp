@@ -24,7 +24,6 @@ class DataChannelClientTests : public ::testing::TestWithParam<bool>
     static unique_ptr<subprocess::Popen> m_signalingServerProcess;
 
 protected:
-    bool m_tlsTestEnable;
     string m_baseUrl;
 
     static void SetUpTestSuite()
@@ -62,11 +61,11 @@ protected:
         }
     }
 
-    void SetUp()
+    void SetUp() override
     {
-        m_tlsTestEnable = GetParam();
+        bool tlsTestEnable = GetParam();
 
-        if (m_tlsTestEnable)
+        if (tlsTestEnable)
         {
             m_baseUrl = "https://localhost:8081";
         }
@@ -75,8 +74,6 @@ protected:
             m_baseUrl = "http://localhost:8080";
         }
     }
-
-    void TearDown() {}
 };
 
 unique_ptr<subprocess::Popen> DataChannelClientTests::m_signalingServerProcess = nullptr;
@@ -86,13 +83,12 @@ class DisconnectedDataChannelClientTests : public ::testing::TestWithParam<bool>
 {
 protected:
     unique_ptr<DataChannelClient> m_client1;
-    bool m_tlsTestEnable;
 
     void SetUp() override
     {
-        m_tlsTestEnable = GetParam();
+        bool tlsTestEnable = GetParam();
 
-        if (m_tlsTestEnable)
+        if (tlsTestEnable)
         {
             m_client1 = make_unique<DataChannelClient>(
                 SignalingServerConfiguration::create(

@@ -97,6 +97,7 @@ if __name__ == '__main__':
     ice_servers = webrtc.IceServer.fetch_from_server(
         'http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)
+    video_stream_configuration = webrtc.VideoStreamConfiguration.create()
 
     video_source = webrtc.VideoSource(
         webrtc.VideoSourceConfiguration.create(False, False))
@@ -105,7 +106,7 @@ if __name__ == '__main__':
     audio_source = webrtc.AudioSource(
         webrtc.AudioSourceConfiguration.create(sound_card_total_delay_ms), 16, fs, 1)
     client = webrtc.StreamClient(
-        signaling_server_configuration, webrtc_configuration, video_source, audio_source)
+        signaling_server_configuration, webrtc_configuration, video_stream_configuration, video_source, audio_source)
 
     client.on_signaling_connection_opened = on_signaling_connection_opened
     client.on_signaling_connection_closed = on_signaling_connection_closed

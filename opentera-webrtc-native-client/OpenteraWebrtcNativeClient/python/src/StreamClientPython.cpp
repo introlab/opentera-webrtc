@@ -158,43 +158,58 @@ void opentera::initStreamClientPython(pybind11::module& m)
         "StreamClient",
         "A signaling client to join a WebRTC room and stream a video source.")
         .def(
-            py::init<SignalingServerConfiguration, WebrtcConfiguration>(),
+            py::init<SignalingServerConfiguration, WebrtcConfiguration, VideoStreamConfiguration>(),
             "Creates a stream client\n"
             "\n"
             ":param signaling_server_configuration: The configuration to "
             "connect to the signaling server\n"
             ":param webrtc_configuration: The WebRTC configuration\n"
+            ":param video_stream_configuration: The video stream configuration\n"
             " */",
             py::arg("signaling_server_configuration"),
-            py::arg("webrtc_configuration"))
+            py::arg("webrtc_configuration"),
+            py::arg("video_stream_configuration"))
         .def(
-            py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<VideoSource>>(),
+            py::init<
+                SignalingServerConfiguration,
+                WebrtcConfiguration,
+                VideoStreamConfiguration,
+                shared_ptr<VideoSource>>(),
             "Creates a stream client\n"
             "\n"
             ":param signaling_server_configuration: The configuration to "
             "connect to the signaling server\n"
             ":param webrtc_configuration: The WebRTC configuration\n"
+            ":param video_stream_configuration: The video stream configuration\n"
             ":param video_source: The video source that this client will add to "
             "the call",
             py::arg("signaling_server_configuration"),
             py::arg("webrtc_configuration"),
+            py::arg("video_stream_configuration"),
             py::arg("video_source"))
         .def(
-            py::init<SignalingServerConfiguration, WebrtcConfiguration, shared_ptr<AudioSource>>(),
+            py::init<
+                SignalingServerConfiguration,
+                WebrtcConfiguration,
+                VideoStreamConfiguration,
+                shared_ptr<AudioSource>>(),
             "Creates a stream client\n"
             "\n"
             ":param signaling_server_configuration: The configuration to "
             "connect to the signaling server\n"
             ":param webrtc_configuration: The WebRTC configuration\n"
+            ":param video_stream_configuration: The video stream configuration\n"
             ":param audio_source: The audio source that this client will add to "
             "the call",
             py::arg("signaling_server_configuration"),
             py::arg("webrtc_configuration"),
+            py::arg("video_stream_configuration"),
             py::arg("audio_source"))
         .def(
             py::init<
                 SignalingServerConfiguration,
                 WebrtcConfiguration,
+                VideoStreamConfiguration,
                 shared_ptr<VideoSource>,
                 shared_ptr<AudioSource>>(),
             "Creates a stream client\n"
@@ -202,12 +217,14 @@ void opentera::initStreamClientPython(pybind11::module& m)
             ":param signaling_server_configuration: The configuration to "
             "connect to the signaling server\n"
             ":param webrtc_configuration: The WebRTC configuration\n"
+            ":param video_stream_configuration: The video stream configuration\n"
             ":param video_source: The video source that this client will add to "
             "the call\n"
             ":param audio_source: The audio source that this client will add to "
             "the call",
             py::arg("signaling_server_configuration"),
             py::arg("webrtc_configuration"),
+            py::arg("video_stream_configuration"),
             py::arg("video_source"),
             py::arg("audio_source"))
 

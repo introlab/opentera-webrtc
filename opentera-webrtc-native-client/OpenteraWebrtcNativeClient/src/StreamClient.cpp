@@ -9,11 +9,13 @@ using namespace std;
  * @param signalingServerConfiguration The configuration to connect to the
  * signaling server
  * @param webrtcConfiguration The WebRTC configuration
+ * @param videoStreamConfiguration The video stream configuration
  */
 StreamClient::StreamClient(
     SignalingServerConfiguration signalingServerConfiguration,
-    WebrtcConfiguration webrtcConfiguration)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+    WebrtcConfiguration webrtcConfiguration,
+    VideoStreamConfiguration videoStreamConfiguration)
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
       m_isRemoteAudioMuted(false),
@@ -27,13 +29,15 @@ StreamClient::StreamClient(
  * @param signalingServerConfiguration The configuration to connect to the
  * signaling server
  * @param webrtcConfiguration The WebRTC configuration
+ * @param videoStreamConfiguration The video stream configuration
  * @param videoSource The video source that this client will add to the call
  */
 StreamClient::StreamClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
+    VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<VideoSource> videoSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_videoSource(move(videoSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
@@ -48,13 +52,15 @@ StreamClient::StreamClient(
  * @param signalingServerConfiguration The configuration to connect to the
  * signaling server
  * @param webrtcConfiguration The WebRTC configuration
+ * @param videoStreamConfiguration The video stream configuration
  * @param audioSource The audio source that this client will add to the call
  */
 StreamClient::StreamClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
+    VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<AudioSource> audioSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
@@ -74,15 +80,17 @@ StreamClient::StreamClient(
  * @param signalingServerConfiguration The configuration to connect to the
  * signaling server
  * @param webrtcConfiguration The WebRTC configuration
+ * @param videoStreamConfiguration The video stream configuration
  * @param videoSource The video source that this client will add to the call
  * @param audioSource The audio source that this client will add to the call
  */
 StreamClient::StreamClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
+    VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<VideoSource> videoSource,
     shared_ptr<AudioSource> audioSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_videoSource(move(videoSource)),
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),

@@ -12,5 +12,5 @@ cmake ..
 cmake --build . --config Release|Debug
 
 cd bin/Release
-./CppStreamClient
+./CppStreamClient video_path
 ```

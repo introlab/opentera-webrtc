@@ -15,7 +15,10 @@ DataChannelClient::DataChannelClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
     DataChannelConfiguration dataChannelConfiguration)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration)),
+    : SignalingClient(
+          move(signalingServerConfiguration),
+          move(webrtcConfiguration),
+          VideoStreamConfiguration::create()),
       m_dataChannelConfiguration(move(dataChannelConfiguration))
 {
 }

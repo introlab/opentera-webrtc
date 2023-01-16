@@ -3,6 +3,7 @@
 
 #include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Configurations/VideoStreamConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
@@ -70,7 +71,8 @@ namespace opentera
     public:
         SignalingClient(
             SignalingServerConfiguration&& signalingServerConfiguration,
-            WebrtcConfiguration&& webrtcConfiguration);
+            WebrtcConfiguration&& webrtcConfiguration,
+            VideoStreamConfiguration&& videoStreamConfiguration);
         virtual ~SignalingClient() = default;
 
         DECLARE_NOT_COPYABLE(SignalingClient);
@@ -122,7 +124,7 @@ namespace opentera
         virtual std::unique_ptr<PeerConnectionHandler>
             createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) = 0;
 
-        std::function<void(const std::string&, sio::message::ptr)> getSendEventFunction();
+        std::function<void(const std::string&, const sio::message::ptr&)> getSendEventFunction();
         std::function<void(const std::string&)> getOnErrorFunction();
         std::function<void(const Client&)> getOnClientConnectedFunction();
         std::function<void(const Client&)> getOnClientDisconnectedFunction();

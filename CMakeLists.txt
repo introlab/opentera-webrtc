@@ -37,6 +37,7 @@ set(
     "3"
     CACHE STRING
     "Specific Python version to use"
+    FORCE
 )
 
 find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
@@ -59,6 +60,9 @@ option(OPENTERA_WEBRTC_ENABLE_TESTS "Build tests" ON)
 
 # Default behavior is to enable examples
 option(OPENTERA_WEBRTC_ENABLE_EXAMPLES "Build examples" ON)
+
+# Default behavior is to disable GStreamer examples
+option(OPENTERA_WEBRTC_ENABLE_GSTREAMER "Compile with GStreamer support" OFF)
 
 # Default behavior is to enable stub file
 option(OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB "Generate stub file" ON)

@@ -25,7 +25,7 @@ namespace opentera
         explicit VideoSink(VideoSinkCallback onFrameReceived);
 
         void OnFrame(const webrtc::VideoFrame& frame) override;
-        rtc::VideoSinkWants wants() const;
+        [[nodiscard]] rtc::VideoSinkWants wants() const;
     };
 
     /**

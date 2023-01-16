@@ -19,6 +19,7 @@ else ()
     set(OpenCV_INCLUDE_DIRS
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/core/include
             ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/imgproc/include
+            ${CMAKE_CURRENT_SOURCE_DIR}/../3rdParty/opencv/modules/videoio/include
             ${_OpenCV_include_dirs_examples}
             ${CMAKE_BINARY_DIR} CACHE INTERNAL ""
             )
@@ -84,3 +85,9 @@ add_subdirectory(python)
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(test)
 endif ()
+
+if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
+    include_directories(../OpenteraWebrtcNativeGStreamer/include)
+    target_compile_definitions(OpenteraWebrtcNativeClient PUBLIC USE_GSTREAMER)
+    target_link_libraries(OpenteraWebrtcNativeClient OpenteraWebrtcNativeGStreamer)
+endif()

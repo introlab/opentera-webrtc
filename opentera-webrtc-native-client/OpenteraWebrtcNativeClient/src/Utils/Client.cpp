@@ -118,6 +118,11 @@ bool Client::isValid(const sio::message::ptr& message)
 }
 
 /**
+ * @brief Creates a room client with the default values.
+ */
+RoomClient::RoomClient() : m_isConnected(false) {}
+
+/**
  * @brief Creates a room client with the specified values.
  *
  * @param id The client id
