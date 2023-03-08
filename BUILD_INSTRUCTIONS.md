@@ -20,7 +20,7 @@ python -m pip install -r requirements.txt
 
 ## Build (Ubuntu)
 
-Only Unbuntu 18.04, 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
+Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
 
 ### Initialize Submodules (Ubuntu)
 
