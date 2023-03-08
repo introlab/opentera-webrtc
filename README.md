@@ -21,6 +21,9 @@ By default, libwebrtc is built with non-free codecs. See [webrtc-native-build](h
 * [Apache License, Version 2.0](LICENSE)
 * For GStreamer components, please read [this](opentera-webrtc-native-client/OpenteraWebrtcNativeGStreamer/README.md).
 
+## How to Contribute
+Please read the [Code of Conduct](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIBUTING.md) files.
+
 ## Hardware Acceleration with GStreamer
 
 Hardware acceleration depends on the platform you are using to build opentera-webrtc. The following table summarizes supported hardware and GStreamer plugins:
