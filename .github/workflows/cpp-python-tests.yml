@@ -116,7 +116,8 @@ jobs:
       - name: Install system dependencies (macOS)
         run: |
           brew update
-          brew install ninja tree ca-certificates perl opencv
+          brew install ninja tree ca-certificates perl
+          brew install opencv --with-ffmpeg --with-gstreamer --with-quicktime
           brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
           brew install gst-devtools
         if: runner.os == 'macOS'
