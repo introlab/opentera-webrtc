@@ -22,18 +22,14 @@ target_include_directories(OpenteraWebrtcNativeGStreamer SYSTEM PRIVATE
         ${GSTREAMER_VIDEO_INCLUDE_DIRS}
         ${GSTREAMER_APP_INCLUDE_DIRS})
 target_include_directories(OpenteraWebrtcNativeGStreamer PRIVATE include)
+
+target_link_directories(OpenteraWebrtcNativeGStreamer PRIVATE
+        ${GSTREAMER_LIBRARY_DIRS}
+        ${GSTREAMER_VIDEO_LIBRARY_DIRS}
+        ${GSTREAMER_APP_LIBRARY_DIRS})
 target_link_libraries(OpenteraWebrtcNativeGStreamer PRIVATE
         ${webrtc_native_LIBRARY}
         ${GSTREAMER_LIBRARIES}
         ${GSTREAMER_VIDEO_LIBRARIES}
         ${GSTREAMER_APP_LIBRARIES})
 install(TARGETS OpenteraWebrtcNativeGStreamer DESTINATION bin)
-
-
-# TODO remove
-message(WARNING "*********** GSTREAMER_INCLUDE_DIRS=${GSTREAMER_INCLUDE_DIRS}")
-message(WARNING "*********** GSTREAMER_VIDEO_INCLUDE_DIRS=${GSTREAMER_VIDEO_INCLUDE_DIRS}")
-message(WARNING "*********** GSTREAMER_APP_INCLUDE_DIRS=${GSTREAMER_APP_INCLUDE_DIRS}")
-message(WARNING "*********** GSTREAMER_LIBRARIES=${GSTREAMER_LIBRARIES}")
-message(WARNING "*********** GSTREAMER_VIDEO_LIBRARIES=${GSTREAMER_VIDEO_LIBRARIES}")
-message(WARNING "*********** GSTREAMER_APP_LIBRARIES=${GSTREAMER_APP_LIBRARIES}")
