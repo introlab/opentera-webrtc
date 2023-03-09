@@ -1,4 +1,13 @@
-# Building on Ubuntu 20.04 and Higher
+# Building Web Client
+
+1. Install NPM
+2. Run the following commands
+```bash
+   npm install
+   npm run build:umd
+```
+
+# Building Native Client
 
 ## Ubuntu
 Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
@@ -9,7 +18,7 @@ Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for 
 sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev libopencv-dev python3-pip python3-venv python3 python-is-python3 python3-sphinx libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
 ```
 
-Add the followind dependencies if you want GStreamer support :
+Add the following dependencies if you want GStreamer support :
 
 ```bash
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools
@@ -50,6 +59,11 @@ Only MacOS 11 and 12 are supported using pre-built libwebrtc library for x86_64 
 
 ```bash
 brew install ninja tree ca-certificates
+```
+
+Add the following dependencies if you want GStreamer support :
+```bash
+brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-devtools
 ```
 
 ```bash
