@@ -82,7 +82,7 @@ git submodule update --init --recursive
 cd opentera-webrtc
 mkdir build
 cd build
-cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
+cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
 ```
 
 ### Build
@@ -91,9 +91,9 @@ cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TES
 cmake --build .
 ```
 
-## Building on Windows
+## Building on Windows (Experimental)
 
-*WARNING* building on Windows is complicated.
+*WARNING* building on Windows is complicated and may not work.
 
 ### Install Windows Build Dependencies
 
