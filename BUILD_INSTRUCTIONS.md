@@ -1,6 +1,9 @@
 # Building on Ubuntu 20.04 and Higher
 
-## Install Dependencies
+## Ubuntu
+Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
+
+### Install Dependencies
 
 ```bash
 sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev libopencv-dev python3-pip python3-venv python3 python-is-python3 python3-sphinx libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
@@ -18,10 +21,6 @@ Also install Python requirements:
 python -m pip install -r requirements.txt
 ```
 
-## Build (Ubuntu)
-
-Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
-
 ### Initialize Submodules (Ubuntu)
 
 ```bash
@@ -38,17 +37,16 @@ cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TES
 -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=ON|OFF
 ```
 
-### Run Make (Ubuntu)
+### Build
 
 ```bash
 make
 ```
 
-## Building on MacOS
+## MacOS
+Only MacOS 11 and 12 are supported using pre-built libwebrtc library for x86_64 architecture.
 
-Mac OS 11.5 and higher are supported.
-
-## Install dependencies (MacOS)
+### Install dependencies
 
 ```bash
 brew install ninja tree ca-certificates
@@ -57,10 +55,6 @@ brew install ninja tree ca-certificates
 ```bash
 python -m pip install -r requirements.txt
 ```
-
-## Build (MacOS)
-
-Only MacOS 11 and 12 are supported using pre-built libwebrtc library for x86_64 architecture.
 
 ### Initialize Submodules (MacOS)
 
@@ -77,7 +71,7 @@ cd build
 cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
 ```
 
-### Build with CMake (MacOS)
+### Build
 
 ```bash
 cmake --build .
