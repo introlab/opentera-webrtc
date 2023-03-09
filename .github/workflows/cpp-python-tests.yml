@@ -25,7 +25,7 @@ jobs:
     strategy:
       fail-fast: ${{ github.event.inputs.fail_fast != 'false'}}
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
@@ -117,6 +117,8 @@ jobs:
         run: |
           brew update
           brew install ninja tree ca-certificates perl
+          brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+          brew install gst-devtools
         if: runner.os == 'macOS'
 
       - name: Install python dependencies

@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "5195.42be4a.133" CACHE INTERNAL "")
+set(webrtc_native_build_version "5481.218b56.196" CACHE INTERNAL "")
 
 if(WIN32)
 	# Currently not supported
