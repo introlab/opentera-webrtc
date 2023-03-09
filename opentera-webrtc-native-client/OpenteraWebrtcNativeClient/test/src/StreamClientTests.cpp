@@ -37,6 +37,14 @@ public:
 
     ~ConstantVideoSource() override
     {
+        if (!m_stopped.load())
+        {
+            stop();
+        }
+    }
+
+    void stop()
+    {
         m_stopped.store(true);
         m_thread.join();
     }
@@ -80,6 +88,14 @@ public:
     }
 
     ~SinAudioSource() override
+    {
+        if (!m_stopped.load())
+        {
+            stop();
+        }
+    }
+
+    void stop()
     {
         m_stopped.store(true);
         m_thread.join();
@@ -348,6 +364,9 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[0], 0, MeanColorAbsError);
     EXPECT_NEAR(meanColor2[1], 0, MeanColorAbsError);
     EXPECT_NEAR(meanColor2[2], 255, MeanColorAbsError);
+
+    videoSource1->stop();
+    videoSource2->stop();
 }
 
 TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
@@ -441,6 +460,9 @@ TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
     EXPECT_NEAR(meanColor2[0], 0, MeanColorAbsError);
     EXPECT_NEAR(meanColor2[1], 0, MeanColorAbsError);
     EXPECT_NEAR(meanColor2[2], 0, MeanColorAbsError);
+
+    videoSource1->stop();
+    videoSource2->stop();
 }
 
 TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
@@ -509,6 +531,8 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
     // Asserts
     ASSERT_NE(onAddRemoteStreamClient, nullptr);
     EXPECT_EQ(onAddRemoteStreamClient->name(), "c1");
+
+    videoSource->stop();
 }
 
 void onAudioFrameReceived(
@@ -690,6 +714,9 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
     checkReceivedAudio(receivedMixedAudio1, Amplitude2);
     checkReceivedAudio(receivedAudio2, Amplitude1);
     checkReceivedAudio(receivedMixedAudio2, Amplitude1);
+
+    audioSource1->stop();
+    audioSource2->stop();
 }
 
 TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
@@ -838,6 +865,9 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
     checkReceivedAudio(receivedMixedAudio1, 0);
     checkReceivedAudio(receivedAudio2, 0);
     checkReceivedAudio(receivedMixedAudio2, 0);
+
+    audioSource1->stop();
+    audioSource2->stop();
 }
 
 TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
@@ -909,6 +939,8 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
     // Asserts
     ASSERT_NE(onAddRemoteStreamClient, nullptr);
     EXPECT_EQ(onAddRemoteStreamClient->name(), "c1");
+
+    audioSource->stop();
 }
 
 INSTANTIATE_TEST_SUITE_P(
