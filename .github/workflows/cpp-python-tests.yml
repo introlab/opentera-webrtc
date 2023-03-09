@@ -30,11 +30,6 @@ jobs:
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
         enable-system-opencv: [OFF]
-        exclude:
-          - os: macos-11
-            enable-gstreamer: ON
-          - os: macos-12
-            enable-gstreamer: ON
 
     steps:
       - uses: actions/checkout@v2
