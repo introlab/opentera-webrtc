@@ -104,6 +104,19 @@ namespace opentera
         static bool isHardwareAccelerated();
         static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
     };
+
+    class AppleMediaH264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
+    {
+    public:
+        explicit AppleMediaH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        ~AppleMediaH264GStreamerVideoEncoder() override = default;
+
+        [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
+
+        static bool isSupported();
+        static bool isHardwareAccelerated();
+        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+    };
 }
 
 #endif

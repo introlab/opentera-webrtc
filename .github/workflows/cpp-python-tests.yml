@@ -145,7 +145,7 @@ jobs:
           -DPython_ROOT_DIR="${{ env.pythonLocation }}" \
           -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=${{ matrix.enable-gstreamer }} \
           -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=${{ matrix.enable-system-opencv }}
-          make -j2
+          make
           make install
 
       - name: Python native_client build cleanup

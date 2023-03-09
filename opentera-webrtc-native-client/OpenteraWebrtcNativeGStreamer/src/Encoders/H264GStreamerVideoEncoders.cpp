@@ -277,3 +277,39 @@ bool V4l2H264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVide
 {
     return isProfileBaselineOrMain(parameters);
 }
+
+
+AppleMediaH264GStreamerVideoEncoder::AppleMediaH264GStreamerVideoEncoder(
+    const webrtc::SdpVideoFormat::Parameters& parameters)
+    : H264GStreamerVideoEncoder(
+          parameters,
+          "vtenc_h264_hw name=encoder ! h264parse",
+          "bitrate",
+          BitRateUnit::KBitPerSec,
+          "max-keyframe-interval")
+{
+}
+
+webrtc::VideoEncoder::EncoderInfo AppleMediaH264GStreamerVideoEncoder::GetEncoderInfo() const
+{
+    webrtc::VideoEncoder::EncoderInfo info(GStreamerVideoEncoder::GetEncoderInfo());
+    info.implementation_name = "GStreamer - vtenc_h264_hw";
+    info.is_hardware_accelerated = false;
+
+    return info;
+}
+
+bool AppleMediaH264GStreamerVideoEncoder::isSupported()
+{
+    return gst::elementFactoryExists("vtenc_h264_hw") && gst::elementFactoryExists("h264parse");
+}
+
+bool AppleMediaH264GStreamerVideoEncoder::isHardwareAccelerated()
+{
+    return true;
+}
+
+bool AppleMediaH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+{
+    return isProfileBaselineOrMain(parameters);
+}

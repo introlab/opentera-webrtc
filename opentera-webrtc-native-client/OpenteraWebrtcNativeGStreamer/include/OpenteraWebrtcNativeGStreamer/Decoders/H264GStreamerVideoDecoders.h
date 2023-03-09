@@ -79,6 +79,18 @@ namespace opentera
         static bool isSupported();
         static bool isHardwareAccelerated();
     };
+
+    class AppleMediaH264GStreamerVideoDecoder : public H264GStreamerVideoDecoder
+    {
+    public:
+        AppleMediaH264GStreamerVideoDecoder();
+        ~AppleMediaH264GStreamerVideoDecoder() override = default;
+
+        [[nodiscard]] webrtc::VideoDecoder::DecoderInfo GetDecoderInfo() const override;
+
+        static bool isSupported();
+        static bool isHardwareAccelerated();
+    };
 }
 
 #endif
