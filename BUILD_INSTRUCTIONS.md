@@ -1,4 +1,4 @@
-# Building Web Client
+# Building Web Clients
 
 1. Install NPM
 2. Run the following commands
@@ -7,7 +7,7 @@
    npm run build:umd
 ```
 
-# Building Native Client
+# Building Native Clients
 
 ## Ubuntu
 Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.

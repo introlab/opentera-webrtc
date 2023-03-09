@@ -1,4 +1,4 @@
-# opentera-webrtc
+# OpenTera - WebRTC
 
 [![Actions Status](https://github.com/introlab/opentera-webrtc/workflows/cpp-python-tests/badge.svg)](https://github.com/introlab/opentera-webrtc/actions)
 
@@ -28,16 +28,16 @@ Please read the [Code of Conduct](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIB
 
 Hardware acceleration depends on the platform you are using to build opentera-webrtc. The following table summarizes supported hardware and GStreamer plugins:
 
-Platform|VP8|VP9|H.264|
-|---|---|---|---|
-|Jetson TX2/Nano | nvv4l2vp8enc, nvv4l2decoder | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson Xavier NX | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson AGX Xavier | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson Orin / Orin Nano / Orin NX | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Raspberry Pi 4 | X | X | v4l2h264enc, v4l2h264dec |
-|VA-API | vaapivp8enc, vaapivp8dec | X | vaapih264enc, vaapih264dec |
+| Platform                          | VP8                         | VP9           | H.264                        |
+|-----------------------------------|-----------------------------|---------------|------------------------------|
+| Jetson TX2/Nano                   | nvv4l2vp8enc, nvv4l2decoder | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Xavier NX                  | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson AGX Xavier                 | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Orin / Orin Nano / Orin NX | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Raspberry Pi 4                    | X                           | X             | v4l2h264enc, v4l2h264dec     |
+| VA-API                            | vaapivp8enc, vaapivp8dec    | vaapivp9dec   | vaapih264enc, vaapih264dec   |
 
-Note that VP9 is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
+Note that VP9 encoding is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
 
 ## Dependencies
 
