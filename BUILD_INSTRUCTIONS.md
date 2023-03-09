@@ -46,6 +46,8 @@ cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TES
 -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=ON|OFF
 ```
 
+If find_package(Python) failed, you can specify the python version with the CMake option `OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION`. 
+
 ### Build
 
 ```bash
@@ -84,6 +86,8 @@ mkdir build
 cd build
 cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
 ```
+
+If find_package(Python) failed, you can specify the python version with the CMake option `OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION`.
 
 ### Build
 
