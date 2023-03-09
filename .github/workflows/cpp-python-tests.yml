@@ -13,17 +13,12 @@ on:
         required: false
         type: boolean
         default: false
-      fail_fast:
-        description: "Should stop the workflow as soon as one configuration fails"
-        required: false
-        type: boolean
-        default: true
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: ${{ github.event.inputs.fail_fast != 'false'}}
+      fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ["3.8", "3.9", "3.10"]

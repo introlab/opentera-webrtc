@@ -77,9 +77,12 @@ Note that VP9 encoding is under development, see issue [117](https://github.com/
 ## Authors
 
 * Marc-Antoine Maheux (@mamaheux)
-* Cédric Godin (@godced)
 * Dominic Létourneau (@doumdi)
 * Philippe Warren (@philippewarren)
+* François Michaud
+
+## Contributors
+* Cédric Godin (@godced)
 * Ian-Mathieu Joly (@joli-1801)
 
 ## Sponsor
