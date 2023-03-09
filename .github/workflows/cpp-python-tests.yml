@@ -171,9 +171,7 @@ jobs:
       - name: Run CPP Tests
         working-directory: build/dist/bin
         run: |
-          ls -l
           export LD_LIBRARY_PATH=$PWD
-          ldd ./OpenteraWebrtcNativeClientTests
           ./OpenteraWebrtcNativeClientTests
 
       # Without stdout
