@@ -30,14 +30,6 @@ public:
 
     ~CvVideoCaptureVideoSource() override
     {
-        if (!m_stopped.load())
-        {
-            stop();
-        }
-    }
-
-    void stop()
-    {
         m_stopped.store(true);
         m_thread.join();
     }
@@ -104,14 +96,6 @@ public:
     }
 
     ~SinAudioSource() override
-    {
-        if (!m_stopped.load())
-        {
-            stop();
-        }
-    }
-
-    void stop()
     {
         m_stopped.store(true);
         m_thread.join();
@@ -267,10 +251,6 @@ int main(int argc, char* argv[])
     client.connect();
 
     cin.get();
-
-    // The video source and audio source must be stopped before destroying the client.
-    videoSource->stop();
-    audioSource->stop();
 
     return 0;
 }
