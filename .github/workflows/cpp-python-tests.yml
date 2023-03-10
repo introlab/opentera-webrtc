@@ -162,6 +162,7 @@ jobs:
         working-directory: build/dist/bin
         run: |
           export LD_LIBRARY_PATH=$PWD
+          export GST_DEBUG=2
           ./OpenteraWebrtcNativeClientTests
 
       # Without stdout
