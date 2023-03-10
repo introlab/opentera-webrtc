@@ -159,7 +159,7 @@ async def _make_peer_calls(ids):
     for id in ids:
         ids_to_call = [c[1] for c in combinations if c[0] == id]
         tasks.append(sio.emit('make-peer-call', ids_to_call, to=id))
-    await asyncio.wait(tasks)
+    await asyncio.gather(*tasks)
 
 
 @sio.on('close-all-room-peer-connections')
