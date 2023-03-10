@@ -133,21 +133,21 @@ bool V4l2H264GStreamerVideoDecoder::isHardwareAccelerated()
 
 
 AppleMediaH264GStreamerVideoDecoder::AppleMediaH264GStreamerVideoDecoder()
-    : H264GStreamerVideoDecoder("h264parse ! vtdec_hw ! videoconvert")
+    : H264GStreamerVideoDecoder("h264parse ! vtdec ! videoconvert")
 {
 }
 
 webrtc::VideoDecoder::DecoderInfo AppleMediaH264GStreamerVideoDecoder::GetDecoderInfo() const
 {
     webrtc::VideoDecoder::DecoderInfo info;
-    info.implementation_name = "GStreamer vtdec_hw";
+    info.implementation_name = "GStreamer vtdec";
     info.is_hardware_accelerated = isHardwareAccelerated();
     return info;
 }
 
 bool AppleMediaH264GStreamerVideoDecoder::isSupported()
 {
-    return gst::elementFactoryExists("h264parse") && gst::elementFactoryExists("vtdec_hw") &&
+    return gst::elementFactoryExists("h264parse") && gst::elementFactoryExists("vtdec") &&
            gst::elementFactoryExists("videoconvert");
 }
 

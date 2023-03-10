@@ -283,7 +283,7 @@ AppleMediaH264GStreamerVideoEncoder::AppleMediaH264GStreamerVideoEncoder(
     const webrtc::SdpVideoFormat::Parameters& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
-          "vtenc_h264_hw name=encoder ! h264parse",
+          "vtenc_h264 name=encoder ! h264parse",
           "bitrate",
           BitRateUnit::KBitPerSec,
           "max-keyframe-interval")
@@ -293,7 +293,7 @@ AppleMediaH264GStreamerVideoEncoder::AppleMediaH264GStreamerVideoEncoder(
 webrtc::VideoEncoder::EncoderInfo AppleMediaH264GStreamerVideoEncoder::GetEncoderInfo() const
 {
     webrtc::VideoEncoder::EncoderInfo info(GStreamerVideoEncoder::GetEncoderInfo());
-    info.implementation_name = "GStreamer - vtenc_h264_hw";
+    info.implementation_name = "GStreamer - vtenc_h264";
     info.is_hardware_accelerated = false;
 
     return info;
@@ -301,7 +301,7 @@ webrtc::VideoEncoder::EncoderInfo AppleMediaH264GStreamerVideoEncoder::GetEncode
 
 bool AppleMediaH264GStreamerVideoEncoder::isSupported()
 {
-    return gst::elementFactoryExists("vtenc_h264_hw") && gst::elementFactoryExists("h264parse");
+    return gst::elementFactoryExists("vtenc_h264") && gst::elementFactoryExists("h264parse");
 }
 
 bool AppleMediaH264GStreamerVideoEncoder::isHardwareAccelerated()
