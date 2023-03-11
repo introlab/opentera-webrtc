@@ -113,7 +113,7 @@ cmake --build .
     * Find it using `where python` in a CMD prompt
     * Use the command `mklink python3.exe python.exe`
     * If offered to disable PATH length limit, choose to do it
-* [MSVC 2019 Build Tools](https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products)
+* [MSVC 2022 Build Tools](https://visualstudio.microsoft.com/fr/downloads/)
   * Choose the Desktop C++ workload
 * `numpy` installed on python 3 with `python3 -m pip install numpy`
 * `wheel` installed on python 3 with `python3 -m pip install wheel`
