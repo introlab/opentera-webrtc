@@ -109,6 +109,7 @@ set(OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PYTHON_EXECUTABLE_SIGNALING_SERVER
 
 if (WIN32)
     add_compile_definitions(WEBRTC_WIN NOMINMAX _WIN32_WINNT=0x0A00)
+	add_compile_definitions($<$<CONFIG:Debug>:_ITERATOR_DEBUG_LEVEL=0>)
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
     add_compile_definitions(WEBRTC_POSIX)
