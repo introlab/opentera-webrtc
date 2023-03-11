@@ -119,12 +119,15 @@ cmake --build .
 * `wheel` installed on python 3 with `python3 -m pip install wheel`
 * `pybind11-stubgen` installed on python 3 with `python3 -m pip install pybind11-stubgen`
 * `sphinx` installed on python 3 with `python3 -m pip install sphinx`
+* Install other Python dependencies with `python -m pip install -r requirements.txt`
+* Install signaling server Python dependencies with `python -m pip install -r signaling-server\requirements.txt`
 * [MSYS2](https://www.msys2.org/)
   * Check `Run MSYS2 now` at the end of the installation process
   * Update using `pacman -Syu`
   * Launch `MSYS2 MSYS` from the Start menu
     * Update using `pacman -Su`
     * Add `C:\msys64\usr\bin` and `C:\msys64\usr\local\bin` to `PATH` BEFORE `C:\Windows\System32` (to properly use the `MSYS` commands that have Windows or Git-bash equivalents named the same way)
+
 
 ### Optional: Required to Run the Examples
 

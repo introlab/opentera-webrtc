@@ -64,6 +64,7 @@ if (WIN32)
             wmcodecdspuuid
             msdmo
             strmiids
+            iphlpapi
             )
 endif ()
 
