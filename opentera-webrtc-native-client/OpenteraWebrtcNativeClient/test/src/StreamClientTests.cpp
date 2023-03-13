@@ -274,8 +274,8 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
     setupAwaiter.wait(__FILE__, __LINE__);
 
     // Setup the callback
-    CallbackAwaiter onVideoFrameAwaiter1(1, 15s);
-    CallbackAwaiter onVideoFrameAwaiter2(1, 15s);
+    CallbackAwaiter onVideoFrameAwaiter1(10, 15s);
+    CallbackAwaiter onVideoFrameAwaiter2(10, 15s);
     CallbackAwaiter onEncodedVideoFrameAwaiter1(1, 15s);
     CallbackAwaiter onEncodedVideoFrameAwaiter2(1, 15s);
 
@@ -474,7 +474,7 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
     setupAwaiter.wait(__FILE__, __LINE__);
 
     // Setup the callback
-    CallbackAwaiter onVideoFrameAwaiter(1, 15s);
+    CallbackAwaiter onVideoFrameAwaiter(10, 15s);
     CallbackAwaiter onEncodedVideoFrameAwaiter(1, 15s);
 
     unique_ptr<Client> onAddRemoteStreamClient;

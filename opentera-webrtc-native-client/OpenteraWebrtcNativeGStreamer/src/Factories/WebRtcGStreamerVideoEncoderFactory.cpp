@@ -98,6 +98,11 @@ void WebRtcGStreamerVideoEncoderFactory::addH264Encoders(
     {
         m_encoderFactories[H264_CODEC_NAME] = createEncoderFactory<V4l2H264GStreamerVideoEncoder>(HardwarePriority);
     }
+    else if (AppleMediaH264GStreamerVideoEncoder::isSupported())
+    {
+        m_encoderFactories[H264_CODEC_NAME] =
+            createEncoderFactory<AppleMediaH264GStreamerVideoEncoder>(HardwarePriority);
+    }
     else if (!forceHardwareAcceleration)
     {
         if (useGStreamerSoftwareEncoder && SoftwareH264GStreamerVideoEncoder::isSupported())

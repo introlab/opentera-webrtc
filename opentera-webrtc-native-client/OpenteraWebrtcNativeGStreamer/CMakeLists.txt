@@ -22,6 +22,11 @@ target_include_directories(OpenteraWebrtcNativeGStreamer SYSTEM PRIVATE
         ${GSTREAMER_VIDEO_INCLUDE_DIRS}
         ${GSTREAMER_APP_INCLUDE_DIRS})
 target_include_directories(OpenteraWebrtcNativeGStreamer PRIVATE include)
+
+target_link_directories(OpenteraWebrtcNativeGStreamer PRIVATE
+        ${GSTREAMER_LIBRARY_DIRS}
+        ${GSTREAMER_VIDEO_LIBRARY_DIRS}
+        ${GSTREAMER_APP_LIBRARY_DIRS})
 target_link_libraries(OpenteraWebrtcNativeGStreamer PRIVATE
         ${webrtc_native_LIBRARY}
         ${GSTREAMER_LIBRARIES}

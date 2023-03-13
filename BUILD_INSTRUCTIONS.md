@@ -1,12 +1,24 @@
-# Building on Ubuntu 20.04 and Higher
+# Building Web Clients
 
-## Install Dependencies
+1. Install NPM
+2. Run the following commands
+```bash
+   npm install
+   npm run build:umd
+```
+
+# Building Native Clients
+
+## Ubuntu
+Only Ubuntu 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
+
+### Install Dependencies
 
 ```bash
 sudo apt install ninja-build python3-dev cmake build-essential libssl-dev libboost-all-dev libopencv-dev python3-pip python3-venv python3 python-is-python3 python3-sphinx libglib2.0-dev libgtk-3-dev libpulse-dev libasound2-dev tree
 ```
 
-Add the followind dependencies if you want GStreamer support :
+Add the following dependencies if you want GStreamer support :
 
 ```bash
 sudo apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-tools
@@ -17,10 +29,6 @@ Also install Python requirements:
 ```bash
 python -m pip install -r requirements.txt
 ```
-
-## Build (Ubuntu)
-
-Only Unbuntu 18.04, 20.04 and 22.04 are supported using pre-built libwebrtc library for x86_64 and aarch64 architectures.
 
 ### Initialize Submodules (Ubuntu)
 
@@ -34,33 +42,34 @@ git submodule update --init --recursive
 cd opentera-webrtc
 mkdir build
 cd build
-cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF
--DOPENTERA_WEBRTC_ENABLE_GSTREAMER=ON|OFF
+cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=ON|OFF
 ```
 
-### Run Make (Ubuntu)
+If find_package(Python) failed, you can specify the python version with the CMake option `OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION`. 
+
+### Build
 
 ```bash
 make
 ```
 
-## Building on MacOS
+## MacOS
+Only MacOS 11, 12 and 13 are supported using pre-built libwebrtc library for x86_64 architecture.
 
-Mac OS 11.5 and higher are supported.
-
-## Install dependencies (MacOS)
+### Install dependencies
 
 ```bash
 brew install ninja tree ca-certificates
 ```
 
+Add the following dependencies if you want GStreamer support :
+```bash
+brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav gst-devtools
+```
+
 ```bash
 python -m pip install -r requirements.txt
 ```
-
-## Build (MacOS)
-
-Only MacOS 11 and 12 are supported using pre-built libwebrtc library for x86_64 architecture.
 
 ### Initialize Submodules (MacOS)
 
@@ -74,18 +83,20 @@ git submodule update --init --recursive
 cd opentera-webrtc
 mkdir build
 cd build
-cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON|OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
+cmake .. -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=OFF -DOPENTERA_WEBRTC_ENABLE_TESTS=ON|OFF -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=ON|OFF -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user'
 ```
 
-### Build with CMake (MacOS)
+If find_package(Python) failed, you can specify the python version with the CMake option `OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION`.
+
+### Build
 
 ```bash
 cmake --build .
 ```
 
-## Building on Windows
+## Building on Windows (Experimental)
 
-*WARNING* building on Windows is complicated.
+*WARNING* building on Windows is complicated and may not work.
 
 ### Install Windows Build Dependencies
 
@@ -102,18 +113,21 @@ cmake --build .
     * Find it using `where python` in a CMD prompt
     * Use the command `mklink python3.exe python.exe`
     * If offered to disable PATH length limit, choose to do it
-* [MSVC 2019 Build Tools](https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products)
+* [MSVC 2022 Build Tools](https://visualstudio.microsoft.com/fr/downloads/)
   * Choose the Desktop C++ workload
 * `numpy` installed on python 3 with `python3 -m pip install numpy`
 * `wheel` installed on python 3 with `python3 -m pip install wheel`
 * `pybind11-stubgen` installed on python 3 with `python3 -m pip install pybind11-stubgen`
 * `sphinx` installed on python 3 with `python3 -m pip install sphinx`
+* Install other Python dependencies with `python -m pip install -r requirements.txt`
+* Install signaling server Python dependencies with `python -m pip install -r signaling-server\requirements.txt`
 * [MSYS2](https://www.msys2.org/)
   * Check `Run MSYS2 now` at the end of the installation process
   * Update using `pacman -Syu`
   * Launch `MSYS2 MSYS` from the Start menu
     * Update using `pacman -Su`
     * Add `C:\msys64\usr\bin` and `C:\msys64\usr\local\bin` to `PATH` BEFORE `C:\Windows\System32` (to properly use the `MSYS` commands that have Windows or Git-bash equivalents named the same way)
+
 
 ### Optional: Required to Run the Examples
 

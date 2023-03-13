@@ -92,6 +92,11 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
 
 StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
 {
+    for (auto& transceiver : m_peerConnection->GetTransceivers())
+    {
+        transceiver->StopStandard();
+    }
+
     for (auto& track : m_tracks)
     {
         auto videoTrack = dynamic_cast<VideoTrackInterface*>(track.get());

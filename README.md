@@ -1,4 +1,4 @@
-# opentera-webrtc
+# OpenTera - WebRTC
 
 [![Actions Status](https://github.com/introlab/opentera-webrtc/workflows/cpp-python-tests/badge.svg)](https://github.com/introlab/opentera-webrtc/actions)
 
@@ -21,20 +21,24 @@ By default, libwebrtc is built with non-free codecs. See [webrtc-native-build](h
 * [Apache License, Version 2.0](LICENSE)
 * For GStreamer components, please read [this](opentera-webrtc-native-client/OpenteraWebrtcNativeGStreamer/README.md).
 
+## How to Contribute
+Please read the [Code of Conduct](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIBUTING.md) files.
+
 ## Hardware Acceleration with GStreamer
 
 Hardware acceleration depends on the platform you are using to build opentera-webrtc. The following table summarizes supported hardware and GStreamer plugins:
 
-Platform|VP8|VP9|H.264|
-|---|---|---|---|
-|Jetson TX2/Nano | nvv4l2vp8enc, nvv4l2decoder | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson Xavier NX | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson AGX Xavier | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Jetson Orin / Orin Nano / Orin NX | X | X | nvv4l2h264enc, nvv4l2decoder |
-|Raspberry Pi 4 | X | X | v4l2h264enc, v4l2h264dec |
-|VA-API | vaapivp8enc, vaapivp8dec | X | vaapih264enc, vaapih264dec |
+| Platform                          | VP8                         | VP9           | H.264                        |
+|-----------------------------------|-----------------------------|---------------|------------------------------|
+| Jetson TX2/Nano                   | nvv4l2vp8enc, nvv4l2decoder | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Xavier NX                  | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson AGX Xavier                 | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Orin / Orin Nano / Orin NX | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Raspberry Pi 4                    | X                           | X             | v4l2h264enc, v4l2h264dec     |
+| VA-API                            | vaapivp8enc, vaapivp8dec    | vaapivp9dec   | vaapih264enc, vaapih264dec   |
+| Apple Media                       | X                           | X             | vtenc_h264, vtdec            |
 
-Note that VP9 is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
+Note that VP9 encoding is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
 
 ## Dependencies
 
@@ -73,9 +77,12 @@ Note that VP9 is under development, see issue [117](https://github.com/introlab/
 ## Authors
 
 * Marc-Antoine Maheux (@mamaheux)
-* Cédric Godin (@godced)
 * Dominic Létourneau (@doumdi)
 * Philippe Warren (@philippewarren)
+* François Michaud (@michaudf)
+
+## Contributors
+* Cédric Godin (@godced)
 * Ian-Mathieu Joly (@joli-1801)
 
 ## Sponsor

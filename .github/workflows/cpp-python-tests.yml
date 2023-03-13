@@ -13,23 +13,23 @@ on:
         required: false
         type: boolean
         default: false
-      fail_fast:
-        description: "Should stop the workflow as soon as one configuration fails"
-        required: false
-        type: boolean
-        default: true
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: ${{ github.event.inputs.fail_fast != 'false'}}
+      fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
-        enable-system-opencv: [ON]
+        enable-system-opencv: [OFF]
+        exclude:
+          - os: macos-11
+            enable-gstreamer: ON
+          - os: macos-12
+            enable-gstreamer: ON
 
     steps:
       - uses: actions/checkout@v2
@@ -117,6 +117,8 @@ jobs:
         run: |
           brew update
           brew install ninja tree ca-certificates perl
+          brew install gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav
+          brew install gst-devtools
         if: runner.os == 'macOS'
 
       - name: Install python dependencies
@@ -143,7 +145,7 @@ jobs:
           -DPython_ROOT_DIR="${{ env.pythonLocation }}" \
           -DOPENTERA_WEBRTC_ENABLE_GSTREAMER=${{ matrix.enable-gstreamer }} \
           -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=${{ matrix.enable-system-opencv }}
-          make -j2
+          make
           make install
 
       - name: Python native_client build cleanup
@@ -164,9 +166,8 @@ jobs:
       - name: Run CPP Tests
         working-directory: build/dist/bin
         run: |
-          ls -l
           export LD_LIBRARY_PATH=$PWD
-          ldd ./OpenteraWebrtcNativeClientTests
+          export GST_DEBUG=2
           ./OpenteraWebrtcNativeClientTests
 
       # Without stdout

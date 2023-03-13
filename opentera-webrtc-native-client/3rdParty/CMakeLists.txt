@@ -46,6 +46,9 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
     set(BUILD_JAVA OFF)
     set(BUILD_OBJC OFF)
 
+    set(BUILD_OPENEXR OFF)
+    set(WITH_OPENEXR OFF)
+
     # Configure opencv
     add_subdirectory(opencv)
 
