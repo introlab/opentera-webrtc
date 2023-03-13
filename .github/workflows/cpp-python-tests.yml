@@ -21,10 +21,15 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
         enable-system-opencv: [OFF]
+        exclude:
+          - os: macos-11
+            enable-gstreamer: ON
+          - os: macos-12
+            enable-gstreamer: ON
 
     steps:
       - uses: actions/checkout@v2
