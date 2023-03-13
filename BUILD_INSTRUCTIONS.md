@@ -54,7 +54,7 @@ make
 ```
 
 ## MacOS
-Only MacOS 11 and 12 are supported using pre-built libwebrtc library for x86_64 architecture.
+Only MacOS 11, 12 and 13 are supported using pre-built libwebrtc library for x86_64 architecture.
 
 ### Install dependencies
 
