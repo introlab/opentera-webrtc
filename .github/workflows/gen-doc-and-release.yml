@@ -42,19 +42,6 @@ jobs:
           python -m pip install --user --upgrade numpy
           python -m pip install --user -r signaling-server/requirements.txt
 
-      - name: Create build directory
-        run: |
-          mkdir build
-
-      - name: Run CMake and build opentera-webrtc
-        working-directory: build
-        run: |
-          cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=dist \
-          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
-          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python3 --version | perl -pe 's/Python //')" \
-          -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON
-          make
-          make install
 
       - name: Generate C++ Documentation
         working-directory: doc/cpp
@@ -68,6 +55,31 @@ jobs:
           export OPENTERA_WEBRTC_VERSION=${{ steps.generate_version_output.outputs.version }}
           doxygen
 
+      - name: Create build directory
+        run: |
+          mkdir build
+
+      - name: Run CMake and build opentera-webrtc
+        working-directory: build
+        run: |
+          cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=dist \
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
+          -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python3 --version | perl -pe 's/Python //')" \
+          -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON
+          make -j2 native_client-html-target
+          make install
+
+      - name: Copy Python Documentation to Doc Folder
+        run: |
+          mkdir -p doc/python
+          cp -r build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client/_build/* doc/python
+          ls -l doc/python
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          folder: doc
 
       - name: Create Release
         id: create_release
@@ -82,15 +94,3 @@ jobs:
             - Please see API documentation at https://introlab.github.io/opentera-webrtc
           draft: true
           prerelease: true
-
-      - name: Copy Python Documentation to Doc Folder
-        run: |
-          mkdir -p doc/python
-          cp -r build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client/_build/* doc/python
-          ls -l doc/python
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          folder: doc
