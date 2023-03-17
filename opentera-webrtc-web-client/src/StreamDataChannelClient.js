@@ -1,7 +1,39 @@
 import SignalingClient from './SignalingClient';
 
-
+/**
+ * @brief A signaling client to join a WebRTC room, stream a video source and send data channel communication.
+ */
 class StreamDataChannelClient extends SignalingClient {
+  /**
+   * @brief Creates a stream data channel client
+   *
+   * @param signalingServerConfiguration The signaling server configuration
+   * @code
+   *  {
+   *       url: 'signaling server URL',
+   *       name: 'client name',
+   *       data: {}, // Client custom data
+   *       room: 'room name',
+   *       password: 'password'
+   *  }
+   * @endcode
+   *
+   * @param streamConfiguration  The stream configuration
+   * @code
+   *  {
+   *       localStream: localVideo.srcObject, // Optional
+   *       isSendOnly: false
+   *  }
+   * @endcode
+   *
+   * @param dataChannelConfiguration The data channel configuration
+   *  See https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel options parameter
+   *
+   * @param rtcConfiguration The RTC configuration
+   *  See https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection configuration parameter
+   *
+   * @param logger An optional logger callback
+   */
   constructor(signalingServerConfiguration, streamConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
     super(signalingServerConfiguration, logger);
 
@@ -172,12 +204,18 @@ class StreamDataChannelClient extends SignalingClient {
     this._remoteStreams = {};
   }
 
+  /**
+   * @brief Hangs up all clients.
+   */
   hangUpAll() {
     super.hangUpAll();
     this._closeAllDataChannels();
     this._closeAllRemoteStreams();
   }
 
+  /**
+   * @brief Closes all client connections
+   */
   close () {
     this._closeAllDataChannels();
     this._closeAllRemoteStreams();
@@ -185,52 +223,94 @@ class StreamDataChannelClient extends SignalingClient {
     super.close();
   }
 
+  /**
+   * @brief Indicates if the local audio is muted.
+   * @return true if the local audio is muted.
+   */
   get isLocalAudioMuted() {
     return this._isLocalAudioMuted;
   }
 
+  /**
+   * @brief Indicates if the remote audio is muted.
+   * @return true if the remote audio is muted.
+   */
   get isRemoteAudioMuted() {
     return this._isRemoteAudioMuted;
   }
 
+  /**
+   * @brief Indicates if the local video is muted.
+   * @return true if the local audio is muted.
+   */
   get isLocalVideoMuted() {
     return this._isLocalVideoMuted;
   }
 
+  /**
+   * @brief Mutes the local audio.
+   */
   muteLocalAudio() {
     this.setLocalAudioMuted(true);
   }
 
+  /**
+   * @brief Unmutes the local audio.
+   */
   unmuteLocalAudio() {
     this.setLocalAudioMuted(false);
   }
 
+  /**
+   * @brief Mutes or unmutes the local audio.
+   * @param muted indicates if the local audio is muted or not (true or false)
+   */
   setLocalAudioMuted(muted) {
     this._isLocalAudioMuted = muted;
     this._setAllLocalTracksEnabled('audio', !muted);
   }
 
+  /**
+   * @brief Mutes the remote audio.
+   */
   muteRemoteAudio() {
     this.setRemoteAudioMuted(true);
   }
 
+  /**
+   * @brief Unmutes the remote audio.
+   */
   unmuteRemoteAudio() {
     this.setRemoteAudioMuted(false);
   }
 
-  setLocalRemoteMuted(muted) {
+  /**
+   * @brief Mutes or unmutes the remote audio.
+   * @param muted indicates if the remote audio is muted or not (true or false)
+   */
+  setRemoteAudioMuted(muted) {
     this._isRemoteAudioMuted = muted;
     this._setAllRemoteTracksEnabled('audio', !muted);
   }
 
+  /**
+   * @brief Mutes the local video.
+   */
   muteLocalVideo() {
     this.setLocalVideoMuted(true);
   }
 
+  /**
+   * @brief Unmutes the local video.
+   */
   unmuteLocalVideo() {
     this.setLocalVideoMuted(false);
   }
 
+  /**
+   * @brief Mutes or unmutes the local video.
+   * @param muted indicates if the local video is muted or not (true or false)
+   */
   setLocalVideoMuted(muted) {
     this._isLocalVideoMuted = muted;
     this._setAllLocalTracksEnabled('video', !muted);
@@ -258,32 +338,104 @@ class StreamDataChannelClient extends SignalingClient {
     });
   }
 
+  /**
+   * @brief Sends binary data to the specified clients.
+   *
+   * @param data The data
+   * @param ids The client ids
+   */
   sendTo(data, ids) {
     ids.forEach(id => this._dataChannels[id].send(data));
   }
 
+  /**
+   * @brief Sends binary data to all clients.
+   * @param data
+   */
   sendToAll(data) {
     for (let id in this._dataChannels) {
       this._dataChannels[id].send(data);
     }
   }
 
+  /**
+   * @brief Sets the callback that is called when data are received.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   *  - data: The message data
+   * @endparblock
+   *
+   * @param onDataChannelMessage The callback
+   */
   set onDataChannelMessage(onDataChannelMessage) {
     this._onDataChannelMessage = onDataChannelMessage;
   }
 
+  /**
+   * @brief Sets the callback that is called when a data channel opens.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param onDataChannelOpen The callback
+   */
   set onDataChannelOpen(onDataChannelOpen) {
     this._onDataChannelOpen = onDataChannelOpen;
   }
 
+  /**
+   * @brief Sets the callback that is called when a data channel closes.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param onDataChannelClose
+   */
   set onDataChannelClose(onDataChannelClose) {
     this._onDataChannelClose = onDataChannelClose;
   }
 
+  /**
+   * @brief Sets the callback that is called when a data channel error occurs.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - event: The error event
+   * @endparblock
+   *
+   * @param onDataChannelError
+   */
   set onDataChannelError(onDataChannelError) {
     this._onDataChannelError = onDataChannelError;
   }
 
+  /**
+   * @brief Sets the callback that is called when a stream is added.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   *  - remoteStream: The remote stream
+   * @endparblock
+   *
+   *
+   * @param onAddRemoteStream The callback
+   */
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;
   }

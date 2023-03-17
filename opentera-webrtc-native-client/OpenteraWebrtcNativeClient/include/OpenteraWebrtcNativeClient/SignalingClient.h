@@ -179,8 +179,8 @@ namespace opentera
     }
 
     /**
-     * @brief Indicates if the client is connected to a least one client (RTCPeerConnection).
-     * @return true if the client is connected to a least one client (RTCPeerConnection)
+     * @brief Indicates if the client is connected to at least one client (RTCPeerConnection).
+     * @return true if the client is connected to at least one client (RTCPeerConnection)
      */
     inline bool SignalingClient::isRtcConnected()
     {
@@ -258,7 +258,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - error: The error message
+     *  - error: The error message
      * @endparblock
      *
      * @param callback The callback
@@ -275,7 +275,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - roomClients: The room clients
+     *  - roomClients: The room clients
      * @endparblock
      *
      * @param callback The callback
@@ -293,10 +293,10 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client the call is from
+     *  - client: The client the call is from
      *
      * Callback return value:
-     * - true to accept the call, false to reject the call
+     *  - true to accept the call, false to reject the call
      * @endparblock
      *
      * @param callback The callback
@@ -313,7 +313,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client that rejects the call
+     *  - client: The client that rejects the call
      * @endparblock
      *
      * @param callback The callback
@@ -330,7 +330,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client that is connected
+     *  - client: The client that is connected
      * @endparblock
      *
      * @param callback The callback
@@ -347,7 +347,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client that is disconnected
+     *  - client: The client that is disconnected
      * @endparblock
      *
      * @param callback The callback
@@ -364,7 +364,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - error: The error message
+     *  - error: The error message
      * @endparblock
      *
      * @param callback The callback
@@ -381,7 +381,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - message: The message
+     *  - message: The message
      * @endparblock
      *
      * @param callback The callback
