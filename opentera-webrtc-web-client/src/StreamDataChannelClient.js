@@ -7,7 +7,7 @@ class StreamDataChannelClient extends SignalingClient {
   /**
    * @brief Creates a stream data channel client
    *
-   * @param signalingServerConfiguration The signaling server configuration
+   * @param {Object} signalingServerConfiguration The signaling server configuration
    * @code
    *  {
    *       url: 'signaling server URL',
@@ -18,7 +18,7 @@ class StreamDataChannelClient extends SignalingClient {
    *  }
    * @endcode
    *
-   * @param streamConfiguration  The stream configuration
+   * @param {Object} streamConfiguration  The stream configuration
    * @code
    *  {
    *       localStream: localVideo.srcObject, // Optional
@@ -26,13 +26,13 @@ class StreamDataChannelClient extends SignalingClient {
    *  }
    * @endcode
    *
-   * @param dataChannelConfiguration The data channel configuration
+   * @param {Object} dataChannelConfiguration The data channel configuration
    *  See https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/createDataChannel options parameter
    *
-   * @param rtcConfiguration The RTC configuration
+   * @param {Object} rtcConfiguration The RTC configuration
    *  See https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection configuration parameter
    *
-   * @param logger An optional logger callback
+   * @param {CallableFunction} logger An optional logger callback
    */
   constructor(signalingServerConfiguration, streamConfiguration, dataChannelConfiguration, rtcConfiguration, logger) {
     super(signalingServerConfiguration, logger);
@@ -225,7 +225,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Indicates if the local audio is muted.
-   * @return true if the local audio is muted.
+   * @return {Boolean} true if the local audio is muted.
    */
   get isLocalAudioMuted() {
     return this._isLocalAudioMuted;
@@ -233,7 +233,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Indicates if the remote audio is muted.
-   * @return true if the remote audio is muted.
+   * @return {Boolean} true if the remote audio is muted.
    */
   get isRemoteAudioMuted() {
     return this._isRemoteAudioMuted;
@@ -241,7 +241,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Indicates if the local video is muted.
-   * @return true if the local audio is muted.
+   * @return {Boolean} true if the local audio is muted.
    */
   get isLocalVideoMuted() {
     return this._isLocalVideoMuted;
@@ -263,7 +263,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Mutes or unmutes the local audio.
-   * @param muted indicates if the local audio is muted or not (true or false)
+   * @param {Boolean} muted indicates if the local audio is muted or not
    */
   setLocalAudioMuted(muted) {
     this._isLocalAudioMuted = muted;
@@ -286,7 +286,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Mutes or unmutes the remote audio.
-   * @param muted indicates if the remote audio is muted or not (true or false)
+   * @param {Boolean} muted indicates if the remote audio is muted or not
    */
   setRemoteAudioMuted(muted) {
     this._isRemoteAudioMuted = muted;
@@ -309,7 +309,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Mutes or unmutes the local video.
-   * @param muted indicates if the local video is muted or not (true or false)
+   * @param {Boolean} muted indicates if the local video is muted or not
    */
   setLocalVideoMuted(muted) {
     this._isLocalVideoMuted = muted;
@@ -341,8 +341,8 @@ class StreamDataChannelClient extends SignalingClient {
   /**
    * @brief Sends binary data to the specified clients.
    *
-   * @param data The data
-   * @param ids The client ids
+   * @param {String | Blob | ArrayBuffer} data The data
+   * @param {Array<String>} ids The client ids
    */
   sendTo(data, ids) {
     ids.forEach(id => this._dataChannels[id].send(data));
@@ -350,7 +350,7 @@ class StreamDataChannelClient extends SignalingClient {
 
   /**
    * @brief Sends binary data to all clients.
-   * @param data
+   * @param {String | Blob | ArrayBuffer} data
    */
   sendToAll(data) {
     for (let id in this._dataChannels) {
@@ -369,7 +369,7 @@ class StreamDataChannelClient extends SignalingClient {
    *  - data: The message data
    * @endparblock
    *
-   * @param onDataChannelMessage The callback
+   * @param {CallableFunction} onDataChannelMessage The callback
    */
   set onDataChannelMessage(onDataChannelMessage) {
     this._onDataChannelMessage = onDataChannelMessage;
@@ -385,7 +385,7 @@ class StreamDataChannelClient extends SignalingClient {
    *  - clientData: The client data
    * @endparblock
    *
-   * @param onDataChannelOpen The callback
+   * @param {CallableFunction} onDataChannelOpen The callback
    */
   set onDataChannelOpen(onDataChannelOpen) {
     this._onDataChannelOpen = onDataChannelOpen;
@@ -401,7 +401,7 @@ class StreamDataChannelClient extends SignalingClient {
    *  - clientData: The client data
    * @endparblock
    *
-   * @param onDataChannelClose
+   * @param {CallableFunction} onDataChannelClose
    */
   set onDataChannelClose(onDataChannelClose) {
     this._onDataChannelClose = onDataChannelClose;
@@ -416,7 +416,7 @@ class StreamDataChannelClient extends SignalingClient {
    *  - event: The error event
    * @endparblock
    *
-   * @param onDataChannelError
+   * @param {CallableFunction} onDataChannelError
    */
   set onDataChannelError(onDataChannelError) {
     this._onDataChannelError = onDataChannelError;
@@ -434,7 +434,7 @@ class StreamDataChannelClient extends SignalingClient {
    * @endparblock
    *
    *
-   * @param onAddRemoteStream The callback
+   * @param {CallableFunction} onAddRemoteStream The callback
    */
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;

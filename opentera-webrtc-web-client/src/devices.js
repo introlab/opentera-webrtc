@@ -16,7 +16,7 @@ async function enumerate() {
 
 /**
  * @brief Gets a stream that satisfies the constraints.
- * @param constraints See https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
+ * @param {Object} constraints See https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
  * @returns {Promise<MediaStream>}
  */
 async function getStream(constraints) {

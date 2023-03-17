@@ -7,7 +7,7 @@ class StreamClient extends SignalingClient {
   /**
    * @brief Creates a stream client
    *
-   * @param signalingServerConfiguration The signaling server configuration
+   * @param {Object} signalingServerConfiguration The signaling server configuration
    * @code
    *  {
    *       url: 'signaling server URL',
@@ -18,7 +18,7 @@ class StreamClient extends SignalingClient {
    *  }
    * @endcode
    *
-   * @param streamConfiguration The stream configuration
+   * @param {Object} streamConfiguration The stream configuration
    * @code
    *  {
    *       localStream: localVideo.srcObject, // Optional
@@ -26,10 +26,10 @@ class StreamClient extends SignalingClient {
    *  }
    * @endcode
    *
-   * @param rtcConfiguration The RTC configuration
+   * @param {Object} rtcConfiguration The RTC configuration
    *  See https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/RTCPeerConnection configuration parameter
    *
-   * @param logger An optional logger callback
+   * @param {CallableFunction} logger An optional logger callback
    */
   constructor(signalingServerConfiguration, streamConfiguration, rtcConfiguration, logger) {
     super(signalingServerConfiguration, logger);
@@ -145,7 +145,7 @@ class StreamClient extends SignalingClient {
 
   /**
    * @brief Indicates if the local audio is muted.
-   * @return true if the local audio is muted.
+   * @return {Boolean} true if the local audio is muted.
    */
   get isLocalAudioMuted() {
     return this._isLocalAudioMuted;
@@ -153,7 +153,7 @@ class StreamClient extends SignalingClient {
 
   /**
    * @brief Indicates if the remote audio is muted.
-   * @return true if the remote audio is muted.
+   * @return {Boolean} true if the remote audio is muted.
    */
   get isRemoteAudioMuted() {
     return this._isRemoteAudioMuted;
@@ -161,7 +161,7 @@ class StreamClient extends SignalingClient {
 
   /**
    * @brief Indicates if the local video is muted.
-   * @return true if the local audio is muted.
+   * @return {Boolean} true if the local audio is muted.
    */
   get isLocalVideoMuted() {
     return this._isLocalVideoMuted;
@@ -206,7 +206,7 @@ class StreamClient extends SignalingClient {
 
   /**
    * @brief Mutes or unmutes the remote audio.
-   * @param muted indicates if the remote audio is muted or not (true or false)
+   * @param {Boolean} muted indicates if the remote audio is muted or not
    */
   setRemoteAudioMuted(muted) {
     this._isRemoteAudioMuted = muted;
@@ -229,7 +229,7 @@ class StreamClient extends SignalingClient {
 
   /**
    * @brief Mutes or unmutes the local video.
-   * @param muted indicates if the local video is muted or not (true or false)
+   * @param {Boolean} muted indicates if the local video is muted or not
    */
   setLocalVideoMuted(muted) {
     this._isLocalVideoMuted = muted;
@@ -270,7 +270,7 @@ class StreamClient extends SignalingClient {
    * @endparblock
    *
    *
-   * @param onAddRemoteStream The callback
+   * @param {CallableFunction} onAddRemoteStream The callback
    */
   set onAddRemoteStream(onAddRemoteStream) {
     this._onAddRemoteStream = onAddRemoteStream;

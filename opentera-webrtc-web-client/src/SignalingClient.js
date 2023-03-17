@@ -13,7 +13,7 @@ class SignalingClient {
   /**
    * @brief Creates a signaling client with the specified configurations.
    *
-   * @param signalingServerConfiguration The signaling server configuration
+   * @param {Object} signalingServerConfiguration The signaling server configuration
    * @code
    *  {
    *       url: 'signaling server URL',
@@ -24,7 +24,7 @@ class SignalingClient {
    *  }
    * @endcode
    *
-   * @param logger An optional logger callback
+   * @param {CallableFunction} logger An optional logger callback
    */
   constructor(signalingServerConfiguration, logger) {
     if (this.constructor === SignalingClient) {
@@ -371,7 +371,7 @@ class SignalingClient {
 
   /**
    * @brief Calls the specified clients.
-   * @param ids The client ids to call
+   * @param {Array<String>} ids The client ids to call
    */
   callIds(ids) {
     this._logger('SignalingClient.callIds method call, ids=', ids);
@@ -401,8 +401,8 @@ class SignalingClient {
 
   /**
    * @brief Gets the client name from the client id.
-   * @param id The client id
-   * @returns The client name
+   * @param {String} id The client id
+   * @returns {String} The client name
    */
   getClientName(id) {
     return this._clientNamesById[id];
@@ -410,8 +410,8 @@ class SignalingClient {
 
   /**
    * @brief Gets the client data from the client id.
-   * @param id The client id
-   * @returns The client name
+   * @param {String} id The client id
+   * @returns {Object} The client name
    */
   getClientData(id) {
     return this._clientDatumById[id];
@@ -419,7 +419,7 @@ class SignalingClient {
 
   /**
    * @brief Indicates if the client is connected to the signaling server.
-   * @return true if the client is connected to the signaling server
+   * @return {Boolean} true if the client is connected to the signaling server
    */
   get isConnected() {
     return this._socket !== null;
@@ -427,7 +427,7 @@ class SignalingClient {
 
   /**
    * @brief Indicates if the client is connected to at least one client (RTCPeerConnection).
-   * @return true if the client is connected to at least one client (RTCPeerConnection)
+   * @return {Boolean} true if the client is connected to at least one client (RTCPeerConnection)
    */
   get isRtcConnected() {
     return Object.keys(this._rtcPeerConnections).length > 0;
@@ -435,7 +435,7 @@ class SignalingClient {
 
   /**
    * @brief Returns the client id.
-   * @return The client id
+   * @return {String} The client id
    */
   get id() {
     if (this._socket !== null) {
@@ -448,7 +448,7 @@ class SignalingClient {
 
   /**
    * @brief Returns the connected room client ids.
-   * @return The connected room client ids
+   * @return {Array<String>} The connected room client ids
    */
   get connectedRoomClientIds() {
     return Object.keys(this._rtcPeerConnections);
@@ -456,7 +456,7 @@ class SignalingClient {
 
   /**
    * @brief Returns the room clients.
-   * @returns An array of client objects
+   * @returns {Array<Object>} An array of client objects
    */
   get roomClients() {
     return this._addConnectionStateToClients(this._clients);
@@ -469,7 +469,7 @@ class SignalingClient {
    * Callback parameter: None
    * @endparblock
    *
-   * @param onSignalingConnectionOpen The callback
+   * @param {CallableFunction} onSignalingConnectionOpen The callback
    */
   set onSignalingConnectionOpen(onSignalingConnectionOpen) {
     this._onSignalingConnectionOpen = onSignalingConnectionOpen;
@@ -482,7 +482,7 @@ class SignalingClient {
    * Callback parameter: None
    * @endparblock
    *
-   * @param onSignalingConnectionClose The callback
+   * @param {CallableFunction} onSignalingConnectionClose The callback
    */
   set onSignalingConnectionClose(onSignalingConnectionClose) {
     this._onSignalingConnectionClose = onSignalingConnectionClose;
@@ -496,7 +496,7 @@ class SignalingClient {
    *  - error: The error message
    * @endparblock
    *
-   * @param onSignalingConnectionError The callback
+   * @param {CallableFunction} onSignalingConnectionError The callback
    */
   set onSignalingConnectionError(onSignalingConnectionError) {
     this._onSignalingConnectionError = onSignalingConnectionError;
@@ -510,7 +510,7 @@ class SignalingClient {
    *  - clients: The room clients
    * @endparblock
    *
-   * @param onRoomClientsChange The callback
+   * @param {CallableFunction} onRoomClientsChange The callback
    */
   set onRoomClientsChange(onRoomClientsChange) {
     this._onRoomClientsChange = onRoomClientsChange;
@@ -529,7 +529,7 @@ class SignalingClient {
    *  - true to accept the call, false to reject the call
    * @endparblock
    *
-   * @param callAcceptor The callback
+   * @param {CallableFunction} callAcceptor The callback
    */
   set callAcceptor(callAcceptor) {
     this._callAcceptor = callAcceptor;
@@ -545,7 +545,7 @@ class SignalingClient {
    *  - clientData: The client data
    * @endparblock
    *
-   * @param onCallReject The callback
+   * @param {CallableFunction} onCallReject The callback
    */
   set onCallReject(onCallReject) {
     this._onCallReject = onCallReject;
@@ -561,7 +561,7 @@ class SignalingClient {
    *  - clientData: The client data
    * @endparblock
    *
-   * @param onClientConnect The callback
+   * @param {CallableFunction} onClientConnect The callback
    */
   set onClientConnect(onClientConnect) {
     this._onClientConnect = onClientConnect;
@@ -577,7 +577,7 @@ class SignalingClient {
    *  - clientData: The client data
    * @endparblock
    *
-   * @param onClientDisconnect The callback
+   * @param {CallableFunction} onClientDisconnect The callback
    */
   set onClientDisconnect(onClientDisconnect) {
     this._onClientDisconnect = onClientDisconnect;

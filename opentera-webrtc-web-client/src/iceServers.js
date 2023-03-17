@@ -1,7 +1,7 @@
 /**
  * @brief Gets the ice servers from the signaling server.
- * @param url The signaling server ice servers address.
- * @param password The signaling server password.
+ * @param {String} url The signaling server ice servers address.
+ * @param {String} password The signaling server password.
  * @returns {Promise<Object>} THe signaling server ice servers
  */
 async function fetchFromServer(url, password) {
