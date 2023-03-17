@@ -89,7 +89,7 @@ jobs:
           find . -type f -exec sed -i 's/_sources\//opentera-webrtc\/python\/_sources\//g' {} +
           find . -type f -exec sed -i 's/_static\//opentera-webrtc\/python\/_static\//g' {} +
 
-- name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
