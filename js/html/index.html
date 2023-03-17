@@ -96,51 +96,51 @@ $(function() {
 Examples</h1>
 <h2><a class="anchor" id="web_data_channel_client_example"></a>
 Data Channel Client Example</h2>
-<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!<span class="keyword">DOCTYPE</span> <span class="keyword">html</span>&gt;</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;<span class="keywordtype">html</span>&gt;</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;<span class="keywordtype">title</span>&gt;<span class="keyword">Web</span> <span class="keyword">Data</span> <span class="keyword">Channel</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">title</span>&gt;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;<span class="keywordtype">meta</span> <span class="keyword">charset</span>=<span class="stringliteral">&quot;UTF-8&quot;</span>&gt;</div>
+<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!DOCTYPE html&gt;</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;html&gt;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;head&gt;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;title&gt;Web Data Channel Client&lt;/title&gt;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;meta charset=&quot;UTF-8&quot;&gt;</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;openteraWebrtcWebClient.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;<span class="keywordtype">body</span>&gt;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;script src=&quot;openteraWebrtcWebClient.js&quot;&gt;&lt;/script&gt;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/head&gt;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;body&gt;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;<span class="keywordtype">h1</span>&gt;<span class="keyword">Web</span> <span class="keyword">Data</span> <span class="keyword">Channel</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">h1</span>&gt;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;h1&gt;Web Data Channel Client&lt;/h1&gt;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Name:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;name_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;h4&gt;Name: &lt;/h4&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;input id=&quot;name_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Password:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;password_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;abc&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;h4&gt;Password: &lt;/h4&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;input id=&quot;password_input&quot; type=&quot;text&quot; value=&quot;abc&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Signaling</span> <span class="keyword">Server</span> <span class="keyword">Connection:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;connect_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Connect</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;h4&gt;Signaling Server Connection: &lt;/h4&gt;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    &lt;button id=&quot;connect_button&quot; type=&quot;button&quot;&gt;Connect&lt;/button&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;button id=&quot;close_button&quot; type=&quot;button&quot;&gt;Close&lt;/button&gt;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Clients:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    &lt;<span class="keywordtype">ul</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;client_list&quot;</span>&gt;&lt;/<span class="keywordtype">ul</span>&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;h4&gt;Clients: &lt;/h4&gt;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    &lt;ul id=&quot;client_list&quot;&gt;&lt;/ul&gt;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">All:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;hang_up_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Hang</span> <span class="keyword">Up</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_all_room_peer_connections&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span> <span class="keyword">All</span> <span class="keyword">Room</span> <span class="keyword">Peer</span> <span class="keyword">Connections</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;h4&gt;Call All: &lt;/h4&gt;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    &lt;button id=&quot;call_all_button&quot; type=&quot;button&quot;&gt;Call All&lt;/button&gt;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;button id=&quot;hang_up_all_button&quot; type=&quot;button&quot;&gt;Hang Up All&lt;/button&gt;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;button id=&quot;close_all_room_peer_connections&quot; type=&quot;button&quot;&gt;Close All Room Peer Connections&lt;/button&gt;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">One:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;id_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_one_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    &lt;h4&gt;Call One: &lt;/h4&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;input id=&quot;id_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;button id=&quot;call_one_button&quot; type=&quot;button&quot;&gt;Call&lt;/button&gt;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Messages:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;text_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;send_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Send</span>&lt;/<span class="keywordtype">button</span>&gt;&lt;<span class="keywordtype">br</span>&gt;&lt;<span class="keywordtype">br</span>&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;<span class="keywordtype">textarea</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;chat_text_area&quot;</span> <span class="keyword">rows</span>=<span class="stringliteral">&quot;10&quot;</span> <span class="keyword">cols</span>=<span class="stringliteral">&quot;50&quot;</span> <span class="keyword">readonly</span>&gt;&lt;/<span class="keywordtype">textarea</span>&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;h4&gt;Messages: &lt;/h4&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;input id=&quot;text_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;button id=&quot;send_button&quot; type=&quot;button&quot;&gt;Send&lt;/button&gt;&lt;br&gt;&lt;br&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;textarea id=&quot;chat_text_area&quot; rows=&quot;10&quot; cols=&quot;50&quot; readonly&gt;&lt;/textarea&gt;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;client.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;script src=&quot;client.js&quot;&gt;&lt;/script&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  &lt;/<span class="keywordtype">body</span>&gt;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;&lt;/<span class="keywordtype">html</span>&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  &lt;/body&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;&lt;/html&gt;</div>
 </div><!-- fragment --><p> client.js </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;(<span class="keyword">function</span>() {</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;  let nameInput = document.getElementById(<span class="stringliteral">&#39;name_input&#39;</span>);</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  let passwordInput = document.getElementById(<span class="stringliteral">&#39;password_input&#39;</span>);</div>
@@ -263,55 +263,55 @@ Data Channel Client Example</h2>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;})();</div>
 </div><!-- fragment --><h2><a class="anchor" id="web_stream_client_example"></a>
 Stream Client Example</h2>
-<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!<span class="keyword">DOCTYPE</span> <span class="keyword">html</span>&gt;</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;<span class="keywordtype">html</span>&gt;</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;<span class="keywordtype">title</span>&gt;<span class="keyword">Stream</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">title</span>&gt;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;<span class="keywordtype">meta</span> <span class="keyword">charset</span>=<span class="stringliteral">&quot;UTF-8&quot;</span>&gt;</div>
+<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!DOCTYPE html&gt;</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;html&gt;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;head&gt;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;title&gt;Stream Client&lt;/title&gt;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;meta charset=&quot;UTF-8&quot;&gt;</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;openteraWebrtcWebClient.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;<span class="keywordtype">body</span>&gt;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;script src=&quot;openteraWebrtcWebClient.js&quot;&gt;&lt;/script&gt;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/head&gt;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;body&gt;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;<span class="keywordtype">h1</span>&gt;<span class="keyword">Stream</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">h1</span>&gt;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;h1&gt;Stream Client&lt;/h1&gt;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;<span class="keywordtype">h2</span>&gt;<span class="keyword">Local</span> <span class="keyword">Stream</span>&lt;/<span class="keywordtype">h2</span>&gt;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;<span class="keywordtype">video</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;local_video&quot;</span> <span class="keyword">muted</span>&gt;&lt;/<span class="keywordtype">video</span>&gt;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    &lt;<span class="keywordtype">br</span>/&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;mute_audio_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Mute</span> <span class="keyword">Audio</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;unmute_audio_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Unmute</span> <span class="keyword">Audio</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;mute_video_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Mute</span> <span class="keyword">Video</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;unmute_video_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Unmute</span> <span class="keyword">Video</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;h2&gt;Local Stream&lt;/h2&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;video id=&quot;local_video&quot; muted&gt;&lt;/video&gt;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    &lt;br/&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;button id=&quot;mute_audio_button&quot; type=&quot;button&quot;&gt;Mute Audio&lt;/button&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;button id=&quot;unmute_audio_button&quot; type=&quot;button&quot;&gt;Unmute Audio&lt;/button&gt;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    &lt;button id=&quot;mute_video_button&quot; type=&quot;button&quot;&gt;Mute Video&lt;/button&gt;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;button id=&quot;unmute_video_button&quot; type=&quot;button&quot;&gt;Unmute Video&lt;/button&gt;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;<span class="keywordtype">h2</span>&gt;<span class="keyword">Remove</span> <span class="keyword">Stream</span>&lt;/<span class="keywordtype">h2</span>&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Name:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;name_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;h2&gt;Remove Stream&lt;/h2&gt;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    &lt;h4&gt;Name: &lt;/h4&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;input id=&quot;name_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Password:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;password_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;abc&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    &lt;h4&gt;Password: &lt;/h4&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;input id=&quot;password_input&quot; type=&quot;text&quot; value=&quot;abc&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Signaling</span> <span class="keyword">Server</span> <span class="keyword">Connection:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;connect_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Connect</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;h4&gt;Signaling Server Connection: &lt;/h4&gt;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;button id=&quot;connect_button&quot; type=&quot;button&quot;&gt;Connect&lt;/button&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    &lt;button id=&quot;close_button&quot; type=&quot;button&quot;&gt;Close&lt;/button&gt;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Clients:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;<span class="keywordtype">ul</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;client_list&quot;</span>&gt;&lt;/<span class="keywordtype">ul</span>&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;h4&gt;Clients: &lt;/h4&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;ul id=&quot;client_list&quot;&gt;&lt;/ul&gt;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">All:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;hang_up_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Hang</span> <span class="keyword">Up</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_all_room_peer_connections&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span> <span class="keyword">All</span> <span class="keyword">Room</span> <span class="keyword">Peer</span> <span class="keyword">Connections</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;h4&gt;Call All: &lt;/h4&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;button id=&quot;call_all_button&quot; type=&quot;button&quot;&gt;Call All&lt;/button&gt;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;button id=&quot;hang_up_all_button&quot; type=&quot;button&quot;&gt;Hang Up All&lt;/button&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;button id=&quot;close_all_room_peer_connections&quot; type=&quot;button&quot;&gt;Close All Room Peer Connections&lt;/button&gt;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">One:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;id_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_one_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    &lt;h4&gt;Call One: &lt;/h4&gt;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    &lt;input id=&quot;id_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;button id=&quot;call_one_button&quot; type=&quot;button&quot;&gt;Call&lt;/button&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;<span class="keywordtype">div</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;remote_videos&quot;</span>&gt;&lt;/<span class="keywordtype">div</span>&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;div id=&quot;remote_videos&quot;&gt;&lt;/div&gt;</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;client.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    &lt;script src=&quot;client.js&quot;&gt;&lt;/script&gt;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  &lt;/<span class="keywordtype">body</span>&gt;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;&lt;/<span class="keywordtype">html</span>&gt;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  &lt;/body&gt;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;&lt;/html&gt;</div>
 </div><!-- fragment --><p> client.js </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;(<span class="keyword">function</span>() {</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;  let localVideo = document.getElementById(<span class="stringliteral">&#39;local_video&#39;</span>);</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  let muteAudioButton = document.getElementById(<span class="stringliteral">&#39;mute_audio_button&#39;</span>);</div>
@@ -464,61 +464,61 @@ Stream Client Example</h2>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;})();</div>
 </div><!-- fragment --><h2><a class="anchor" id="web_stream_data_channel_client_example"></a>
 Stream Data Channel Client Example</h2>
-<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!<span class="keyword">DOCTYPE</span> <span class="keyword">html</span>&gt;</div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;<span class="keywordtype">html</span>&gt;</div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;<span class="keywordtype">title</span>&gt;<span class="keyword">Stream</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">title</span>&gt;</div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;<span class="keywordtype">meta</span> <span class="keyword">charset</span>=<span class="stringliteral">&quot;UTF-8&quot;</span>&gt;</div>
+<p>client.html </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;&lt;!DOCTYPE html&gt;</div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;&lt;html&gt;</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  &lt;head&gt;</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;    &lt;title&gt;Stream Client&lt;/title&gt;</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;    &lt;meta charset=&quot;UTF-8&quot;&gt;</div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;openteraWebrtcWebClient.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/<span class="keywordtype">head</span>&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;<span class="keywordtype">body</span>&gt;</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    &lt;script src=&quot;openteraWebrtcWebClient.js&quot;&gt;&lt;/script&gt;</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;  &lt;/head&gt;</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;  &lt;body&gt;</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;<span class="keywordtype">h1</span>&gt;<span class="keyword">Stream</span> <span class="keyword">Client</span>&lt;/<span class="keywordtype">h1</span>&gt;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    &lt;h1&gt;Stream Client&lt;/h1&gt;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;<span class="keywordtype">h2</span>&gt;<span class="keyword">Local</span> <span class="keyword">Stream</span>&lt;/<span class="keywordtype">h2</span>&gt;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;<span class="keywordtype">video</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;local_video&quot;</span> <span class="keyword">muted</span>&gt;&lt;/<span class="keywordtype">video</span>&gt;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    &lt;<span class="keywordtype">br</span>/&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;mute_audio_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Mute</span> <span class="keyword">Audio</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;unmute_audio_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Unmute</span> <span class="keyword">Audio</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;mute_video_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Mute</span> <span class="keyword">Video</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;unmute_video_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Unmute</span> <span class="keyword">Video</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    &lt;h2&gt;Local Stream&lt;/h2&gt;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    &lt;video id=&quot;local_video&quot; muted&gt;&lt;/video&gt;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    &lt;br/&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    &lt;button id=&quot;mute_audio_button&quot; type=&quot;button&quot;&gt;Mute Audio&lt;/button&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    &lt;button id=&quot;unmute_audio_button&quot; type=&quot;button&quot;&gt;Unmute Audio&lt;/button&gt;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    &lt;button id=&quot;mute_video_button&quot; type=&quot;button&quot;&gt;Mute Video&lt;/button&gt;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    &lt;button id=&quot;unmute_video_button&quot; type=&quot;button&quot;&gt;Unmute Video&lt;/button&gt;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;<span class="keywordtype">h2</span>&gt;<span class="keyword">Remove</span> <span class="keyword">Stream</span> <span class="keyword">and</span> <span class="keyword">Messages</span>&lt;/<span class="keywordtype">h2</span>&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Name:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;name_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    &lt;h2&gt;Remove Stream and Messages&lt;/h2&gt;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    &lt;h4&gt;Name: &lt;/h4&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    &lt;input id=&quot;name_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Password:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;password_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span> <span class="keyword">value</span>=<span class="stringliteral">&quot;abc&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    &lt;h4&gt;Password: &lt;/h4&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    &lt;input id=&quot;password_input&quot; type=&quot;text&quot; value=&quot;abc&quot;&gt;&lt;/input&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Signaling</span> <span class="keyword">Server</span> <span class="keyword">Connection:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;connect_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Connect</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    &lt;h4&gt;Signaling Server Connection: &lt;/h4&gt;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    &lt;button id=&quot;connect_button&quot; type=&quot;button&quot;&gt;Connect&lt;/button&gt;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    &lt;button id=&quot;close_button&quot; type=&quot;button&quot;&gt;Close&lt;/button&gt;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Clients:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;<span class="keywordtype">ul</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;client_list&quot;</span>&gt;&lt;/<span class="keywordtype">ul</span>&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    &lt;h4&gt;Clients: &lt;/h4&gt;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    &lt;ul id=&quot;client_list&quot;&gt;&lt;/ul&gt;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">All:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;hang_up_all_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Hang</span> <span class="keyword">Up</span> <span class="keyword">All</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;close_all_room_peer_connections&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Close</span> <span class="keyword">All</span> <span class="keyword">Room</span> <span class="keyword">Peer</span> <span class="keyword">Connections</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    &lt;h4&gt;Call All: &lt;/h4&gt;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    &lt;button id=&quot;call_all_button&quot; type=&quot;button&quot;&gt;Call All&lt;/button&gt;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    &lt;button id=&quot;hang_up_all_button&quot; type=&quot;button&quot;&gt;Hang Up All&lt;/button&gt;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    &lt;button id=&quot;close_all_room_peer_connections&quot; type=&quot;button&quot;&gt;Close All Room Peer Connections&lt;/button&gt;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Call</span> <span class="keyword">One:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;id_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;call_one_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Call</span>&lt;/<span class="keywordtype">button</span>&gt;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    &lt;h4&gt;Call One: &lt;/h4&gt;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    &lt;input id=&quot;id_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    &lt;button id=&quot;call_one_button&quot; type=&quot;button&quot;&gt;Call&lt;/button&gt;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Messages:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    &lt;<span class="keywordtype">input</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;text_input&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;text&quot;</span>&gt;&lt;/<span class="keywordtype">input</span>&gt;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    &lt;<span class="keywordtype">button</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;send_button&quot;</span> <span class="keyword">type</span>=<span class="stringliteral">&quot;button&quot;</span>&gt;<span class="keyword">Send</span>&lt;/<span class="keywordtype">button</span>&gt;&lt;<span class="keywordtype">br</span>&gt;&lt;<span class="keywordtype">br</span>&gt;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    &lt;<span class="keywordtype">textarea</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;chat_text_area&quot;</span> <span class="keyword">rows</span>=<span class="stringliteral">&quot;10&quot;</span> <span class="keyword">cols</span>=<span class="stringliteral">&quot;50&quot;</span> <span class="keyword">readonly</span>&gt;&lt;/<span class="keywordtype">textarea</span>&gt;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    &lt;h4&gt;Messages: &lt;/h4&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    &lt;input id=&quot;text_input&quot; type=&quot;text&quot;&gt;&lt;/input&gt;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    &lt;button id=&quot;send_button&quot; type=&quot;button&quot;&gt;Send&lt;/button&gt;&lt;br&gt;&lt;br&gt;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    &lt;textarea id=&quot;chat_text_area&quot; rows=&quot;10&quot; cols=&quot;50&quot; readonly&gt;&lt;/textarea&gt;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    &lt;<span class="keywordtype">h4</span>&gt;<span class="keyword">Remote</span> <span class="keyword">Stream:</span> &lt;/<span class="keywordtype">h4</span>&gt;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    &lt;<span class="keywordtype">div</span> <span class="keyword">id</span>=<span class="stringliteral">&quot;remote_videos&quot;</span>&gt;&lt;/<span class="keywordtype">div</span>&gt;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    &lt;h4&gt;Remote Stream: &lt;/h4&gt;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    &lt;div id=&quot;remote_videos&quot;&gt;&lt;/div&gt;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    &lt;<span class="keywordtype">script</span> <span class="keyword">src</span>=<span class="stringliteral">&quot;client.js&quot;</span>&gt;&lt;/<span class="keywordtype">script</span>&gt;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    &lt;script src=&quot;client.js&quot;&gt;&lt;/script&gt;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  &lt;/<span class="keywordtype">body</span>&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;&lt;/<span class="keywordtype">html</span>&gt;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  &lt;/body&gt;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;&lt;/html&gt;</div>
 </div><!-- fragment --><p> client.js </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;(<span class="keyword">function</span>() {</div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;  let localVideo = document.getElementById(<span class="stringliteral">&#39;local_video&#39;</span>);</div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;  let muteAudioButton = document.getElementById(<span class="stringliteral">&#39;mute_audio_button&#39;</span>);</div>
@@ -709,7 +709,7 @@ Stream Data Channel Client Example</h2>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Mar 17 2023 21:10:36 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Mar 17 2023 21:21:25 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
