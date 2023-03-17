@@ -2,7 +2,7 @@ name: gen-doc-and-release
 
 on:
   push:
-    branches: [main]
+    branches: [main, joss-paper-draft]
   workflow_dispatch:
     branches: [main]
 
