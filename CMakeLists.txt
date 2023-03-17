@@ -27,8 +27,8 @@ endif (POLICY CMP0094)
 
 project(opentera-webrtc)
 
-if (NOT DEFINED CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE Release CACHE STRING "")
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
 endif ()
 
 # Python version
