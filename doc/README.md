@@ -2,7 +2,7 @@
 
 ## Requirements
 
-Install doxygen first.
+Install [Doxygen](https://www.doxygen.nl/) first.
 
 ## Generate Documentation
 
