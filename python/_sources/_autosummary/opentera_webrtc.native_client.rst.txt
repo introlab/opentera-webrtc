@@ -1,0 +1,44 @@
+opentera\_webrtc.native\_client
+===============================
+
+.. automodule:: opentera_webrtc.native_client
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      AudioSourceConfiguration
+      DataChannelConfiguration
+      SignalingServerConfiguration
+      VideoSourceConfiguration
+      VideoStreamCodec
+      VideoStreamConfiguration
+      WebrtcConfiguration
+      Client
+      RoomClient
+      IceServer
+      AudioSource
+      VideoSource
+      SignalingClient
+      DataChannelClient
+      VideoCodecType
+      StreamClient
+   
+   
+
+   
+   
+   
+
+
+
