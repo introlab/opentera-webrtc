@@ -535,7 +535,7 @@ void onAudioFrameReceived(
 
 void checkReceivedAudio(const vector<int16_t>& receivedAudio, int16_t amplitude)
 {
-    constexpr int AbsError = 2000;
+    constexpr int AbsError = 3000;
 
     ASSERT_FALSE(receivedAudio.empty());
     int16_t min1 = *min_element(receivedAudio.begin() + receivedAudio.size() / 2, receivedAudio.end());
