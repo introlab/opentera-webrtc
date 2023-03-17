@@ -44,6 +44,9 @@ On the other hand, a web interface built with WebRTC can control a telepresence 
 It is often done via the integration of Chromium web engine (Electron, Qt) and requires code in JavaScript, which might not be optimized.
 
 This paper presents the OpenTera WebRTC project, which is a multiplatform library to develop web and native applications for videoconference and telepresence robots.
+
+
+# Project Description
 The project is part of an integrated project called OpenTera[@opentera] aiming to provide a micro-service architecture for telehealth systems.
 The OpenTera WebRTC library provides simple and similar APIs in JavaScript for web applications and in C++ and Python for native ones.
 Developing native applications makes it possible to integrate a variety of sensors and reduce resource usage.
