@@ -67,13 +67,11 @@ jobs:
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python3 --version | perl -pe 's/Python //')" \
           -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON
           make -j2 native_client-html-target
-          make install
 
       - name: Copy Python Documentation to Doc Folder
         run: |
           mkdir -p doc/python
           cp -r build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client/_build/* doc/python
-          ls -l doc/python
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
