@@ -73,22 +73,6 @@ jobs:
           mkdir -p doc/python
           cp -r build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client/_build/* doc/python
 
-      - name: Change URL of C++ Documentation Files
-        working-directory: doc/cpp/html
-        run: find . -type f -exec sed -i 's/search\//opentera-webrtc\/cpp\/html\/search\//g' {} +
-
-      - name: Change URL of JavaScript Documentation Files
-        working-directory: doc/js/html
-        run: find . -type f -exec sed -i 's/search\//opentera-webrtc\/js\/html\/search\//g' {} +
-
-      - name: Change URL of Python Documentation Files
-        working-directory: doc/python
-        run: |
-          find . -type f -exec sed -i 's/_autosummary\//opentera-webrtc\/python\/_autosummary\//g' {} +
-          find . -type f -exec sed -i 's/_modules\//opentera-webrtc\/python\/_modules\//g' {} +
-          find . -type f -exec sed -i 's/_sources\//opentera-webrtc\/python\/_sources\//g' {} +
-          find . -type f -exec sed -i 's/_static\//opentera-webrtc\/python\/_static\//g' {} +
-
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
