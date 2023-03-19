@@ -2,7 +2,7 @@ name: gen-doc-and-release
 
 on:
   push:
-    branches: [main, joss-paper-draft]
+    branches: [main]
   workflow_dispatch:
     branches: [main]
 
@@ -91,5 +91,5 @@ jobs:
           body: |
             Latest build of opentera-webrtc-native-client v${{ steps.generate_version_output.outputs.version }}
             - Please see API documentation at https://introlab.github.io/opentera-webrtc
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
