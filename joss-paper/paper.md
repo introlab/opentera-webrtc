@@ -30,7 +30,7 @@ The COVID-19 pandemic changed the landscape of telehealth and videoconferencing 
 Conventional videoconferencing solutions basically establish an audio and video link between two or more participants.
 However, advanced solutions like telehealth systems may require interfacing remote biometric sensors and devices (e.g., vital sign monitoring devices, pan–tilt–zoom (PTZ) cameras, and telepresence mobile robots [@kristoffersson_review_2013]), streaming of multiple video feeds, and providing specialized graphical interfaces to improve situation awareness and reduce cognitive load of the users [@panchea_opentera_2022].
 Simple audio-video links also reveal insufficient to address the specific needs of older adults [@cortellessa_ai_2021], for instance in terms of easy installation and ease of use, functionalities to address loneliness [@hung_facilitators_2022] or to implement socially distanced games [@ramirez_gomez_socially_2022; @yuan_tabletop_2021].
-With the objective of providing a more generic telecommunication framework, we have designed OpenTera [@opentera; @panchea_opentera_2022], a micro-service architecture for audio-video-data telecommunication services and telehealth management.
+With the objective of providing a more generic telecommunication framework, we have designed OpenTera [@opentera; @panchea_opentera_2022], a micro-service architecture for audio-video-data telecommunication services.
 
 WebRTC^[[https://webrtc.org/](https://webrtc.org/)] is the de facto technology to develop videoconference platforms because it is secured and built for web browsers, hence improving accessibility compared to having to install a software application locally.
 This makes WebRTC a good choice to develop OpenTera.
