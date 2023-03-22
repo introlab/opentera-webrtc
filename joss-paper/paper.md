@@ -26,41 +26,39 @@ bibliography: paper.bib
 ---
 
 # Summary
-During the COVID-19 pandemic, people were not able to socialize in person due to lockdowns, curfews and social distancing measures.
-So, social activities migrated to online platforms [@saltzman_loneliness_2020], such as videoconference ones.
-For example, people were remotely playing games with friends and family, but current technologies are not adapted to all types of games, such as tabletop games requiring non-verbal cues or containing a lot of physical components [@ramirez_gomez_socially_2022; @yuan_tabletop_2021].
-Telepresence robots are another type of technology providing a way to stay in touch with loved ones.
-Compared to videoconference platforms, the remote user is usually able to move in a remote environment and talk with a remote person [@kristoffersson_review_2013].
-They are used in aged care settings to address loneliness [@hung_facilitators_2022], but we must make sure the features are adapted to their needs [@cortellessa_ai_2021], which requires making modifications to the robot and developing customized interfaces.
-Most popular and commercially available platforms are often closed to modifications or require paid subscriptions that might be either too expensive for research projects or inadequate.
-Thus, technologies providing a way to stay in touch with people require future research to improve the platforms in contexts like remote gaming and aged care settings.
+The COVID-19 pandemic changed the landscape of telehealth and videoconferencing practices, having people of all ages and fields become users of virtual meetings and even social activities [@saltzman_loneliness_2020].
+Conventional videoconferencing solutions basically establish an audio and video link between two or more participants.
+However, advanced solutions like telehealth systems may require interfacing remote biometric sensors and devices (e.g., vital sign monitoring devices, pan–tilt–zoom (PTZ) cameras, and telepresence mobile robots [@kristoffersson_review_2013]), streaming of multiple video feeds, and providing specialized graphical interfaces to improve situation awareness and reduce cognitive load of the users [@panchea_opentera_2022].
+Simple audio-video links also reveal insufficient to address the specific needs of older adults [@cortellessa_ai_2021], for instance in terms of easy installation and ease of use, functionalities to address loneliness [@hung_facilitators_2022] or to implement socially distanced games [@ramirez_gomez_socially_2022; @yuan_tabletop_2021].
+With the objective of providing a more generic telecommunication framework, we have designed OpenTera [@opentera; @panchea_opentera_2022], a micro-service architecture for audio-video-data telecommunication services and telehealth management.
 
-WebRTC^[[https://webrtc.org/](https://webrtc.org/)] is the de facto technology to develop videoconference platforms since it is secured and built for web browsers, hence accessible.
-Video streams, audio streams and data can be exchanged between the participants of a call.
+WebRTC^[[https://webrtc.org/](https://webrtc.org/)] is the de facto technology to develop videoconference platforms because it is secured and built for web browsers, hence improving accessibility compared to having to install a software application locally.
+This makes WebRTC a good choice to develop OpenTera.
 A JavaScript API is available in modern web browsers, but the developer needs to create a web server to initialize the peer-to-peer calls, which is usually named a signaling server.
 The library used by most web browsers to include WebRTC support is the WebRTC Native library^[[https://webrtc.github.io/webrtc-org/native-code/](https://webrtc.github.io/webrtc-org/native-code/)].
-In the context of remote tabletop gaming, adding sensors to the videoconference setups to improve the gaming experience is limited by their compatibility with web browsers.
-On the other hand, a web interface built with WebRTC can control a telepresence robot, but the robot needs to run the equivalent of a web browser for the JavaScript API.
-It is often done via the integration of Chromium web engine (Electron, Qt) and requires code in JavaScript, which might not be optimized.
+However, adding sensors to web-based videoconference setups is limited by their compatibility with web browsers, bounded by their APIs and sandbox configuration.
+Typically, web browsers support mouse, keyboard, gamepad, webcam and microphone devices. However, experimental APIs are available to use Bluetooth^[[https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Bluetooth_API)], serial^[[https://wicg.github.io/serial/](https://wicg.github.io/serial/)] and USB^[[https://developer.mozilla.org/en-US/docs/Web/API/USB](https://developer.mozilla.org/en-US/docs/Web/API/USB)] devices, but the devices must be compatible and these APIs are not supported on all browsers.
+Also, in the context of telepresence robots, a web interface built with WebRTC can control a robot, but the robot needs to run the equivalent of a web browser for the JavaScript API.
+This is often done via the integration of Chromium web engine (Electron, Qt) and requires code in JavaScript, which might not be optimized.
 
-This paper presents the OpenTera WebRTC project, which is a multiplatform library to develop web and native applications for videoconference and telepresence robots.
-
+To address these limitations, this paper presents the OpenTera WebRTC project, a multiplatform library to develop web and native applications for customizable videoconferencing, telehealth and telepresence robotics applications. 
+It provides bidirectional peer-to-peer multipoint communication of audio streams, multi-video feed streaming and data, and a signaling server hosted on secure, local servers, independent of tier actors and online services.
 
 # Project Description
-The project is part of an integrated project called OpenTera[@opentera] aiming to provide a micro-service architecture for telehealth systems.
-The OpenTera WebRTC library provides simple and similar APIs in JavaScript for web applications and in C++ and Python for native ones.
-Developing native applications makes it possible to integrate a variety of sensors and reduce resource usage.
-Also, the library includes a signaling server to reduce the development time when using the library.
-The C++ API uses the WebRTC Native library and is packaged to be easy to build. 
+The OpenTera WebRTC library provides simple and similar APIs in JavaScript for web applications and in C++ and Python for native applications.
+Developing native applications makes it possible to integrate a variety of devices and reduce resource usage.
+Also, the library includes a secured signaling server to reduce the development time when using the library.
+The C++ API uses the WebRTC Native library and is packaged to be easy to build.
 Video and audio streams are provided to the library as raw images and raw audio frames to increase flexibility.
 The Python API is done with pybind11 [@pybind11] to create Python bindings of the C++ API.
 The Python API is easier to use, but the C++ API is faster.
-To develop telepresence robots, the C++ API is integrated with ROS [@quigley_ros_2009] since it is a widely used middleware in robotic research.
+To develop telepresence robots, the C++ API is integrated with ROS [@quigley_ros_2009] because this middleware is widely adopted by the research community.
 
 GStreamer is adapted to the WebRTC Native library to provide hardware acceleration to encode and decode video streams.
 So, the native APIs are well suited for embedded applications.
 \autoref{tab:hardware-acceleration-compatibility} presents the hardware acceleration compatibility at the present time.
-More codecs and hardware configurations can be added easily in the future.
+More codecs and hardware configurations can easily be added in the future.
+
 
 
 Table: Hardware Acceleration Compatibility \label{tab:hardware-acceleration-compatibility}
@@ -78,18 +76,18 @@ Table: Hardware Acceleration Compatibility \label{tab:hardware-acceleration-comp
 
 # Statement of need
 WebRTC Native can be used to create native applications directly, but the library is hard to build and it is designed to use webcams and integrated peripherals.
-OpenTera WebRTC native APIs add the capacity to provide any audio and video stream, making it more generic and flexible.
-The integration of BoringSSL and Socket.IO code removes the need to wrap and understand other communication libraries. 
-So, the users of OpenTera WebRTC can connect their applications to the signaling server easily.
+OpenTera WebRTC native APIs add the capacity to provide any audio and video streams, making it more generic and flexible.
+The integration of BoringSSL and Socket.IO code removes the need to wrap and understand other communication libraries.
+Therefore, the users of OpenTera WebRTC can connect their applications to the signaling server easily.
 
 \autoref{tab:webrtc-library-summary} presents a summary of the available WebRTC libraries to create native applications.
-WebRTC ROS [@webrtc_ros] and MixedReality-WebRTC [@mixedreality-webrtc] also wrap the WebRTC Native library, but the versions used are pretty old and neither are not actively maintained.
-GStreamer [@gstreamer] has a plugin to perform WebRTC calls, but it is hard to use and the plugin is currently available in the gst-bad plugins, which means it is probably incomplete and misses important features to comply with the standard.
-The aiortc library [@aiortc] and WebRTC.rs [@webrtc-rs] reproduce the web WebRTC API in Python and Rust, respectively. 
-The former uses third-party party libraries for the audio and video codecs and the latter does not have any codec support, yet.
-However, WebRTC.rs supports streaming of already encoded audio and video streams.
+WebRTC ROS [@webrtc_ros] and MixedReality-WebRTC [@mixedreality-webrtc] also wrap the WebRTC Native library, but the versions used are pretty old and neither are no longer actively maintained.
+GStreamer [@gstreamer] has a plugin to perform WebRTC calls. However, it is hard to use and the plugin is currently available in the gst-bad plugins, which means it is probably incomplete and misses important features to comply with the standard.
+The aiortc library [@aiortc] and WebRTC.rs [@webrtc-rs] replicate the web WebRTC API in Python and Rust, respectively.
+The former uses third-party party libraries for the audio and video codecs, and the latter does not yet have any codec support.
+Nevertheless, WebRTC.rs supports streaming of already encoded audio and video streams.
 
-In the context of telepresence robot and videoconference research, OpenTera WebRTC is better than all presented libraries because it offers hardware acceleration for the embedded platform, has a unified API across all languages, wraps an up-to-date WebRTC Native version and integrates the signaling server.
+Overall, OpenTera WebRTC provides interesting capabilities compared to the other WebRTC libraries because it offers hardware acceleration for embedded platforms, has a unified API across all languages, integrates the signaling server and wraps an up-to-date WebRTC Native version, which can be updated easily by our automated build on GitHub.
 
 
 Table: WebRTC Library Summary \label{tab:webrtc-library-summary}
