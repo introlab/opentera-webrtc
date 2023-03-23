@@ -66,11 +66,11 @@ set(archive_name ${archive_stem}.${archive_extension})
 
 set(webrtc_native_build_archive_url "https://github.com/introlab/webrtc-native-build/releases/download/${webrtc_native_build_version}/${archive_name}")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name})
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${archive_name})
 	message(STATUS "Downloading : ${webrtc_native_build_archive_url}")
 	file(DOWNLOAD
 		${webrtc_native_build_archive_url}
-		${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}
+		${CMAKE_CURRENT_BINARY_DIR}/${archive_name}
 		TIMEOUT 300 #seconds
 		TLS_VERIFY ON
 		SHOW_PROGRESS)
@@ -78,42 +78,42 @@ endif()
 
 set(extracted_directory_name "webrtc-native-build-${webrtc_native_build_version}-${CMAKE_BUILD_TYPE}")
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
-	message(STATUS "Extracting ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name}")
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name})
+	message(STATUS "Extracting ${CMAKE_BINARY_SOURCE_DIR}/${archive_name}")
 	if(${CMAKE_VERSION} VERSION_LESS "3.18.0")
 		if(WIN32)
 			message(FATAL_ERROR "CMake version 3.18.0 or higher is required to extract archives.")
 		endif()
 		execute_process(
-			COMMAND mkdir ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
-			COMMAND tar xvzf ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} -C ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}
-			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+			COMMAND mkdir ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem}
+			COMMAND tar xvzf ${CMAKE_CURRENT_BINARY_DIR}/${archive_name} -C ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 	else()
-		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_SOURCE_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
+		file(ARCHIVE_EXTRACT INPUT ${CMAKE_CURRENT_BINARY_DIR}/${archive_name} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem})
 	endif()
 endif()
 
-if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
-	file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem}/webrtc-native-build-${webrtc_native_build_version}
-		${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name})
-	file(REMOVE_RECURSE ${CMAKE_CURRENT_SOURCE_DIR}/${archive_stem})
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name} AND EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem})
+	file(RENAME ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem}/webrtc-native-build-${webrtc_native_build_version}
+		${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name})
+	file(REMOVE_RECURSE ${CMAKE_CURRENT_BINARY_DIR}/${archive_stem})
 endif()
 
-set(boringssl_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
-set(webrtc_native_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
-set(libyuv_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+set(boringssl_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+set(webrtc_native_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
+set(libyuv_INCLUDE ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/include CACHE INTERNAL "")
 
 if(WIN32)
-	set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/boringssl.lib CACHE INTERNAL "")
-	set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/webrtc.lib CACHE INTERNAL "")
-	set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.lib CACHE INTERNAL "")
+	set(boringssl_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/boringssl.lib CACHE INTERNAL "")
+	set(webrtc_native_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/webrtc.lib CACHE INTERNAL "")
+	set(libyuv_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/libyuv_internal.lib CACHE INTERNAL "")
 else()
-	set(boringssl_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "")
-	set(libyuv_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libyuv_internal.a CACHE INTERNAL "")
+	set(boringssl_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/libboringssl.a CACHE INTERNAL "")
+	set(libyuv_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/libyuv_internal.a CACHE INTERNAL "")
 
 	if(APPLE)
-		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a "-framework Foundation" "-framework AVFoundation" "-framework CoreAudio" "-framework AudioToolbox" "-framework CoreGraphics" CACHE INTERNAL "")
+		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/libwebrtc.a "-framework Foundation" "-framework AVFoundation" "-framework CoreAudio" "-framework AudioToolbox" "-framework CoreGraphics" CACHE INTERNAL "")
 	else()
-		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
+		set(webrtc_native_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${extracted_directory_name}/lib/libwebrtc.a dl X11 expat CACHE INTERNAL "")
 	endif()
 endif()

@@ -6,8 +6,26 @@ function isPromise(obj) {
   return obj && typeof obj.then === 'function' && Object.prototype.toString.call(obj) === '[object Promise]';
 }
 
-
+/**
+ * @brief Represents the base class of DataChannelClient, StreamClient and StreamDataChannelClient.
+ */
 class SignalingClient {
+  /**
+   * @brief Creates a signaling client with the specified configurations.
+   *
+   * @param {Object} signalingServerConfiguration The signaling server configuration
+   * @code
+   *  {
+   *       url: 'signaling server URL',
+   *       name: 'client name',
+   *       data: {}, // Client custom data
+   *       room: 'room name',
+   *       password: 'password'
+   *  }
+   * @endcode
+   *
+   * @param {CallableFunction} logger An optional logger callback
+   */
   constructor(signalingServerConfiguration, logger) {
     if (this.constructor === SignalingClient) {
       throw new TypeError('Abstract class "SignalingClient" cannot be instantiated directly.');
@@ -48,7 +66,11 @@ class SignalingClient {
 
     this._offerOptions = {};
   }
-  
+
+  /**
+   * @brief Connects the client the signaling server.
+   * @returns {Promise<void>}
+   */
   async connect() {
     this._logger('SignalingClient.connect method call');
 
@@ -325,14 +347,21 @@ class SignalingClient {
     this._onRoomClientsChange(this._addConnectionStateToClients(this._clients));
   }
 
+  /**
+   * @brief Closes all client connections
+   */
   close() {
     if (this._socket !== null) {
       this._disconnect();
     }
-    // The RTC peer connections need to close after the socket because of socket can create a RTC connection after RTC peer connections closing.
+    // The RTC peer connections need to close after the socket because of socket can create a RTC connection after
+    // RTC peer connections closing.
     this._closeAllRtcPeerConnections();
   }
 
+  /**
+   * @brief Calls all room clients.
+   */
   callAll() {
     this._logger('SignalingClient.callAll method call');
 
@@ -340,6 +369,10 @@ class SignalingClient {
     this._socket.emit('call-all');
   }
 
+  /**
+   * @brief Calls the specified clients.
+   * @param {Array<String>} ids The client ids to call
+   */
   callIds(ids) {
     this._logger('SignalingClient.callIds method call, ids=', ids);
 
@@ -347,6 +380,9 @@ class SignalingClient {
     this._socket.emit('call-ids', ids);
   }
 
+  /**
+   * @brief Hangs up all clients.
+   */
   hangUpAll() {
     this._logger('SignalingClient.hangUpAll method call');
 
@@ -354,28 +390,53 @@ class SignalingClient {
     this.updateRoomClients();
   }
 
+  /**
+   * @brief Closes all room peer connections.
+   */
   closeAllRoomPeerConnections() {
     this._logger('SignalingClient.closeAllRoomPeerConnections method call');
 
     this._socket.emit('close-all-room-peer-connections');
   }
 
+  /**
+   * @brief Gets the client name from the client id.
+   * @param {String} id The client id
+   * @returns {String} The client name
+   */
   getClientName(id) {
     return this._clientNamesById[id];
   }
 
+  /**
+   * @brief Gets the client data from the client id.
+   * @param {String} id The client id
+   * @returns {Object} The client name
+   */
   getClientData(id) {
     return this._clientDatumById[id];
   }
 
+  /**
+   * @brief Indicates if the client is connected to the signaling server.
+   * @return {Boolean} true if the client is connected to the signaling server
+   */
   get isConnected() {
     return this._socket !== null;
   }
 
+  /**
+   * @brief Indicates if the client is connected to at least one client (RTCPeerConnection).
+   * @return {Boolean} true if the client is connected to at least one client (RTCPeerConnection)
+   */
   get isRtcConnected() {
     return Object.keys(this._rtcPeerConnections).length > 0;
   }
 
+  /**
+   * @brief Returns the client id.
+   * @return {String} The client id
+   */
   get id() {
     if (this._socket !== null) {
       return this._socket.id;
@@ -385,42 +446,139 @@ class SignalingClient {
     }
   }
 
+  /**
+   * @brief Returns the connected room client ids.
+   * @return {Array<String>} The connected room client ids
+   */
   get connectedRoomClientIds() {
     return Object.keys(this._rtcPeerConnections);
   }
 
+  /**
+   * @brief Returns the room clients.
+   * @returns {Array<Object>} An array of client objects
+   */
   get roomClients() {
     return this._addConnectionStateToClients(this._clients);
   }
 
+  /**
+   * @brief Sets the callback that is called when the signaling connection opens.
+   *
+   * @parblock
+   * Callback parameter: None
+   * @endparblock
+   *
+   * @param {CallableFunction} onSignalingConnectionOpen The callback
+   */
   set onSignalingConnectionOpen(onSignalingConnectionOpen) {
     this._onSignalingConnectionOpen = onSignalingConnectionOpen;
   }
 
+  /**
+   * @brief Sets the callback that is called when the signaling connection closes.
+   *
+   * @parblock
+   * Callback parameter: None
+   * @endparblock
+   *
+   * @param {CallableFunction} onSignalingConnectionClose The callback
+   */
   set onSignalingConnectionClose(onSignalingConnectionClose) {
     this._onSignalingConnectionClose = onSignalingConnectionClose;
   }
 
+  /**
+   * @brief Sets the callback that is called when a signaling connection error occurs.
+   *
+   * @parblock
+   * Callback parameter:
+   *  - error: The error message
+   * @endparblock
+   *
+   * @param {CallableFunction} onSignalingConnectionError The callback
+   */
   set onSignalingConnectionError(onSignalingConnectionError) {
     this._onSignalingConnectionError = onSignalingConnectionError;
   }
 
+  /**
+   * @brief Sets the callback that is called when the room client changes.
+   *
+   * @parblock
+   * Callback parameter:
+   *  - clients: The room clients
+   * @endparblock
+   *
+   * @param {CallableFunction} onRoomClientsChange The callback
+   */
   set onRoomClientsChange(onRoomClientsChange) {
     this._onRoomClientsChange = onRoomClientsChange;
   }
 
+  /**
+   * @brief Sets the callback that is used to accept or reject a call.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   *
+   * Callback return value:
+   *  - true to accept the call, false to reject the call
+   * @endparblock
+   *
+   * @param {CallableFunction} callAcceptor The callback
+   */
   set callAcceptor(callAcceptor) {
     this._callAcceptor = callAcceptor;
   }
 
+  /**
+   * @brief Sets the callback that is called when a call is rejected.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param {CallableFunction} onCallReject The callback
+   */
   set onCallReject(onCallReject) {
     this._onCallReject = onCallReject;
   }
 
+  /**
+   * @brief Sets the callback that is called when a client peer connection opens.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param {CallableFunction} onClientConnect The callback
+   */
   set onClientConnect(onClientConnect) {
     this._onClientConnect = onClientConnect;
   }
 
+  /**
+   * @brief Sets the callback that is called when an error occurs.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param {CallableFunction} onClientDisconnect The callback
+   */
   set onClientDisconnect(onClientDisconnect) {
     this._onClientDisconnect = onClientDisconnect;
   }

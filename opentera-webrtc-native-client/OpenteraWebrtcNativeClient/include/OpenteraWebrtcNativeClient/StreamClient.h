@@ -148,7 +148,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client of the stream
+     *  - client: The client of the stream
      * @endparblock
      *
      * @param callback The callback
@@ -165,7 +165,7 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client of the stream
+     *  - client: The client of the stream
      * @endparblock
      *
      * @param callback The callback
@@ -182,9 +182,9 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client of the stream frame
-     * - bgrImg: The BGR frame image
-     * - timestampUs The timestamp in microseconds
+     *  - client: The client of the stream frame
+     *  - bgrImg: The BGR frame image
+     *  - timestampUs The timestamp in microseconds
      * @endparblock
      *
      * @param callback The callback
@@ -201,14 +201,14 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client of the stream frame
-     * - data: The binary data
-     * - dataSize: The data size
-     * - codecType: The codec type
-     * - isKeyFrame: Indicates if it is a key frame
-     * - width: The frame width if it is a key frame
-     * - height: The frame height if it is a key frame
-     * - timestampUs The timestamp in microseconds
+     *  - client: The client of the stream frame
+     *  - data: The binary data
+     *  - dataSize: The data size
+     *  - codecType: The codec type
+     *  - isKeyFrame: Indicates if it is a key frame
+     *  - width: The frame width if it is a key frame
+     *  - height: The frame height if it is a key frame
+     *  - timestampUs The timestamp in microseconds
      * @endparblock
      *
      * @param callback The callback
@@ -225,12 +225,12 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - client: The client of the stream frame
-     * - audioData: The audio data
-     * - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
-     * - sampleRate: The audio stream sample rate
-     * - numberOfChannels: The audio stream channel count
-     * - numberOfFrames: The number of frames
+     *  - client: The client of the stream frame
+     *  - audioData: The audio data
+     *  - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
+     *  - sampleRate: The audio stream sample rate
+     *  - numberOfChannels: The audio stream channel count
+     *  - numberOfFrames: The number of frames
      * @endparblock
      *
      * @param callback The callback
@@ -247,11 +247,11 @@ namespace opentera
      *
      * @parblock
      * Callback parameters:
-     * - audioData: The audio data
-     * - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
-     * - sampleRate: The audio stream sample rate
-     * - numberOfChannels: The audio stream channel count
-     * - numberOfFrames: The number of frames
+     *  - audioData: The audio data
+     *  - bitsPerSample: The audio stream sample size (8, 16 or 32 bits)
+     *  - sampleRate: The audio stream sample rate
+     *  - numberOfChannels: The audio stream channel count
+     *  - numberOfFrames: The number of frames
      * @endparblock
      *
      * @param callback The callback

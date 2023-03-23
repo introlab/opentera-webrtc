@@ -21,24 +21,14 @@ By default, libwebrtc is built with non-free codecs. See [webrtc-native-build](h
 * [Apache License, Version 2.0](LICENSE)
 * For GStreamer components, please read [this](opentera-webrtc-native-client/OpenteraWebrtcNativeGStreamer/README.md).
 
+
+## API Documentation
+
+API Documentation is available [here](https://introlab.github.io/opentera-webrtc).
+
 ## How to Contribute
+
 Please read the [Code of Conduct](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIBUTING.md) files.
-
-## Hardware Acceleration with GStreamer
-
-Hardware acceleration depends on the platform you are using to build opentera-webrtc. The following table summarizes supported hardware and GStreamer plugins:
-
-| Platform                          | VP8                         | VP9           | H.264                        |
-|-----------------------------------|-----------------------------|---------------|------------------------------|
-| Jetson TX2/Nano                   | nvv4l2vp8enc, nvv4l2decoder | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
-| Jetson Xavier NX                  | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
-| Jetson AGX Xavier                 | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
-| Jetson Orin / Orin Nano / Orin NX | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
-| Raspberry Pi 4                    | X                           | X             | v4l2h264enc, v4l2h264dec     |
-| VA-API                            | vaapivp8enc, vaapivp8dec    | vaapivp9dec   | vaapih264enc, vaapih264dec   |
-| Apple Media                       | X                           | X             | vtenc_h264, vtdec            |
-
-Note that VP9 encoding is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
 
 ## Dependencies
 
@@ -47,14 +37,6 @@ Note that VP9 encoding is under development, see issue [117](https://github.com/
 ## Build Instructions
 
 * Please see [Build Instructions](BUILD_INSTRUCTIONS.md).
-
-## ROS
-
-* The C++ library and Python bindings are used in our [opentera_webrtc_ros ROS package](https://github.com/introlab/opentera-webrtc-ros). RGB images published in ROS topics can be easily used for streaming in a RTCPeerConnection using our signaling server. Hardware acceleration and codec selection can be used if available.
-
-## Frontend
-
-* The JavaScript library is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
 
 ## Examples
 
@@ -74,6 +56,30 @@ Note that VP9 encoding is under development, see issue [117](https://github.com/
 * [stream-client](examples/web-stream-client)
 * [stream-data-channel-client](examples/web-stream-data-channel-client)
 
+## Hardware Acceleration with GStreamer
+
+Hardware acceleration depends on the platform you are using to build opentera-webrtc. The following table summarizes supported hardware and GStreamer plugins:
+
+| Platform                          | VP8                         | VP9           | H.264                        |
+|-----------------------------------|-----------------------------|---------------|------------------------------|
+| Jetson TX2/Nano                   | nvv4l2vp8enc, nvv4l2decoder | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Xavier NX                  | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson AGX Xavier                 | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Jetson Orin / Orin Nano / Orin NX | X                           | nvv4l2decoder | nvv4l2h264enc, nvv4l2decoder |
+| Raspberry Pi 4                    | X                           | X             | v4l2h264enc, v4l2h264dec     |
+| VA-API                            | vaapivp8enc, vaapivp8dec    | vaapivp9dec   | vaapih264enc, vaapih264dec   |
+| Apple Media                       | X                           | X             | vtenc_h264, vtdec            |
+
+Note that VP9 encoding is under development, see issue [117](https://github.com/introlab/opentera-webrtc/issues/117).
+
+## ROS
+
+* The C++ library and Python bindings are used in our [opentera_webrtc_ros ROS package](https://github.com/introlab/opentera-webrtc-ros). RGB images published in ROS topics can be easily used for streaming in a RTCPeerConnection using our signaling server. Hardware acceleration and codec selection can be used if available.
+
+## Frontend
+
+* The JavaScript library is used for our [opentera WebRTC teleoperation frontend](https://github.com/introlab/opentera-webrtc-teleop-frontend).
+
 ## Authors
 
 * Marc-Antoine Maheux (@mamaheux)
@@ -82,6 +88,7 @@ Note that VP9 encoding is under development, see issue [117](https://github.com/
 * François Michaud (@michaudf)
 
 ## Contributors
+
 * Cédric Godin (@godced)
 * Ian-Mathieu Joly (@joli-1801)
 

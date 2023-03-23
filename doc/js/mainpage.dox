@@ -1,0 +1,26 @@
+/**
+\mainpage OpenTera WebRTC JavaScript Library API Documentation
+
+\tableofcontents
+
+\section examples Examples
+
+\subsection web_data_channel_client_example Data Channel Client Example
+client.html
+\include{lineno} web-data-channel-client/client.html
+client.js
+\include{lineno} web-data-channel-client/client.js
+
+\subsection web_stream_client_example Stream Client Example
+client.html
+\include{lineno} web-stream-client/client.html
+client.js
+\include{lineno} web-stream-client/client.js
+
+\subsection web_stream_data_channel_client_example Stream Data Channel Client Example
+client.html
+\include{lineno} web-stream-data-channel-client/client.html
+client.js
+\include{lineno} web-stream-data-channel-client/client.js
+
+*/

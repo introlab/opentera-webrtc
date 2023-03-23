@@ -3,3 +3,5 @@ build
 cmake-build-*
 compile_commands.json
 .gdbinit
+doc/cpp/html
+doc/js/html

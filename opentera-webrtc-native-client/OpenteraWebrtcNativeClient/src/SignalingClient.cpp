@@ -155,6 +155,7 @@ void SignalingClient::callAll()
 
 /**
  * @brief Calls the specified clients.
+ * @param ids The client ids to call
  */
 void SignalingClient::callIds(const vector<string>& ids)
 {
