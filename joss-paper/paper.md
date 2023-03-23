@@ -1,5 +1,5 @@
 ---
-title: 'OpenTera WebRTC: A User Friendly WebRTC Wrapper for JavaScript, C++ and Python'
+title: 'OpenTera WebRTC: A User-Friendly WebRTC Wrapper for JavaScript, C++ and Python'
 tags:
   - WebRTC
   - C++
