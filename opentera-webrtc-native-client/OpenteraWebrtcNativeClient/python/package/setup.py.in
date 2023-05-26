@@ -50,7 +50,7 @@ setup(
     package_data={
         'opentera_webrtc.native_client': [
             "$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>",
-            $<IF:$<BOOL:${ENABLE_GSTREAMER}>,"$<TARGET_FILE_NAME:OpenteraWebrtcNativeGStreamer>"$<COMMA>,>
+            $<IF:$<BOOL:${ENABLE_GSTREAMER}>,"${GSTREAMER_TARGET_FILE_NAME}"$<COMMA>,>
             $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/py.typed"$<COMMA>,>
             $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/__init__.pyi"$<COMMA>,>
         ],
