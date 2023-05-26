@@ -164,8 +164,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
             ":param signaling_server_configuration: The configuration to "
             "connect to the signaling server\n"
             ":param webrtc_configuration: The WebRTC configuration\n"
-            ":param video_stream_configuration: The video stream configuration\n"
-            " */",
+            ":param video_stream_configuration: The video stream configuration\n",
             py::arg("signaling_server_configuration"),
             py::arg("webrtc_configuration"),
             py::arg("video_stream_configuration"))

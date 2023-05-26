@@ -50,6 +50,20 @@ function(pip_configure_subpackage_file in_file out_file)
     set(PIP_CONFIGURE_OUTPUT_FILES ${PIP_CONFIGURE_OUTPUT_FILES} PARENT_SCOPE)
 endfunction()
 
+function(add_dummy_target)
+    set(options)
+    set(oneValueArgs NAME)
+    set(multiValueArgs)
+    cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    add_custom_target(
+        ${ARGS_NAME}-target
+        ALL
+        VERBATIM
+    )
+    set(${ARGS_NAME} ${ARGS_NAME}-target PARENT_SCOPE)
+endfunction()
+
 function(pip_add_requirements_target)
     set(options)
     set(oneValueArgs NAME REQUIREMENTS_FILE)

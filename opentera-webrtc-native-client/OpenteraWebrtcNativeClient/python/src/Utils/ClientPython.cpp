@@ -36,16 +36,19 @@ void opentera::initClientPython(pybind11::module& m)
             "id",
             &Client::id,
             "Returns the client id.\n"
+            "\n"
             ":return: The client id")
         .def_property_readonly(
             "name",
             &Client::name,
             "Returns the client name.\n"
+            "\n"
             ":return: The client name")
         .def_property_readonly(
             "data",
             [](const Client& self) { return sioMessageToPyObject(self.data()); },
             "Returns the client data.\n"
+            "\n"
             ":return: The client data");
 
     py::class_<RoomClient>(m, "RoomClient")
@@ -77,20 +80,24 @@ void opentera::initClientPython(pybind11::module& m)
             "id",
             &RoomClient::id,
             "Returns the client id.\n"
+            "\n"
             ":return: The client id")
         .def_property_readonly(
             "name",
             &RoomClient::name,
             "Returns the client name.\n"
+            "\n"
             ":return: The client name")
         .def_property_readonly(
             "data",
             [](const RoomClient& self) { return sioMessageToPyObject(self.data()); },
             "Returns the client data.\n"
+            "\n"
             ":return: The client data")
         .def_property_readonly(
             "is_connected",
             &RoomClient::isConnected,
             "Indicates if the client is connected (RTCPeerConnection).\n"
+            "\n"
             ":return: True if the client is connected (RTCPeerConnection)");
 }

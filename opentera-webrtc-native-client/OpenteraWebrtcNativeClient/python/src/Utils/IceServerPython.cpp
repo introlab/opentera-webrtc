@@ -48,16 +48,19 @@ void opentera::initIceServerPython(pybind11::module& m)
             "urls",
             &IceServer::urls,
             "Returns the ice server urls.\n"
+            "\n"
             ":return: The ice server urls")
         .def_property_readonly(
             "username",
             &IceServer::username,
             "Returns the ice server username.\n"
+            "\n"
             ":return: The ice server username")
         .def_property_readonly(
             "credential",
             &IceServer::credential,
             "Returns the ice server credential.\n"
+            "\n"
             ":return: The ice server credential")
 
         .def_static(
@@ -75,9 +78,10 @@ void opentera::initIceServerPython(pybind11::module& m)
                 }
             },
             "Fetches the ice servers from the signaling server.\n"
-            " *\n"
+            "\n"
             ":param url: The signaling server url\n"
             ":param password: The signaling server username\n"
+            "\n"
             ":return: The fetched ice servers",
             py::arg("url"),
             py::arg("password"))
@@ -96,11 +100,12 @@ void opentera::initIceServerPython(pybind11::module& m)
                 }
             },
             "Fetches the ice servers from the signaling server.\n"
-            " *\n"
+            "\n"
             ":param url: The signaling server url\n"
             ":param password: The signaling server username\n"
             ":param verify_certificate: Indicates to verify the certificate or "
             "not\n"
+            "\n"
             ":return: The fetched ice servers",
             py::arg("url"),
             py::arg("password"),
@@ -122,6 +127,7 @@ void opentera::initIceServerPython(pybind11::module& m)
             "Gets ice servers from a JSON\n"
             "\n"
             ":param json: The JSON to parse\n"
+            "\n"
             ":return The parsed ice servers",
             py::arg("json"));
 }

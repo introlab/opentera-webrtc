@@ -34,24 +34,28 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             "is_connected",
             GilScopedRelease<SignalingClient>::guard(&SignalingClient::isConnected),
             "Indicates if the client is connected to the signaling server.\n"
+            "\n"
             ":return: True if the client is connected to the signaling server")
         .def_property_readonly(
             "is_rtc_connected",
             GilScopedRelease<SignalingClient>::guard(&SignalingClient::isRtcConnected),
             "Indicates if the client is connected to a least "
             "one client (RTCPeerConnection).\n"
+            "\n"
             ":return: True if the client is connected to a "
             "least one client (RTCPeerConnection)")
         .def_property_readonly(
             "id",
             GilScopedRelease<SignalingClient>::guard(&SignalingClient::id),
             "Returns the client id.\n"
+            "\n"
             ":return: The client id")
 
         .def_property_readonly(
             "connected_room_client_ids",
             GilScopedRelease<SignalingClient>::guard(&SignalingClient::getConnectedRoomClientIds),
             "Returns the connected room client ids.\n"
+            "\n"
             ":return: The connected room client ids")
 
         .def(
@@ -63,12 +67,14 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             "returned.\n"
             "\n"
             ":param id: The room client id\n"
+            "\n"
             ":return: The room client that matches with the specified id",
             py::arg("id"))
         .def_property_readonly(
             "room_clients",
             GilScopedRelease<SignalingClient>::guard(&SignalingClient::getRoomClients),
             "Returns the room clients\n"
+            "\n"
             ":return: The room clients")
 
         .def_property(
@@ -215,5 +221,6 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             &SignalingClient::setTlsVerificationEnabled,
             "Enable or disable the TLS verification. By default, the "
             "TLS verification is enabled.\n"
+            "\n"
             ":param: is_enabled");
 }

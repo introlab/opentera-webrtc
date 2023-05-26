@@ -67,6 +67,9 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'setup.py', 'theme']
 
+autosummary_mock_imports = [
+    'opentera_webrtc.native_client.libOpenteraWebrtcNativeGStreamer',
+]
 
 # -- Options for HTML output -------------------------------------------------
 
