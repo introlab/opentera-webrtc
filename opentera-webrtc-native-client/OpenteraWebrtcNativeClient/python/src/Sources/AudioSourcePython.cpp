@@ -71,6 +71,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrame<int8_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame",
             py::arg("frame"))
         .def(
@@ -78,6 +79,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrame<int16_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame",
             py::arg("frame"))
         .def(
@@ -85,6 +87,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrame<int32_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame",
             py::arg("frame"))
         .def(
@@ -92,6 +95,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrameWithIsTyping<int8_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame\n",
             ":param is_typing: Indicates if the frame contains typing sound."
             "This is only useful with the typing detection option.",
@@ -102,6 +106,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrameWithIsTyping<int16_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame\n"
             ":param is_typing: Indicates if the frame contains typing sound."
             "This is only useful with the typing detection option.",
@@ -112,6 +117,7 @@ void opentera::initAudioSourcePython(pybind11::module& m)
             &sendFrameWithIsTyping<int32_t>,
             py::call_guard<py::gil_scoped_release>(),
             "Send an audio frame\n"
+            "\n"
             ":param frame: The audio frame\n"
             ":param is_typing: Indicates if the frame contains typing sound."
             "This is only useful with the typing detection option.",

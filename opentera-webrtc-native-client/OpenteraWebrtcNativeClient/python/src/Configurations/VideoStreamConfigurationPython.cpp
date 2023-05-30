@@ -28,6 +28,7 @@ void opentera::initVideoStreamConfigurationPython(py::module& m)
             "Creates a video stream configuration with the specified value.\n"
             "\n"
             ":param forced_codecs: Indicates the codecs that must be used. An empty set means all codecs.\n"
+            "\n"
             ":return: A video stream configuration with the specified value",
             py::arg("forced_codecs"))
         .def_static(
@@ -40,6 +41,7 @@ void opentera::initVideoStreamConfigurationPython(py::module& m)
             "has no effect when the library is not built with GStreamer.\n"
             ":param use_gstreamer_software_encoder_decoder: Indicates to use GStreamer software codecs instead of "
             "WebRTC ones. It has no effect when the library is not built with GStreamer.\n"
+            "\n"
             ":return: A video stream configuration with the specified values",
             py::arg("forced_codecs"),
             py::arg("force_gstreamer_hardware_acceleration"),
@@ -49,15 +51,18 @@ void opentera::initVideoStreamConfigurationPython(py::module& m)
             "forced_codecs",
             &VideoStreamConfiguration::forcedCodecs,
             "Returns the codecs that must be used. An empty set means all codecs.\n"
+            "\n"
             ":return: The codecs that must be used")
         .def_property_readonly(
             "force_gstreamer_hardware_acceleration",
             &VideoStreamConfiguration::forceGStreamerHardwareAcceleration,
             "Indicates that hardware accelerated codecs must be used.\n"
+            "\n"
             ":return: True if only hardware accelerated codecs can be used.")
         .def_property_readonly(
             "use_gstreamer_software_encoder_decoder",
             &VideoStreamConfiguration::useGStreamerSoftwareEncoderDecoder,
             "Indicates to use GStreamer software codecs instead of WebRTC ones.\n"
+            "\n"
             ":return: True if GStreamer software codecs must be used instead of WebRTC ones");
 }

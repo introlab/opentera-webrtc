@@ -11,7 +11,7 @@ def get_doc_files():
     files = {}
     for root, _, filenames in os.walk('_doc'):
         for filename in filenames:
-            rootless = root.replace('_doc', os.path.join('doc', 'opentera', 'webrtc', 'native_client'))
+            rootless = root.replace('_doc', os.path.join('doc', 'opentera_webrtc', 'native_client'))
             if not rootless in files.keys():
                 files[rootless] = []
             files[rootless].append(os.path.join(root, filename))
@@ -50,6 +50,7 @@ setup(
     package_data={
         'opentera_webrtc.native_client': [
             "$<TARGET_FILE_NAME:${PYTHON_LIB_NAME}>",
+            $<IF:$<BOOL:${ENABLE_GSTREAMER}>,"${GSTREAMER_TARGET_FILE_NAME}"$<COMMA>,>
             $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/py.typed"$<COMMA>,>
             $<IF:$<BOOL:${ENABLE_SO_STUB}>,"opentera_webrtc/native_client/__init__.pyi"$<COMMA>,>
         ],

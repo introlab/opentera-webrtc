@@ -37,7 +37,6 @@ set(
     "3"
     CACHE STRING
     "Specific Python version to use"
-    FORCE
 )
 
 find_package(Python ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION} EXACT COMPONENTS Interpreter Development REQUIRED)
@@ -114,6 +113,7 @@ elseif (UNIX)
     set(CMAKE_CXX_FLAGS "-fPIC")
     add_compile_definitions(WEBRTC_POSIX)
     if (APPLE)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
         add_compile_definitions(WEBRTC_MAC)
     endif(APPLE)
 else()

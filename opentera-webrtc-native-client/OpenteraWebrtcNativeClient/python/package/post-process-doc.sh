@@ -4,3 +4,6 @@ find . -type f -name '*.html' | xargs sed -i.bak 's/opentera_webrtc\.native_clie
 
 # Remove _opentera_webrtc_native_client
 find . -type f -name '*.html' | xargs sed -i.bak 's/opentera_webrtc\.native_client\._opentera_webrtc_native_client/opentera_webrtc.native_client/g'  && find . -type f -name '*.html.bak' | xargs rm
+
+# Fix opentera:: prefix
+find . -type f -name '*.html' | xargs sed -i.bak 's/opentera:://g'  && find . -type f -name '*.html.bak' | xargs rm

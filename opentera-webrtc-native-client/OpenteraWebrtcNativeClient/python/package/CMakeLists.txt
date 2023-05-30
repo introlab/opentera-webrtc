@@ -11,6 +11,7 @@ set(USE_EXACT_LIB_SUBPATH ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_
 set(USE_EXACT_LIB_SUBPATH_SOURCE ${OPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_PREFIX_USE_EXACT_LIB_SUBPATH_SOURCE})
 set(ENABLE_HTML_DOC ${OPENTERA_WEBRTC_ENABLE_PYTHON_HTML_DOC})
 set(ENABLE_SO_STUB ${OPENTERA_WEBRTC_ENABLE_PYTHON_SO_STUB})
+set(ENABLE_GSTREAMER ${OPENTERA_WEBRTC_ENABLE_GSTREAMER})
 set(PYTHON_HTML_IGNORE_PREFIXES ${PIP_DEVEL_PREFIX} ${PIP_INSTALL_PREFIX})
 set(PIP_PYTHON_EXECUTABLE ${PYTHON3_EXECUTABLE})
 
@@ -30,12 +31,13 @@ include(../../../../cmake/pip_utils.cmake)
 set(LICENSE_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../LICENSE)
 set(REQUIREMENTS_FILE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../requirements.txt)
 
-# Set the variable for the target file name of OpenteraWebrtcNativeGStreamer
-if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
-    pip_configure_setup(setup_gstreamer.py.in)
+if (ENABLE_GSTREAMER)
+    set(GSTREAMER_TARGET_FILE_NAME "$<TARGET_FILE_NAME:OpenteraWebrtcNativeGStreamer>")
 else()
-    pip_configure_setup(setup.py.in)
+    set(GSTREAMER_TARGET_FILE_NAME "")
 endif()
+
+pip_configure_setup(setup.py.in)
 
 pip_configure_package_file(${LICENSE_FILE} LICENSE)
 pip_configure_package_file(${CMAKE_CURRENT_SOURCE_DIR}/README.md.in README.md)
@@ -49,9 +51,11 @@ pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/index.rst index.rst)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/_source/theme/requirements.txt theme/requirements.txt)
 pip_configure_doc_file(${CMAKE_CURRENT_SOURCE_DIR}/post-process-doc.sh ../post-process-doc.sh)
 
-pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_NAME ${PYTHON_LIB_NAME})
-if (OPENTERA_WEBRTC_ENABLE_GSTREAMER)
-    pip_add_so_target(NAME OpenteraWebrtcNativeGStreamer-so SO_NAME OpenteraWebrtcNativeGStreamer)
+pip_add_so_target(NAME ${PYTHON_LIB_NAME}-so SO_TARGET_NAME ${PYTHON_LIB_NAME})
+if (ENABLE_GSTREAMER)
+    pip_add_so_target(NAME OpenteraWebrtcNativeGStreamer-so SO_TARGET_NAME OpenteraWebrtcNativeGStreamer)
+else()
+    add_dummy_target(NAME OpenteraWebrtcNativeGStreamer-so)
 endif()
 
 pip_add_requirements_target(NAME ${PYTHON_SUBPACKAGE_NAME}-requirements REQUIREMENTS_FILE ${REQUIREMENTS_FILE})
@@ -78,6 +82,7 @@ pip_add_dist_target(
         DEPENDS
         ${${PYTHON_SUBPACKAGE_NAME}-html}
         ${${PYTHON_SUBPACKAGE_NAME}-requirements}
+        ${OpenteraWebrtcNativeGStreamer-so}
 )
 pip_add_install_target(
         NAME ${PYTHON_SUBPACKAGE_NAME}-install
