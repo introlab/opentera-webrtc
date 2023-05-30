@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>opentera_webrtc.native_client &mdash; OpenTera 0.6.0 documentation</title>
+  <title>opentera_webrtc.native_client &mdash; OpenTera 0.6.1 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> OpenTera
           </a>
               <div class="version">
-                0.6.0
+                0.6.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -286,8 +286,12 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.auto_gain_control">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auto_gain_control</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.auto_gain_control" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the auto gain control is enabled.
-:return: True if the auto gain control is enabled</p>
+<dd><p>Indicates if the auto gain control is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the auto gain control is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -297,9 +301,15 @@
 <ol class="arabic simple">
 <li><p>create(sound_card_total_delay_ms: int) -&gt; AudioSourceConfiguration</p></li>
 </ol>
-<p>Creates an audio source configuration with default values.
-:param sound_card_total_delay_ms: The sum of the playback and recording delays
-:return: An audio source configuration with default values</p>
+<p>Creates an audio source configuration with default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>sound_card_total_delay_ms</strong> – The sum of the playback and recording delays</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An audio source configuration with default values</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="2">
 <li><p>create(sound_card_total_delay_ms: int, echo_cancellation: Optional[bool], auto_gain_control: Optional[bool], noise_suppression: Optional[bool], highpass_filter: Optional[bool], stereo_swapping: Optional[bool], transient_suppression: Optional[bool]) -&gt; AudioSourceConfiguration</p></li>
 </ol>
@@ -325,43 +335,67 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.echo_cancellation">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">echo_cancellation</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.echo_cancellation" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the echo cancellation is enabled.
-:return: True if the echo cancellation is enabled</p>
+<dd><p>Indicates if the echo cancellation is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the echo cancellation is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.highpass_filter">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">highpass_filter</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.highpass_filter" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the highpass filter is enabled.
-:return: True if the highpass filter is enabled</p>
+<dd><p>Indicates if the highpass filter is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the highpass filter is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.noise_suppression">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">noise_suppression</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.noise_suppression" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the noise suppression is enabled.
-:return: True if the noise suppression is enabled</p>
+<dd><p>Indicates if the noise suppression is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the noise suppression is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.sound_card_total_delay_ms">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sound_card_total_delay_ms</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.sound_card_total_delay_ms" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the sum of the playback and recording delays.
-:return: The sum of the playback and recording delays</p>
+<dd><p>Returns the sum of the playback and recording delays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The sum of the playback and recording delays</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.stereo_swapping">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stereo_swapping</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.stereo_swapping" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the stereo swapping is enabled.
-:return: true if the stereo swapping is enabled</p>
+<dd><p>Indicates if the stereo swapping is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>true if the stereo swapping is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.AudioSourceConfiguration.transient_suppression">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transient_suppression</span></span><a class="headerlink" href="#opentera_webrtc.native_client.AudioSourceConfiguration.transient_suppression" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the transient suppression is enabled.
-:return: True if the transient suppression is enabled</p>
+<dd><p>Indicates if the transient suppression is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the transient suppression is enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -378,8 +412,12 @@
 <ol class="arabic simple">
 <li><p>create() -&gt; DataChannelConfiguration</p></li>
 </ol>
-<p>Creates a data channel configuration with default values.
-:return: A data channel configuration with default values</p>
+<p>Creates a data channel configuration with default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A data channel configuration with default values</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="2">
 <li><p>create(ordered: bool) -&gt; DataChannelConfiguration</p></li>
 </ol>
@@ -554,29 +592,45 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelConfiguration.max_packet_life_time">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_packet_life_time</span></span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelConfiguration.max_packet_life_time" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the maximum number of time a message can be retransmitted.
-:return: The maximum number of time a message can be retransmitted</p>
+<dd><p>Returns the maximum number of time a message can be retransmitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum number of time a message can be retransmitted</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelConfiguration.max_retransmits">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_retransmits</span></span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelConfiguration.max_retransmits" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the maximum number of time a message can be retransmitted.
-:return: The maximum number of time a message can be retransmitted</p>
+<dd><p>Returns the maximum number of time a message can be retransmitted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The maximum number of time a message can be retransmitted</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelConfiguration.ordered">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ordered</span></span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelConfiguration.ordered" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the message order must be preserved.
-:return: True if the message order must be preserved</p>
+<dd><p>Indicates if the message order must be preserved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the message order must be preserved</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelConfiguration.protocol">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">protocol</span></span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelConfiguration.protocol" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the data channel protocol.
-:return: The data channel protocol</p>
+<dd><p>Returns the data channel protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The data channel protocol</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -589,15 +643,23 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.client_data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_data</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.client_data" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client data.
-:return: The client data</p>
+<dd><p>Returns the client data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.client_name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_name</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.client_name" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client name.
-:return: The client name</p>
+<dd><p>Returns the client name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client name</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -623,12 +685,7 @@
 <ol class="arabic simple" start="2">
 <li><p>create(url: str, client_name: str, client_data: object, room: str) -&gt; SignalingServerConfiguration</p></li>
 </ol>
-<dl class="simple">
-<dt>Creates an signaling server configuration with the specified values.</dt><dd><ul class="simple">
-<li></li>
-</ul>
-</dd>
-</dl>
+<p>Creates an signaling server configuration with the specified values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -682,22 +739,34 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.password">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">password</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.password" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the signaling server password.
-:return: The signaling server password</p>
+<dd><p>Returns the signaling server password.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The signaling server password</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.room">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.room" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the room name.
-:return: The room name</p>
+<dd><p>Returns the room name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The room name</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.url">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">url</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.url" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the signaling server URL.
-:return: The signaling server URL</p>
+<dd><p>Returns the signaling server URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The signaling server URL</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -727,15 +796,23 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.VideoSourceConfiguration.is_screencast">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_screencast</span></span><a class="headerlink" href="#opentera_webrtc.native_client.VideoSourceConfiguration.is_screencast" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if this source is screencast.
-:return: True if this source is a screencast</p>
+<dd><p>Indicates if this source is screencast.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if this source is a screencast</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.VideoSourceConfiguration.needs_denoising">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">needs_denoising</span></span><a class="headerlink" href="#opentera_webrtc.native_client.VideoSourceConfiguration.needs_denoising" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if this source needs denoising.
-:return: True if this source needs denoising</p>
+<dd><p>Indicates if this source needs denoising.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if this source needs denoising</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -826,22 +903,34 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.VideoStreamConfiguration.force_gstreamer_hardware_acceleration">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">force_gstreamer_hardware_acceleration</span></span><a class="headerlink" href="#opentera_webrtc.native_client.VideoStreamConfiguration.force_gstreamer_hardware_acceleration" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates that hardware accelerated codecs must be used.
-:return: True if only hardware accelerated codecs can be used.</p>
+<dd><p>Indicates that hardware accelerated codecs must be used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if only hardware accelerated codecs can be used.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.VideoStreamConfiguration.forced_codecs">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">forced_codecs</span></span><a class="headerlink" href="#opentera_webrtc.native_client.VideoStreamConfiguration.forced_codecs" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the codecs that must be used. An empty set means all codecs.
-:return: The codecs that must be used</p>
+<dd><p>Returns the codecs that must be used. An empty set means all codecs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The codecs that must be used</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.VideoStreamConfiguration.use_gstreamer_software_encoder_decoder">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">use_gstreamer_software_encoder_decoder</span></span><a class="headerlink" href="#opentera_webrtc.native_client.VideoStreamConfiguration.use_gstreamer_software_encoder_decoder" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates to use GStreamer software codecs instead of WebRTC ones.
-:return: True if GStreamer software codecs must be used instead of WebRTC ones</p>
+<dd><p>Indicates to use GStreamer software codecs instead of WebRTC ones.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if GStreamer software codecs must be used instead of WebRTC ones</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -858,21 +947,35 @@
 <ol class="arabic simple">
 <li><p>create() -&gt; WebrtcConfiguration</p></li>
 </ol>
-<p>Creates a WebRTC peer connection configuration with default values.
-:return: A WebRTC peer connection configuration with default values</p>
+<p>Creates a WebRTC peer connection configuration with default values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A WebRTC peer connection configuration with default values</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="2">
-<li><p>create(ice_servers: List[opentera::IceServer]) -&gt; WebrtcConfiguration</p></li>
+<li><p>create(ice_servers: List[IceServer]) -&gt; WebrtcConfiguration</p></li>
 </ol>
-<p>Creates a WebRTC peer connection configuration with the specified value.
-:param ice_servers: The ice servers
-:return: A WebRTC peer connection configuration with the specified value</p>
+<p>Creates a WebRTC peer connection configuration with the specified value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ice_servers</strong> – The ice servers</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A WebRTC peer connection configuration with the specified value</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcConfiguration.ice_servers">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ice_servers</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcConfiguration.ice_servers" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the ice servers.
-:return: The ice servers</p>
+<dd><p>Returns the ice servers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ice servers</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -885,22 +988,34 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.Client.data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#opentera_webrtc.native_client.Client.data" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client data.
-:return: The client data</p>
+<dd><p>Returns the client data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.Client.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#opentera_webrtc.native_client.Client.id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client id.
-:return: The client id</p>
+<dd><p>Returns the client id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client id</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.Client.name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#opentera_webrtc.native_client.Client.name" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client name.
-:return: The client name</p>
+<dd><p>Returns the client name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client name</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -912,29 +1027,45 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.RoomClient.data">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#opentera_webrtc.native_client.RoomClient.data" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client data.
-:return: The client data</p>
+<dd><p>Returns the client data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.RoomClient.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#opentera_webrtc.native_client.RoomClient.id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client id.
-:return: The client id</p>
+<dd><p>Returns the client id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client id</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.RoomClient.is_connected">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.RoomClient.is_connected" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the client is connected (RTCPeerConnection).
-:return: True if the client is connected (RTCPeerConnection)</p>
+<dd><p>Indicates if the client is connected (RTCPeerConnection).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the client is connected (RTCPeerConnection)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.RoomClient.name">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#opentera_webrtc.native_client.RoomClient.name" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client name.
-:return: The client name</p>
+<dd><p>Returns the client name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client name</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -946,8 +1077,12 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.IceServer.credential">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">credential</span></span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.credential" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the ice server credential.
-:return: The ice server credential</p>
+<dd><p>Returns the ice server credential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ice server credential</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -957,12 +1092,7 @@
 <ol class="arabic simple">
 <li><p>fetch_from_server(url: str, password: str) -&gt; List[IceServer]</p></li>
 </ol>
-<dl class="simple">
-<dt>Fetches the ice servers from the signaling server.</dt><dd><ul class="simple">
-<li></li>
-</ul>
-</dd>
-</dl>
+<p>Fetches the ice servers from the signaling server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -977,12 +1107,7 @@
 <ol class="arabic simple" start="2">
 <li><p>fetch_from_server(url: str, password: str, verify_certificate: bool) -&gt; List[IceServer]</p></li>
 </ol>
-<dl class="simple">
-<dt>Fetches the ice servers from the signaling server.</dt><dd><ul class="simple">
-<li></li>
-</ul>
-</dd>
-</dl>
+<p>Fetches the ice servers from the signaling server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1012,15 +1137,23 @@
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.IceServer.urls">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">urls</span></span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.urls" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the ice server urls.
-:return: The ice server urls</p>
+<dd><p>Returns the ice server urls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ice server urls</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.IceServer.username">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">username</span></span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.username" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the ice server username.
-:return: The ice server username</p>
+<dd><p>Returns the ice server username.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The ice server username</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1038,18 +1171,30 @@
 <ol class="arabic simple">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int8]) -&gt; None</p></li>
 </ol>
-<p>Send an audio frame
-:param frame: The audio frame</p>
+<p>Send an audio frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – The audio frame</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="2">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int16]) -&gt; None</p></li>
 </ol>
-<p>Send an audio frame
-:param frame: The audio frame</p>
+<p>Send an audio frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – The audio frame</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="3">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int32]) -&gt; None</p></li>
 </ol>
-<p>Send an audio frame
-:param frame: The audio frame</p>
+<p>Send an audio frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>frame</strong> – The audio frame</p>
+</dd>
+</dl>
 <ol class="arabic simple" start="4">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int8], is_typing: bool) -&gt; None</p></li>
 </ol>
@@ -1061,15 +1206,27 @@
 <ol class="arabic simple" start="5">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int16], is_typing: bool) -&gt; None</p></li>
 </ol>
-<p>Send an audio frame
-:param frame: The audio frame
-:param is_typing: Indicates if the frame contains typing sound.This is only useful with the typing detection option.</p>
+<p>Send an audio frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – The audio frame</p></li>
+<li><p><strong>is_typing</strong> – Indicates if the frame contains typing sound.This is only useful with the typing detection option.</p></li>
+</ul>
+</dd>
+</dl>
 <ol class="arabic simple" start="6">
 <li><p>send_frame(self: AudioSource, frame: numpy.ndarray[numpy.int32], is_typing: bool) -&gt; None</p></li>
 </ol>
-<p>Send an audio frame
-:param frame: The audio frame
-:param is_typing: Indicates if the frame contains typing sound.This is only useful with the typing detection option.</p>
+<p>Send an audio frame</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – The audio frame</p></li>
+<li><p><strong>is_typing</strong> – Indicates if the frame contains typing sound.This is only useful with the typing detection option.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1163,8 +1320,12 @@ Frame will be resized to match the transport layer request</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.connected_room_client_ids">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connected_room_client_ids</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.connected_room_client_ids" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the connected room client ids.
-:return: The connected room client ids</p>
+<dd><p>Returns the connected room client ids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The connected room client ids</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1191,22 +1352,34 @@ If no room client matches with the id, a default room client is returned.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.id">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.id" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the client id.
-:return: The client id</p>
+<dd><p>Returns the client id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The client id</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.is_connected">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.is_connected" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the client is connected to the signaling server.
-:return: True if the client is connected to the signaling server</p>
+<dd><p>Indicates if the client is connected to the signaling server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the client is connected to the signaling server</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.is_rtc_connected">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_rtc_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.is_rtc_connected" title="Permalink to this definition"></a></dt>
-<dd><p>Indicates if the client is connected to a least one client (RTCPeerConnection).
-:return: True if the client is connected to a least one client (RTCPeerConnection)</p>
+<dd><p>Indicates if the client is connected to a least one client (RTCPeerConnection).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the client is connected to a least one client (RTCPeerConnection)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -1362,15 +1535,23 @@ If no room client matches with the id, a default room client is returned.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.room_clients">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room_clients</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.room_clients" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the room clients
-:return: The room clients</p>
+<dd><p>Returns the room clients</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The room clients</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.tls_verification_enabled">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tls_verification_enabled</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.tls_verification_enabled" title="Permalink to this definition"></a></dt>
-<dd><p>Enable or disable the TLS verification. By default, the TLS verification is enabled.
-:param: is_enabled</p>
+<dd><p>Enable or disable the TLS verification. By default, the TLS verification is enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>is_enabled</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
