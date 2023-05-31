@@ -22,11 +22,21 @@ PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
 
+
+@web.middleware
+async def cors_middleware(request, handler):
+    response = await handler(request)
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin'
+    response.headers['Cross-Origin-Embedder-Policy'] = 'require-corp'
+    response.headers['Cross-Origin-Resource-Policy'] = 'cross-origin'
+    return response
+
+
 logging.basicConfig(format='[%(asctime)s] -- %(message)s')
 logger = logging.getLogger('signaling_server')
 
 sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
-app = web.Application(middlewares=[IndexMiddleware()])
+app = web.Application(middlewares=[IndexMiddleware(), cors_middleware])
 
 room_manager = RoomManager(sio)
 
