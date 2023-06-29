@@ -73,7 +73,7 @@ namespace opentera
             SignalingServerConfiguration&& signalingServerConfiguration,
             WebrtcConfiguration&& webrtcConfiguration,
             VideoStreamConfiguration&& videoStreamConfiguration);
-        virtual ~SignalingClient() = default;
+        virtual ~SignalingClient();
 
         DECLARE_NOT_COPYABLE(SignalingClient);
         DECLARE_NOT_MOVABLE(SignalingClient);
