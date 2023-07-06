@@ -78,6 +78,11 @@ SignalingClient::SignalingClient(
     }
 }
 
+SignalingClient::~SignalingClient()
+{
+    closeSync();
+}
+
 /**
  * Enable or disable the TLS verification. By default, the TLS verification is
  * enabled.
