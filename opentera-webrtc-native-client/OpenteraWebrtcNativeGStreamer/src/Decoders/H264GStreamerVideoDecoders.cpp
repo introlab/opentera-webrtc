@@ -102,7 +102,7 @@ bool TegraH264GStreamerVideoDecoder::isSupported()
 {
     return gst::elementFactoryExists("x264enc") && gst::elementFactoryExists("h264parse") &&
            gst::elementFactoryExists("nvv4l2decoder") && gst::elementFactoryExists("nvvidconv") &&
-           gst::testEncoderDecoderPipeline("x264enc ! h264parse ! nvv4l2decoder ! nvvidconv");
+           gst::testEncoderDecoderPipeline("x264enc ! nvv4l2decoder ! nvvidconv");
 }
 
 bool TegraH264GStreamerVideoDecoder::isHardwareAccelerated()
