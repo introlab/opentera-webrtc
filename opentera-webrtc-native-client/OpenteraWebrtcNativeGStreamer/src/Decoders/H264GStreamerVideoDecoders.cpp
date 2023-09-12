@@ -86,9 +86,7 @@ bool VaapiH264GStreamerVideoDecoder::isHardwareAccelerated()
 
 
 TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder()
-    : H264GStreamerVideoDecoder(
-          "h264parse ! capsfilter caps=video/x-h264,alignment=au,stream-format=byte-stream ! nvv4l2decoder ! nvvidconv",
-          true)
+    : H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv", true)
 {
 }
 
