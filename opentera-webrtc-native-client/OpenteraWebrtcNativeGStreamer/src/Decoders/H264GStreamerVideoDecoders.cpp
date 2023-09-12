@@ -21,8 +21,14 @@
 using namespace opentera;
 using namespace std;
 
-H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(string decoderPipeline, bool resetPipelineOnSizeChanges)
-    : GStreamerVideoDecoder(mediaTypeCaps(), move(decoderPipeline), resetPipelineOnSizeChanges)
+H264GStreamerVideoDecoder::H264GStreamerVideoDecoder(
+    string decoderPipeline,
+    const char* mediaTypeCapsParameters,
+    bool resetPipelineOnSizeChanges)
+    : GStreamerVideoDecoder(
+          string(mediaTypeCaps()) + mediaTypeCapsParameters,
+          move(decoderPipeline),
+          resetPipelineOnSizeChanges)
 {
 }
 
@@ -86,7 +92,7 @@ bool VaapiH264GStreamerVideoDecoder::isHardwareAccelerated()
 
 
 TegraH264GStreamerVideoDecoder::TegraH264GStreamerVideoDecoder()
-    : H264GStreamerVideoDecoder("h264parse ! nvv4l2decoder ! nvvidconv", true)
+    : H264GStreamerVideoDecoder("nvv4l2decoder ! nvvidconv", ",alignment=au,stream-format=byte-stream", true)
 {
 }
 
@@ -100,8 +106,8 @@ webrtc::VideoDecoder::DecoderInfo TegraH264GStreamerVideoDecoder::GetDecoderInfo
 
 bool TegraH264GStreamerVideoDecoder::isSupported()
 {
-    return gst::elementFactoryExists("x264enc") && gst::elementFactoryExists("h264parse") &&
-           gst::elementFactoryExists("nvv4l2decoder") && gst::elementFactoryExists("nvvidconv") &&
+    return gst::elementFactoryExists("x264enc") && gst::elementFactoryExists("nvv4l2decoder") &&
+           gst::elementFactoryExists("nvvidconv") &&
            gst::testEncoderDecoderPipeline("x264enc ! nvv4l2decoder ! nvvidconv");
 }
 

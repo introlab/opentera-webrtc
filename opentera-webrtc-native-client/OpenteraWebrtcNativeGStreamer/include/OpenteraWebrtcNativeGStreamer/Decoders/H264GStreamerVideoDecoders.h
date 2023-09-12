@@ -25,7 +25,10 @@ namespace opentera
     class H264GStreamerVideoDecoder : public GStreamerVideoDecoder
     {
     public:
-        explicit H264GStreamerVideoDecoder(std::string decoderPipeline, bool resetPipelineOnSizeChanges = false);
+        explicit H264GStreamerVideoDecoder(
+            std::string decoderPipeline,
+            const char* mediaTypeCapsParameters = "",
+            bool resetPipelineOnSizeChanges = false);
         ~H264GStreamerVideoDecoder() override = default;
 
         static const char* mediaTypeCaps();
