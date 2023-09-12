@@ -294,18 +294,36 @@ GstCaps* GStreamerVideoDecoder::getCapsForFrame(const webrtc::EncodedImage& imag
 
     if (!m_caps || lastWidth != m_width || lastHeight != m_height)
     {
-        m_caps = gst::unique_from_ptr(gst_caps_new_simple(
-            m_mediaTypeCaps.c_str(),
-            "width",
-            G_TYPE_INT,
-            m_width,
-            "height",
-            G_TYPE_INT,
-            m_height,
-            "alignment",
-            G_TYPE_STRING,
-            "au",
-            nullptr));
+        if (m_mediaTypeCaps == "video/x-h264")
+        {
+            m_caps = gst::unique_from_ptr(gst_caps_new_simple(
+                m_mediaTypeCaps.c_str(),
+                "width",
+                G_TYPE_INT,
+                m_width,
+                "height",
+                G_TYPE_INT,
+                m_height,
+                "alignment",
+                G_TYPE_STRING,
+                "au",
+                "stream-format",
+                G_TYPE_STRING,
+                "byte-stream",
+                nullptr));
+        }
+        else
+        {
+            m_caps = gst::unique_from_ptr(gst_caps_new_simple(
+                m_mediaTypeCaps.c_str(),
+                "width",
+                G_TYPE_INT,
+                m_width,
+                "height",
+                G_TYPE_INT,
+                m_height,
+                nullptr));
+        }
     }
 
     return m_caps.get();
