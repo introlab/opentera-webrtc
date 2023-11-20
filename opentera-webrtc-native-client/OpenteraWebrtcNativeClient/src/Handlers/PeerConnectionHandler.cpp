@@ -3,18 +3,6 @@
 using namespace opentera;
 using namespace std;
 
-class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver
-{
-public:
-    static DummySetSessionDescriptionObserver* Create()
-    {
-        return new rtc::RefCountedObject<DummySetSessionDescriptionObserver>();
-    }
-
-    void OnSuccess() override {}
-    void OnFailure(webrtc::RTCError error) override {}
-};
-
 void CreateSessionDescriptionObserverHelper::OnSuccess(webrtc::SessionDescriptionInterface* desc)
 {
     OnCreateSessionDescriptionObserverSuccess(desc);
@@ -102,7 +90,7 @@ void PeerConnectionHandler::receivePeerCallAnswer(const string& sdp)
     auto desc = webrtc::CreateSessionDescription("answer", sdp, &error);
     if (desc)
     {
-        m_peerConnection->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), desc);
+        m_peerConnection->SetRemoteDescription(this, desc);
     }
     else
     {
@@ -175,7 +163,7 @@ void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface
 
 void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc)
 {
-    m_peerConnection->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
+    m_peerConnection->SetLocalDescription(this, desc);
 
     string sdp;
     desc->ToString(&sdp);
