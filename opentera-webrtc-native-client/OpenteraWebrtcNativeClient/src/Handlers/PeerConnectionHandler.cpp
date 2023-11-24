@@ -18,6 +18,7 @@ public:
     }
 
     void OnSuccess() override {}
+
     void OnFailure(webrtc::RTCError error) override
     {
         m_onError(error.message());
