@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>OpenTera WebRTC API (C++): DummySetSessionDescriptionObserver Class Reference</title>
+<title>OpenTera WebRTC API (C++): OnlyFailureSetSessionDescriptionObserver Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.5</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.6</span>
    </div>
   </td>
  </tr>
@@ -42,32 +42,35 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="classDummySetSessionDescriptionObserver-members.html">List of all members</a>  </div>
+<a href="classOnlyFailureSetSessionDescriptionObserver-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">DummySetSessionDescriptionObserver Class Reference</div>  </div>
+<div class="title">OnlyFailureSetSessionDescriptionObserver Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for DummySetSessionDescriptionObserver:</div>
+Inheritance diagram for OnlyFailureSetSessionDescriptionObserver:</div>
 <div class="dyncontent">
  <div class="center">
-  <img src="classDummySetSessionDescriptionObserver.png" alt=""/>
+  <img src="classOnlyFailureSetSessionDescriptionObserver.png" alt=""/>
  </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa371460c4bdc9d5354f48b7b13af53b5"><td class="memItemLeft" align="right" valign="top"><a id="aa371460c4bdc9d5354f48b7b13af53b5"></a>
+<tr class="memitem:a11ace14c1eb64565d0823e7bb3f5c27f"><td class="memItemLeft" align="right" valign="top"><a id="a11ace14c1eb64565d0823e7bb3f5c27f"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>OnlyFailureSetSessionDescriptionObserver</b> (function&lt; void(const string &amp;)&gt; onError)</td></tr>
+<tr class="separator:a11ace14c1eb64565d0823e7bb3f5c27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72af18fe637dd23851c3ecbef4f42ab6"><td class="memItemLeft" align="right" valign="top"><a id="a72af18fe637dd23851c3ecbef4f42ab6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>OnSuccess</b> () override</td></tr>
-<tr class="separator:aa371460c4bdc9d5354f48b7b13af53b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ee64ba3f85a3508b6a9ee15e15fe143"><td class="memItemLeft" align="right" valign="top"><a id="a2ee64ba3f85a3508b6a9ee15e15fe143"></a>
+<tr class="separator:a72af18fe637dd23851c3ecbef4f42ab6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a752a1511a43e95f7147640e5235add4f"><td class="memItemLeft" align="right" valign="top"><a id="a752a1511a43e95f7147640e5235add4f"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>OnFailure</b> (webrtc::RTCError error) override</td></tr>
-<tr class="separator:a2ee64ba3f85a3508b6a9ee15e15fe143"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a752a1511a43e95f7147640e5235add4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a1491c15158219f81b6e3b97f9d5cb781"><td class="memItemLeft" align="right" valign="top"><a id="a1491c15158219f81b6e3b97f9d5cb781"></a>
-static <a class="el" href="classDummySetSessionDescriptionObserver.html">DummySetSessionDescriptionObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>Create</b> ()</td></tr>
-<tr class="separator:a1491c15158219f81b6e3b97f9d5cb781"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21a6d26c3a81d0f210f8aba4f0185f76"><td class="memItemLeft" align="right" valign="top"><a id="a21a6d26c3a81d0f210f8aba4f0185f76"></a>
+static <a class="el" href="classOnlyFailureSetSessionDescriptionObserver.html">OnlyFailureSetSessionDescriptionObserver</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>Create</b> (function&lt; void(const string &amp;)&gt; onError)</td></tr>
+<tr class="separator:a21a6d26c3a81d0f210f8aba4f0185f76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>PeerConnectionHandler.cpp</li>
@@ -76,7 +79,7 @@ static <a class="el" href="classDummySetSessionDescriptionObserver.html">DummySe
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Sep 26 2023 01:55:00 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Sun Nov 26 2023 15:28:37 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
