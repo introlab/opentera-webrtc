@@ -3,16 +3,26 @@
 using namespace opentera;
 using namespace std;
 
-class DummySetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver
+class OnlyFailureSetSessionDescriptionObserver : public webrtc::SetSessionDescriptionObserver
 {
+    function<void(const string&)> m_onError;
+
 public:
-    static DummySetSessionDescriptionObserver* Create()
+    explicit OnlyFailureSetSessionDescriptionObserver(function<void(const string&)> onError) : m_onError(move(onError))
     {
-        return new rtc::RefCountedObject<DummySetSessionDescriptionObserver>();
+    }
+
+    static OnlyFailureSetSessionDescriptionObserver* Create(function<void(const string&)> onError)
+    {
+        return new rtc::RefCountedObject<OnlyFailureSetSessionDescriptionObserver>(move(onError));
     }
 
     void OnSuccess() override {}
-    void OnFailure(webrtc::RTCError error) override {}
+
+    void OnFailure(webrtc::RTCError error) override
+    {
+        m_onError(error.message());
+    }
 };
 
 void CreateSessionDescriptionObserverHelper::OnSuccess(webrtc::SessionDescriptionInterface* desc)
@@ -102,7 +112,7 @@ void PeerConnectionHandler::receivePeerCallAnswer(const string& sdp)
     auto desc = webrtc::CreateSessionDescription("answer", sdp, &error);
     if (desc)
     {
-        m_peerConnection->SetRemoteDescription(DummySetSessionDescriptionObserver::Create(), desc);
+        m_peerConnection->SetRemoteDescription(OnlyFailureSetSessionDescriptionObserver::Create(m_onError), desc);
     }
     else
     {
@@ -175,7 +185,7 @@ void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface
 
 void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc)
 {
-    m_peerConnection->SetLocalDescription(DummySetSessionDescriptionObserver::Create(), desc);
+    m_peerConnection->SetLocalDescription(OnlyFailureSetSessionDescriptionObserver::Create(m_onError), desc);
 
     string sdp;
     desc->ToString(&sdp);
