@@ -9,10 +9,10 @@
 using namespace opentera;
 using namespace std;
 
-constexpr chrono::milliseconds SEND_MESSAGE_DELAY(250);
+constexpr chrono::milliseconds SEND_MESSAGE_DELAY(1000);
 constexpr chrono::milliseconds CLOSING_CONNECTION_DELAY(10000);
 
-constexpr int MESSAGE_COUNT = 10000;
+constexpr int MESSAGE_COUNT = 100;
 
 atomic_bool isRunning = true;
 
@@ -63,6 +63,19 @@ int main(int argc, char* argv[])
         cout << "IceServer::fetchFromServer failed" << endl;
         iceServers.clear();
     }
+
+    cout << "Ice servers=" << endl;
+    for (auto s : iceServers)
+    {
+        cout << "\turls=" << endl;
+        for (auto u : s.urls())
+        {
+            cout << "\t\t" << u << endl;
+        }
+        cout << "\tusername=" << s.username() << endl;
+        cout << "\tcredential=" << s.credential() << endl;
+    }
+    cout  << endl;
 
     auto signalingServerConfiguration =
         SignalingServerConfiguration::create(baseUrl, name, "reliability", password);
