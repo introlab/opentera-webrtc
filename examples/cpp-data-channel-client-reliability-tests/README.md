@@ -1,16 +1,31 @@
-# cpp-data-channel-client
+# cpp-data-channel-client-reliability-tests
 
-This example shows how to use the C++ library to create a client that communicates with another one by a WebRTC data channel. This example should be used with [web-data-channel-client](../web-data-channel-client).
+This example tests the reliability of the data channel.
 
 ## How to use
 
+1. Build the example.
 ```bash
 cd ../..
 mkdir build
 cd build
 cmake ..
 cmake --build . --config Release|Debug
+```
 
-cd bin/Release
-./CppDataChannelClient
+2. Start the signaling server.
+```bash
+./start_server.bash
+```
+
+3. Start a master client.
+```bash
+cd ../../build/bin/Release
+./CppDataChannelReliabilityTests http://localhost:8080 master abc true
+```
+
+4. Start a slave client.
+```bash
+cd ../../build/bin/Release
+./CppDataChannelReliabilityTests http://localhost:8080 slave abc false
 ```

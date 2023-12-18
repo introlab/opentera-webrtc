@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     }
 
     auto signalingServerConfiguration =
-        SignalingServerConfiguration::create(baseUrl, name, "chat", password);
+        SignalingServerConfiguration::create(baseUrl, name, "reliability", password);
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
