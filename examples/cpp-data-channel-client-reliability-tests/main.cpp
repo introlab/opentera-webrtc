@@ -9,7 +9,6 @@
 using namespace opentera;
 using namespace std;
 
-constexpr chrono::milliseconds SEND_MESSAGE_DELAY(1000);
 constexpr chrono::milliseconds CLOSING_CONNECTION_DELAY(10000);
 
 constexpr int MESSAGE_COUNT = 100;
@@ -35,6 +34,10 @@ bool waitFor(F f)
         if (std::chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - start) > TIMEOUT)
         {
             return false;
+        }
+        else if (!isRunning)
+        {
+            exit(-1);
         }
     }
 
@@ -128,7 +131,10 @@ int main(int argc, char* argv[])
         {
             int receivedId = stoi(message);
             currentMessageId = receivedId + 1;
-            client.sendToAll(to_string(currentMessageId.load()));
+            if (!client.sendToAll(to_string(currentMessageId.load())))
+            {
+                cout << "sendToAll failed" << endl;
+            }
 
             cout << "receivedId=" << receivedId << endl;
         });
@@ -151,7 +157,7 @@ int main(int argc, char* argv[])
 
     while (isRunning)
     {
-        isDataChannelOpened = true;
+        isDataChannelOpened = false;
         if (isMaster)
         {
             client.callAll();
@@ -159,13 +165,14 @@ int main(int argc, char* argv[])
 
         if (waitFor([&](){ return isDataChannelOpened.load(); }))
         {
-            this_thread::sleep_for(SEND_MESSAGE_DELAY);
-
             successfulConnectionCount++;
             currentMessageId = 0;
             if (isMaster)
             {
-                client.sendToAll(to_string(currentMessageId.load()));
+                if (!client.sendToAll(to_string(currentMessageId.load())))
+                {
+                    cout << "sendToAll failed" << endl;
+                }
             }
 
             if (waitFor([&](){ return currentMessageId.load() >= MESSAGE_COUNT; }))
