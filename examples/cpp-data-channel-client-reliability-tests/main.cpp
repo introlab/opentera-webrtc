@@ -9,7 +9,7 @@
 using namespace opentera;
 using namespace std;
 
-constexpr chrono::milliseconds CLOSING_CONNECTION_DELAY(10000);
+constexpr chrono::milliseconds CLOSING_CONNECTION_DELAY(1000);
 
 constexpr int MESSAGE_COUNT = 100;
 
