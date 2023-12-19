@@ -72,11 +72,15 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     }
 }
 
-void DataChannelPeerConnectionHandler::send(const webrtc::DataBuffer& buffer)
+bool DataChannelPeerConnectionHandler::send(const webrtc::DataBuffer& buffer)
 {
     if (m_dataChannel)
     {
-        m_dataChannel->Send(buffer);
+        return m_dataChannel->Send(buffer);
+    }
+    else
+    {
+        return false;
     }
 }
 

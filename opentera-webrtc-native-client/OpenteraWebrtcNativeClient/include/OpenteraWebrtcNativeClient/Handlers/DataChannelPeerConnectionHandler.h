@@ -46,7 +46,7 @@ namespace opentera
 
         void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
 
-        void send(const webrtc::DataBuffer& buffer);
+        bool send(const webrtc::DataBuffer& buffer);
 
         // Observer methods
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;

@@ -23,33 +23,37 @@ DataChannelClient::DataChannelClient(
 {
 }
 
-void DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<string>& ids)
+bool DataChannelClient::sendTo(const webrtc::DataBuffer& buffer, const vector<string>& ids)
 {
-    callAsync(
+    return callSync(
         getInternalClientThread(),
         [this, buffer, ids]()
         {
+            bool ok = true;
             for (const auto& id : ids)
             {
                 auto it = m_peerConnectionHandlersById.find(id);
                 if (it != m_peerConnectionHandlersById.end())
                 {
-                    dynamic_cast<DataChannelPeerConnectionHandler*>(it->second.get())->send(buffer);
+                    ok = ok && dynamic_cast<DataChannelPeerConnectionHandler*>(it->second.get())->send(buffer);
                 }
             }
+            return ok;
         });
 }
 
-void DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
+bool DataChannelClient::sendToAll(const webrtc::DataBuffer& buffer)
 {
-    callAsync(
+    return callSync(
         getInternalClientThread(),
         [this, buffer]()
         {
+            bool ok = true;
             for (auto& pair : m_peerConnectionHandlersById)
             {
-                dynamic_cast<DataChannelPeerConnectionHandler*>(pair.second.get())->send(buffer);
+                ok = ok && dynamic_cast<DataChannelPeerConnectionHandler*>(pair.second.get())->send(buffer);
             }
+            return ok;
         });
 }
 
