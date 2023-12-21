@@ -1,9 +1,9 @@
-import SignalingClient from './SignalingClient';
+import WebrtcClient from './WebrtcClient';
 
 /**
  * @brief A signaling client to join a WebRTC room and stream a video source.
  */
-class StreamClient extends SignalingClient {
+class StreamClient extends WebrtcClient {
   /**
    * @brief Creates a stream client
    *

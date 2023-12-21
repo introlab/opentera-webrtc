@@ -179,11 +179,11 @@ void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::Se
 
     if (m_isCaller)
     {
-        m_signalingClient.callPeer(sdp, m_peerClient.id());
+        m_signalingClient.callPeer(m_peerClient.id(), sdp);
     }
     else
     {
-        m_signalingClient.makePeerCallAnswer(sdp, m_peerClient.id());
+        m_signalingClient.makePeerCallAnswer(m_peerClient.id(), sdp);
     }
 }
 

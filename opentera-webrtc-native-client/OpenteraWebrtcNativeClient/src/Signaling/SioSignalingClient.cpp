@@ -43,7 +43,7 @@ void SioSignalingClient::setTlsVerificationEnabled(bool isEnabled)
     m_sio.set_is_tls_verification_enabled(isEnabled);
 }
 
-bool SioSignalingClient::isOpened()
+bool SioSignalingClient::isConnected()
 {
     return m_sio.opened();
 }
@@ -92,7 +92,7 @@ void SioSignalingClient::closeAllRoomPeerConnections()
     m_sio.socket()->emit("close-all-room-peer-connections");
 }
 
-void SioSignalingClient::callPeer(const string& sdp, const string& toId)
+void SioSignalingClient::callPeer(const string& toId, const string& sdp)
 {
     auto offer = sio::object_message::create();
     offer->get_map()["sdp"] = sio::string_message::create(sdp);
@@ -106,7 +106,7 @@ void SioSignalingClient::callPeer(const string& sdp, const string& toId)
     m_sio.socket()->emit("call-peer", data);
 }
 
-void SioSignalingClient::makePeerCallAnswer(const string& sdp, const string& toId)
+void SioSignalingClient::makePeerCallAnswer(const string& toId, const string& sdp)
 {
     auto offer = sio::object_message::create();
     offer->get_map()["sdp"] = sio::string_message::create(sdp);

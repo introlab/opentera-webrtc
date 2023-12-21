@@ -21,7 +21,7 @@ namespace opentera
 
         void setTlsVerificationEnabled(bool isEnabled) override;
 
-        bool isOpened() override;
+        bool isConnected() override;
         std::string sessionId() override;
 
         void connect() override;
@@ -32,8 +32,8 @@ namespace opentera
         void callIds(const std::vector<std::string>& ids) override;
         void closeAllRoomPeerConnections() override;
 
-        void callPeer(const std::string& sdp, const std::string& toId) override;
-        void makePeerCallAnswer(const std::string& sdp, const std::string& toId) override;
+        void callPeer(const std::string& toId, const std::string& sdp) override;
+        void makePeerCallAnswer(const std::string& toId, const std::string& sdp) override;
         void rejectCall(const std::string& toId) override;
         void sendIceCandidate(
             const std::string& sdpMid,

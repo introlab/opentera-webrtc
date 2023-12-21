@@ -152,7 +152,7 @@ namespace opentera
      */
     inline bool WebrtcClient::isConnected()
     {
-        return callSync(m_internalClientThread.get(), [this]() { return m_signalingClient->isOpened(); });
+        return callSync(m_internalClientThread.get(), [this]() { return m_signalingClient->isConnected(); });
     }
 
     /**

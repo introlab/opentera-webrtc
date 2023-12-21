@@ -46,7 +46,7 @@ namespace opentera
 
         virtual void setTlsVerificationEnabled(bool isEnabled) = 0;
 
-        virtual bool isOpened() = 0;
+        virtual bool isConnected() = 0;
         virtual std::string sessionId() = 0;
 
         virtual void connect() = 0;
@@ -57,8 +57,8 @@ namespace opentera
         virtual void callIds(const std::vector<std::string>& ids) = 0;
         virtual void closeAllRoomPeerConnections() = 0;
 
-        virtual void callPeer(const std::string& sdp, const std::string& toId) = 0;
-        virtual void makePeerCallAnswer(const std::string& sdp, const std::string& toId) = 0;
+        virtual void callPeer(const std::string& toId, const std::string& sdp) = 0;
+        virtual void makePeerCallAnswer(const std::string& toId, const std::string& sdp) = 0;
         virtual void rejectCall(const std::string& toId) = 0;
         virtual void sendIceCandidate(
             const std::string& sdpMid,
