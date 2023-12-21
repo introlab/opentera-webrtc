@@ -12,7 +12,7 @@
 #include <OpenteraWebrtcNativeClientPython/Sources/VideoSourcePython.h>
 
 #include <OpenteraWebrtcNativeClientPython/DataChannelClientPython.h>
-#include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/WebrtcClientPython.h>
 #include <OpenteraWebrtcNativeClientPython/StreamClientPython.h>
 
 using namespace opentera;
@@ -33,7 +33,7 @@ PYBIND11_MODULE(_opentera_webrtc_native_client, m)
     initAudioSourcePython(m);
     initVideoSourcePython(m);
 
-    initSignalingClientPython(m);
+    initWebrtcClientPython(m);
     initDataChannelClientPython(m);
     initStreamClientPython(m);
 

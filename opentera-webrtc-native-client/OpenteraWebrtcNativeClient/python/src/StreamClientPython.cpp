@@ -153,7 +153,7 @@ void opentera::initStreamClientPython(pybind11::module& m)
         .value("H264", VideoCodecType::H264)
         .value("MULTIPLEX", VideoCodecType::Multiplex);
 
-    py::class_<StreamClient, SignalingClient>(
+    py::class_<StreamClient, WebrtcClient>(
         m,
         "StreamClient",
         "A signaling client to join a WebRTC room and stream a video source.")

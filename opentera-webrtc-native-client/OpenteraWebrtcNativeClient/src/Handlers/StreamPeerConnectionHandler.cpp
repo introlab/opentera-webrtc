@@ -9,15 +9,12 @@ using namespace rtc;
 using namespace webrtc;
 using namespace std;
 
-static constexpr bool OfferToReceiveVideo = true;
-static constexpr bool OfferToReceiveAudio = true;
-
 StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     string id,
     Client peerClient,
     bool isCaller,
     bool hasOnMixedAudioFrameReceivedCallback,
-    function<void(const string&, const sio::message::ptr&)> sendEvent,
+    SignalingClient& m_signalingClient,
     function<void(const string&)> onError,
     function<void(const Client&)> onClientConnected,
     function<void(const Client&)> onClientDisconnected,
@@ -32,7 +29,7 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          move(sendEvent),
+          m_signalingClient,
           move(onError),
           move(onClientConnected),
           move(onClientDisconnected)),

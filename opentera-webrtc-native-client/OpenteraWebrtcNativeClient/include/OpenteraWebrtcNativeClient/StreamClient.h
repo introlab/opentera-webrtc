@@ -5,7 +5,7 @@
 #include <OpenteraWebrtcNativeClient/Sources/VideoSource.h>
 #include <OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h>
 
-#include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/WebrtcClient.h>
 
 #include <memory>
 
@@ -14,7 +14,7 @@ namespace opentera
     /**
      * @brief A signaling client to join a WebRTC room and stream a video source.
      */
-    class StreamClient : public SignalingClient
+    class StreamClient : public WebrtcClient
     {
         std::shared_ptr<VideoSource> m_videoSource;
         std::shared_ptr<AudioSource> m_audioSource;

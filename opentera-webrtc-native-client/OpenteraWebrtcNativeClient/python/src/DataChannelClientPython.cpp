@@ -25,7 +25,7 @@ void setOnDataChannelMessageBinary(
 
 void opentera::initDataChannelClientPython(pybind11::module& m)
 {
-    py::class_<DataChannelClient, SignalingClient>(
+    py::class_<DataChannelClient, WebrtcClient>(
         m,
         "DataChannelClient",
         "Represents a client for data channel communication.")

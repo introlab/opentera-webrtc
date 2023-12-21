@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/WebrtcClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
@@ -12,7 +12,7 @@ namespace opentera
     /**
      * @brief Represents a client for data channel communication.
      */
-    class DataChannelClient : public SignalingClient
+    class DataChannelClient : public WebrtcClient
     {
         DataChannelConfiguration m_dataChannelConfiguration;
 
@@ -91,7 +91,10 @@ namespace opentera
      *
      * @param message The string message
      */
-    inline bool DataChannelClient::sendToAll(const std::string& message) { return sendToAll(webrtc::DataBuffer(message)); }
+    inline bool DataChannelClient::sendToAll(const std::string& message)
+    {
+        return sendToAll(webrtc::DataBuffer(message));
+    }
 
     /**
      * @brief Sets the callback that is called when a data channel opens.

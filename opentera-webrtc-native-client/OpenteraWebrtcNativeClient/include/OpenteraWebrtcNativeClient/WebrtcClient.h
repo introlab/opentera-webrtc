@@ -1,17 +1,15 @@
-#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
-#define OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_CLIENT_H
+#ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_WEBRTC_CLIENT_H
+#define OPENTERA_WEBRTC_NATIVE_CLIENT_WEBRTC_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Configurations/WebrtcConfiguration.h>
 #include <OpenteraWebrtcNativeClient/Configurations/VideoStreamConfiguration.h>
+#include <OpenteraWebrtcNativeClient/Signaling/SignalingClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 #include <OpenteraWebrtcNativeClient/Utils/IceServer.h>
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 #include <OpenteraWebrtcNativeClient/Utils/FunctionTask.h>
 #include <OpenteraWebrtcNativeClient/OpenteraAudioDeviceModule.h>
-
-#include <sio_client.h>
 
 #include <api/peer_connection_interface.h>
 #include <api/scoped_refptr.h>
@@ -27,14 +25,11 @@ namespace opentera
     /**
      * @brief Represents the base class of DataChannelClient and StreamClient.
      */
-    class SignalingClient
+    class WebrtcClient
     {
         std::unique_ptr<rtc::Thread> m_internalClientThread;
 
         WebrtcConfiguration m_webrtcConfiguration;
-
-        sio::client m_sio;
-        bool m_hasClosePending;
 
         std::map<std::string, Client> m_roomClientsById;
         std::vector<std::string> m_alreadyAcceptedCalls;
@@ -60,7 +55,7 @@ namespace opentera
         std::unique_ptr<rtc::Thread> m_signalingThread;
 
     protected:
-        SignalingServerConfiguration m_signalingServerConfiguration;
+        std::unique_ptr<SignalingClient> m_signalingClient;
 
         rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> m_peerConnectionFactory;
         std::map<std::string, std::unique_ptr<PeerConnectionHandler>> m_peerConnectionHandlersById;
@@ -69,14 +64,14 @@ namespace opentera
         rtc::scoped_refptr<webrtc::AudioProcessing> m_audioProcessing;
 
     public:
-        SignalingClient(
+        WebrtcClient(
             SignalingServerConfiguration&& signalingServerConfiguration,
             WebrtcConfiguration&& webrtcConfiguration,
             VideoStreamConfiguration&& videoStreamConfiguration);
-        virtual ~SignalingClient();
+        virtual ~WebrtcClient();
 
-        DECLARE_NOT_COPYABLE(SignalingClient);
-        DECLARE_NOT_MOVABLE(SignalingClient);
+        DECLARE_NOT_COPYABLE(WebrtcClient);
+        DECLARE_NOT_MOVABLE(WebrtcClient);
 
         void setTlsVerificationEnabled(bool isEnabled);
 
@@ -124,7 +119,6 @@ namespace opentera
         virtual std::unique_ptr<PeerConnectionHandler>
             createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) = 0;
 
-        std::function<void(const std::string&, const sio::message::ptr&)> getSendEventFunction();
         std::function<void(const std::string&)> getOnErrorFunction();
         std::function<void(const Client&)> getOnClientConnectedFunction();
         std::function<void(const Client&)> getOnClientDisconnectedFunction();
@@ -132,28 +126,11 @@ namespace opentera
         rtc::Thread* getInternalClientThread();
 
     private:
-        void connectSioEvents();
+        void connectSignalingClientCallbacks();
 
-        void onSioConnectEvent();
-        void onSioErrorEvent();
-        void onSioDisconnectEvent(const sio::client::close_reason& reason);
-
-        void onJoinRoomCallback(const sio::message::list& message);
-
-        void onRoomClientsEvent(sio::event& event);
-
-        void onMakePeerCallEvent(sio::event& event);
         void makePeerCall(const std::string& id);
-
-        void onPeerCallReceivedEvent(sio::event& event);
         void receivePeerCall(const std::string& fromId, const std::string& sdp);
-
-        void onPeerCallAnswerReceivedEvent(sio::event& event);
         void receivePeerCallAnswer(const std::string& fromId, const std::string& sdp);
-
-        void onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event);
-
-        void onIceCandidateReceivedEvent(sio::event& event);
         void receiveIceCandidate(
             const std::string& fromId,
             const std::string& sdpMid,
@@ -173,16 +150,16 @@ namespace opentera
      * @brief Indicates if the client is connected to the signaling server.
      * @return true if the client is connected to the signaling server
      */
-    inline bool SignalingClient::isConnected()
+    inline bool WebrtcClient::isConnected()
     {
-        return callSync(m_internalClientThread.get(), [this]() { return m_sio.opened(); });
+        return callSync(m_internalClientThread.get(), [this]() { return m_signalingClient->isOpened(); });
     }
 
     /**
      * @brief Indicates if the client is connected to at least one client (RTCPeerConnection).
      * @return true if the client is connected to at least one client (RTCPeerConnection)
      */
-    inline bool SignalingClient::isRtcConnected()
+    inline bool WebrtcClient::isRtcConnected()
     {
         return callSync(m_internalClientThread.get(), [this]() { return !m_peerConnectionHandlersById.empty(); });
     }
@@ -191,11 +168,9 @@ namespace opentera
      * @brief Returns the client id.
      * @return The client id
      */
-    inline std::string SignalingClient::id()
+    inline std::string WebrtcClient::id()
     {
-        return callSync(
-            m_internalClientThread.get(),
-            [this]() { return m_hasClosePending ? "" : m_sio.get_sessionid(); });
+        return callSync(m_internalClientThread.get(), [this]() { return m_signalingClient->sessionId(); });
     }
 
     /**
@@ -205,7 +180,7 @@ namespace opentera
      * @param id The room client id
      * @return The room client that matches with the specified id
      */
-    inline RoomClient SignalingClient::getRoomClient(const std::string& id)
+    inline RoomClient WebrtcClient::getRoomClient(const std::string& id)
     {
         return callSync(
             m_internalClientThread.get(),
@@ -234,7 +209,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnSignalingConnectionOpened(const std::function<void()>& callback)
+    inline void WebrtcClient::setOnSignalingConnectionOpened(const std::function<void()>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionOpened = callback; });
     }
@@ -246,7 +221,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
+    inline void WebrtcClient::setOnSignalingConnectionClosed(const std::function<void()>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionClosed = callback; });
     }
@@ -263,7 +238,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnSignalingConnectionError(const std::function<void(const std::string&)>& callback)
+    inline void WebrtcClient::setOnSignalingConnectionError(const std::function<void(const std::string&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onSignalingConnectionError = callback; });
     }
@@ -281,7 +256,7 @@ namespace opentera
      * @param callback The callback
      */
     inline void
-        SignalingClient::setOnRoomClientsChanged(const std::function<void(const std::vector<RoomClient>&)>& callback)
+        WebrtcClient::setOnRoomClientsChanged(const std::function<void(const std::vector<RoomClient>&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onRoomClientsChanged = callback; });
     }
@@ -301,7 +276,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
+    inline void WebrtcClient::setCallAcceptor(const std::function<bool(const Client&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_callAcceptor = callback; });
     }
@@ -318,7 +293,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
+    inline void WebrtcClient::setOnCallRejected(const std::function<void(const Client&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onCallRejected = callback; });
     }
@@ -335,7 +310,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
+    inline void WebrtcClient::setOnClientConnected(const std::function<void(const Client&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientConnected = callback; });
     }
@@ -352,7 +327,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
+    inline void WebrtcClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientDisconnected = callback; });
     }
@@ -369,7 +344,7 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setOnError(const std::function<void(const std::string& error)>& callback)
+    inline void WebrtcClient::setOnError(const std::function<void(const std::string& error)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onError = callback; });
     }
@@ -386,13 +361,13 @@ namespace opentera
      *
      * @param callback The callback
      */
-    inline void SignalingClient::setLogger(const std::function<void(const std::string& message)>& callback)
+    inline void WebrtcClient::setLogger(const std::function<void(const std::string& message)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_logger = callback; });
     }
 
     template<class T, class... Types>
-    void SignalingClient::invokeIfCallable(const std::function<T>& f, Types... args)
+    void WebrtcClient::invokeIfCallable(const std::function<T>& f, Types... args)
     {
         callAsync(
             m_internalClientThread.get(),
@@ -405,7 +380,7 @@ namespace opentera
             });
     }
 
-    inline void SignalingClient::log(const std::string& message)
+    inline void WebrtcClient::log(const std::string& message)
     {
         callAsync(
             m_internalClientThread.get(),
@@ -418,7 +393,7 @@ namespace opentera
             });
     }
 
-    inline rtc::Thread* SignalingClient::getInternalClientThread() { return m_internalClientThread.get(); }
+    inline rtc::Thread* WebrtcClient::getInternalClientThread() { return m_internalClientThread.get(); }
 }
 
 #endif

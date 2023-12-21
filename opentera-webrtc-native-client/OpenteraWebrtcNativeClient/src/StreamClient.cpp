@@ -15,7 +15,7 @@ StreamClient::StreamClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
     VideoStreamConfiguration videoStreamConfiguration)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
+    : WebrtcClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
       m_isRemoteAudioMuted(false),
@@ -37,7 +37,7 @@ StreamClient::StreamClient(
     WebrtcConfiguration webrtcConfiguration,
     VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<VideoSource> videoSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
+    : WebrtcClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_videoSource(move(videoSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
@@ -60,7 +60,7 @@ StreamClient::StreamClient(
     WebrtcConfiguration webrtcConfiguration,
     VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<AudioSource> audioSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
+    : WebrtcClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
       m_isLocalAudioMuted(false),
@@ -90,7 +90,7 @@ StreamClient::StreamClient(
     VideoStreamConfiguration videoStreamConfiguration,
     shared_ptr<VideoSource> videoSource,
     shared_ptr<AudioSource> audioSource)
-    : SignalingClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
+    : WebrtcClient(move(signalingServerConfiguration), move(webrtcConfiguration), move(videoStreamConfiguration)),
       m_videoSource(move(videoSource)),
       m_audioSource(move(audioSource)),
       m_hasOnMixedAudioFrameReceivedCallback(false),
@@ -204,7 +204,7 @@ unique_ptr<PeerConnectionHandler>
         peerClient,
         isCaller,
         m_hasOnMixedAudioFrameReceivedCallback,
-        getSendEventFunction(),
+        *m_signalingClient,
         getOnErrorFunction(),
         getOnClientConnectedFunction(),
         getOnClientDisconnectedFunction(),
