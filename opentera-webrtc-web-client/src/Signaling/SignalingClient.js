@@ -3,9 +3,6 @@ class SignalingClient {
     if (this.constructor === SignalingClient) {
       throw new TypeError('Abstract class "SignalingClient" cannot be instantiated directly.');
     }
-    if (this._createRtcPeerConnection === undefined) {
-      throw new TypeError('_createRtcPeerConnection is missing.');
-    }
 
     this._signalingServerConfiguration = signalingServerConfiguration;
     this._logger = logger;
