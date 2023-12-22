@@ -78,7 +78,7 @@ py::object opentera::jsonToPyObject(const nlohmann::json& json)
 
         case nlohmann::detail::value_t::binary:
         {
-            vector<uint8_t> data = json;
+            nlohmann::json::binary_t data = json;
             return py::bytes(string(data.begin(), data.end()));
         }
 
