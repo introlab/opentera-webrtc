@@ -93,7 +93,7 @@ if __name__ == '__main__':
         os.path.realpath(__file__)), 'frame.png'))
 
     signaling_server_configuration = webrtc.SignalingServerConfiguration.create_with_data(
-        'http://localhost:8080', 'Python', None, 'chat', 'abc')
+        'ws://localhost:8080/signaling', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server(
         'http://localhost:8080/iceservers', 'abc')
     webrtc_configuration = webrtc.WebrtcConfiguration.create(ice_servers)

@@ -34,6 +34,7 @@ include_directories(BEFORE SYSTEM ${webrtc_native_INCLUDE})
 include_directories(BEFORE SYSTEM ${boringssl_INCLUDE})
 include_directories(BEFORE SYSTEM ${libyuv_INCLUDE})
 include_directories(../3rdParty/json/include)
+include_directories(../3rdParty/IXWebSocket)
 include_directories(../3rdParty/cpp-httplib)
 include_directories(include)
 
@@ -49,6 +50,7 @@ add_library(OpenteraWebrtcNativeClient
         ${source_files})
 
 target_link_libraries(OpenteraWebrtcNativeClient
+        ixwebsocket
         ${webrtc_native_LIBRARY}
         ${boringssl_LIBRARY}
         ${libyuv_LIBRARY}

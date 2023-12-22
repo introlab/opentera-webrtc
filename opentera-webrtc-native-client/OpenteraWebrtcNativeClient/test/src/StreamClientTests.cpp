@@ -114,7 +114,7 @@ struct StreamClientTestsParameters
     bool useGStreamerSoftwareEncoderDecoder;
 };
 
-void PrintTo(const StreamClientTestsParameters& parameters, std::ostream* os)
+void PrintTo(const StreamClientTestsParameters& parameters, ostream* os)
 {
     *os << "tlsTestEnable=" << parameters.tlsTestEnable;
     *os << ", useGStreamerSoftwareEncoderDecoder=" << parameters.useGStreamerSoftwareEncoderDecoder;
@@ -173,11 +173,11 @@ protected:
 
         if (parameters.tlsTestEnable)
         {
-            m_baseUrl = "https://localhost:8081/thepath";
+            m_baseUrl = "wss://localhost:8081/signaling";
         }
         else
         {
-            m_baseUrl = "http://localhost:8080/thepath";
+            m_baseUrl = "ws://localhost:8080/signaling";
         }
     }
 };

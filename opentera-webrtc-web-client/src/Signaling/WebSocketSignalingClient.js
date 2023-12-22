@@ -2,7 +2,7 @@ import SignalingClient from './SignalingClient';
 
 const SignalingProtocolVersion = 1;
 
-function _event_to_message(event, data) {
+function _eventToMessage(event, data) {
   if (data === undefined) {
     return JSON.stringify({event: event});
   } else {
@@ -40,7 +40,7 @@ class WebSocketSignalingClient extends SignalingClient {
         password: this._signalingServerConfiguration.password,
         protocolVersion: SignalingProtocolVersion
       };
-      this._ws.send(_event_to_message('join-room', data));
+      this._ws.send(_eventToMessage('join-room', data));
     };
     this._ws.onclose = event => {
       this._logger('SignalingServer disconnect event: ', event);
@@ -91,8 +91,8 @@ class WebSocketSignalingClient extends SignalingClient {
     if (id === '') {
       this._onSignalingConnectionError('Invalid password or invalid protocol version');
     } else {
-      this._onSignalingConnectionOpen();
       this._id = id;
+      this._onSignalingConnectionOpen();
     }
   }
 
@@ -111,35 +111,35 @@ class WebSocketSignalingClient extends SignalingClient {
   }
 
   callAll() {
-    this._ws.send(_event_to_message('call-all'));
+    this._ws.send(_eventToMessage('call-all'));
   }
 
   callIds(ids) {
-    this._ws.send(_event_to_message('call-ids', ids));
+    this._ws.send(_eventToMessage('call-ids', ids));
   }
 
   closeAllRoomPeerConnections() {
-    this._ws.send(_event_to_message('close-all-room-peer-connections'));
+    this._ws.send(_eventToMessage('close-all-room-peer-connections'));
   }
 
   callPeer(toId, offer) {
     let data = { toId: toId, offer: offer };
-    this._ws.send(_event_to_message('call-peer', data));
+    this._ws.send(_eventToMessage('call-peer', data));
   }
 
   makePeerCallAnswer(toId, answer) {
     let data = { toId: toId, answer: answer };
-    this._ws.send(_event_to_message('make-peer-call-answer', data));
+    this._ws.send(_eventToMessage('make-peer-call-answer', data));
   }
 
   rejectCall(toId) {
     let data = { toId: toId };
-    this._ws.send(_event_to_message('make-peer-call-answer', data));
+    this._ws.send(_eventToMessage('make-peer-call-answer', data));
   }
 
   sendIceCandidate(toId, candidate) {
     let data = { toId: toId, candidate: candidate };
-    this._ws.send(_event_to_message('send-ice-candidate', data));
+    this._ws.send(_eventToMessage('send-ice-candidate', data));
   }
 }
 

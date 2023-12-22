@@ -31,7 +31,7 @@ bool waitFor(F f)
     {
         this_thread::sleep_for(SLEEP_TIME);
 
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(chrono::steady_clock::now() - start) > TIMEOUT)
+        if (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - start) > TIMEOUT)
         {
             return false;
         }
@@ -80,6 +80,20 @@ int main(int argc, char* argv[])
     }
     cout  << endl;
 
+    string wsUrl;
+    if (baseUrl.find("http://") == 0)
+    {
+        wsUrl = "ws://" + baseUrl.substr(7) + "/signaling";
+    }
+    else if (baseUrl.find("https://") == 0)
+    {
+        wsUrl = "wss://" + baseUrl.substr(8) + "/signaling";
+    }
+    else
+    {
+        cout << "Invalid base URL (" << baseUrl << ")" << endl;
+        return -1;
+    }
     auto signalingServerConfiguration =
         SignalingServerConfiguration::create(baseUrl, name, "reliability", password);
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);

@@ -1,6 +1,6 @@
 #include <OpenteraWebrtcNativeClient/WebrtcClient.h>
 #include <OpenteraWebrtcNativeClient/Codecs/VideoCodecFactories.h>
-//#include <OpenteraWebrtcNativeClient/Signaling/SioSignalingClient.h>
+#include <OpenteraWebrtcNativeClient/Signaling/WebSocketSignalingClient.h>
 
 #include <api/audio_codecs/builtin_audio_decoder_factory.h>
 #include <api/audio_codecs/builtin_audio_encoder_factory.h>
@@ -15,7 +15,7 @@ WebrtcClient::WebrtcClient(
     VideoStreamConfiguration&& videoStreamConfiguration)
     : m_webrtcConfiguration(move(webrtcConfiguration))
 {
-    //m_signalingClient = make_unique<SioSignalingClient>(signalingServerConfiguration);
+    m_signalingClient = make_unique<WebSocketSignalingClient>(signalingServerConfiguration);
     connectSignalingClientCallbacks();
 
     m_internalClientThread = move(rtc::Thread::Create());

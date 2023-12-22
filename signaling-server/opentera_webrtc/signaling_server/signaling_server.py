@@ -139,12 +139,11 @@ async def handle_join_room(id, data):
     if 'data' not in data:
         data['data'] = {}
 
-    await room_manager.add_client(id, data['name'], data['data'], data['room'])
+    await web_socket_client_manager.send_to(event_to_message('join-room-answer', id), id)
 
+    await room_manager.add_client(id, data['name'], data['data'], data['room'])
     clients = await room_manager.list_clients(data['room'])
     await room_manager.send_to_all(event_to_message('room-clients', clients), room=data['room'])
-
-    await web_socket_client_manager.send_to(event_to_message('join-room-answer', id), id)
 
 
 async def handle_ice_candidate(from_id, data):

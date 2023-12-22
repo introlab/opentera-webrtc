@@ -67,11 +67,11 @@ protected:
 
         if (tlsTestEnable)
         {
-            m_baseUrl = "https://localhost:8081";
+            m_baseUrl = "wss://localhost:8081/signaling";
         }
         else
         {
-            m_baseUrl = "http://localhost:8080";
+            m_baseUrl = "ws://localhost:8080/signaling";
         }
     }
 };
@@ -92,7 +92,7 @@ protected:
         {
             m_client1 = make_unique<DataChannelClient>(
                 SignalingServerConfiguration::createWithData(
-                    "https://localhost:8081",
+                    "wss://localhost:8081/signaling",
                     "c1",
                     "cd1",
                     "chat",
@@ -104,7 +104,7 @@ protected:
         {
             m_client1 = make_unique<DataChannelClient>(
                 SignalingServerConfiguration::createWithData(
-                    "http://localhost:8080",
+                    "ws://localhost:8080/signaling",
                     "c1",
                     "cd1",
                     "chat",

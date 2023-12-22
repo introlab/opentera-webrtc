@@ -16,3 +16,6 @@
 [submodule "opentera-webrtc-native-client/3rdParty/json"]
 	path = opentera-webrtc-native-client/3rdParty/json
 	url = https://github.com/nlohmann/json
+[submodule "opentera-webrtc-native-client/3rdParty/IXWebSocket"]
+	path = opentera-webrtc-native-client/3rdParty/IXWebSocket
+	url = https://github.com/machinezone/IXWebSocket.git

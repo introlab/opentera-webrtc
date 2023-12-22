@@ -2,22 +2,22 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_SIO_SIGNALING_CLIENT_H
 
 #include <OpenteraWebrtcNativeClient/Signaling/SignalingClient.h>
-/*
-#include <sio_client.h>
+
+#include <ixwebsocket/IXWebSocket.h>
 
 namespace opentera
 {
-    class SioSignalingClient : public SignalingClient
+    class WebSocketSignalingClient : public SignalingClient
     {
-        sio::client m_sio;
-        bool m_hasClosePending;
+        ix::WebSocket m_ws;
+        std::string m_sessionId;
 
     public:
-        SioSignalingClient(SignalingServerConfiguration configuration);
-        ~SioSignalingClient() override;
+        WebSocketSignalingClient(SignalingServerConfiguration configuration);
+        ~WebSocketSignalingClient() override;
 
-        DECLARE_NOT_COPYABLE(SioSignalingClient);
-        DECLARE_NOT_MOVABLE(SioSignalingClient);
+        DECLARE_NOT_COPYABLE(WebSocketSignalingClient);
+        DECLARE_NOT_MOVABLE(WebSocketSignalingClient);
 
         void setTlsVerificationEnabled(bool isEnabled) override;
 
@@ -42,22 +42,23 @@ namespace opentera
             const std::string& toId) override;
 
     private:
-        void connectSioEvents();
+        void connectWsEvents();
 
-        void onSioConnectEvent();
-        void onSioErrorEvent();
-        void onSioDisconnectEvent(const sio::client::close_reason& reason);
+        void onWsOpenEvent();
+        void onWsCloseEvent();
+        void onWsErrorEvent(const std::string& error);
+        void onWsMessage(const std::string& message);
 
-        void onJoinRoomCallback(const sio::message::list& message);
+        void onJoinRoomAnswerEvent(const nlohmann::json& data);
 
-        void onRoomClientsEvent(sio::event& event);
+        void onRoomClientsEvent(const nlohmann::json& data);
 
-        void onMakePeerCallEvent(sio::event& event);
-        void onPeerCallReceivedEvent(sio::event& event);
-        void onPeerCallAnswerReceivedEvent(sio::event& event);
-        void onCloseAllPeerConnectionsRequestReceivedEvent(sio::event& event);
-        void onIceCandidateReceivedEvent(sio::event& event);
+        void onMakePeerCallEvent(const nlohmann::json& data);
+        void onPeerCallReceivedEvent(const nlohmann::json& data);
+        void onPeerCallAnswerReceivedEvent(const nlohmann::json& data);
+        void onCloseAllPeerConnectionsRequestReceivedEvent();
+        void onIceCandidateReceivedEvent(const nlohmann::json& data);
     };
 }
-*/
+
 #endif
