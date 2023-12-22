@@ -1,4 +1,4 @@
-import SioSignalingClient from './Signaling/SioSignalingClient';
+import WebSocketSignalingClient from './Signaling/WebSocketSignalingClient';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function' && Object.prototype.toString.call(obj) === '[object Promise]';
@@ -62,7 +62,7 @@ class WebrtcClient {
 
     this._offerOptions = {};
 
-    this._signalingClient = new SioSignalingClient(signalingServerConfiguration, logger);
+    this._signalingClient = new WebSocketSignalingClient(signalingServerConfiguration, logger);
     this._connectSignalingClientCallbacks();
   }
 

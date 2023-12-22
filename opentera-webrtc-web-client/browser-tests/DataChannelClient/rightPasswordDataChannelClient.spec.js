@@ -6,21 +6,21 @@ describe('Right password DataChannelClient', done => {
   const BEFORE_AFTER_TIMEOUT_MS = 100;
   const TEST_TIMEOUT_MS = 15000;
   const SignalingServerConfiguration1 = {
-    url: 'http://localhost:8080',
+    url: 'ws://localhost:8080/signaling',
     name: 'c1',
     data:'cd1',
     room: 'chat',
     password: 'abc'
   };
   const SignalingServerConfiguration2 = {
-    url: 'http://localhost:8080/socket.io',
+    url: 'ws://localhost:8080/signaling',
     name: 'c2',
     data:'cd2',
     room: 'chat',
     password: 'abc'
   };
   const SignalingServerConfiguration3 = {
-    url: 'http://localhost:8080/socket.io/',
+    url: 'ws://localhost:8080/signaling',
     name: 'c3',
     data:'cd3',
     room: 'chat',

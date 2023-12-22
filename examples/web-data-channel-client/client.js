@@ -21,7 +21,7 @@
   sendButton.disabled = true;
   chatTextArea.value = '';
 
-  let dataChannelClient = null; 
+  let dataChannelClient = null;
 
   function connectDataChannelClientEvents() {
     dataChannelClient.onSignalingConnectionOpen = () => {
@@ -84,7 +84,7 @@
 
   connectButton.onclick = async () => {
     const SignalingServerConfiguration = {
-      url: 'http://localhost:8080',
+      url: 'ws://localhost:8080/signaling',
       name: nameInput.value,
       data: {}, // Client custom data
       room: 'chat',
