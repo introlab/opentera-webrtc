@@ -35,13 +35,13 @@ class StreamClientTestCase(FailureTestCase):
             setup_awaiter.done()
 
         client1 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create(),
             video_source1)
 
         client2 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c2', 'cd2', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create(),
             video_source2)
@@ -129,7 +129,7 @@ class StreamClientTestCase(FailureTestCase):
 
     def test_mute_methods__should_set_the_flag_accordingly(self):
         client = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create())
 
