@@ -6,7 +6,7 @@ using namespace std;
 SignalingServerConfiguration::SignalingServerConfiguration(
     string&& url,
     string&& clientName,
-    sio::message::ptr&& clientData,
+    nlohmann::json&& clientData,
     string&& room,
     string&& password)
     : m_url(move(url)),

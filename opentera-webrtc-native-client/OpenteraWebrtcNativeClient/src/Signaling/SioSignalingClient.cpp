@@ -4,7 +4,7 @@ using namespace opentera;
 using namespace std;
 
 constexpr int SignalingProtocolVersion = 1;
-
+/*
 #define SIO_MESSAGE_CHECK_RETURN(condition, message)                                                                   \
     if ((condition))                                                                                                   \
     {                                                                                                                  \
@@ -356,3 +356,4 @@ void SioSignalingClient::onIceCandidateReceivedEvent(sio::event& event)
 
     invokeIfCallable(m_receiveIceCandidate, fromId, sdpMid, static_cast<int>(sdpMLineIndex), sdp);
 }
+*/

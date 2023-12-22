@@ -4,8 +4,6 @@
 #include <OpenteraWebrtcNativeClient/Signaling/SignalingClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
 
-#include <sio_message.h>
-
 #include <api/peer_connection_interface.h>
 
 #include <functional>

@@ -92,7 +92,7 @@ if __name__ == '__main__':
     frame = cv2.imread(os.path.join(os.path.dirname(
         os.path.realpath(__file__)), 'frame.png'))
 
-    signaling_server_configuration = webrtc.SignalingServerConfiguration.create(
+    signaling_server_configuration = webrtc.SignalingServerConfiguration.create_with_data(
         'http://localhost:8080', 'Python', None, 'chat', 'abc')
     ice_servers = webrtc.IceServer.fetch_from_server(
         'http://localhost:8080/iceservers', 'abc')

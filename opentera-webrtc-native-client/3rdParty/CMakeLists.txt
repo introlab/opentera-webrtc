@@ -8,11 +8,7 @@ set (BUILD_SHARED_LIBS OFF)
 add_subdirectory(webrtc_native)
 
 add_subdirectory(pybind11)
-add_subdirectory(socket.io-client-cpp)
-
-if(WIN32)
-    target_compile_definitions(sioclient PRIVATE WIN32_LEAN_AND_MEAN)
-endif()
+add_subdirectory(json)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(googletest)
@@ -54,5 +50,4 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
 
 endif()
 
-install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include
-    	FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY json/include DESTINATION include FILES_MATCHING PATTERN "*.hpp")

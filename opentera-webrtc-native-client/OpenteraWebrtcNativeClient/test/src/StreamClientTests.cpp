@@ -187,7 +187,7 @@ unique_ptr<subprocess::Popen> StreamClientTests::m_signalingServerProcessTLS = n
 TEST_P(StreamClientTests, muteMethods_shouldSetTheFlagAccordingly)
 {
     unique_ptr<StreamClient> client = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration);
 
@@ -249,12 +249,12 @@ TEST_P(StreamClientTests, videoStream_bidirectional_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         videoSource2);
@@ -358,12 +358,12 @@ TEST_P(StreamClientTests, videoStream_muted_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         videoSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         videoSource2);
@@ -450,12 +450,12 @@ TEST_P(StreamClientTests, videoStream_unidirectional_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         videoSource);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration);
 
@@ -554,12 +554,12 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         audioSource2);
@@ -702,12 +702,12 @@ TEST_P(StreamClientTests, audioStream_muted_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         audioSource1);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         audioSource2);
@@ -848,12 +848,12 @@ TEST_P(StreamClientTests, audioStream_unidirectional_shouldBeSentAndReceived)
 
     CallbackAwaiter setupAwaiter(2, 15s);
     unique_ptr<StreamClient> client1 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration,
         audioSource);
     unique_ptr<StreamClient> client2 = make_unique<StreamClient>(
-        SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+        SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
         DefaultWebrtcConfiguration,
         m_videoStreamConfiguration);
 

@@ -2,7 +2,7 @@
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_SIGNALING_SIO_SIGNALING_CLIENT_H
 
 #include <OpenteraWebrtcNativeClient/Signaling/SignalingClient.h>
-
+/*
 #include <sio_client.h>
 
 namespace opentera
@@ -59,5 +59,5 @@ namespace opentera
         void onIceCandidateReceivedEvent(sio::event& event);
     };
 }
-
+*/
 #endif
