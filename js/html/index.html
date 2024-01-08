@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -123,7 +123,7 @@ Data Channel Client Example</h2>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  sendButton.disabled = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  chatTextArea.value = <span class="stringliteral">&#39;&#39;</span>;</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  let dataChannelClient = <span class="keyword">null</span>; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  let dataChannelClient = <span class="keyword">null</span>;</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keyword">function</span> connectDataChannelClientEvents() {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    dataChannelClient.onSignalingConnectionOpen = () =&gt; {</div>
@@ -186,7 +186,7 @@ Data Channel Client Example</h2>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  connectButton.onclick = async () =&gt; {</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keyword">const</span> SignalingServerConfiguration = {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      url: <span class="stringliteral">&#39;http://localhost:8080&#39;</span>,</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      url: <span class="stringliteral">&#39;ws://localhost:8080/signaling&#39;</span>,</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      name: nameInput.value,</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      data: {}, <span class="comment">// Client custom data</span></div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      room: <span class="stringliteral">&#39;chat&#39;</span>,</div>
@@ -389,7 +389,7 @@ Stream Client Example</h2>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  };</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  connectButton.onclick = async () =&gt; {</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keyword">const</span> SignalingServerConfiguration = {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      url: <span class="stringliteral">&#39;http://localhost:8080&#39;</span>,</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      url: <span class="stringliteral">&#39;ws://localhost:8080/signaling&#39;</span>,</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      name: nameInput.value,</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      data: {}, <span class="comment">// Client custom data</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      room: <span class="stringliteral">&#39;chat&#39;</span>,</div>
@@ -623,7 +623,7 @@ Stream Data Channel Client Example</h2>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  };</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  connectButton.onclick = async () =&gt; {</div>
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    <span class="keyword">const</span> SignalingServerConfiguration = {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;      url: <span class="stringliteral">&#39;http://localhost:8080&#39;</span>,</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;      url: <span class="stringliteral">&#39;ws://localhost:8080/signaling&#39;</span>,</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;      name: nameInput.value,</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;      data: {}, <span class="comment">// Client custom data</span></div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      room: <span class="stringliteral">&#39;chat&#39;</span>,</div>
@@ -668,7 +668,7 @@ Stream Data Channel Client Example</h2>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:07 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

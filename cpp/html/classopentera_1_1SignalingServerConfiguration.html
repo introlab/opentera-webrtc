@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -71,9 +71,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a677056b2088ef9d7cb48952c361ad9e1"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a> () const</td></tr>
 <tr class="memdesc:a677056b2088ef9d7cb48952c361ad9e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the client name.  <a href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">More...</a><br /></td></tr>
 <tr class="separator:a677056b2088ef9d7cb48952c361ad9e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acfc1195490bd9f4301ea2b6ac0fbef33"><td class="memItemLeft" align="right" valign="top">sio::message::ptr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#acfc1195490bd9f4301ea2b6ac0fbef33">clientData</a> () const</td></tr>
-<tr class="memdesc:acfc1195490bd9f4301ea2b6ac0fbef33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the client data.  <a href="classopentera_1_1SignalingServerConfiguration.html#acfc1195490bd9f4301ea2b6ac0fbef33">More...</a><br /></td></tr>
-<tr class="separator:acfc1195490bd9f4301ea2b6ac0fbef33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a277c0f32885d4787fe17399b0697dd37"><td class="memItemLeft" align="right" valign="top">const nlohmann::json &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a277c0f32885d4787fe17399b0697dd37">clientData</a> () const</td></tr>
+<tr class="memdesc:a277c0f32885d4787fe17399b0697dd37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the client data.  <a href="classopentera_1_1SignalingServerConfiguration.html#a277c0f32885d4787fe17399b0697dd37">More...</a><br /></td></tr>
+<tr class="separator:a277c0f32885d4787fe17399b0697dd37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa8bd97220569367cc0a96c336256bcc6"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a> () const</td></tr>
 <tr class="memdesc:aa8bd97220569367cc0a96c336256bcc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the room name.  <a href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">More...</a><br /></td></tr>
 <tr class="separator:aa8bd97220569367cc0a96c336256bcc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -92,21 +92,21 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a78fe9b992fe862bb585d0df35f7dc558"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a78fe9b992fe862bb585d0df35f7dc558">create</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>)</td></tr>
 <tr class="memdesc:a78fe9b992fe862bb585d0df35f7dc558"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#a78fe9b992fe862bb585d0df35f7dc558">More...</a><br /></td></tr>
 <tr class="separator:a78fe9b992fe862bb585d0df35f7dc558"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf3e50003a0e95cc757e424799b3f0cb"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#abf3e50003a0e95cc757e424799b3f0cb">create</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, sio::message::ptr <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#acfc1195490bd9f4301ea2b6ac0fbef33">clientData</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>)</td></tr>
-<tr class="memdesc:abf3e50003a0e95cc757e424799b3f0cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#abf3e50003a0e95cc757e424799b3f0cb">More...</a><br /></td></tr>
-<tr class="separator:abf3e50003a0e95cc757e424799b3f0cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abef9f088910d2c41f42dbba517e98185"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#abef9f088910d2c41f42dbba517e98185">createWithData</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, nlohmann::json <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a277c0f32885d4787fe17399b0697dd37">clientData</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>)</td></tr>
+<tr class="memdesc:abef9f088910d2c41f42dbba517e98185"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#abef9f088910d2c41f42dbba517e98185">More...</a><br /></td></tr>
+<tr class="separator:abef9f088910d2c41f42dbba517e98185"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfc3b6ff442d130ebdb6f682888e665b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#acfc3b6ff442d130ebdb6f682888e665b">create</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a91d2311497d5ee48bd1f2063394ba365">password</a>)</td></tr>
 <tr class="memdesc:acfc3b6ff442d130ebdb6f682888e665b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#acfc3b6ff442d130ebdb6f682888e665b">More...</a><br /></td></tr>
 <tr class="separator:acfc3b6ff442d130ebdb6f682888e665b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8270ea22302d328018705b248ff292da"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a8270ea22302d328018705b248ff292da">create</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, sio::message::ptr <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#acfc1195490bd9f4301ea2b6ac0fbef33">clientData</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a91d2311497d5ee48bd1f2063394ba365">password</a>)</td></tr>
-<tr class="memdesc:a8270ea22302d328018705b248ff292da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#a8270ea22302d328018705b248ff292da">More...</a><br /></td></tr>
-<tr class="separator:a8270ea22302d328018705b248ff292da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12b3d0c7ec057d9deec1d01b75e18179"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a12b3d0c7ec057d9deec1d01b75e18179">createWithData</a> (std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a56e0174fb793ab9a793ef4538f7b6dbf">url</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a677056b2088ef9d7cb48952c361ad9e1">clientName</a>, nlohmann::json <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a277c0f32885d4787fe17399b0697dd37">clientData</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#aa8bd97220569367cc0a96c336256bcc6">room</a>, std::string <a class="el" href="classopentera_1_1SignalingServerConfiguration.html#a91d2311497d5ee48bd1f2063394ba365">password</a>)</td></tr>
+<tr class="memdesc:a12b3d0c7ec057d9deec1d01b75e18179"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an signaling server configuration with the specified values.  <a href="classopentera_1_1SignalingServerConfiguration.html#a12b3d0c7ec057d9deec1d01b75e18179">More...</a><br /></td></tr>
+<tr class="separator:a12b3d0c7ec057d9deec1d01b75e18179"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a signaling server configuration. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="acfc1195490bd9f4301ea2b6ac0fbef33"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfc1195490bd9f4301ea2b6ac0fbef33">&#9670;&nbsp;</a></span>clientData()</h2>
+<a id="a277c0f32885d4787fe17399b0697dd37"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a277c0f32885d4787fe17399b0697dd37">&#9670;&nbsp;</a></span>clientData()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,7 +115,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">sio::message::ptr opentera::SignalingServerConfiguration::clientData </td>
+          <td class="memname">const nlohmann::json &amp; opentera::SignalingServerConfiguration::clientData </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -161,135 +161,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abf3e50003a0e95cc757e424799b3f0cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf3e50003a0e95cc757e424799b3f0cb">&#9670;&nbsp;</a></span>create() <span class="overload">[1/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a> opentera::SignalingServerConfiguration::create </td>
-          <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>url</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>clientName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">sio::message::ptr&#160;</td>
-          <td class="paramname"><em>clientData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>room</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Creates an signaling server configuration with the specified values. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">url</td><td>The signaling server URL </td></tr>
-    <tr><td class="paramname">clientName</td><td>The client name </td></tr>
-    <tr><td class="paramname">clientData</td><td>The client data </td></tr>
-    <tr><td class="paramname">room</td><td>The room name </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A signaling server configuration with the specified values </dd></dl>
-
-</div>
-</div>
-<a id="a8270ea22302d328018705b248ff292da"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8270ea22302d328018705b248ff292da">&#9670;&nbsp;</a></span>create() <span class="overload">[2/4]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a> opentera::SignalingServerConfiguration::create </td>
-          <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>url</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>clientName</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">sio::message::ptr&#160;</td>
-          <td class="paramname"><em>clientData</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>room</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::string&#160;</td>
-          <td class="paramname"><em>password</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Creates an signaling server configuration with the specified values. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">url</td><td>The signaling server URL </td></tr>
-    <tr><td class="paramname">clientName</td><td>The client name </td></tr>
-    <tr><td class="paramname">clientData</td><td>The client data </td></tr>
-    <tr><td class="paramname">room</td><td>The room name </td></tr>
-    <tr><td class="paramname">password</td><td>The signaling server password </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A signaling server configuration with the specified values </dd></dl>
-
-</div>
-</div>
 <a id="a78fe9b992fe862bb585d0df35f7dc558"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78fe9b992fe862bb585d0df35f7dc558">&#9670;&nbsp;</a></span>create() <span class="overload">[3/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a78fe9b992fe862bb585d0df35f7dc558">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -342,7 +215,7 @@ Static Public Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="acfc3b6ff442d130ebdb6f682888e665b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfc3b6ff442d130ebdb6f682888e665b">&#9670;&nbsp;</a></span>create() <span class="overload">[4/4]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acfc3b6ff442d130ebdb6f682888e665b">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -392,6 +265,133 @@ Static Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">url</td><td>The signaling server URL </td></tr>
     <tr><td class="paramname">clientName</td><td>The client name </td></tr>
+    <tr><td class="paramname">room</td><td>The room name </td></tr>
+    <tr><td class="paramname">password</td><td>The signaling server password </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A signaling server configuration with the specified values </dd></dl>
+
+</div>
+</div>
+<a id="abef9f088910d2c41f42dbba517e98185"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abef9f088910d2c41f42dbba517e98185">&#9670;&nbsp;</a></span>createWithData() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a> opentera::SignalingServerConfiguration::createWithData </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>url</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>clientName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nlohmann::json&#160;</td>
+          <td class="paramname"><em>clientData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>room</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates an signaling server configuration with the specified values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">url</td><td>The signaling server URL </td></tr>
+    <tr><td class="paramname">clientName</td><td>The client name </td></tr>
+    <tr><td class="paramname">clientData</td><td>The client data </td></tr>
+    <tr><td class="paramname">room</td><td>The room name </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A signaling server configuration with the specified values </dd></dl>
+
+</div>
+</div>
+<a id="a12b3d0c7ec057d9deec1d01b75e18179"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a12b3d0c7ec057d9deec1d01b75e18179">&#9670;&nbsp;</a></span>createWithData() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classopentera_1_1SignalingServerConfiguration.html">SignalingServerConfiguration</a> opentera::SignalingServerConfiguration::createWithData </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>url</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>clientName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">nlohmann::json&#160;</td>
+          <td class="paramname"><em>clientData</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>room</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>password</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates an signaling server configuration with the specified values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">url</td><td>The signaling server URL </td></tr>
+    <tr><td class="paramname">clientName</td><td>The client name </td></tr>
+    <tr><td class="paramname">clientData</td><td>The client data </td></tr>
     <tr><td class="paramname">room</td><td>The room name </td></tr>
     <tr><td class="paramname">password</td><td>The signaling server password </td></tr>
   </table>
@@ -493,7 +493,7 @@ Static Public Member Functions</h2></td></tr>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:06 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

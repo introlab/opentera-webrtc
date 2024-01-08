@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>opentera_webrtc.native_client &mdash; OpenTera 0.6.7 documentation</title>
+  <title>opentera_webrtc.native_client &mdash; OpenTera 1.0.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> OpenTera
           </a>
               <div class="version">
-                0.6.7
+                1.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -67,6 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.client_data"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.client_data</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.client_name"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.client_name</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.create"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.create()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.create_with_data"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.create_with_data()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.password"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.password</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.room"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.room</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingServerConfiguration.url"><code class="docutils literal notranslate"><span class="pre">SignalingServerConfiguration.url</span></code></a></li>
@@ -127,31 +128,31 @@
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.VideoSource.send_frame"><code class="docutils literal notranslate"><span class="pre">VideoSource.send_frame()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient"><code class="docutils literal notranslate"><span class="pre">SignalingClient</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.call_acceptor"><code class="docutils literal notranslate"><span class="pre">SignalingClient.call_acceptor</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.call_all"><code class="docutils literal notranslate"><span class="pre">SignalingClient.call_all()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.call_ids"><code class="docutils literal notranslate"><span class="pre">SignalingClient.call_ids()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.close"><code class="docutils literal notranslate"><span class="pre">SignalingClient.close()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.close_all_room_peer_connections"><code class="docutils literal notranslate"><span class="pre">SignalingClient.close_all_room_peer_connections()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.close_sync"><code class="docutils literal notranslate"><span class="pre">SignalingClient.close_sync()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.connect"><code class="docutils literal notranslate"><span class="pre">SignalingClient.connect()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.connected_room_client_ids"><code class="docutils literal notranslate"><span class="pre">SignalingClient.connected_room_client_ids</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.get_room_client"><code class="docutils literal notranslate"><span class="pre">SignalingClient.get_room_client()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.hang_up_all"><code class="docutils literal notranslate"><span class="pre">SignalingClient.hang_up_all()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.id"><code class="docutils literal notranslate"><span class="pre">SignalingClient.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.is_connected"><code class="docutils literal notranslate"><span class="pre">SignalingClient.is_connected</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.is_rtc_connected"><code class="docutils literal notranslate"><span class="pre">SignalingClient.is_rtc_connected</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.logger"><code class="docutils literal notranslate"><span class="pre">SignalingClient.logger</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_call_rejected"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_call_rejected</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_client_connected"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_client_connected</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_client_disconnected"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_client_disconnected</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_error"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_error</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_room_clients_changed"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_room_clients_changed</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_closed"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_signaling_connection_closed</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_error"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_signaling_connection_error</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_opened"><code class="docutils literal notranslate"><span class="pre">SignalingClient.on_signaling_connection_opened</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.room_clients"><code class="docutils literal notranslate"><span class="pre">SignalingClient.room_clients</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient.tls_verification_enabled"><code class="docutils literal notranslate"><span class="pre">SignalingClient.tls_verification_enabled</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient"><code class="docutils literal notranslate"><span class="pre">WebrtcClient</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.call_acceptor"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.call_acceptor</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.call_all"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.call_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.call_ids"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.call_ids()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.close"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.close()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.close_all_room_peer_connections"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.close_all_room_peer_connections()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.close_sync"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.close_sync()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.connect"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.connect()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.connected_room_client_ids"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.connected_room_client_ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.get_room_client"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.get_room_client()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.hang_up_all"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.hang_up_all()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.id"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.is_connected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.is_connected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.is_rtc_connected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.is_rtc_connected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.logger"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.logger</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_call_rejected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_call_rejected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_client_connected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_client_connected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_client_disconnected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_client_disconnected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_error"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_room_clients_changed"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_room_clients_changed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_closed"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_signaling_connection_closed</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_error"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_signaling_connection_error</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_opened"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_signaling_connection_opened</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.room_clients"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.room_clients</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.tls_verification_enabled"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.tls_verification_enabled</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#opentera_webrtc.native_client.DataChannelClient"><code class="docutils literal notranslate"><span class="pre">DataChannelClient</span></code></a><ul>
@@ -264,7 +265,7 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#opentera_webrtc.native_client.VideoSource" title="opentera_webrtc.native_client.VideoSource"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VideoSource</span></code></a></p></td>
 <td><p>Represents a video source that can be added to a WebRTC call.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient" title="opentera_webrtc.native_client.SignalingClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SignalingClient</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient" title="opentera_webrtc.native_client.WebrtcClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">WebrtcClient</span></code></a></p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#opentera_webrtc.native_client.DataChannelClient" title="opentera_webrtc.native_client.DataChannelClient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DataChannelClient</span></code></a></p></td>
@@ -683,23 +684,6 @@
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>create(url: str, client_name: str, client_data: object, room: str) -&gt; SignalingServerConfiguration</p></li>
-</ol>
-<p>Creates an signaling server configuration with the specified values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>url</strong> – The signaling server URL</p></li>
-<li><p><strong>client_name</strong> – The client name</p></li>
-<li><p><strong>client_data</strong> – The client data</p></li>
-<li><p><strong>room</strong> – The room name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A signaling server configuration with the specified values</p>
-</dd>
-</dl>
-<ol class="arabic simple" start="3">
 <li><p>create(url: str, client_name: str, room: str, password: str) -&gt; SignalingServerConfiguration</p></li>
 </ol>
 <p>Creates an signaling server configuration with the specified values.</p>
@@ -716,8 +700,31 @@
 <dd class="field-even"><p>A signaling server configuration with the specified values</p>
 </dd>
 </dl>
-<ol class="arabic simple" start="4">
-<li><p>create(url: str, client_name: str, client_data: object, room: str, password: str) -&gt; SignalingServerConfiguration</p></li>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingServerConfiguration.create_with_data">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_with_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingServerConfiguration.create_with_data" title="Permalink to this definition"></a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>create_with_data(url: str, client_name: str, client_data: object, room: str) -&gt; SignalingServerConfiguration</p></li>
+</ol>
+<p>Creates an signaling server configuration with the specified values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> – The signaling server URL</p></li>
+<li><p><strong>client_name</strong> – The client name</p></li>
+<li><p><strong>client_data</strong> – The client data</p></li>
+<li><p><strong>room</strong> – The room name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A signaling server configuration with the specified values</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>create_with_data(url: str, client_name: str, client_data: object, room: str, password: str) -&gt; SignalingServerConfiguration</p></li>
 </ol>
 <p>Creates an signaling server configuration with the specified values.</p>
 <dl class="field-list simple">
@@ -1256,12 +1263,12 @@ Frame will be resized to match the transport layer request</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SignalingClient</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">WebrtcClient</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pybind11_object</span></code></p>
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.call_acceptor">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call_acceptor</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.call_acceptor" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.call_acceptor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">call_acceptor</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.call_acceptor" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is used to accept or reject a call.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1282,44 +1289,44 @@ Frame will be resized to match the transport layer request</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.call_all">
-<span class="sig-name descname"><span class="pre">call_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.call_all" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.call_all">
+<span class="sig-name descname"><span class="pre">call_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.call_all" title="Permalink to this definition"></a></dt>
 <dd><p>Calls all room clients.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.call_ids">
-<span class="sig-name descname"><span class="pre">call_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.call_ids" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.call_ids">
+<span class="sig-name descname"><span class="pre">call_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.call_ids" title="Permalink to this definition"></a></dt>
 <dd><p>Calls the specified clients.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.close" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.close" title="Permalink to this definition"></a></dt>
 <dd><p>Closes all client connections (asynchronous).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.close_all_room_peer_connections">
-<span class="sig-name descname"><span class="pre">close_all_room_peer_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.close_all_room_peer_connections" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.close_all_room_peer_connections">
+<span class="sig-name descname"><span class="pre">close_all_room_peer_connections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.close_all_room_peer_connections" title="Permalink to this definition"></a></dt>
 <dd><p>Closes all room peer connections.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.close_sync">
-<span class="sig-name descname"><span class="pre">close_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.close_sync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.close_sync">
+<span class="sig-name descname"><span class="pre">close_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.close_sync" title="Permalink to this definition"></a></dt>
 <dd><p>Closes all client connections (synchronous).</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.connect">
-<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.connect" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.connect" title="Permalink to this definition"></a></dt>
 <dd><p>Connects the client the signaling server.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.connected_room_client_ids">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connected_room_client_ids</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.connected_room_client_ids" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.connected_room_client_ids">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">connected_room_client_ids</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.connected_room_client_ids" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the connected room client ids.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1329,8 +1336,8 @@ Frame will be resized to match the transport layer request</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.get_room_client">
-<span class="sig-name descname"><span class="pre">get_room_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RoomClient</span></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.get_room_client" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.get_room_client">
+<span class="sig-name descname"><span class="pre">get_room_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RoomClient</span></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.get_room_client" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the room client that matches with the specified id.
 If no room client matches with the id, a default room client is returned.</p>
 <dl class="field-list simple">
@@ -1344,14 +1351,14 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.hang_up_all">
-<span class="sig-name descname"><span class="pre">hang_up_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">SignalingClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.hang_up_all" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.hang_up_all">
+<span class="sig-name descname"><span class="pre">hang_up_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.hang_up_all" title="Permalink to this definition"></a></dt>
 <dd><p>Hangs up all clients.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.id">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.id" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.id">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.id" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the client id.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1361,8 +1368,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.is_connected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.is_connected" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.is_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.is_connected" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates if the client is connected to the signaling server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1372,8 +1379,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.is_rtc_connected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_rtc_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.is_rtc_connected" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.is_rtc_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_rtc_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.is_rtc_connected" title="Permalink to this definition"></a></dt>
 <dd><p>Indicates if the client is connected to a least one client (RTCPeerConnection).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1383,8 +1390,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.logger">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.logger" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.logger">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">logger</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.logger" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is used to log information.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1401,8 +1408,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_call_rejected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_call_rejected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_call_rejected" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_call_rejected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_call_rejected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_call_rejected" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when a call is rejected.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1419,8 +1426,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_client_connected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_client_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_client_connected" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_client_connected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_client_connected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_client_connected" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when a client peer connection opens.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1437,8 +1444,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_client_disconnected">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_client_disconnected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_client_disconnected" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_client_disconnected">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_client_disconnected</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_client_disconnected" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when a client peer connection closes.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1455,8 +1462,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_error">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_error</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_error" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_error</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_error" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when an error occurs.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1473,8 +1480,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_room_clients_changed">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_room_clients_changed</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_room_clients_changed" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_room_clients_changed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_room_clients_changed</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_room_clients_changed" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when the room client changes.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1491,8 +1498,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_signaling_connection_closed">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_closed</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_closed" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_closed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_closed</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_closed" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when the signaling connection closes.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="field-list simple">
@@ -1503,8 +1510,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_signaling_connection_error">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_error</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_error" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_error">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_error</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_error" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when a signaling connection error occurs.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="simple">
@@ -1521,8 +1528,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.on_signaling_connection_opened">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_opened</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.on_signaling_connection_opened" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_opened">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_signaling_connection_opened</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_signaling_connection_opened" title="Permalink to this definition"></a></dt>
 <dd><p>Sets the callback that is called when the signaling connection opens.</p>
 <p>The callback is called from the internal client thread. The callback should not block.</p>
 <dl class="field-list simple">
@@ -1533,8 +1540,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.room_clients">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room_clients</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.room_clients" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.room_clients">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">room_clients</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.room_clients" title="Permalink to this definition"></a></dt>
 <dd><p>Returns the room clients</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1544,8 +1551,8 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="opentera_webrtc.native_client.SignalingClient.tls_verification_enabled">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tls_verification_enabled</span></span><a class="headerlink" href="#opentera_webrtc.native_client.SignalingClient.tls_verification_enabled" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.tls_verification_enabled">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tls_verification_enabled</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.tls_verification_enabled" title="Permalink to this definition"></a></dt>
 <dd><p>Enable or disable the TLS verification. By default, the TLS verification is enabled.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Param<span class="colon">:</span></dt>
@@ -1559,7 +1566,7 @@ If no room client matches with the id, a default room client is returned.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelClient">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DataChannelClient</span></span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelClient" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient" title="opentera_webrtc.native_client.SignalingClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalingClient</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient" title="opentera_webrtc.native_client.WebrtcClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebrtcClient</span></code></a></p>
 <p>Represents a client for data channel communication.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.DataChannelClient.on_data_channel_closed">
@@ -1766,7 +1773,7 @@ If no room client matches with the id, a default room client is returned.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.StreamClient">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">StreamClient</span></span><a class="headerlink" href="#opentera_webrtc.native_client.StreamClient" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#opentera_webrtc.native_client.SignalingClient" title="opentera_webrtc.native_client.SignalingClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">SignalingClient</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient" title="opentera_webrtc.native_client.WebrtcClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">WebrtcClient</span></code></a></p>
 <p>A signaling client to join a WebRTC room and stream a video source.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.StreamClient.is_local_audio_muted">

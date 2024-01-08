@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -54,13 +54,13 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;OpenteraWebrtcNativeClient/Sources/VideoSource.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;OpenteraWebrtcNativeClient/Handlers/StreamPeerConnectionHandler.h&gt;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;OpenteraWebrtcNativeClient/SignalingClient.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;OpenteraWebrtcNativeClient/WebrtcClient.h&gt;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>opentera</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;{</div>
-<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classopentera_1_1StreamClient.html">   17</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classopentera_1_1StreamClient.html">StreamClient</a> : <span class="keyword">public</span> <a class="code" href="classopentera_1_1SignalingClient.html">SignalingClient</a></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classopentera_1_1StreamClient.html">   17</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classopentera_1_1StreamClient.html">StreamClient</a> : <span class="keyword">public</span> <a class="code" href="classopentera_1_1WebrtcClient.html">WebrtcClient</a></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    {</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        std::shared_ptr&lt;VideoSource&gt; m_videoSource;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        std::shared_ptr&lt;AudioSource&gt; m_audioSource;</div>
@@ -195,8 +195,7 @@ $(function() {
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassopentera_1_1Client_html"><div class="ttname"><a href="classopentera_1_1Client.html">opentera::Client</a></div><div class="ttdoc">Represents a peer client.</div><div class="ttdef"><b>Definition:</b> Client.h:17</div></div>
-<div class="ttc" id="aclassopentera_1_1SignalingClient_html"><div class="ttname"><a href="classopentera_1_1SignalingClient.html">opentera::SignalingClient</a></div><div class="ttdoc">Represents the base class of DataChannelClient and StreamClient.</div><div class="ttdef"><b>Definition:</b> SignalingClient.h:31</div></div>
+<div class="ttc" id="aclassopentera_1_1Client_html"><div class="ttname"><a href="classopentera_1_1Client.html">opentera::Client</a></div><div class="ttdoc">Represents a peer client.</div><div class="ttdef"><b>Definition:</b> Client.h:14</div></div>
 <div class="ttc" id="aclassopentera_1_1SignalingServerConfiguration_html"><div class="ttname"><a href="classopentera_1_1SignalingServerConfiguration.html">opentera::SignalingServerConfiguration</a></div><div class="ttdoc">Represents a signaling server configuration.</div><div class="ttdef"><b>Definition:</b> SignalingServerConfiguration.h:14</div></div>
 <div class="ttc" id="aclassopentera_1_1StreamClient_html"><div class="ttname"><a href="classopentera_1_1StreamClient.html">opentera::StreamClient</a></div><div class="ttdoc">A signaling client to join a WebRTC room and stream a video source.</div><div class="ttdef"><b>Definition:</b> StreamClient.h:18</div></div>
 <div class="ttc" id="aclassopentera_1_1StreamClient_html_a4070438cef993296594c6c80a761f341"><div class="ttname"><a href="classopentera_1_1StreamClient.html#a4070438cef993296594c6c80a761f341">opentera::StreamClient::unmuteLocalVideo</a></div><div class="ttdeci">void unmuteLocalVideo()</div><div class="ttdoc">Unmutes the local video.</div><div class="ttdef"><b>Definition:</b> StreamClient.h:142</div></div>
@@ -220,12 +219,13 @@ $(function() {
 <div class="ttc" id="aclassopentera_1_1StreamClient_html_ae0d1960a09a925fbf423df1e0627bc5a"><div class="ttname"><a href="classopentera_1_1StreamClient.html#ae0d1960a09a925fbf423df1e0627bc5a">opentera::StreamClient::setOnAudioFrameReceived</a></div><div class="ttdeci">void setOnAudioFrameReceived(const AudioFrameReceivedCallback &amp;callback)</div><div class="ttdoc">Sets the callback that is called when an audio stream frame is received.</div><div class="ttdef"><b>Definition:</b> StreamClient.h:238</div></div>
 <div class="ttc" id="aclassopentera_1_1StreamClient_html_af2f7c3017af451b2dd98f6dfbd3fa882"><div class="ttname"><a href="classopentera_1_1StreamClient.html#af2f7c3017af451b2dd98f6dfbd3fa882">opentera::StreamClient::isLocalVideoMuted</a></div><div class="ttdeci">bool isLocalVideoMuted()</div><div class="ttdoc">Indicates if the local video is muted.</div><div class="ttdef"><b>Definition:</b> StreamClient.h:129</div></div>
 <div class="ttc" id="aclassopentera_1_1VideoStreamConfiguration_html"><div class="ttname"><a href="classopentera_1_1VideoStreamConfiguration.html">opentera::VideoStreamConfiguration</a></div><div class="ttdoc">Represents a video stream configuration.</div><div class="ttdef"><b>Definition:</b> VideoStreamConfiguration.h:26</div></div>
+<div class="ttc" id="aclassopentera_1_1WebrtcClient_html"><div class="ttname"><a href="classopentera_1_1WebrtcClient.html">opentera::WebrtcClient</a></div><div class="ttdoc">Represents the base class of DataChannelClient and StreamClient.</div><div class="ttdef"><b>Definition:</b> WebrtcClient.h:29</div></div>
 <div class="ttc" id="aclassopentera_1_1WebrtcConfiguration_html"><div class="ttname"><a href="classopentera_1_1WebrtcConfiguration.html">opentera::WebrtcConfiguration</a></div><div class="ttdoc">Represents a WebRTC peer connection configuration.</div><div class="ttdef"><b>Definition:</b> WebrtcConfiguration.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:06 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

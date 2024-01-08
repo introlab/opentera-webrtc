@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -100,7 +100,7 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <a class="code" href="classopentera_1_1Client.html">Client</a> peerClient,</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordtype">bool</span> isCaller,</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <span class="keywordtype">bool</span> hasOnMixedAudioFrameReceivedCallback,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> sio::message::ptr&amp;)&gt; sendEvent,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <a class="code" href="classopentera_1_1SignalingClient.html">SignalingClient</a>&amp; m_signalingClient,</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> std::string&amp;)&gt; onError,</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt; onClientConnected,</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt; onClientDisconnected,</div>
@@ -143,14 +143,15 @@ $(function() {
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassopentera_1_1Client_html"><div class="ttname"><a href="classopentera_1_1Client.html">opentera::Client</a></div><div class="ttdoc">Represents a peer client.</div><div class="ttdef"><b>Definition:</b> Client.h:17</div></div>
-<div class="ttc" id="aclassopentera_1_1PeerConnectionHandler_html"><div class="ttname"><a href="classopentera_1_1PeerConnectionHandler.html">opentera::PeerConnectionHandler</a></div><div class="ttdef"><b>Definition:</b> PeerConnectionHandler.h:37</div></div>
+<div class="ttc" id="aclassopentera_1_1Client_html"><div class="ttname"><a href="classopentera_1_1Client.html">opentera::Client</a></div><div class="ttdoc">Represents a peer client.</div><div class="ttdef"><b>Definition:</b> Client.h:14</div></div>
+<div class="ttc" id="aclassopentera_1_1PeerConnectionHandler_html"><div class="ttname"><a href="classopentera_1_1PeerConnectionHandler.html">opentera::PeerConnectionHandler</a></div><div class="ttdef"><b>Definition:</b> PeerConnectionHandler.h:36</div></div>
+<div class="ttc" id="aclassopentera_1_1SignalingClient_html"><div class="ttname"><a href="classopentera_1_1SignalingClient.html">opentera::SignalingClient</a></div><div class="ttdef"><b>Definition:</b> SignalingClient.h:16</div></div>
 <div class="ttc" id="aclassopentera_1_1StreamPeerConnectionHandler_html"><div class="ttname"><a href="classopentera_1_1StreamPeerConnectionHandler.html">opentera::StreamPeerConnectionHandler</a></div><div class="ttdef"><b>Definition:</b> StreamPeerConnectionHandler.h:32</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:06 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

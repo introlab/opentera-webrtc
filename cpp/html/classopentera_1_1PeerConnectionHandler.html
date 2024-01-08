@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -67,9 +67,9 @@ Inheritance diagram for opentera::PeerConnectionHandler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:adb0fcdf2f21e25a13c3001be6e8531b2"><td class="memItemLeft" align="right" valign="top"><a id="adb0fcdf2f21e25a13c3001be6e8531b2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PeerConnectionHandler</b> (std::string &amp;&amp;id, <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;&amp;peerClient, bool isCaller, std::function&lt; void(const std::string &amp;, const sio::message::ptr &amp;)&gt; &amp;&amp;sendEvent, std::function&lt; void(const std::string &amp;)&gt; &amp;&amp;onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientDisconnected)</td></tr>
-<tr class="separator:adb0fcdf2f21e25a13c3001be6e8531b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f856127690a5ae70ad5d08aacf4d6f7"><td class="memItemLeft" align="right" valign="top"><a id="a7f856127690a5ae70ad5d08aacf4d6f7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>PeerConnectionHandler</b> (std::string &amp;&amp;id, <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;&amp;peerClient, bool isCaller, <a class="el" href="classopentera_1_1SignalingClient.html">SignalingClient</a> &amp;m_signalingClient, std::function&lt; void(const std::string &amp;)&gt; &amp;&amp;onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientDisconnected)</td></tr>
+<tr class="separator:a7f856127690a5ae70ad5d08aacf4d6f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb8232083c6293f1de8248c8a3d81ce0"><td class="memItemLeft" align="right" valign="top"><a id="afb8232083c6293f1de8248c8a3d81ce0"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>setPeerConnection</b> (const rtc::scoped_refptr&lt; webrtc::PeerConnectionInterface &gt; &amp;peerConnection)</td></tr>
 <tr class="separator:afb8232083c6293f1de8248c8a3d81ce0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -156,9 +156,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>m_id</b></td><
 <tr class="memitem:a56aade330ade842ee6043b9fe3b175fd"><td class="memItemLeft" align="right" valign="top"><a id="a56aade330ade842ee6043b9fe3b175fd"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_isCaller</b></td></tr>
 <tr class="separator:a56aade330ade842ee6043b9fe3b175fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa8833c35289b5528d14cba300c56c09"><td class="memItemLeft" align="right" valign="top"><a id="aaa8833c35289b5528d14cba300c56c09"></a>
-std::function&lt; void(const std::string &amp;, const sio::message::ptr &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_sendEvent</b></td></tr>
-<tr class="separator:aaa8833c35289b5528d14cba300c56c09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a875293e03ddbd1359bd35c0f0ca9769b"><td class="memItemLeft" align="right" valign="top"><a id="a875293e03ddbd1359bd35c0f0ca9769b"></a>
+<a class="el" href="classopentera_1_1SignalingClient.html">SignalingClient</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>m_signalingClient</b></td></tr>
+<tr class="separator:a875293e03ddbd1359bd35c0f0ca9769b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a252d3d91369ccd57cd1890249d936aed"><td class="memItemLeft" align="right" valign="top"><a id="a252d3d91369ccd57cd1890249d936aed"></a>
 std::function&lt; void(const std::string &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_onError</b></td></tr>
 <tr class="separator:a252d3d91369ccd57cd1890249d936aed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,7 +183,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_onClientDisconnecte
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:06 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

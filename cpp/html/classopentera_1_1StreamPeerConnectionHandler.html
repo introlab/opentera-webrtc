@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;0.6.7</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -65,9 +65,9 @@ Inheritance diagram for opentera::StreamPeerConnectionHandler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa76be9004baf377a386aa3e797e9107c"><td class="memItemLeft" align="right" valign="top"><a id="aa76be9004baf377a386aa3e797e9107c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>StreamPeerConnectionHandler</b> (std::string id, <a class="el" href="classopentera_1_1Client.html">Client</a> peerClient, bool isCaller, bool hasOnMixedAudioFrameReceivedCallback, std::function&lt; void(const std::string &amp;, const sio::message::ptr &amp;)&gt; sendEvent, std::function&lt; void(const std::string &amp;)&gt; onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onClientDisconnected, rtc::scoped_refptr&lt; webrtc::VideoTrackInterface &gt; videoTrack, rtc::scoped_refptr&lt; webrtc::AudioTrackInterface &gt; audioTrack, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onAddRemoteStream, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onRemoveRemoteStream, const VideoFrameReceivedCallback &amp;onVideoFrameReceived, const EncodedVideoFrameReceivedCallback &amp;onEncodedVideoFrameReceived, const AudioFrameReceivedCallback &amp;onAudioFrameReceived)</td></tr>
-<tr class="separator:aa76be9004baf377a386aa3e797e9107c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba258eb6b778b6daa24a15cdf8824c35"><td class="memItemLeft" align="right" valign="top"><a id="aba258eb6b778b6daa24a15cdf8824c35"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>StreamPeerConnectionHandler</b> (std::string id, <a class="el" href="classopentera_1_1Client.html">Client</a> peerClient, bool isCaller, bool hasOnMixedAudioFrameReceivedCallback, <a class="el" href="classopentera_1_1SignalingClient.html">SignalingClient</a> &amp;m_signalingClient, std::function&lt; void(const std::string &amp;)&gt; onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onClientDisconnected, rtc::scoped_refptr&lt; webrtc::VideoTrackInterface &gt; videoTrack, rtc::scoped_refptr&lt; webrtc::AudioTrackInterface &gt; audioTrack, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onAddRemoteStream, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; onRemoveRemoteStream, const VideoFrameReceivedCallback &amp;onVideoFrameReceived, const EncodedVideoFrameReceivedCallback &amp;onEncodedVideoFrameReceived, const AudioFrameReceivedCallback &amp;onAudioFrameReceived)</td></tr>
+<tr class="separator:aba258eb6b778b6daa24a15cdf8824c35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a64e1becb269f5d793e0312fdc7ad7eed"><td class="memItemLeft" align="right" valign="top"><a id="a64e1becb269f5d793e0312fdc7ad7eed"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>setPeerConnection</b> (const rtc::scoped_refptr&lt; webrtc::PeerConnectionInterface &gt; &amp;peerConnection) override</td></tr>
 <tr class="separator:a64e1becb269f5d793e0312fdc7ad7eed"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -87,9 +87,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>OnTrack</b> (rtc::sco
 void&#160;</td><td class="memItemRight" valign="bottom"><b>OnRemoveTrack</b> (rtc::scoped_refptr&lt; webrtc::RtpReceiverInterface &gt; receiver) override</td></tr>
 <tr class="separator:a7e92788c9573059919968d4d9e444292"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classopentera_1_1PeerConnectionHandler"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classopentera_1_1PeerConnectionHandler')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classopentera_1_1PeerConnectionHandler.html">opentera::PeerConnectionHandler</a></td></tr>
-<tr class="memitem:adb0fcdf2f21e25a13c3001be6e8531b2 inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="adb0fcdf2f21e25a13c3001be6e8531b2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>PeerConnectionHandler</b> (std::string &amp;&amp;id, <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;&amp;peerClient, bool isCaller, std::function&lt; void(const std::string &amp;, const sio::message::ptr &amp;)&gt; &amp;&amp;sendEvent, std::function&lt; void(const std::string &amp;)&gt; &amp;&amp;onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientDisconnected)</td></tr>
-<tr class="separator:adb0fcdf2f21e25a13c3001be6e8531b2 inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f856127690a5ae70ad5d08aacf4d6f7 inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="a7f856127690a5ae70ad5d08aacf4d6f7"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>PeerConnectionHandler</b> (std::string &amp;&amp;id, <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;&amp;peerClient, bool isCaller, <a class="el" href="classopentera_1_1SignalingClient.html">SignalingClient</a> &amp;m_signalingClient, std::function&lt; void(const std::string &amp;)&gt; &amp;&amp;onError, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientConnected, std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;&amp;onClientDisconnected)</td></tr>
+<tr class="separator:a7f856127690a5ae70ad5d08aacf4d6f7 inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c0d4bcfbdfc7f95234f00dfb597e06a inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="a6c0d4bcfbdfc7f95234f00dfb597e06a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>makePeerCall</b> ()</td></tr>
 <tr class="separator:a6c0d4bcfbdfc7f95234f00dfb597e06a inherit pub_methods_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -174,9 +174,9 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>m_id</b></td><
 <tr class="memitem:a56aade330ade842ee6043b9fe3b175fd inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="a56aade330ade842ee6043b9fe3b175fd"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_isCaller</b></td></tr>
 <tr class="separator:a56aade330ade842ee6043b9fe3b175fd inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa8833c35289b5528d14cba300c56c09 inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="aaa8833c35289b5528d14cba300c56c09"></a>
-std::function&lt; void(const std::string &amp;, const sio::message::ptr &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_sendEvent</b></td></tr>
-<tr class="separator:aaa8833c35289b5528d14cba300c56c09 inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a875293e03ddbd1359bd35c0f0ca9769b inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="a875293e03ddbd1359bd35c0f0ca9769b"></a>
+<a class="el" href="classopentera_1_1SignalingClient.html">SignalingClient</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>m_signalingClient</b></td></tr>
+<tr class="separator:a875293e03ddbd1359bd35c0f0ca9769b inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a252d3d91369ccd57cd1890249d936aed inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memItemLeft" align="right" valign="top"><a id="a252d3d91369ccd57cd1890249d936aed"></a>
 std::function&lt; void(const std::string &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_onError</b></td></tr>
 <tr class="separator:a252d3d91369ccd57cd1890249d936aed inherit pro_attribs_classopentera_1_1PeerConnectionHandler"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -201,7 +201,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>m_onClientDisconnecte
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Tue Dec 19 2023 14:29:06 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Mon Jan 8 2024 17:16:49 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

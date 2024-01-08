@@ -29,7 +29,7 @@ opentera\_webrtc.native\_client
       IceServer
       AudioSource
       VideoSource
-      SignalingClient
+      WebrtcClient
       DataChannelClient
       VideoCodecType
       StreamClient
