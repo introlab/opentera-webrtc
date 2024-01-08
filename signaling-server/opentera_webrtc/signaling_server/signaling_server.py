@@ -244,7 +244,6 @@ class Args:
     password: str
     ice_servers: Path
     static_folder: Path
-    socketio_path: str
     certificate: Path
     key: Path
     log_level: int
@@ -256,7 +255,6 @@ def main():
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--ice_servers', type=ExpandUserPath, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=ExpandUserPath, help='Choose the static folder', default=None)
-    parser.add_argument('--socketio_path', type=str, help='Choose the socketio path', default='socket.io')
     parser.add_argument('--certificate', type=ExpandUserPath, help='TLS certificate path', default=None)
     parser.add_argument('--key', type=ExpandUserPath, help='TLS private key path', default=None)
     parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
