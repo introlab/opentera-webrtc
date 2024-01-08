@@ -2,16 +2,17 @@ import asyncio
 
 
 class RoomManager:
-    def __init__(self, sio):
-        self._sio = sio
+    def __init__(self, web_socket_client_manager):
+        self._web_socket_client_manager = web_socket_client_manager
         self._room_by_id = {}
         self._ids_by_room = {}
         self._client_name_by_id = {}
         self._client_datum_by_id = {}
 
-        self._lock = asyncio.Lock()
+        self._lock = None
 
     async def add_client(self, id, client_name, client_data, room):
+        self._create_lock_if_none()
         async with self._lock:
             if id in self._room_by_id:
                 return
@@ -28,6 +29,7 @@ class RoomManager:
             self._client_datum_by_id[id] = client_data
 
     async def remove_client(self, id):
+        self._create_lock_if_none()
         async with self._lock:
             if id in self._room_by_id:
                 room = self._room_by_id[id]
@@ -45,6 +47,7 @@ class RoomManager:
                 del self._client_datum_by_id[id]
 
     async def get_room(self, id):
+        self._create_lock_if_none()
         async with self._lock:
             if id in self._room_by_id:
                 return self._room_by_id[id]
@@ -52,6 +55,7 @@ class RoomManager:
                 return None
 
     async def list_clients(self, room):
+        self._create_lock_if_none()
         async with self._lock:
             if room in self._ids_by_room:
                 clients = []
@@ -66,24 +70,22 @@ class RoomManager:
             else:
                 return []
 
-    async def send_to_all(self, event, data=None, room=None, skip_id=None):
+    async def send_to_all(self, message, room=None, skip_id=None):
         if room == None:
-            await self._sio.emit(event, data)
+            await self._web_socket_client_manager.send_to_all(message)
         else:
-            tasks = []
             clients = await self.list_clients(room)
-
-            for client in clients:
-                if client['id'] != skip_id:
-                    tasks.append(asyncio.create_task(self._sio.emit(event, data, to=client['id'])))
-
-            if tasks == []:
-                return
-            await asyncio.wait(tasks)
+            ids = [c['id'] for c in clients if c['id'] != skip_id]
+            await self._web_socket_client_manager.send_to(message, ids)
 
     async def get_client_name(self, id):
+        self._create_lock_if_none()
         async with self._lock:
             if id in self._client_name_by_id:
                 return self._client_name_by_id[id]
             else:
                 return None
+
+    def _create_lock_if_none(self):
+        if self._lock is None:
+            self._lock = asyncio.Lock()

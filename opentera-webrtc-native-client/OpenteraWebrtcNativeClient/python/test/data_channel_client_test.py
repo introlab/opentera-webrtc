@@ -13,7 +13,7 @@ class DisconnectedDataChannelClientTestCase(FailureTestCase):
     def setUp(self):
         super(DisconnectedDataChannelClientTestCase, self).setUp()
         self._client1 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', ""),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', ""),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 
@@ -51,7 +51,7 @@ class WrongPasswordDataChannelClientTestCase(FailureTestCase):
     def setUp(self):
         super(WrongPasswordDataChannelClientTestCase, self).setUp()
         self._client1 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', ''),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', ''),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 
@@ -102,7 +102,7 @@ class SingleDataChannelClientTestCase(FailureTestCase):
     def setUp(self):
         super(SingleDataChannelClientTestCase, self).setUp()
         self._client1 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 
@@ -152,17 +152,17 @@ class RightPasswordDataChannelClientTestCase(FailureTestCase):
             awaiter.done()
 
         self._client1 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 
         self._client2 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c2', 'cd2', 'chat', 'abc'),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 
         self._client3 = webrtc.DataChannelClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c3', 'cd3', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c3', 'cd3', 'chat', 'abc'),
             DEFAULT_WEBRTC_CONFIGURATION,
             webrtc.DataChannelConfiguration.create())
 

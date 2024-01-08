@@ -1,6 +1,4 @@
-import io from 'socket.io-client';
-
-const SignalingProtocolVersion = 1;
+import WebSocketSignalingClient from './Signaling/WebSocketSignalingClient';
 
 function isPromise(obj) {
   return obj && typeof obj.then === 'function' && Object.prototype.toString.call(obj) === '[object Promise]';
@@ -9,7 +7,7 @@ function isPromise(obj) {
 /**
  * @brief Represents the base class of DataChannelClient, StreamClient and StreamDataChannelClient.
  */
-class SignalingClient {
+class WebrtcClient {
   /**
    * @brief Creates a signaling client with the specified configurations.
    *
@@ -27,8 +25,8 @@ class SignalingClient {
    * @param {CallableFunction} logger An optional logger callback
    */
   constructor(signalingServerConfiguration, logger) {
-    if (this.constructor === SignalingClient) {
-      throw new TypeError('Abstract class "SignalingClient" cannot be instantiated directly.');
+    if (this.constructor === WebrtcClient) {
+      throw new TypeError('Abstract class "WebrtcClient" cannot be instantiated directly.');
     }
     if (this._createRtcPeerConnection === undefined) {
       throw new TypeError('_createRtcPeerConnection is missing.');
@@ -41,10 +39,8 @@ class SignalingClient {
       logger = () => {};
     }
 
-    this._signalingServerConfiguration = signalingServerConfiguration;
     this._logger = logger;
 
-    this._socket = null;
     this._rtcPeerConnections = {};
 
     this._clients = [];
@@ -65,6 +61,37 @@ class SignalingClient {
     this._onClientDisconnect = () => {};
 
     this._offerOptions = {};
+
+    this._signalingClient = new WebSocketSignalingClient(signalingServerConfiguration, logger);
+    this._connectSignalingClientCallbacks();
+  }
+
+  _connectSignalingClientCallbacks() {
+    this._signalingClient.onSignalingConnectionOpen = () => { this._onSignalingConnectionOpen(); };
+    this._signalingClient.onSignalingConnectionClose = () => { this.close(); };
+    this._signalingClient.onSignalingConnectionError = error => {
+      this.close();
+      this._onSignalingConnectionError(error);
+    };
+
+    this._signalingClient.onRoomClientsChange = (clients) => {
+      this._logger('SignalingServer room-clients event, clients=', clients);
+
+      this._clients = clients;
+      this._updateClientNamesById(clients);
+      this._updateClientDatumById(clients);
+      this._onRoomClientsChange(this._addConnectionStateToClients(this._clients));
+    };
+
+    this._signalingClient.makePeerCall = ids => { this._makePeerCall(ids); };
+    this._signalingClient.peerCallReceived = data => { this._peerCallReceived(data); };
+    this._signalingClient.peerCallAnswerReceived = data => { this._peerCallAnswerReceived(data); };
+    this._signalingClient.iceCandidateReceived = data => { this._addIceCandidate(data); };
+
+    this._signalingClient.closeAllPeerConnections = () => {
+      this._logger('SignalingServer close-all-peer-connections-request-received event');
+      this.hangUpAll();
+    };
   }
 
   /**
@@ -72,103 +99,15 @@ class SignalingClient {
    * @returns {Promise<void>}
    */
   async connect() {
-    this._logger('SignalingClient.connect method call');
-
-    let url = new URL(this._signalingServerConfiguration.url);
-    let path = url.pathname;
-    url = url.protocol + '//' + url.hostname + ':' + url.port;
-    if (path === '/') {
-      path = '/socket.io';
-    }
-
-    this._socket = io(url, {path: path});
-    this._connectEvents();
-
-    await new Promise((resolve, reject) => {
-      this._socket.on('connect', () => {
-        this._logger('SignalingServer connect event');
-
-        resolve();
-      });
-      this._socket.on('connect_error', error => {
-        this._logger('SignalingServer connect_error event');
-
-        reject(error);
-      });
-      this._socket.on('connect_timeout', error => {
-        this._logger('SignalingServer connect_timeout event');
-
-        reject(error);
-      });
-    });
-    
-    let data = {
-      name: this._signalingServerConfiguration.name,
-      data: this._signalingServerConfiguration.data,
-      room: this._signalingServerConfiguration.room,
-      password: this._signalingServerConfiguration.password,
-      protocolVersion: SignalingProtocolVersion
-    };
-    this._socket.emit('join-room', data, isJoined => {
-      this._logger('SignalingServer join-room event, isJoined=', isJoined);
-      if (isJoined) {
-        this._onSignalingConnectionOpen();
-      }
-      else {
-        this.close();
-        this._onSignalingConnectionError('Invalid password or invalid protocol version');
-      }
-    });
-  }
-
-  _connectEvents() {
-    this._socket.on('disconnect', () => {
-      this._logger('SignalingServer disconnect event');
-
-      this._disconnect();
-    });
-
-    this._socket.on('room-clients', clients => {
-      this._logger('SignalingServer room-clients event, clients=', clients);
-
-      this._clients = clients;
-      this._updateClientNamesById(clients);
-      this._updateClientDatumById(clients);
-      this._onRoomClientsChange(this._addConnectionStateToClients(this._clients));
-    });
-
-    this._socket.on('make-peer-call', async ids => await this._makePeerCall(ids));
-    this._socket.on('peer-call-received', async data => await this._peerCallReceived(data));
-    this._socket.on('peer-call-answer-received', async data => await this._peerCallAnswerReceived(data));
-    this._socket.on('close-all-peer-connections-request-received', () => {
-      this._logger('SignalingServer close-all-peer-connections-request-received event');
-
-      this.hangUpAll();
-    });
-
-    this._socket.on('ice-candidate-received', async data => await this._addIceCandidate(data));
-  }
-
-  _disconnectEvents() {
-    this._socket.off('connect');
-    this._socket.off('connect_error');
-    this._socket.off('connect_timeout');
-    this._socket.off('disconnect');
-
-    this._socket.off('room-clients');
-
-    this._socket.off('make-peer-call');
-    this._socket.off('peer-call-received');
-    this._socket.off('peer-call-answer-received');
-
-    this._getAllRtcPeerConnection().forEach(c => this._disconnectRtcPeerConnectionEvents(c));
-    this._socket.off('ice-candidate');
+    this._logger('WebrtcClient.connect method call');
+    await this._signalingClient.connect();
   }
 
   _disconnect() {
-    this._disconnectEvents();
-    this._socket.close();
-    this._socket = null;
+    this._signalingClient.disconnect();
+
+    this._getAllRtcPeerConnection().forEach(c => this._disconnectRtcPeerConnectionEvents(c));
+
     this._clients = [];
     this._alreadyAcceptedCalls = [];
     this.close();
@@ -188,12 +127,10 @@ class SignalingClient {
       let answer = await rtcPeerConnection.createAnswer();
       await rtcPeerConnection.setLocalDescription(new window.RTCSessionDescription(answer));
 
-      data = { toId: data.fromId, answer: answer };
-      this._socket.emit('make-peer-call-answer', data);
+      this._signalingClient.makePeerCallAnswer(data.fromId, answer);
     }
     else {
-      data = { toId: data.fromId };
-      this._socket.emit('make-peer-call-answer', data);
+      this._signalingClient.rejectCall(data.fromId);
     }
   }
 
@@ -221,7 +158,7 @@ class SignalingClient {
   async _makePeerCall(ids) {
     this._logger('SignalingServer make-peer-call event, ids=', ids);
 
-    ids = ids.filter(id => id != this._socket.id);
+    ids = ids.filter(id => id != this.id);
     ids.forEach(async id => {
       if (this._hasRtcPeerConnection(id)) {
         return;
@@ -235,8 +172,7 @@ class SignalingClient {
         let offer = await rtcPeerConnection.createOffer(this._offerOptions);
         await rtcPeerConnection.setLocalDescription(new RTCSessionDescription(offer));
 
-        let data = { toId: id, offer: offer };
-        this._socket.emit('call-peer', data);
+        this._signalingClient.callPeer(id, offer);
       }
       else {
         this._onCallReject(id, this.getClientName(id), this.getClientData(id));
@@ -258,8 +194,7 @@ class SignalingClient {
 
   _connectRtcPeerConnectionEvents(id, rtcPeerConnection) {
     rtcPeerConnection.onicecandidate = event => {
-      let data = { toId: id, candidate: event.candidate };
-      this._socket.emit('send-ice-candidate', data);
+      this._signalingClient.sendIceCandidate(id, event.candidate);
     };
 
     rtcPeerConnection.onconnectionstatechange = () => {
@@ -351,7 +286,7 @@ class SignalingClient {
    * @brief Closes all client connections
    */
   close() {
-    if (this._socket !== null) {
+    if (this._signalingClient.isConnected) {
       this._disconnect();
     }
     // The RTC peer connections need to close after the socket because of socket can create a RTC connection after
@@ -363,10 +298,10 @@ class SignalingClient {
    * @brief Calls all room clients.
    */
   callAll() {
-    this._logger('SignalingClient.callAll method call');
+    this._logger('WebrtcClient.callAll method call');
 
     this._alreadyAcceptedCalls = this._clients.map(client => client.id);
-    this._socket.emit('call-all');
+    this._signalingClient.callAll();
   }
 
   /**
@@ -374,17 +309,17 @@ class SignalingClient {
    * @param {Array<String>} ids The client ids to call
    */
   callIds(ids) {
-    this._logger('SignalingClient.callIds method call, ids=', ids);
+    this._logger('WebrtcClient.callIds method call, ids=', ids);
 
     this._alreadyAcceptedCalls = ids;
-    this._socket.emit('call-ids', ids);
+    this._signalingClient.callIds(ids);
   }
 
   /**
    * @brief Hangs up all clients.
    */
   hangUpAll() {
-    this._logger('SignalingClient.hangUpAll method call');
+    this._logger('WebrtcClient.hangUpAll method call');
 
     this._closeAllRtcPeerConnections();
     this.updateRoomClients();
@@ -394,9 +329,9 @@ class SignalingClient {
    * @brief Closes all room peer connections.
    */
   closeAllRoomPeerConnections() {
-    this._logger('SignalingClient.closeAllRoomPeerConnections method call');
+    this._logger('WebrtcClient.closeAllRoomPeerConnections method call');
 
-    this._socket.emit('close-all-room-peer-connections');
+    this._signalingClient.closeAllRoomPeerConnections();
   }
 
   /**
@@ -422,7 +357,7 @@ class SignalingClient {
    * @return {Boolean} true if the client is connected to the signaling server
    */
   get isConnected() {
-    return this._socket !== null;
+    return this._signalingClient.isConnected;
   }
 
   /**
@@ -438,12 +373,7 @@ class SignalingClient {
    * @return {String} The client id
    */
   get id() {
-    if (this._socket !== null) {
-      return this._socket.id;
-    }
-    else {
-      return null;
-    }
+    return this._signalingClient.sessionId;
   }
 
   /**
@@ -584,4 +514,4 @@ class SignalingClient {
   }
 }
 
-export default SignalingClient;
+export default WebrtcClient;

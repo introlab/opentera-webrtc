@@ -3,7 +3,7 @@
 using namespace opentera;
 using namespace std;
 
-absl::optional<VideoStreamCodec> opentera::stringToVideoStreamCodec(std::string_view value)
+absl::optional<VideoStreamCodec> opentera::stringToVideoStreamCodec(string_view value)
 {
     if (value == "VP8" || value == "vp8" || value == "vP8" || value == "Vp8")
     {

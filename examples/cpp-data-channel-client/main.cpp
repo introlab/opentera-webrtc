@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
     }
 
     auto signalingServerConfiguration =
-        SignalingServerConfiguration::create("http://localhost:8080", "C++", "chat", "abc");
+        SignalingServerConfiguration::create("ws://localhost:8080/signaling", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);

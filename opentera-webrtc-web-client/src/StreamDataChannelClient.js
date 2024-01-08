@@ -1,9 +1,9 @@
-import SignalingClient from './SignalingClient';
+import WebrtcClient from './WebrtcClient';
 
 /**
  * @brief A signaling client to join a WebRTC room, stream a video source and send data channel communication.
  */
-class StreamDataChannelClient extends SignalingClient {
+class StreamDataChannelClient extends WebrtcClient {
   /**
    * @brief Creates a stream data channel client
    *
@@ -85,7 +85,7 @@ class StreamDataChannelClient extends SignalingClient {
     let rtcPeerConnection = new window.RTCPeerConnection(this._rtcConfiguration);
 
     if (isCaller) {
-      let dataChannel = rtcPeerConnection.createDataChannel(this._signalingServerConfiguration.room,
+      let dataChannel = rtcPeerConnection.createDataChannel(this._signalingClient.room,
         this._dataChannelConfiguration);
       this._dataChannels[id] = dataChannel;
       this._connectDataChannelEvents(id, dataChannel);

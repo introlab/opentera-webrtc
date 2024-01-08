@@ -15,10 +15,7 @@ DataChannelClient::DataChannelClient(
     SignalingServerConfiguration signalingServerConfiguration,
     WebrtcConfiguration webrtcConfiguration,
     DataChannelConfiguration dataChannelConfiguration)
-    : SignalingClient(
-          move(signalingServerConfiguration),
-          move(webrtcConfiguration),
-          VideoStreamConfiguration::create()),
+    : WebrtcClient(move(signalingServerConfiguration), move(webrtcConfiguration), VideoStreamConfiguration::create()),
       m_dataChannelConfiguration(move(dataChannelConfiguration))
 {
 }
@@ -86,11 +83,10 @@ unique_ptr<PeerConnectionHandler>
         id,
         peerClient,
         isCaller,
-        getSendEventFunction(),
+        *m_signalingClient,
         getOnErrorFunction(),
         getOnClientConnectedFunction(),
         getOnClientDisconnectedFunction(),
-        m_signalingServerConfiguration.room(),
         m_dataChannelConfiguration,
         onDataChannelOpen,
         onDataChannelClosed,

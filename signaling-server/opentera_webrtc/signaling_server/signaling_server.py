@@ -10,13 +10,13 @@ import logging
 from pathlib import Path
 from typing import Union
 
-from aiohttp import web
+from aiohttp import web, WSMsgType
 from aiohttp_index import IndexMiddleware
 
-import socketio
 import ssl
 
 from opentera_webrtc.signaling_server.room_manager import RoomManager
+from opentera_webrtc.signaling_server.web_socket_client_manager import WebSocketClientManager
 
 PROTOCOL_VERSION = 1
 DISCONNECT_DELAY_S = 1
@@ -35,10 +35,10 @@ async def cors_middleware(request, handler):
 logging.basicConfig(format='[%(asctime)s] -- %(message)s')
 logger = logging.getLogger('signaling_server')
 
-sio = socketio.AsyncServer(async_mode='aiohttp', logger=False, engineio_logger=False, cors_allowed_origins='*')
 app = web.Application(middlewares=[IndexMiddleware(), cors_middleware])
 
-room_manager = RoomManager(sio)
+web_socket_client_manager = WebSocketClientManager()
+room_manager = RoomManager(web_socket_client_manager)
 
 password = None
 ice_servers = []
@@ -46,7 +46,7 @@ ice_servers = []
 
 async def disconnect_delayed(id):
     await asyncio.sleep(DISCONNECT_DELAY_S)
-    await sio.disconnect(id)
+    await web_socket_client_manager.close(id)
 
 
 async def disconnect_inactive_user(id):
@@ -55,51 +55,98 @@ async def disconnect_inactive_user(id):
     room = await room_manager.get_room(id)
     if room is None:
         logger.info('inactive: %s', id)
-        await sio.disconnect(id)
+        await web_socket_client_manager.close(id)
 
 
-@sio.on('connect')
-async def connect(id, env):
+def event_to_message(event, data=None):
+    if data is None:
+        message = {'event': event}
+    else:
+        message = {'event': event, 'data': data}
+
+    return json.dumps(message)
+
+
+async def web_socket_handler(request):
+    ws = web.WebSocketResponse()
+    await ws.prepare(request)
+
+    id = await web_socket_client_manager.add_ws(ws)
     logger.info('connect %s', id)
-    # Launch task to verify if client joins a room (active), otherwise disconnect client.
     asyncio.create_task(disconnect_inactive_user(id))
 
+    async for msg in ws:
+        if msg.type == WSMsgType.TEXT:
+            try:
+                data = json.loads(msg.data)
+                await handle_web_socket_message(id, data)
+            except Exception as e:
+                logger.error('Message error (%s): %s', id, str(e))
 
-@sio.on('disconnect')
-async def disconnect(id):
     logger.info('disconnect %s (%s)', id, await room_manager.get_client_name(id))
+    await web_socket_client_manager.close(id)
     room = await room_manager.get_room(id)
     await room_manager.remove_client(id)
 
     if room is not None:
         clients = await room_manager.list_clients(room)
-        await room_manager.send_to_all('room-clients', data=clients, room=room)
+        await room_manager.send_to_all(event_to_message('room-clients', clients), room=room)
+
+    return ws
 
 
-@sio.on('join-room')
-async def join_room(id, data):
+async def handle_web_socket_message(id, data):
+    if 'event' not in data:
+        logger.error('Invalid message (%s): %s', id, str(data))
+        return
+
+    event = data['event']
+    if 'data' not in data:
+        data = {}
+    else:
+        data = data['data']
+
+    if event == 'join-room':
+        await handle_join_room(id, data)
+    elif event == 'send-ice-candidate':
+        await handle_ice_candidate(id, data)
+    elif event == 'call-peer':
+        await handle_call_peer(id, data)
+    elif event == 'make-peer-call-answer':
+        await handle_make_call_answer(id, data)
+    elif event == 'call-all':
+        await handle_call_all(id)
+    elif event == 'call-ids':
+        await handle_call_ids(id, data)
+    elif event == 'close-all-room-peer-connections':
+        await handle_close_all_peer_connections(id)
+    else:
+        logger.error('Not handled message (%s): %s: %s', id, event, str(data))
+
+
+async def handle_join_room(id, data):
     logger.info('join_room %s (%s)', id, data)
 
     if not _isAuthorized(data['password'] if 'password' in data else ''):
         asyncio.create_task(disconnect_delayed(id))
-        return False
+        await web_socket_client_manager.send_to(event_to_message('join-room-answer', ''), id)
+        return
     if (data['protocolVersion'] if 'protocolVersion' in data else 0) != PROTOCOL_VERSION:
         asyncio.create_task(disconnect_delayed(id))
-        return False
+        await web_socket_client_manager.send_to(event_to_message('join-room-answer', ''), id)
+        return
 
     if 'data' not in data:
         data['data'] = {}
 
+    await web_socket_client_manager.send_to(event_to_message('join-room-answer', id), id)
+
     await room_manager.add_client(id, data['name'], data['data'], data['room'])
-
     clients = await room_manager.list_clients(data['room'])
-    await room_manager.send_to_all('room-clients', data=clients, room=data['room'])
-
-    return True
+    await room_manager.send_to_all(event_to_message('room-clients', clients), room=data['room'])
 
 
-@sio.on('send-ice-candidate')
-async def ice_candidate(from_id, data):
+async def handle_ice_candidate(from_id, data):
     from_name = await room_manager.get_client_name(from_id)
     to_name = await room_manager.get_client_name(data['toId'])
     logger.info('send-ice-candidate %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
@@ -108,11 +155,10 @@ async def ice_candidate(from_id, data):
 
     if room1 is not None and room1 == room2:
         data['fromId'] = from_id
-        await sio.emit('ice-candidate-received', data, to=data['toId'])
+        await web_socket_client_manager.send_to(event_to_message('ice-candidate-received', data), data['toId'])
 
 
-@sio.on('call-peer')
-async def call_peer(from_id, data):
+async def handle_call_peer(from_id, data):
     from_name = await room_manager.get_client_name(from_id)
     to_name = await room_manager.get_client_name(data['toId'])
     logger.info('call %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
@@ -121,11 +167,10 @@ async def call_peer(from_id, data):
 
     if room1 is not None and room1 == room2:
         data['fromId'] = from_id
-        await sio.emit('peer-call-received', data, to=data['toId'])
+        await web_socket_client_manager.send_to(event_to_message('peer-call-received', data), data['toId'])
 
 
-@sio.on('make-peer-call-answer')
-async def make_call_answer(from_id, data):
+async def handle_make_call_answer(from_id, data):
     from_name = await room_manager.get_client_name(from_id)
     to_name = await room_manager.get_client_name(data['toId'])
     logger.info('make-peer-call-answer %s (%s) to %s (%s)', from_id, from_name, data['toId'], to_name)
@@ -134,11 +179,10 @@ async def make_call_answer(from_id, data):
 
     if room1 is not None and room1 == room2:
         data['fromId'] = from_id
-        await sio.emit('peer-call-answer-received', data, to=data['toId'])
+        await web_socket_client_manager.send_to(event_to_message('peer-call-answer-received', data), data['toId'])
 
 
-@sio.on('call-all')
-async def call_all(from_id):
+async def handle_call_all(from_id):
     logger.info('call-all %s (%s)', from_id, await room_manager.get_client_name(from_id))
     room = await room_manager.get_room(from_id)
 
@@ -148,8 +192,7 @@ async def call_all(from_id):
         await _make_peer_calls(ids)
 
 
-@sio.on('call-ids')
-async def call_ids(from_id, ids):
+async def handle_call_ids(from_id, ids):
     names = [(id, await room_manager.get_client_name(id)) for id in ids]
     logger.info('call-ids %s (%s) %s', from_id, await room_manager.get_client_name(from_id), names)
     room = await room_manager.get_room(from_id)
@@ -168,17 +211,16 @@ async def _make_peer_calls(ids):
     tasks = []
     for id in ids:
         ids_to_call = [c[1] for c in combinations if c[0] == id]
-        tasks.append(sio.emit('make-peer-call', ids_to_call, to=id))
+        tasks.append(web_socket_client_manager.send_to(event_to_message('make-peer-call', ids_to_call), id))
     await asyncio.gather(*tasks)
 
 
-@sio.on('close-all-room-peer-connections')
-async def close_all_peer_connections(from_id):
+async def handle_close_all_peer_connections(from_id):
     logger.info('close-all-room-peer-connections %s (%s)', from_id, await room_manager.get_client_name(from_id))
     room = await room_manager.get_room(from_id)
 
     if room is not None:
-        await room_manager.send_to_all('close-all-peer-connections-request-received', room=room)
+        await room_manager.send_to_all(event_to_message('close-all-peer-connections-request-received'), room=room)
 
 
 async def get_ice_servers(request: web.Request):
@@ -195,6 +237,7 @@ def _isAuthorized(user_password):
 class ExpandUserPath:
     def __new__(cls, path: Union[str, Path]) -> Path:
         return Path(path).expanduser().resolve()
+
 
 class Args:
     port: int
@@ -248,11 +291,9 @@ def main():
             global ice_servers
             ice_servers = json.load(file)
 
-    # Make sure websocket path is defined
-    sio.attach(app, socketio_path=args.socketio_path)
-
     # Create route to get iceservers
-    app.add_routes([web.get('/iceservers', get_ice_servers)])
+    app.add_routes([web.get('/iceservers', get_ice_servers),
+                    web.get('/signaling', web_socket_handler)])
 
     # Create static route if required
     if args.static_folder is not None:

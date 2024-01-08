@@ -108,7 +108,7 @@ public:
 
     [[nodiscard]] CodecSupport QueryCodecSupport(
         const webrtc::SdpVideoFormat& format,
-        absl::optional<std::string> scalabilityMode) const override
+        absl::optional<string> scalabilityMode) const override
     {
         CodecSupport codec_support;
         codec_support.is_supported = !scalabilityMode.has_value();
@@ -126,7 +126,7 @@ public:
 
 TEST(VideoCodecFactoriesTests, GetSupportedFormats_emptyForcedCodecs_shouldReturnAllFormats)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs;
+    unordered_set<VideoStreamCodec> forcedCodecs;
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
@@ -149,7 +149,7 @@ TEST(VideoCodecFactoriesTests, GetSupportedFormats_emptyForcedCodecs_shouldRetur
 
 TEST(VideoCodecFactoriesTests, GetSupportedFormats_h264Vp8ForcedCodecs_shouldReturnAllFormats)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs{VideoStreamCodec::H264, VideoStreamCodec::VP8};
+    unordered_set<VideoStreamCodec> forcedCodecs{VideoStreamCodec::H264, VideoStreamCodec::VP8};
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
@@ -168,7 +168,7 @@ TEST(VideoCodecFactoriesTests, GetSupportedFormats_h264Vp8ForcedCodecs_shouldRet
 
 TEST(VideoCodecFactoriesTests, QueryCodecSupport_scaling_shouldReturnNotSupported)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs;
+    unordered_set<VideoStreamCodec> forcedCodecs;
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
@@ -185,7 +185,7 @@ TEST(VideoCodecFactoriesTests, QueryCodecSupport_scaling_shouldReturnNotSupporte
 
 TEST(VideoCodecFactoriesTests, QueryCodecSupport_emptyForcedCodecs_shouldReturnSupported)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs;
+    unordered_set<VideoStreamCodec> forcedCodecs;
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
@@ -203,7 +203,7 @@ TEST(VideoCodecFactoriesTests, QueryCodecSupport_emptyForcedCodecs_shouldReturnS
 
 TEST(VideoCodecFactoriesTests, QueryCodecSupport_vp8ForcedCodecs_shouldReturnSupportedIfVp8)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs{VideoStreamCodec::VP8, VideoStreamCodec::VP9};
+    unordered_set<VideoStreamCodec> forcedCodecs{VideoStreamCodec::VP8, VideoStreamCodec::VP9};
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
@@ -229,7 +229,7 @@ TEST(VideoCodecFactoriesTests, QueryCodecSupport_vp8ForcedCodecs_shouldReturnSup
 
 TEST(VideoCodecFactoriesTests, CreateVideoDecoder_shouldCallDummyFactory)
 {
-    std::unordered_set<VideoStreamCodec> forcedCodecs;
+    unordered_set<VideoStreamCodec> forcedCodecs;
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
