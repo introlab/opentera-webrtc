@@ -138,12 +138,12 @@ protected:
                                   "signaling-server" / "opentera-signaling-server";
 
         m_signalingServerProcess = make_unique<subprocess::Popen>(
-            "python3 " + pythonFilePath.string() + " --port 8080 --password abc --socketio_path thepath",
+            "python3 " + pythonFilePath.string() + " --port 8080 --password abc",
             subprocess::input(subprocess::PIPE));
 
         m_signalingServerProcessTLS = make_unique<subprocess::Popen>(
             "python3 " + pythonFilePath.string() +
-                " --port 8081 --password abc --socketio_path thepath"
+                " --port 8081 --password abc"
                 " --certificate resources/cert.pem --key resources/key.pem",
             subprocess::input(subprocess::PIPE));
 
