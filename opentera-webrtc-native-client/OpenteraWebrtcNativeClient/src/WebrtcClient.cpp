@@ -459,8 +459,7 @@ unique_ptr<PeerConnectionHandler>
             }
             else
             {
-                throw runtime_error(
-                    string("Failed to create peer connection: ") + peerConnection.error().message());
+                throw runtime_error(string("Failed to create peer connection: ") + peerConnection.error().message());
             }
             return handler;
         });

@@ -280,7 +280,7 @@ bool GStreamerVideoEncoder::updateEncodedFrame(
     m_encodedFrame.set_size(mappedBuffer.size());
     m_encodedFrame._frameType = getWebrtcFrameType(encodedSample);
     m_encodedFrame.capture_time_ms_ = frame.render_time_ms();
-    m_encodedFrame.SetTimestamp(frame.timestamp());
+    m_encodedFrame.SetRtpTimestamp(frame.timestamp());
     m_encodedFrame.ntp_time_ms_ = frame.ntp_time_ms();
     m_encodedFrame.rotation_ = frame.rotation();
 

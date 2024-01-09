@@ -9,7 +9,7 @@ using namespace std;
 
 constexpr int SignalingProtocolVersion = 1;
 
-#define JSON_CHECK_RETURN(condition, message)                                                                   \
+#define JSON_CHECK_RETURN(condition, message)                                                                          \
     if ((condition))                                                                                                   \
     {                                                                                                                  \
         invokeIfCallable(m_onError, (message));                                                                        \
@@ -19,7 +19,7 @@ constexpr int SignalingProtocolVersion = 1;
     {                                                                                                                  \
     } while (false)
 
-#define JSON_CHECK_CONTINUE(condition, message)                                                                 \
+#define JSON_CHECK_CONTINUE(condition, message)                                                                        \
     if ((condition))                                                                                                   \
     {                                                                                                                  \
         invokeIfCallable(m_onError, (message));                                                                        \
@@ -31,19 +31,14 @@ constexpr int SignalingProtocolVersion = 1;
 
 string eventToMessage(const char* event)
 {
-    nlohmann::json message {
-        {"event", event}
-    };
+    nlohmann::json message{{"event", event}};
 
     return message.dump();
 }
 
 string eventToMessage(const char* event, const nlohmann::json& data)
 {
-    nlohmann::json message {
-        {"event", event},
-        {"data", data}
-    };
+    nlohmann::json message{{"event", event}, {"data", data}};
 
     return message.dump();
 }
@@ -57,7 +52,7 @@ WebSocketSignalingClient::WebSocketSignalingClient(SignalingServerConfiguration 
     constexpr int PingIntervalSecs = 10;
     m_ws.setPingInterval(PingIntervalSecs);
 
-    call_once(initNetSystemOnceFlag, []() { ix::initNetSystem(); } );
+    call_once(initNetSystemOnceFlag, []() { ix::initNetSystem(); });
 }
 
 WebSocketSignalingClient::~WebSocketSignalingClient()
@@ -130,35 +125,24 @@ void WebSocketSignalingClient::closeAllRoomPeerConnections()
 
 void WebSocketSignalingClient::callPeer(const string& toId, const string& sdp)
 {
-    nlohmann::json offer {
-        {"sdp", sdp},
-        {"type", "offer"}
-    };
-    nlohmann::json data {
-        {"toId", toId},
-        {"offer", offer}
-    };
+    nlohmann::json offer{{"sdp", sdp}, {"type", "offer"}};
+    nlohmann::json data{{"toId", toId}, {"offer", offer}};
     m_ws.send(eventToMessage("call-peer", data));
 }
 
 void WebSocketSignalingClient::makePeerCallAnswer(const string& toId, const string& sdp)
 {
-    nlohmann::json offer {
+    nlohmann::json offer{
         {"sdp", sdp},
         {"type", "answer"},
     };
-    nlohmann::json data {
-        {"toId", toId},
-        {"answer", offer}
-    };
+    nlohmann::json data{{"toId", toId}, {"answer", offer}};
     m_ws.send(eventToMessage("make-peer-call-answer", data));
 }
 
 void WebSocketSignalingClient::rejectCall(const string& toId)
 {
-    nlohmann::json data {
-        {"toId", toId}
-    };
+    nlohmann::json data{{"toId", toId}};
     m_ws.send(eventToMessage("make-peer-call-answer", data));
 }
 
@@ -168,51 +152,48 @@ void WebSocketSignalingClient::sendIceCandidate(
     const string& candidate,
     const string& toId)
 {
-    nlohmann::json candidateJson {
+    nlohmann::json candidateJson{
         {"sdpMid", sdpMid},
         {"sdpMLineIndex", sdpMLineIndex},
         {"candidate", candidate},
     };
-    nlohmann::json data {
-        {"toId", toId},
-        {"candidate", candidateJson}
-    };
+    nlohmann::json data{{"toId", toId}, {"candidate", candidateJson}};
     m_ws.send(eventToMessage("send-ice-candidate", data));
 }
 
 void WebSocketSignalingClient::connectWsEvents()
 {
-    m_ws.setOnMessageCallback([this](const ix::WebSocketMessagePtr& msg)
-       {
-           switch (msg->type)
-           {
-           case ix::WebSocketMessageType::Open:
-               onWsOpenEvent();
-               break;
-           case ix::WebSocketMessageType::Close:
-               onWsCloseEvent();
-               break;
-           case ix::WebSocketMessageType::Error:
-               onWsErrorEvent(msg->errorInfo.reason);
-               break;
-           case ix::WebSocketMessageType::Message:
-               onWsMessage(msg->str);
-               break;
-           default:
-               break;
-           }
-       });
+    m_ws.setOnMessageCallback(
+        [this](const ix::WebSocketMessagePtr& msg)
+        {
+            switch (msg->type)
+            {
+                case ix::WebSocketMessageType::Open:
+                    onWsOpenEvent();
+                    break;
+                case ix::WebSocketMessageType::Close:
+                    onWsCloseEvent();
+                    break;
+                case ix::WebSocketMessageType::Error:
+                    onWsErrorEvent(msg->errorInfo.reason);
+                    break;
+                case ix::WebSocketMessageType::Message:
+                    onWsMessage(msg->str);
+                    break;
+                default:
+                    break;
+            }
+        });
 }
 
 void WebSocketSignalingClient::onWsOpenEvent()
 {
-    nlohmann::json data {
+    nlohmann::json data{
         {"name", m_configuration.clientName()},
         {"data", m_configuration.clientData()},
         {"room", m_configuration.room()},
         {"password", m_configuration.password()},
-        {"protocolVersion", SignalingProtocolVersion}
-    };
+        {"protocolVersion", SignalingProtocolVersion}};
     m_ws.send(eventToMessage("join-room", data));
 }
 

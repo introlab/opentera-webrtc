@@ -3,11 +3,19 @@
 #ifdef USE_GSTREAMER
 #include <OpenteraWebrtcNativeGStreamer/Factories/WebRtcGStreamerVideoDecoderFactory.h>
 #include <OpenteraWebrtcNativeGStreamer/Factories/WebRtcGStreamerVideoEncoderFactory.h>
+#else
+#include <api/video_codecs/video_decoder_factory_template.h>
+#include <api/video_codecs/video_decoder_factory_template_libvpx_vp8_adapter.h>
+#include <api/video_codecs/video_decoder_factory_template_libvpx_vp9_adapter.h>
+#include <api/video_codecs/video_decoder_factory_template_open_h264_adapter.h>
+
+#include <api/video_codecs/video_encoder_factory_template.h>
+#include <api/video_codecs/video_encoder_factory_template_libvpx_vp8_adapter.h>
+#include <api/video_codecs/video_encoder_factory_template_libvpx_vp9_adapter.h>
+#include <api/video_codecs/video_encoder_factory_template_open_h264_adapter.h>
 #endif
 
-#include <api/video_codecs/builtin_video_decoder_factory.h>
 #include <api/video_codecs/video_decoder.h>
-#include <api/video_codecs/builtin_video_encoder_factory.h>
 #include <api/video_codecs/video_encoder.h>
 #include <media/base/media_constants.h>
 
@@ -160,19 +168,29 @@ unique_ptr<webrtc::VideoEncoderFactory>
 
 #else
 
+using BuiltinVideoDecoderFactory = webrtc::VideoDecoderFactoryTemplate<
+    webrtc::LibvpxVp8DecoderTemplateAdapter,
+    webrtc::LibvpxVp9DecoderTemplateAdapter,
+    webrtc::OpenH264DecoderTemplateAdapter>;
+
 unique_ptr<webrtc::VideoDecoderFactory>
     opentera::createVideoDecoderFactory(const VideoStreamConfiguration& configuration)
 {
     return make_unique<ForcedCodecVideoDecoderFactory>(
-        webrtc::CreateBuiltinVideoDecoderFactory(),
+        make_unique<BuiltinVideoDecoderFactory>(),
         configuration.forcedCodecs());
 }
+
+using BuiltinVideoEncoderFactory = webrtc::VideoEncoderFactoryTemplate<
+    webrtc::LibvpxVp8EncoderTemplateAdapter,
+    webrtc::LibvpxVp9EncoderTemplateAdapter,
+    webrtc::OpenH264EncoderTemplateAdapter>;
 
 unique_ptr<webrtc::VideoEncoderFactory>
     opentera::createVideoEncoderFactory(const VideoStreamConfiguration& configuration)
 {
     return make_unique<ForcedCodecVideoEncoderFactory>(
-        webrtc::CreateBuiltinVideoEncoderFactory(),
+        make_unique<BuiltinVideoEncoderFactory>(),
         configuration.forcedCodecs());
 }
 

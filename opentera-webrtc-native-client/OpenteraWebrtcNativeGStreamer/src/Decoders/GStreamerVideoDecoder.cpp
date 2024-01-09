@@ -76,7 +76,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         }
         else
         {
-            initializeBufferTimestamps(renderTimeMs, inputImage.Timestamp());
+            initializeBufferTimestamps(renderTimeMs, inputImage.RtpTimestamp());
             m_keyframeNeeded = false;
         }
     }
@@ -91,7 +91,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
         m_width != 0 && m_height != 0 && (m_width != inputImage._encodedWidth || m_height != inputImage._encodedHeight))
     {
         initializePipeline();
-        initializeBufferTimestamps(renderTimeMs, inputImage.Timestamp());
+        initializeBufferTimestamps(renderTimeMs, inputImage.RtpTimestamp());
     }
 
     auto sample = toGstSample(inputImage, renderTimeMs);
@@ -123,7 +123,7 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     cout << "Sample (push) is " << hex << sample.get() << dec << endl;
 #endif
 
-    return pullSample(renderTimeMs, inputImage.Timestamp(), inputImage.rotation_);
+    return pullSample(renderTimeMs, inputImage.RtpTimestamp(), inputImage.rotation_);
 }
 
 bool GStreamerVideoDecoder::Configure(const webrtc::VideoDecoder::Settings& settings)
@@ -180,7 +180,7 @@ gst::unique_ptr<GstSample>
     gst_buffer_fill(buffer.get(), 0, inputImage.data(), inputImage.size());
     gst_buffer_set_size(buffer.get(), static_cast<gssize>(inputImage.size()));
 
-    GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.Timestamp()) * GST_MSECOND) - m_firstBufferDts;
+    GST_BUFFER_DTS(buffer.get()) = (static_cast<guint64>(inputImage.RtpTimestamp()) * GST_MSECOND) - m_firstBufferDts;
     GST_BUFFER_PTS(buffer.get()) = (static_cast<guint64>(renderTimeMs) * GST_MSECOND) - m_firstBufferPts;
 
     return gst::unique_from_ptr(gst_sample_new(buffer.get(), getCapsForFrame(inputImage), nullptr, nullptr));

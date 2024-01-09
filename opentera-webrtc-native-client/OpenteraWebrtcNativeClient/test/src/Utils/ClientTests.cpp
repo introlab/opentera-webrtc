@@ -14,11 +14,7 @@ TEST(ClientTests, constructor_Client_shouldSetTheAttributes)
     ASSERT_TRUE(testee1.data().is_string());
     EXPECT_EQ(testee1.data(), "data1");
 
-    nlohmann::json message {
-        {"id", "id2"},
-        {"name", "name2"},
-        {"data", "data2"}
-    };
+    nlohmann::json message{{"id", "id2"}, {"name", "name2"}, {"data", "data2"}};
     Client testee2(message);
 
     EXPECT_EQ(testee2.id(), "id2");
@@ -65,13 +61,8 @@ TEST(ClientTests, equalityOperator_Client_shouldReturnFalseIfOperandsAreNotEqual
     array2.emplace_back("b");
     EXPECT_FALSE(Client("c1", "n1", array1) == Client("c1", "n1", array2));
 
-    nlohmann::json object1 = {
-        {"x", nlohmann::json{}},
-        {"bob", "d"}
-    };
-    nlohmann::json object2 {
-        {"x", "d"}
-    };
+    nlohmann::json object1 = {{"x", nlohmann::json{}}, {"bob", "d"}};
+    nlohmann::json object2{{"x", "d"}};
     EXPECT_FALSE(Client("c1", "n1", object1) == Client("c1", "n1", object2));
 }
 
@@ -87,14 +78,8 @@ TEST(ClientTests, equalityOperator_Client_shouldReturnTrueIfOperandsAreEqual)
     auto array2 = nlohmann::json::array({"a"});
     EXPECT_TRUE(Client("c1", "n1", array1) == Client("c1", "n1", array2));
 
-    nlohmann::json object1 = {
-        {"x", nlohmann::json{}},
-        {"bob", "d"}
-    };
-    nlohmann::json object2 {
-        {"x", nlohmann::json{}},
-        {"bob", "d"}
-    };
+    nlohmann::json object1 = {{"x", nlohmann::json{}}, {"bob", "d"}};
+    nlohmann::json object2{{"x", nlohmann::json{}}, {"bob", "d"}};
     EXPECT_TRUE(Client("c1", "n1", object1) == Client("c1", "n1", object2));
 }
 
