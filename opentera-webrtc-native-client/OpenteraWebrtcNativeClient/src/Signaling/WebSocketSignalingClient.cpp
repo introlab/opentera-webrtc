@@ -7,7 +7,7 @@
 using namespace opentera;
 using namespace std;
 
-constexpr int SignalingProtocolVersion = 1;
+constexpr int SignalingProtocolVersion = 2;
 
 #define JSON_CHECK_RETURN(condition, message)                                                                          \
     if ((condition))                                                                                                   \

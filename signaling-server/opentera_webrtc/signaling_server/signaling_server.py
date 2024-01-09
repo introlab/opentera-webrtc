@@ -18,7 +18,7 @@ import ssl
 from opentera_webrtc.signaling_server.room_manager import RoomManager
 from opentera_webrtc.signaling_server.web_socket_client_manager import WebSocketClientManager
 
-PROTOCOL_VERSION = 1
+PROTOCOL_VERSION = 2
 DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
 
