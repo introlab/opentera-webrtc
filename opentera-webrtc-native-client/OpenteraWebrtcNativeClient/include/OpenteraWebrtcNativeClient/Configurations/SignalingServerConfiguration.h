@@ -99,12 +99,7 @@ namespace opentera
         std::string room,
         std::string password)
     {
-        return {
-            std::move(url),
-            std::move(clientName),
-            nlohmann::json{},
-            std::move(room),
-            std::move(password)};
+        return {std::move(url), std::move(clientName), nlohmann::json{}, std::move(room), std::move(password)};
     }
 
     /**

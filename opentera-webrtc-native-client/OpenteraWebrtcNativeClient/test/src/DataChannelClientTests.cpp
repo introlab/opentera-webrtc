@@ -91,24 +91,14 @@ protected:
         if (tlsTestEnable)
         {
             m_client1 = make_unique<DataChannelClient>(
-                SignalingServerConfiguration::createWithData(
-                    "wss://localhost:8081/signaling",
-                    "c1",
-                    "cd1",
-                    "chat",
-                    ""),
+                SignalingServerConfiguration::createWithData("wss://localhost:8081/signaling", "c1", "cd1", "chat", ""),
                 DefaultWebrtcConfiguration,
                 DataChannelConfiguration::create());
         }
         else
         {
             m_client1 = make_unique<DataChannelClient>(
-                SignalingServerConfiguration::createWithData(
-                    "ws://localhost:8080/signaling",
-                    "c1",
-                    "cd1",
-                    "chat",
-                    ""),
+                SignalingServerConfiguration::createWithData("ws://localhost:8080/signaling", "c1", "cd1", "chat", ""),
                 DefaultWebrtcConfiguration,
                 DataChannelConfiguration::create());
         }
@@ -302,12 +292,7 @@ TEST_P(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheCo
         [&](const vector<RoomClient>& roomClients)
         {
             EXPECT_EQ(roomClients.size(), 1);
-            EXPECT_EQ(
-                count(
-                    roomClients.begin(),
-                    roomClients.end(),
-                    RoomClient(m_client1->id(), "c1", "cd1", true)),
-                1);
+            EXPECT_EQ(count(roomClients.begin(), roomClients.end(), RoomClient(m_client1->id(), "c1", "cd1", true)), 1);
             awaiter.done();
         });
 
@@ -348,15 +333,9 @@ TEST_P(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotR
 
 TEST_P(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
 {
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client1->id()),
-        RoomClient(m_client1->id(), "c1", "cd1", true));
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client2->id()),
-        RoomClient(m_client2->id(), "c2", "cd2", false));
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client3->id()),
-        RoomClient(m_client3->id(), "c3", "cd3", false));
+    EXPECT_EQ(m_client1->getRoomClient(m_client1->id()), RoomClient(m_client1->id(), "c1", "cd1", true));
+    EXPECT_EQ(m_client1->getRoomClient(m_client2->id()), RoomClient(m_client2->id(), "c2", "cd2", false));
+    EXPECT_EQ(m_client1->getRoomClient(m_client3->id()), RoomClient(m_client3->id(), "c3", "cd3", false));
 
     EXPECT_EQ(m_client1->getRoomClient(""), RoomClient());
 }
@@ -365,66 +344,21 @@ TEST_P(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
 {
     auto roomClients1 = m_client1->getRoomClients();
     ASSERT_EQ(roomClients1.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client1->id(), "c1", "cd1", true)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client2->id(), "c2", "cd2", false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client3->id(), "c3", "cd3", false)),
-        1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client1->id(), "c1", "cd1", true)), 1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client2->id(), "c2", "cd2", false)), 1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client3->id(), "c3", "cd3", false)), 1);
 
     auto roomClients2 = m_client2->getRoomClients();
     ASSERT_EQ(roomClients2.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client1->id(), "c1", "cd1", false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client2->id(), "c2", "cd2", true)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client3->id(), "c3", "cd3", false)),
-        1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client1->id(), "c1", "cd1", false)), 1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client2->id(), "c2", "cd2", true)), 1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client3->id(), "c3", "cd3", false)), 1);
 
     auto roomClients3 = m_client3->getRoomClients();
     ASSERT_EQ(roomClients3.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client1->id(), "c1", "cd1", false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client2->id(), "c2", "cd2", false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client3->id(), "c3", "cd3", true)),
-        1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client1->id(), "c1", "cd1", false)), 1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client2->id(), "c2", "cd2", false)), 1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client3->id(), "c3", "cd3", true)), 1);
 }
 
 TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)

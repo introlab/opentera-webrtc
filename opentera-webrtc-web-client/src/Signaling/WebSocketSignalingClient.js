@@ -1,6 +1,6 @@
 import SignalingClient from './SignalingClient';
 
-const SignalingProtocolVersion = 1;
+const SignalingProtocolVersion = 2;
 
 function _eventToMessage(event, data) {
   if (data === undefined) {

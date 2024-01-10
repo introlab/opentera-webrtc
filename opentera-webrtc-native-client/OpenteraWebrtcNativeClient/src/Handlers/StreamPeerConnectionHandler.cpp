@@ -18,8 +18,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
     function<void(const string&)> onError,
     function<void(const Client&)> onClientConnected,
     function<void(const Client&)> onClientDisconnected,
-    scoped_refptr<VideoTrackInterface> videoTrack,
-    scoped_refptr<AudioTrackInterface> audioTrack,
+    webrtc::scoped_refptr<VideoTrackInterface> videoTrack,
+    webrtc::scoped_refptr<AudioTrackInterface> audioTrack,
     function<void(const Client&)> onAddRemoteStream,
     function<void(const Client&)> onRemoveRemoteStream,
     const VideoFrameReceivedCallback& onVideoFrameReceived,
@@ -110,7 +110,8 @@ StreamPeerConnectionHandler::~StreamPeerConnectionHandler()
     }
 }
 
-void StreamPeerConnectionHandler::setPeerConnection(const scoped_refptr<PeerConnectionInterface>& peerConnection)
+void StreamPeerConnectionHandler::setPeerConnection(
+    const webrtc::scoped_refptr<PeerConnectionInterface>& peerConnection)
 {
     PeerConnectionHandler::setPeerConnection(peerConnection);
 

@@ -1,7 +1,8 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/DataChannelConfigurationPython.h>
-#include <OpenteraWebrtcNativeClientPython/PyBindAbslOptional.h>
 
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
+
+#include <pybind11/stl.h>
 
 using namespace opentera;
 using namespace std;

@@ -1,7 +1,8 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/AudioSourceConfigurationPython.h>
-#include <OpenteraWebrtcNativeClientPython/PyBindAbslOptional.h>
 
 #include <OpenteraWebrtcNativeClient/Configurations/AudioSourceConfiguration.h>
+
+#include <pybind11/stl.h>
 
 using namespace opentera;
 using namespace std;

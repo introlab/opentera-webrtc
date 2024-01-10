@@ -18,7 +18,7 @@ import ssl
 from opentera_webrtc.signaling_server.room_manager import RoomManager
 from opentera_webrtc.signaling_server.web_socket_client_manager import WebSocketClientManager
 
-PROTOCOL_VERSION = 1
+PROTOCOL_VERSION = 2
 DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
 
@@ -249,7 +249,10 @@ class Args:
     log_level: int
 
 
-def main():
+def main(other_routes=None):
+    if other_routes is None:
+        other_routes = []
+
     parser = argparse.ArgumentParser(description='OpenTera WebRTC Signaling Server')
     parser.add_argument('--port', type=int, help='Choose the port', default=8080)
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
@@ -291,7 +294,7 @@ def main():
 
     # Create route to get iceservers
     app.add_routes([web.get('/iceservers', get_ice_servers),
-                    web.get('/signaling', web_socket_handler)])
+                    web.get('/signaling', web_socket_handler)] + other_routes)
 
     # Create static route if required
     if args.static_folder is not None:

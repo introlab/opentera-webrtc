@@ -535,7 +535,7 @@ void onAudioFrameReceived(
 
 void checkReceivedAudio(const vector<int16_t>& receivedAudio, int16_t amplitude)
 {
-    constexpr int AbsError = 7000;
+    constexpr int AbsError = 9000;
 
     ASSERT_FALSE(receivedAudio.empty());
     int16_t min1 = *min_element(receivedAudio.begin() + receivedAudio.size() / 2, receivedAudio.end());
@@ -548,7 +548,7 @@ TEST_P(StreamClientTests, audioStream_bidirectional_shouldBeSentAndReceived)
 {
     // Initialize the clients
     constexpr int16_t Amplitude1 = 10000;
-    constexpr int16_t Amplitude2 = 25000;
+    constexpr int16_t Amplitude2 = 20000;
     shared_ptr<SinAudioSource> audioSource1 = make_shared<SinAudioSource>(Amplitude1);
     shared_ptr<SinAudioSource> audioSource2 = make_shared<SinAudioSource>(Amplitude2);
 

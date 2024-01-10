@@ -52,9 +52,7 @@ TEST(VideoStreamConfigurationTests, create_all_shouldSetTheAttributes)
     VideoStreamConfiguration testee2 =
         VideoStreamConfiguration::create({VideoStreamCodec::VP8, VideoStreamCodec::H264}, true, false);
 
-    EXPECT_EQ(
-        testee2.forcedCodecs(),
-        unordered_set<VideoStreamCodec>({VideoStreamCodec::VP8, VideoStreamCodec::H264}));
+    EXPECT_EQ(testee2.forcedCodecs(), unordered_set<VideoStreamCodec>({VideoStreamCodec::VP8, VideoStreamCodec::H264}));
     EXPECT_EQ(testee2.forceGStreamerHardwareAcceleration(), true);
     EXPECT_EQ(testee2.useGStreamerSoftwareEncoderDecoder(), false);
 }

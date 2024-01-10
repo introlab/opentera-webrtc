@@ -58,6 +58,8 @@ public:
     }
 
     void SetRates(const RateControlParameters& parameters) override{};
+
+    EncoderInfo GetEncoderInfo() const override { return {}; }
 };
 
 class DummyVideoDecoderFactory : public webrtc::VideoDecoderFactory
@@ -106,9 +108,8 @@ public:
             webrtc::SdpVideoFormat(cricket::kAv1CodecName)};
     }
 
-    [[nodiscard]] CodecSupport QueryCodecSupport(
-        const webrtc::SdpVideoFormat& format,
-        absl::optional<string> scalabilityMode) const override
+    [[nodiscard]] CodecSupport
+        QueryCodecSupport(const webrtc::SdpVideoFormat& format, absl::optional<string> scalabilityMode) const override
     {
         CodecSupport codec_support;
         codec_support.is_supported = !scalabilityMode.has_value();

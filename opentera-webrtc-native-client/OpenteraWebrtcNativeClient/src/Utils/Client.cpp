@@ -10,9 +10,7 @@ using namespace std;
  * @param name The client name
  * @param data The client data
  */
-Client::Client(string id, string name, nlohmann::json data) : m_id(move(id)), m_name(move(name)), m_data(move(data))
-{
-}
+Client::Client(string id, string name, nlohmann::json data) : m_id(move(id)), m_name(move(name)), m_data(move(data)) {}
 
 Client::Client(const nlohmann::json& message)
 {

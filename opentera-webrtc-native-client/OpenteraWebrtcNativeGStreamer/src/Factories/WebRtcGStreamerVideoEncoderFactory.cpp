@@ -5,6 +5,11 @@
 
 #include <media/base/codec.h>
 
+#include <api/video_codecs/video_encoder_factory_template.h>
+#include <api/video_codecs/video_encoder_factory_template_libvpx_vp8_adapter.h>
+#include <api/video_codecs/video_encoder_factory_template_libvpx_vp9_adapter.h>
+#include <api/video_codecs/video_encoder_factory_template_open_h264_adapter.h>
+
 #include <algorithm>
 
 using namespace opentera;
@@ -13,10 +18,15 @@ using namespace std;
 constexpr int HardwarePriority = 1;
 constexpr int SoftwarePriority = 2;
 
+using BuiltinVideoEncoderFactory = webrtc::VideoEncoderFactoryTemplate<
+    webrtc::LibvpxVp8EncoderTemplateAdapter,
+    webrtc::LibvpxVp9EncoderTemplateAdapter,
+    webrtc::OpenH264EncoderTemplateAdapter>;
+
 WebRtcGStreamerVideoEncoderFactory::WebRtcGStreamerVideoEncoderFactory(
     bool forceHardwareAcceleration,
     bool useGStreamerSoftwareEncoder)
-    : m_builtinVideoEncoderFactory(webrtc::CreateBuiltinVideoEncoderFactory())
+    : m_builtinVideoEncoderFactory(make_unique<BuiltinVideoEncoderFactory>())
 {
     m_builtinSupportedFormats = m_builtinVideoEncoderFactory->GetSupportedFormats();
 
