@@ -12,7 +12,6 @@ namespace opentera
 {
     class DataChannelPeerConnectionHandler : public PeerConnectionHandler, public webrtc::DataChannelObserver
     {
-        std::string m_room;
         DataChannelConfiguration m_dataChannelConfiguration;
 
         std::function<void(const Client&)> m_onDataChannelOpen;
@@ -30,11 +29,10 @@ namespace opentera
             std::string id,
             Client peerClient,
             bool isCaller,
-            std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+            SignalingClient& m_signalingClient,
             std::function<void(const std::string&)> onError,
             std::function<void(const Client&)> onClientConnected,
             std::function<void(const Client&)> onClientDisconnected,
-            std::string room,
             DataChannelConfiguration dataChannelConfiguration,
             std::function<void(const Client&)> onDataChannelOpen,
             std::function<void(const Client&)> onDataChannelClosed,
@@ -46,7 +44,7 @@ namespace opentera
 
         void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection) override;
 
-        void send(const webrtc::DataBuffer& buffer);
+        bool send(const webrtc::DataBuffer& buffer);
 
         // Observer methods
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;

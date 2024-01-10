@@ -7,11 +7,10 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
     string id,
     Client peerClient,
     bool isCaller,
-    function<void(const string&, const sio::message::ptr&)> sendEvent,
+    SignalingClient& m_signalingClient,
     function<void(const string&)> onError,
     function<void(const Client&)> onClientConnected,
     function<void(const Client&)> onClientDisconnected,
-    string room,
     DataChannelConfiguration dataChannelConfiguration,
     function<void(const Client&)> onDataChannelOpen,
     function<void(const Client&)> onDataChannelClosed,
@@ -22,11 +21,10 @@ DataChannelPeerConnectionHandler::DataChannelPeerConnectionHandler(
           move(id),
           move(peerClient),
           isCaller,
-          move(sendEvent),
+          m_signalingClient,
           move(onError),
           move(onClientConnected),
           move(onClientDisconnected)),
-      m_room(move(room)),
       m_dataChannelConfiguration(move(dataChannelConfiguration)),
       m_onDataChannelOpen(move(onDataChannelOpen)),
       m_onDataChannelClosed(move(onDataChannelClosed)),
@@ -59,7 +57,7 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
     if (m_isCaller)
     {
         auto configuration = static_cast<webrtc::DataChannelInit>(m_dataChannelConfiguration);
-        auto dataChannelOrError = m_peerConnection->CreateDataChannelOrError(m_room, &configuration);
+        auto dataChannelOrError = m_peerConnection->CreateDataChannelOrError(m_signalingClient.room(), &configuration);
         if (dataChannelOrError.ok())
         {
             m_dataChannel = dataChannelOrError.MoveValue();
@@ -67,16 +65,20 @@ void DataChannelPeerConnectionHandler::setPeerConnection(
         }
         else
         {
-            m_onError(std::string("CreateDataChannel failed: ") + dataChannelOrError.error().message());
+            m_onError(string("CreateDataChannel failed: ") + dataChannelOrError.error().message());
         }
     }
 }
 
-void DataChannelPeerConnectionHandler::send(const webrtc::DataBuffer& buffer)
+bool DataChannelPeerConnectionHandler::send(const webrtc::DataBuffer& buffer)
 {
     if (m_dataChannel)
     {
-        m_dataChannel->Send(buffer);
+        return m_dataChannel->Send(buffer);
+    }
+    else
+    {
+        return false;
     }
 }
 

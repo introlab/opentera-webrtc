@@ -25,7 +25,7 @@ void setOnDataChannelMessageBinary(
 
 void opentera::initDataChannelClientPython(pybind11::module& m)
 {
-    py::class_<DataChannelClient, SignalingClient>(
+    py::class_<DataChannelClient, WebrtcClient>(
         m,
         "DataChannelClient",
         "Represents a client for data channel communication.")
@@ -48,6 +48,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                 auto data = bytes.cast<string>();
                 self.sendTo(reinterpret_cast<const uint8_t*>(data.data()), data.size(), ids);
             },
+            py::call_guard<py::gil_scoped_release>(),
             "Sends binary data to the specified clients.\n"
             "\n"
             ":param bytes: The binary data\n"
@@ -57,6 +58,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
         .def(
             "send_to",
             py::overload_cast<const string&, const vector<string>&>(&DataChannelClient::sendTo),
+            py::call_guard<py::gil_scoped_release>(),
             "Sends a string message to the specified clients.\n"
             "\n"
             ":param message: The string message\n"
@@ -70,6 +72,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
                 auto data = bytes.cast<string>();
                 self.sendToAll(reinterpret_cast<const uint8_t*>(data.data()), data.size());
             },
+            py::call_guard<py::gil_scoped_release>(),
             "Sends binary data to all clients.\n"
             "\n"
             ":param bytes: The binary data (bytes)\n",
@@ -77,6 +80,7 @@ void opentera::initDataChannelClientPython(pybind11::module& m)
         .def(
             "send_to_all",
             py::overload_cast<const string&>(&DataChannelClient::sendToAll),
+            py::call_guard<py::gil_scoped_release>(),
             "Sends a string message to all clients.\n"
             "\n"
             ":param message: The string message",

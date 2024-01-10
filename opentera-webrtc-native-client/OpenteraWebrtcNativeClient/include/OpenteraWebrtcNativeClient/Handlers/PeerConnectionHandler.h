@@ -1,9 +1,8 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_FUNCTIONAL_PEER_CONNECTION_OBSERVER_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_UTILS_FUNCTIONAL_PEER_CONNECTION_OBSERVER_H
 
+#include <OpenteraWebrtcNativeClient/Signaling/SignalingClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
-
-#include <sio_message.h>
 
 #include <api/peer_connection_interface.h>
 
@@ -39,7 +38,7 @@ namespace opentera
         std::string m_id;
         Client m_peerClient;
         bool m_isCaller;
-        std::function<void(const std::string&, const sio::message::ptr&)> m_sendEvent;
+        SignalingClient& m_signalingClient;
         std::function<void(const std::string&)> m_onError;
         std::function<void(const Client&)> m_onClientConnected;
         std::function<void(const Client&)> m_onClientDisconnected;
@@ -53,7 +52,7 @@ namespace opentera
             std::string&& id,
             Client&& peerClient,
             bool isCaller,
-            std::function<void(const std::string&, const sio::message::ptr&)>&& sendEvent,
+            SignalingClient& m_signalingClient,
             std::function<void(const std::string&)>&& onError,
             std::function<void(const Client&)>&& onClientConnected,
             std::function<void(const Client&)>&& onClientDisconnected);

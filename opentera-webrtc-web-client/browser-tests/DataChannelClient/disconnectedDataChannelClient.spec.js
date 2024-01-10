@@ -1,5 +1,5 @@
 const SignalingServerConfiguration = {
-  url: 'http://localhost:8080',
+  url: 'ws://localhost:8080/signaling',
   name: '',
   room: 'chat',
   password: ''
@@ -12,7 +12,7 @@ let dataChannelClient;
 describe('Disconnected DataChannelClient', () => {
   beforeEach(() => dataChannelClient = new window.openteraWebrtcWebClient.DataChannelClient(SignalingServerConfiguration,
     DataChannelConfiguration, RtcConfiguration));
-    
+
   it('isConnected should return false', () => {
     expect(dataChannelClient.isConnected).to.eql(false);
   });

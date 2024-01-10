@@ -51,7 +51,7 @@ namespace opentera
             Client peerClient,
             bool isCaller,
             bool hasOnMixedAudioFrameReceivedCallback,
-            std::function<void(const std::string&, const sio::message::ptr&)> sendEvent,
+            SignalingClient& m_signalingClient,
             std::function<void(const std::string&)> onError,
             std::function<void(const Client&)> onClientConnected,
             std::function<void(const Client&)> onClientDisconnected,

@@ -8,11 +8,16 @@ set (BUILD_SHARED_LIBS OFF)
 add_subdirectory(webrtc_native)
 
 add_subdirectory(pybind11)
-add_subdirectory(socket.io-client-cpp)
+add_subdirectory(json)
 
-if(WIN32)
-    target_compile_definitions(sioclient PRIVATE WIN32_LEAN_AND_MEAN)
-endif()
+set(USE_ZLIB OFF)
+set(USE_TLS ON)
+set(OPENSSL_FOUND TRUE)
+set(OPENSSL_DEFINITIONS "")
+set(OPENSSL_INCLUDE_DIR ${boringssl_INCLUDE})
+set(OPENSSL_LIBRARIES ${boringssl_LIBRARY})
+add_subdirectory(IXWebSocket)
+set_property(TARGET ixwebsocket PROPERTY CXX_STANDARD 17)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(googletest)
@@ -54,5 +59,4 @@ if(NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
 
 endif()
 
-install(DIRECTORY socket.io-client-cpp/lib/rapidjson/include/rapidjson DESTINATION include
-    	FILES_MATCHING PATTERN "*.h")
+install(DIRECTORY json/include DESTINATION include FILES_MATCHING PATTERN "*.hpp")

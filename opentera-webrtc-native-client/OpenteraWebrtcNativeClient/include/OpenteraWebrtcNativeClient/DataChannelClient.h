@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_DATA_CHANNEL_CLIENT_H
 
-#include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/WebrtcClient.h>
 #include <OpenteraWebrtcNativeClient/Utils/ClassMacro.h>
 #include <OpenteraWebrtcNativeClient/Configurations/DataChannelConfiguration.h>
 
@@ -12,7 +12,7 @@ namespace opentera
     /**
      * @brief Represents a client for data channel communication.
      */
-    class DataChannelClient : public SignalingClient
+    class DataChannelClient : public WebrtcClient
     {
         DataChannelConfiguration m_dataChannelConfiguration;
 
@@ -32,10 +32,10 @@ namespace opentera
         DECLARE_NOT_COPYABLE(DataChannelClient);
         DECLARE_NOT_MOVABLE(DataChannelClient);
 
-        void sendTo(const uint8_t* data, std::size_t size, const std::vector<std::string>& ids);
-        void sendTo(const std::string& message, const std::vector<std::string>& ids);
-        void sendToAll(const uint8_t* data, std::size_t size);
-        void sendToAll(const std::string& message);
+        bool sendTo(const uint8_t* data, std::size_t size, const std::vector<std::string>& ids);
+        bool sendTo(const std::string& message, const std::vector<std::string>& ids);
+        bool sendToAll(const uint8_t* data, std::size_t size);
+        bool sendToAll(const std::string& message);
 
         void setOnDataChannelOpened(const std::function<void(const Client&)>& callback);
         void setOnDataChannelClosed(const std::function<void(const Client&)>& callback);
@@ -45,8 +45,8 @@ namespace opentera
         void setOnDataChannelMessageString(const std::function<void(const Client&, const std::string&)>& callback);
 
     protected:
-        void sendTo(const webrtc::DataBuffer& buffer, const std::vector<std::string>& ids);
-        void sendToAll(const webrtc::DataBuffer& buffer);
+        bool sendTo(const webrtc::DataBuffer& buffer, const std::vector<std::string>& ids);
+        bool sendToAll(const webrtc::DataBuffer& buffer);
 
         std::unique_ptr<PeerConnectionHandler>
             createPeerConnectionHandler(const std::string& id, const Client& peerClient, bool isCaller) override;
@@ -59,9 +59,9 @@ namespace opentera
      * @param size The binary data size
      * @param ids The client ids
      */
-    inline void DataChannelClient::sendTo(const uint8_t* data, size_t size, const std::vector<std::string>& ids)
+    inline bool DataChannelClient::sendTo(const uint8_t* data, size_t size, const std::vector<std::string>& ids)
     {
-        sendTo(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true), ids);
+        return sendTo(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true), ids);
     }
 
     /**
@@ -70,9 +70,9 @@ namespace opentera
      * @param message The string message
      * @param ids The client ids
      */
-    inline void DataChannelClient::sendTo(const std::string& message, const std::vector<std::string>& ids)
+    inline bool DataChannelClient::sendTo(const std::string& message, const std::vector<std::string>& ids)
     {
-        sendTo(webrtc::DataBuffer(message), ids);
+        return sendTo(webrtc::DataBuffer(message), ids);
     }
 
     /**
@@ -81,9 +81,9 @@ namespace opentera
      * @param data The binary data
      * @param size The binary data size
      */
-    inline void DataChannelClient::sendToAll(const uint8_t* data, size_t size)
+    inline bool DataChannelClient::sendToAll(const uint8_t* data, size_t size)
     {
-        sendToAll(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true));
+        return sendToAll(webrtc::DataBuffer(rtc::CopyOnWriteBuffer(data, size), true));
     }
 
     /**
@@ -91,7 +91,10 @@ namespace opentera
      *
      * @param message The string message
      */
-    inline void DataChannelClient::sendToAll(const std::string& message) { sendToAll(webrtc::DataBuffer(message)); }
+    inline bool DataChannelClient::sendToAll(const std::string& message)
+    {
+        return sendToAll(webrtc::DataBuffer(message));
+    }
 
     /**
      * @brief Sets the callback that is called when a data channel opens.

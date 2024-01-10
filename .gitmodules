@@ -1,9 +1,6 @@
 [submodule "opentera-webrtc-native-client/3rdParty/googletest"]
 	path = opentera-webrtc-native-client/3rdParty/googletest
 	url = https://github.com/google/googletest.git
-[submodule "opentera-webrtc-native-client/3rdParty/socket.io-client-cpp"]
-	path = opentera-webrtc-native-client/3rdParty/socket.io-client-cpp
-	url = https://github.com/introlab/socket.io-client-cpp.git
 [submodule "opentera-webrtc-native-client/3rdParty/cpp-subprocess"]
 	path = opentera-webrtc-native-client/3rdParty/cpp-subprocess
 	url = https://github.com/arun11299/cpp-subprocess.git
@@ -16,3 +13,9 @@
 [submodule "opentera-webrtc-native-client/3rdParty/opencv"]
 	path = opentera-webrtc-native-client/3rdParty/opencv
 	url = https://github.com/opencv/opencv.git
+[submodule "opentera-webrtc-native-client/3rdParty/json"]
+	path = opentera-webrtc-native-client/3rdParty/json
+	url = https://github.com/nlohmann/json
+[submodule "opentera-webrtc-native-client/3rdParty/IXWebSocket"]
+	path = opentera-webrtc-native-client/3rdParty/IXWebSocket
+	url = https://github.com/machinezone/IXWebSocket.git

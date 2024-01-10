@@ -23,9 +23,9 @@ class StreamClientTestCase(FailureTestCase):
         # Initialize the clients
         setup_awaiter = CallbackAwaiter(2, 15)
 
-        frame1 = np.zeros((480, 640, 3), dtype=np.int8)
+        frame1 = np.zeros((480, 640, 3), dtype=np.uint8)
         frame1[:, :, 2] = 255
-        frame2 = np.zeros((480, 640, 3), dtype=np.int8)
+        frame2 = np.zeros((480, 640, 3), dtype=np.uint8)
         frame2[:, :, 0] = 255
 
         video_source1 = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, True))
@@ -35,13 +35,13 @@ class StreamClientTestCase(FailureTestCase):
             setup_awaiter.done()
 
         client1 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create(),
             video_source1)
 
         client2 = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c2', 'cd2', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c2', 'cd2', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create(),
             video_source2)
@@ -62,8 +62,8 @@ class StreamClientTestCase(FailureTestCase):
 
         self._on_add_remote_stream_client_name1 = None
         self._on_add_remote_stream_client_name2 = None
-        self._mean_color_1 = np.array([0, 0, 0], dtype=np.int8)
-        self._mean_color_2 = np.array([0, 0, 0], dtype=np.int8)
+        self._mean_color_1 = np.array([0, 0, 0], dtype=np.uint8)
+        self._mean_color_2 = np.array([0, 0, 0], dtype=np.uint8)
 
         def on_add_remote_stream1(client):
             self._on_add_remote_stream_client_name1 = client.name
@@ -129,7 +129,7 @@ class StreamClientTestCase(FailureTestCase):
 
     def test_mute_methods__should_set_the_flag_accordingly(self):
         client = webrtc.StreamClient(
-            webrtc.SignalingServerConfiguration.create('http://localhost:8080', 'c1', 'cd1', 'chat', 'abc'),
+            webrtc.SignalingServerConfiguration.create_with_data('ws://localhost:8080/signaling', 'c1', 'cd1', 'chat', 'abc'),
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create())
 

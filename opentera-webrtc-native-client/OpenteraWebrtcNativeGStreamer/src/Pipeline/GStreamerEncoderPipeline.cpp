@@ -178,20 +178,20 @@ int32_t GStreamerEncoderPipeline::initialize(
     return WEBRTC_VIDEO_CODEC_OK;
 }
 
-void GStreamerEncoderPipeline::setEncoderProperty(const std::string& name, guint value)
+void GStreamerEncoderPipeline::setEncoderProperty(const string& name, guint value)
 {
     auto dotPosition = name.find('.');
-    auto valueString = std::to_string(value);
+    auto valueString = to_string(value);
 
-    if (dotPosition == std::string::npos)
+    if (dotPosition == string::npos)
     {
         GST_INFO("Set encoder property - %s=%s", name.c_str(), valueString.c_str());
         g_object_set(m_encoder.get(), name.c_str(), value, nullptr);
     }
     else
     {
-        std::string parentName = name.substr(0, dotPosition);
-        std::string childName = name.substr(dotPosition + 1);
+        string parentName = name.substr(0, dotPosition);
+        string childName = name.substr(dotPosition + 1);
         GST_INFO("Set encoder property - %s.%s=%s", parentName.c_str(), childName.c_str(), valueString.c_str());
 
         GstStructure* structureRaw;

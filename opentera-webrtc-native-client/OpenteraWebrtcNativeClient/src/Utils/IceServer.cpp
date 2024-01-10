@@ -2,10 +2,9 @@
 
 #include <OpenteraWebrtcNativeClient/Utils/Http.h>
 
-#include <rapidjson/document.h>
+#include <nlohmann/json.hpp>
 
 using namespace opentera;
-using namespace rapidjson;
 using namespace std;
 
 /**
@@ -74,28 +73,28 @@ bool IceServer::fetchFromServer(
     return fromJson(response, iceServers);
 }
 
-bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& iceServers)
+bool parseIceServerJson(const nlohmann::json& iceServerJson, vector<IceServer>& iceServers)
 {
-    if (!iceServerJson.IsObject() || !iceServerJson.HasMember("urls"))
+    if (!iceServerJson.is_object() || !iceServerJson.contains("urls"))
     {
         return false;
     }
 
     vector<string> urls;
     auto& urlsJson = iceServerJson["urls"];
-    if (urlsJson.IsString())
+    if (urlsJson.is_string())
     {
-        urls.emplace_back(urlsJson.GetString());
+        urls.emplace_back(urlsJson);
     }
-    else if (urlsJson.IsArray())
+    else if (urlsJson.is_array())
     {
-        for (auto it = urlsJson.Begin(); it != urlsJson.End(); ++it)
+        for (auto& it : urlsJson)
         {
-            if (!it->IsString())
+            if (!it.is_string())
             {
                 return false;
             }
-            urls.emplace_back(it->GetString());
+            urls.emplace_back(it);
         }
     }
     else
@@ -103,17 +102,17 @@ bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& 
         return false;
     }
 
-    if (iceServerJson.HasMember("username") && iceServerJson.HasMember("credential"))
+    if (iceServerJson.contains("username") && iceServerJson.contains("credential"))
     {
         auto& usernameJson = iceServerJson["username"];
         auto& credentialJson = iceServerJson["credential"];
-        if (!usernameJson.IsString() || !credentialJson.IsString())
+        if (!usernameJson.is_string() || !credentialJson.is_string())
         {
             return false;
         }
-        iceServers.emplace_back(IceServer(urls, usernameJson.GetString(), credentialJson.GetString()));
+        iceServers.emplace_back(IceServer(urls, usernameJson, credentialJson));
     }
-    else if (!iceServerJson.HasMember("username") && !iceServerJson.HasMember("credential"))
+    else if (!iceServerJson.contains("username") && !iceServerJson.contains("credential"))
     {
         iceServers.emplace_back(IceServer(urls));
     }
@@ -133,17 +132,16 @@ bool parseIceServerJson(GenericValue<UTF8<>>& iceServerJson, vector<IceServer>& 
  */
 bool IceServer::fromJson(const string& json, vector<IceServer>& iceServers)
 {
-    Document jsonDocument;
-    jsonDocument.Parse(json.data());
+    nlohmann::json parsedJson = nlohmann::json::parse(json, nullptr, false);
 
-    if (!jsonDocument.IsArray())
+    if (parsedJson.is_discarded() || !parsedJson.is_array())
     {
         return false;
     }
 
-    for (auto it = jsonDocument.Begin(); it != jsonDocument.End(); ++it)
+    for (auto& it : parsedJson)
     {
-        if (!parseIceServerJson(*it, iceServers))
+        if (!parseIceServerJson(it, iceServers))
         {
             return false;
         }

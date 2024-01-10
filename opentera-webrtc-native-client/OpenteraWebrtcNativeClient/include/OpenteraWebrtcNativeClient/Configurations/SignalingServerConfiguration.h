@@ -1,7 +1,7 @@
 #ifndef OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_SIGNALING_SERVER_CONFIGURATION_H
 #define OPENTERA_WEBRTC_NATIVE_CLIENT_CONFIGURATIONS_SIGNALING_SERVER_CONFIGURATION_H
 
-#include <sio_message.h>
+#include <nlohmann/json.hpp>
 
 #include <string>
 
@@ -14,14 +14,14 @@ namespace opentera
     {
         std::string m_url;
         std::string m_clientName;
-        sio::message::ptr m_clientData;
+        nlohmann::json m_clientData;
         std::string m_room;
         std::string m_password;
 
         SignalingServerConfiguration(
             std::string&& url,
             std::string&& clientName,
-            sio::message::ptr&& clientData,
+            nlohmann::json&& clientData,
             std::string&& room,
             std::string&& password);
 
@@ -32,19 +32,19 @@ namespace opentera
 
         static SignalingServerConfiguration create(std::string url, std::string clientName, std::string room);
         static SignalingServerConfiguration
-            create(std::string url, std::string clientName, sio::message::ptr clientData, std::string room);
+            createWithData(std::string url, std::string clientName, nlohmann::json clientData, std::string room);
         static SignalingServerConfiguration
             create(std::string url, std::string clientName, std::string room, std::string password);
-        static SignalingServerConfiguration create(
+        static SignalingServerConfiguration createWithData(
             std::string url,
             std::string clientName,
-            sio::message::ptr clientData,
+            nlohmann::json clientData,
             std::string room,
             std::string password);
 
         [[nodiscard]] const std::string& url() const;
         [[nodiscard]] const std::string& clientName() const;
-        [[nodiscard]] sio::message::ptr clientData() const;
+        [[nodiscard]] const nlohmann::json& clientData() const;
         [[nodiscard]] const std::string& room() const;
         [[nodiscard]] const std::string& password() const;
 
@@ -63,7 +63,7 @@ namespace opentera
     inline SignalingServerConfiguration
         SignalingServerConfiguration::create(std::string url, std::string clientName, std::string room)
     {
-        return {std::move(url), std::move(clientName), sio::null_message::create(), std::move(room), ""};
+        return {std::move(url), std::move(clientName), nlohmann::json{}, std::move(room), ""};
     }
 
     /**
@@ -75,10 +75,10 @@ namespace opentera
      * @param room The room name
      * @return A signaling server configuration with the specified values
      */
-    inline SignalingServerConfiguration SignalingServerConfiguration::create(
+    inline SignalingServerConfiguration SignalingServerConfiguration::createWithData(
         std::string url,
         std::string clientName,
-        sio::message::ptr clientData,
+        nlohmann::json clientData,
         std::string room)
     {
         return {std::move(url), std::move(clientName), std::move(clientData), std::move(room), ""};
@@ -99,12 +99,7 @@ namespace opentera
         std::string room,
         std::string password)
     {
-        return {
-            std::move(url),
-            std::move(clientName),
-            sio::null_message::create(),
-            std::move(room),
-            std::move(password)};
+        return {std::move(url), std::move(clientName), nlohmann::json{}, std::move(room), std::move(password)};
     }
 
     /**
@@ -117,10 +112,10 @@ namespace opentera
      * @param password The signaling server password
      * @return A signaling server configuration with the specified values
      */
-    inline SignalingServerConfiguration SignalingServerConfiguration::create(
+    inline SignalingServerConfiguration SignalingServerConfiguration::createWithData(
         std::string url,
         std::string clientName,
-        sio::message::ptr clientData,
+        nlohmann::json clientData,
         std::string room,
         std::string password)
     {
@@ -143,7 +138,7 @@ namespace opentera
      * @brief Returns the client data.
      * @return The client data
      */
-    inline sio::message::ptr SignalingServerConfiguration::clientData() const { return m_clientData; }
+    inline const nlohmann::json& SignalingServerConfiguration::clientData() const { return m_clientData; }
 
     /**
      * @brief Returns the room name.

@@ -67,11 +67,11 @@ protected:
 
         if (tlsTestEnable)
         {
-            m_baseUrl = "https://localhost:8081";
+            m_baseUrl = "wss://localhost:8081/signaling";
         }
         else
         {
-            m_baseUrl = "http://localhost:8080";
+            m_baseUrl = "ws://localhost:8080/signaling";
         }
     }
 };
@@ -91,24 +91,14 @@ protected:
         if (tlsTestEnable)
         {
             m_client1 = make_unique<DataChannelClient>(
-                SignalingServerConfiguration::create(
-                    "https://localhost:8081",
-                    "c1",
-                    sio::string_message::create("cd1"),
-                    "chat",
-                    ""),
+                SignalingServerConfiguration::createWithData("wss://localhost:8081/signaling", "c1", "cd1", "chat", ""),
                 DefaultWebrtcConfiguration,
                 DataChannelConfiguration::create());
         }
         else
         {
             m_client1 = make_unique<DataChannelClient>(
-                SignalingServerConfiguration::create(
-                    "http://localhost:8080",
-                    "c1",
-                    sio::string_message::create("cd1"),
-                    "chat",
-                    ""),
+                SignalingServerConfiguration::createWithData("ws://localhost:8080/signaling", "c1", "cd1", "chat", ""),
                 DefaultWebrtcConfiguration,
                 DataChannelConfiguration::create());
         }
@@ -130,7 +120,7 @@ protected:
         DataChannelClientTests::SetUp();
 
         m_client1 = make_unique<DataChannelClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", ""),
+            SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", ""),
             DefaultWebrtcConfiguration,
             DataChannelConfiguration::create());
 
@@ -156,7 +146,7 @@ protected:
         DataChannelClientTests::SetUp();
 
         m_client1 = make_unique<DataChannelClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
             DefaultWebrtcConfiguration,
             DataChannelConfiguration::create());
 
@@ -189,15 +179,15 @@ protected:
 
         CallbackAwaiter setupAwaiter(3, 15s);
         m_client1 = make_unique<DataChannelClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c1", sio::string_message::create("cd1"), "chat", "abc"),
+            SignalingServerConfiguration::createWithData(m_baseUrl, "c1", "cd1", "chat", "abc"),
             DefaultWebrtcConfiguration,
             DataChannelConfiguration::create());
         m_client2 = make_unique<DataChannelClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c2", sio::string_message::create("cd2"), "chat", "abc"),
+            SignalingServerConfiguration::createWithData(m_baseUrl, "c2", "cd2", "chat", "abc"),
             DefaultWebrtcConfiguration,
             DataChannelConfiguration::create());
         m_client3 = make_unique<DataChannelClient>(
-            SignalingServerConfiguration::create(m_baseUrl, "c3", sio::string_message::create("cd3"), "chat", "abc"),
+            SignalingServerConfiguration::createWithData(m_baseUrl, "c3", "cd3", "chat", "abc"),
             DefaultWebrtcConfiguration,
             DataChannelConfiguration::create());
 
@@ -302,12 +292,7 @@ TEST_P(SingleDataChannelClientTests, onRoomClientsChanged_shouldBeCallAfterTheCo
         [&](const vector<RoomClient>& roomClients)
         {
             EXPECT_EQ(roomClients.size(), 1);
-            EXPECT_EQ(
-                count(
-                    roomClients.begin(),
-                    roomClients.end(),
-                    RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)),
-                1);
+            EXPECT_EQ(count(roomClients.begin(), roomClients.end(), RoomClient(m_client1->id(), "c1", "cd1", true)), 1);
             awaiter.done();
         });
 
@@ -348,15 +333,9 @@ TEST_P(RightPasswordDataChannelClientTests, getConnectedRoomClientIds_shouldNotR
 
 TEST_P(RightPasswordDataChannelClientTests, getRoomClient_shouldReturnTheSpecifiedClientOrDefault)
 {
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client1->id()),
-        RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true));
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client2->id()),
-        RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false));
-    EXPECT_EQ(
-        m_client1->getRoomClient(m_client3->id()),
-        RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false));
+    EXPECT_EQ(m_client1->getRoomClient(m_client1->id()), RoomClient(m_client1->id(), "c1", "cd1", true));
+    EXPECT_EQ(m_client1->getRoomClient(m_client2->id()), RoomClient(m_client2->id(), "c2", "cd2", false));
+    EXPECT_EQ(m_client1->getRoomClient(m_client3->id()), RoomClient(m_client3->id(), "c3", "cd3", false));
 
     EXPECT_EQ(m_client1->getRoomClient(""), RoomClient());
 }
@@ -365,66 +344,21 @@ TEST_P(RightPasswordDataChannelClientTests, getRoomClients_shouldReturnAllClient
 {
     auto roomClients1 = m_client1->getRoomClients();
     ASSERT_EQ(roomClients1.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), true)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients1.begin(),
-            roomClients1.end(),
-            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)),
-        1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client1->id(), "c1", "cd1", true)), 1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client2->id(), "c2", "cd2", false)), 1);
+    EXPECT_EQ(count(roomClients1.begin(), roomClients1.end(), RoomClient(m_client3->id(), "c3", "cd3", false)), 1);
 
     auto roomClients2 = m_client2->getRoomClients();
     ASSERT_EQ(roomClients2.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), true)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients2.begin(),
-            roomClients2.end(),
-            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), false)),
-        1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client1->id(), "c1", "cd1", false)), 1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client2->id(), "c2", "cd2", true)), 1);
+    EXPECT_EQ(count(roomClients2.begin(), roomClients2.end(), RoomClient(m_client3->id(), "c3", "cd3", false)), 1);
 
     auto roomClients3 = m_client3->getRoomClients();
     ASSERT_EQ(roomClients3.size(), 3);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client1->id(), "c1", sio::string_message::create("cd1"), false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client2->id(), "c2", sio::string_message::create("cd2"), false)),
-        1);
-    EXPECT_EQ(
-        count(
-            roomClients3.begin(),
-            roomClients3.end(),
-            RoomClient(m_client3->id(), "c3", sio::string_message::create("cd3"), true)),
-        1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client1->id(), "c1", "cd1", false)), 1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client2->id(), "c2", "cd2", false)), 1);
+    EXPECT_EQ(count(roomClients3.begin(), roomClients3.end(), RoomClient(m_client3->id(), "c3", "cd3", true)), 1);
 }
 
 TEST_P(RightPasswordDataChannelClientTests, callAll_shouldCallAllClients)
@@ -490,8 +424,7 @@ TEST_P(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient
 
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
         });
     m_client2->setOnDataChannelOpened(
         [this, &awaiter](const Client& client)
@@ -500,8 +433,7 @@ TEST_P(RightPasswordDataChannelClientTests, callIds_shouldCallTheSpecifiedClient
 
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
         });
     m_client3->setOnDataChannelOpened([](const Client& client) { ADD_FAILURE(); });
 
@@ -523,8 +455,7 @@ TEST_P(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfte
 
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
         });
     m_client2->setOnClientConnected(
         [this, &awaiter](const Client& client)
@@ -533,8 +464,7 @@ TEST_P(RightPasswordDataChannelClientTests, onClientConnected_shouldBeCalledAfte
 
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
         });
     m_client3->setOnClientConnected([](const Client& client) { ADD_FAILURE(); });
 
@@ -557,8 +487,7 @@ TEST_P(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledA
 
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
         });
     m_client2->setOnClientDisconnected(
         [this, &awaiter](const Client& client)
@@ -567,8 +496,7 @@ TEST_P(RightPasswordDataChannelClientTests, onClientDisconnected_shouldBeCalledA
 
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
         });
     m_client3->setOnClientDisconnected([](const Client& client) { ADD_FAILURE(); });
 
@@ -607,8 +535,7 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
         {
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
 
             onFinish();
         });
@@ -617,8 +544,7 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
         {
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
 
             onFinish();
         });
@@ -636,14 +562,12 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
             }
             else if (client.id() == m_clientId3)
             {
                 EXPECT_EQ(client.name(), "c3");
-                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(client.data(), "cd3");
             }
             else
             {
@@ -657,8 +581,7 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                EXPECT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
             }
             else
             {
@@ -672,8 +595,7 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
         {
             EXPECT_EQ(client.id(), m_clientId3);
             EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
+            EXPECT_EQ(client.data(), "cd3");
 
             onFinish();
         });
@@ -682,8 +604,7 @@ TEST_P(RightPasswordDataChannelClientTests, callAcceptor_shouldBeAbleToRejectACa
         {
             EXPECT_EQ(client.id(), m_clientId3);
             EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
+            EXPECT_EQ(client.data(), "cd3");
 
             onFinish();
         });
@@ -814,8 +735,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId3);
             EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
+            EXPECT_EQ(client.data(), "cd3");
             ASSERT_EQ(size, 1);
             EXPECT_EQ(data[0], 103);
         });
@@ -826,8 +746,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
             ASSERT_EQ(size, 1);
             EXPECT_EQ(data[0], 101);
         });
@@ -838,8 +757,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_binary_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
             ASSERT_EQ(size, 1);
             EXPECT_EQ(data[0], 102);
         });
@@ -883,8 +801,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId3);
             EXPECT_EQ(client.name(), "c3");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd3");
+            EXPECT_EQ(client.data(), "cd3");
             EXPECT_EQ(data, "data3");
         });
     m_client2->setOnDataChannelMessageString(
@@ -894,8 +811,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId1);
             EXPECT_EQ(client.name(), "c1");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd1");
+            EXPECT_EQ(client.data(), "cd1");
             EXPECT_EQ(data, "data1");
         });
     m_client3->setOnDataChannelMessageString(
@@ -905,8 +821,7 @@ TEST_P(RightPasswordDataChannelClientTests, sendTo_string_shouldSendTheDataToThe
 
             EXPECT_EQ(client.id(), m_clientId2);
             EXPECT_EQ(client.name(), "c2");
-            ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-            EXPECT_EQ(client.data()->get_string(), "cd2");
+            EXPECT_EQ(client.data(), "cd2");
             EXPECT_EQ(data, "data2");
         });
 
@@ -954,16 +869,14 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
             if (client.id() == m_clientId2)
             {
                 EXPECT_EQ(client.name(), "c2");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(client.data(), "cd2");
                 EXPECT_EQ(size, 1);
                 EXPECT_EQ(data[0], 102);
             }
             else if (client.id() == m_clientId3)
             {
                 EXPECT_EQ(client.name(), "c3");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(client.data(), "cd3");
                 ASSERT_EQ(size, 1);
                 EXPECT_EQ(data[0], 103);
             }
@@ -980,16 +893,14 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
                 ASSERT_EQ(size, 1);
                 EXPECT_EQ(data[0], 101);
             }
             else if (client.id() == m_clientId3)
             {
                 EXPECT_EQ(client.name(), "c3");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(client.data(), "cd3");
                 ASSERT_EQ(size, 1);
                 EXPECT_EQ(data[0], 103);
             }
@@ -1006,16 +917,14 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_binary_shouldSendTheDataTo
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
                 ASSERT_EQ(size, 1);
                 EXPECT_EQ(data[0], 101);
             }
             else if (client.id() == m_clientId2)
             {
                 EXPECT_EQ(client.name(), "c2");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(client.data(), "cd2");
                 ASSERT_EQ(size, 1);
                 EXPECT_EQ(data[0], 102);
             }
@@ -1065,15 +974,13 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
             if (client.id() == m_clientId2)
             {
                 EXPECT_EQ(client.name(), "c2");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(client.data(), "cd2");
                 EXPECT_EQ(data, "data2");
             }
             else if (client.id() == m_clientId3)
             {
                 EXPECT_EQ(client.name(), "c3");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(client.data(), "cd3");
                 EXPECT_EQ(data, "data3");
             }
             else
@@ -1089,15 +996,13 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
                 EXPECT_EQ(data, "data1");
             }
             else if (client.id() == m_clientId3)
             {
                 EXPECT_EQ(client.name(), "c3");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd3");
+                EXPECT_EQ(client.data(), "cd3");
                 EXPECT_EQ(data, "data3");
             }
             else
@@ -1113,15 +1018,13 @@ TEST_P(RightPasswordDataChannelClientTests, sendToAll_string_shouldSendTheDataTo
             if (client.id() == m_clientId1)
             {
                 EXPECT_EQ(client.name(), "c1");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd1");
+                EXPECT_EQ(client.data(), "cd1");
                 EXPECT_EQ(data, "data1");
             }
             else if (client.id() == m_clientId2)
             {
                 EXPECT_EQ(client.name(), "c2");
-                ASSERT_EQ(client.data()->get_flag(), sio::message::flag_string);
-                EXPECT_EQ(client.data()->get_string(), "cd2");
+                EXPECT_EQ(client.data(), "cd2");
                 EXPECT_EQ(data, "data2");
             }
             else

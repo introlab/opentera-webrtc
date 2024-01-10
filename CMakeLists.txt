@@ -138,5 +138,6 @@ add_subdirectory(signaling-server)
 
 if(OPENTERA_WEBRTC_ENABLE_EXAMPLES)
     add_subdirectory(examples/cpp-data-channel-client)
+    add_subdirectory(examples/cpp-data-channel-client-reliability-tests)
     add_subdirectory(examples/cpp-stream-client)
 endif()

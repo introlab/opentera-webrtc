@@ -1,5 +1,5 @@
 #include <OpenteraWebrtcNativeClientPython/Configurations/SignalingServerConfigurationPython.h>
-#include <OpenteraWebrtcNativeClientPython/SioMessage.h>
+#include <OpenteraWebrtcNativeClientPython/Json.h>
 
 #include <OpenteraWebrtcNativeClient/Configurations/SignalingServerConfiguration.h>
 
@@ -9,22 +9,22 @@ using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-SignalingServerConfiguration create(string url, string clientName, const py::object& clientData, string room)
+SignalingServerConfiguration createWithData(string url, string clientName, const py::object& clientData, string room)
 {
-    return SignalingServerConfiguration::create(
+    return SignalingServerConfiguration::createWithData(
         move(url),
         move(clientName),
-        pyObjectToSioMessage(clientData),
+        pyObjectToJson(clientData),
         move(room));
 }
 
 SignalingServerConfiguration
-    create(string url, string clientName, const py::object& clientData, string room, string password)
+    createWithData(string url, string clientName, const py::object& clientData, string room, string password)
 {
-    return SignalingServerConfiguration::create(
+    return SignalingServerConfiguration::createWithData(
         move(url),
         move(clientName),
-        pyObjectToSioMessage(clientData),
+        pyObjectToJson(clientData),
         move(room),
         move(password));
 }
@@ -50,8 +50,8 @@ void opentera::initSignalingServerConfigurationPython(pybind11::module& m)
             py::arg("client_name"),
             py::arg("room"))
         .def_static(
-            "create",
-            py::overload_cast<string, string, const py::object&, string>(&create),
+            "create_with_data",
+            py::overload_cast<string, string, const py::object&, string>(&createWithData),
             "Creates an signaling server configuration with the specified "
             "values.\n"
             "\n"
@@ -82,8 +82,8 @@ void opentera::initSignalingServerConfigurationPython(pybind11::module& m)
             py::arg("room"),
             py::arg("password"))
         .def_static(
-            "create",
-            py::overload_cast<string, string, const py::object&, string, string>(&create),
+            "create_with_data",
+            py::overload_cast<string, string, const py::object&, string, string>(&createWithData),
             "Creates an signaling server configuration with the specified "
             "values.\n"
             "\n"
@@ -114,7 +114,7 @@ void opentera::initSignalingServerConfigurationPython(pybind11::module& m)
             ":return: The client name")
         .def_property_readonly(
             "client_data",
-            [](const SignalingServerConfiguration& self) { return sioMessageToPyObject(self.clientData()); },
+            [](const SignalingServerConfiguration& self) { return jsonToPyObject(self.clientData()); },
             "Returns the client data.\n"
             "\n"
             ":return: The client data")

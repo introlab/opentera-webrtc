@@ -1,4 +1,4 @@
-#include <OpenteraWebrtcNativeClientPython/SioMessage.h>
+#include <OpenteraWebrtcNativeClientPython/Json.h>
 #include <OpenteraWebrtcNativeClientPython/Utils/ClientPython.h>
 
 #include <OpenteraWebrtcNativeClient/Utils/Client.h>
@@ -9,12 +9,12 @@ namespace py = pybind11;
 
 Client clientConstructor(string id, string name, const py::object& data)
 {
-    return Client(move(id), move(name), pyObjectToSioMessage(data));
+    return Client(move(id), move(name), pyObjectToJson(data));
 }
 
 RoomClient roomClientConstructor(string id, string name, const py::object& data, bool isConnected)
 {
-    return RoomClient(move(id), move(name), pyObjectToSioMessage(data), isConnected);
+    return RoomClient(move(id), move(name), pyObjectToJson(data), isConnected);
 }
 
 void opentera::initClientPython(pybind11::module& m)
@@ -46,7 +46,7 @@ void opentera::initClientPython(pybind11::module& m)
             ":return: The client name")
         .def_property_readonly(
             "data",
-            [](const Client& self) { return sioMessageToPyObject(self.data()); },
+            [](const Client& self) { return jsonToPyObject(self.data()); },
             "Returns the client data.\n"
             "\n"
             ":return: The client data");
@@ -90,7 +90,7 @@ void opentera::initClientPython(pybind11::module& m)
             ":return: The client name")
         .def_property_readonly(
             "data",
-            [](const RoomClient& self) { return sioMessageToPyObject(self.data()); },
+            [](const RoomClient& self) { return jsonToPyObject(self.data()); },
             "Returns the client data.\n"
             "\n"
             ":return: The client data")

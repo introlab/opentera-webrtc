@@ -1,7 +1,7 @@
 #include <OpenteraWebrtcNativeClientPython/PyBindUtils.h>
-#include <OpenteraWebrtcNativeClientPython/SignalingClientPython.h>
+#include <OpenteraWebrtcNativeClientPython/WebrtcClientPython.h>
 
-#include <OpenteraWebrtcNativeClient/SignalingClient.h>
+#include <OpenteraWebrtcNativeClient/WebrtcClient.h>
 
 #include <pybind11/functional.h>
 #include <pybind11/stl.h>
@@ -10,35 +10,35 @@ using namespace opentera;
 using namespace std;
 namespace py = pybind11;
 
-void opentera::initSignalingClientPython(pybind11::module& m)
+void opentera::initWebrtcClientPython(pybind11::module& m)
 {
-    py::class_<SignalingClient>(m, "SignalingClient")
-        .def("connect", &SignalingClient::connect, "Connects the client the signaling server.")
-        .def("close", &SignalingClient::close, "Closes all client connections (asynchronous).")
+    py::class_<WebrtcClient>(m, "WebrtcClient")
+        .def("connect", &WebrtcClient::connect, "Connects the client the signaling server.")
+        .def("close", &WebrtcClient::close, "Closes all client connections (asynchronous).")
         .def(
             "close_sync",
-            &SignalingClient::closeSync,
+            &WebrtcClient::closeSync,
             py::call_guard<py::gil_scoped_release>(),
             "Closes all client connections (synchronous).")
 
-        .def("call_all", &SignalingClient::callAll, "Calls all room clients.")
-        .def("call_ids", &SignalingClient::callIds, "Calls the specified clients.", py::arg("ids"))
+        .def("call_all", &WebrtcClient::callAll, "Calls all room clients.")
+        .def("call_ids", &WebrtcClient::callIds, "Calls the specified clients.", py::arg("ids"))
 
-        .def("hang_up_all", &SignalingClient::hangUpAll, "Hangs up all clients.")
+        .def("hang_up_all", &WebrtcClient::hangUpAll, "Hangs up all clients.")
         .def(
             "close_all_room_peer_connections",
-            &SignalingClient::closeAllRoomPeerConnections,
+            &WebrtcClient::closeAllRoomPeerConnections,
             "Closes all room peer connections.")
 
         .def_property_readonly(
             "is_connected",
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::isConnected),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::isConnected),
             "Indicates if the client is connected to the signaling server.\n"
             "\n"
             ":return: True if the client is connected to the signaling server")
         .def_property_readonly(
             "is_rtc_connected",
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::isRtcConnected),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::isRtcConnected),
             "Indicates if the client is connected to a least "
             "one client (RTCPeerConnection).\n"
             "\n"
@@ -46,21 +46,21 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             "least one client (RTCPeerConnection)")
         .def_property_readonly(
             "id",
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::id),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::id),
             "Returns the client id.\n"
             "\n"
             ":return: The client id")
 
         .def_property_readonly(
             "connected_room_client_ids",
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::getConnectedRoomClientIds),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::getConnectedRoomClientIds),
             "Returns the connected room client ids.\n"
             "\n"
             ":return: The connected room client ids")
 
         .def(
             "get_room_client",
-            &SignalingClient::getRoomClient,
+            &WebrtcClient::getRoomClient,
             py::call_guard<py::gil_scoped_release>(),
             "Returns the room client that matches with the specified id.\n"
             "If no room client matches with the id, a default room client is "
@@ -72,7 +72,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
             py::arg("id"))
         .def_property_readonly(
             "room_clients",
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::getRoomClients),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::getRoomClients),
             "Returns the room clients\n"
             "\n"
             ":return: The room clients")
@@ -80,7 +80,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_signaling_connection_opened",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionOpened),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnSignalingConnectionOpened),
             "Sets the callback that is called when the signaling "
             "connection opens.\n"
             "\n"
@@ -91,7 +91,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_signaling_connection_closed",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionClosed),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnSignalingConnectionClosed),
             "Sets the callback that is called when the signaling "
             "connection closes.\n"
             "\n"
@@ -102,7 +102,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_signaling_connection_error",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnSignalingConnectionError),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnSignalingConnectionError),
             "Sets the callback that is called when a signaling "
             "connection error occurs.\n"
             "\n"
@@ -117,7 +117,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_room_clients_changed",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnRoomClientsChanged),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnRoomClientsChanged),
             "Sets the callback that is called when the room client changes.\n"
             "\n"
             "The callback is called from the internal client thread. The "
@@ -131,7 +131,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "call_acceptor",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setCallAcceptor),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setCallAcceptor),
             "Sets the callback that is used to accept or reject a call.\n"
             "\n"
             "The callback is called from the internal client thread. The "
@@ -147,7 +147,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_call_rejected",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnCallRejected),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnCallRejected),
             "Sets the callback that is called when a call is rejected.\n"
             "\n"
             "The callback is called from the internal client thread. The "
@@ -161,7 +161,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_client_connected",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnClientConnected),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnClientConnected),
             "Sets the callback that is called when a client peer "
             "connection opens.\n"
             "\n"
@@ -175,7 +175,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_client_disconnected",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnClientDisconnected),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnClientDisconnected),
             "Sets the callback that is called when a client peer "
             "connection closes.\n"
             "\n"
@@ -190,7 +190,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "on_error",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setOnError),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnError),
             "Sets the callback that is called when an error occurs.\n"
             "\n"
             "The callback is called from the internal client thread. "
@@ -204,7 +204,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "logger",
             nullptr,
-            GilScopedRelease<SignalingClient>::guard(&SignalingClient::setLogger),
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setLogger),
             "Sets the callback that is used to log information.\n"
             "\n"
             "The callback is called from the internal client thread. The "
@@ -218,7 +218,7 @@ void opentera::initSignalingClientPython(pybind11::module& m)
         .def_property(
             "tls_verification_enabled",
             nullptr,
-            &SignalingClient::setTlsVerificationEnabled,
+            &WebrtcClient::setTlsVerificationEnabled,
             "Enable or disable the TLS verification. By default, the "
             "TLS verification is enabled.\n"
             "\n"
