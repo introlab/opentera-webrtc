@@ -30,6 +30,7 @@ pip_configure_package_file(${LICENSE_FILE} LICENSE)
 set(SOURCE
     opentera_webrtc/signaling_server/__init__.py
     opentera_webrtc/signaling_server/room_manager.py
+    opentera_webrtc/signaling_server/web_socket_client_manager.py
     opentera_webrtc/signaling_server/signaling_server.py
 
     opentera-signaling-server
