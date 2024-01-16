@@ -21,6 +21,7 @@ from opentera_webrtc.signaling_server.web_socket_client_manager import WebSocket
 PROTOCOL_VERSION = 2
 DISCONNECT_DELAY_S = 1
 INACTIVE_DELAY_S = 5
+PING_INTERVAL_S = 10
 
 
 @web.middleware
@@ -58,6 +59,12 @@ async def disconnect_inactive_user(id):
         await web_socket_client_manager.close(id)
 
 
+async def web_socket_ping_task(ws):
+    while not ws.closed:
+        await asyncio.sleep(PING_INTERVAL_S)
+        await ws.ping()
+
+
 def event_to_message(event, data=None):
     if data is None:
         message = {'event': event}
@@ -74,6 +81,7 @@ async def web_socket_handler(request):
     id = await web_socket_client_manager.add_ws(ws)
     logger.info('connect %s', id)
     asyncio.create_task(disconnect_inactive_user(id))
+    asyncio.create_task(web_socket_ping_task(ws))
 
     async for msg in ws:
         if msg.type == WSMsgType.TEXT:
