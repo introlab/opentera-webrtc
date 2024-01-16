@@ -62,7 +62,7 @@ async def disconnect_inactive_user(id):
 async def web_socket_ping_task(ws):
     while not ws.closed:
         await asyncio.sleep(PING_INTERVAL_S)
-        ws.ping()
+        await ws.ping()
 
 
 def event_to_message(event, data=None):
