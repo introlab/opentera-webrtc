@@ -56,7 +56,7 @@ WebrtcClient::WebrtcClient(
 
 WebrtcClient::~WebrtcClient()
 {
-    m_destructorCalled = true;
+    callSync(m_internalClientThread.get(), [this]() { m_destructorCalled = true; });
     closeSync();
 }
 

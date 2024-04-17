@@ -19,7 +19,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <atomic>
 
 namespace opentera
 {
@@ -55,7 +54,7 @@ namespace opentera
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signalingThread;
 
-        std::atomic_bool m_destructorCalled;
+        bool m_destructorCalled;
 
     protected:
         std::unique_ptr<SignalingClient> m_signalingClient;
