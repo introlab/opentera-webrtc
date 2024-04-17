@@ -13,7 +13,8 @@ WebrtcClient::WebrtcClient(
     SignalingServerConfiguration&& signalingServerConfiguration,
     WebrtcConfiguration&& webrtcConfiguration,
     VideoStreamConfiguration&& videoStreamConfiguration)
-    : m_webrtcConfiguration(move(webrtcConfiguration))
+    : m_webrtcConfiguration(move(webrtcConfiguration)),
+      m_destructorCalled(false)
 {
     m_signalingClient = make_unique<WebSocketSignalingClient>(signalingServerConfiguration);
     connectSignalingClientCallbacks();
@@ -53,7 +54,11 @@ WebrtcClient::WebrtcClient(
     }
 }
 
-WebrtcClient::~WebrtcClient() {}
+WebrtcClient::~WebrtcClient()
+{
+    m_destructorCalled = true;
+    closeSync();
+}
 
 /**
  * Enable or disable the TLS verification. By default, the TLS verification is
@@ -246,6 +251,11 @@ void WebrtcClient::connectSignalingClientCallbacks()
     m_signalingClient->setOnRoomClientsChanged(
         [this](const vector<Client>& clients)
         {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
             callAsync(
                 m_internalClientThread.get(),
                 [this, clients]()
@@ -259,18 +269,55 @@ void WebrtcClient::connectSignalingClientCallbacks()
                 });
         });
 
-    m_signalingClient->setMakePeerCall([this](const string& id) { makePeerCall(id); });
-    m_signalingClient->setReceivePeerCall([this](const string& fromId, const string& sdp)
-                                          { receivePeerCall(fromId, sdp); });
-    m_signalingClient->setReceivePeerCallAnswer([this](const string& fromId, const string& sdp)
-                                                { receivePeerCallAnswer(fromId, sdp); });
+    m_signalingClient->setMakePeerCall(
+        [this](const string& id)
+        {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
+            makePeerCall(id);
+        });
+    m_signalingClient->setReceivePeerCall(
+        [this](const string& fromId, const string& sdp)
+        {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
+            receivePeerCall(fromId, sdp);
+        });
+    m_signalingClient->setReceivePeerCallAnswer(
+        [this](const string& fromId, const string& sdp)
+        {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
+            receivePeerCallAnswer(fromId, sdp);
+        });
     m_signalingClient->setReceiveIceCandidate(
         [this](const string& fromId, const string& sdpMid, int sdpMLineIndex, const string& sdp)
-        { receiveIceCandidate(fromId, sdpMid, sdpMLineIndex, sdp); });
+        {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
+            receiveIceCandidate(fromId, sdpMid, sdpMLineIndex, sdp);
+        });
 
     m_signalingClient->setOnCallRejected(
         [this](const string& fromId)
         {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
             callAsync(
                 m_internalClientThread.get(),
                 [this, fromId]()
@@ -284,6 +331,11 @@ void WebrtcClient::connectSignalingClientCallbacks()
     m_signalingClient->setCloseAllPeerConnections(
         [this]()
         {
+            if (m_destructorCalled)
+            {
+                return;
+            }
+
             log("onCloseAllPeerConnectionsRequestReceivedEvent");
             hangUpAll();
         });

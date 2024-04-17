@@ -88,6 +88,14 @@ int main(int argc, char* argv[])
             cout << "\t" << error << endl;
         });
 
+    client.setLogger(
+        [](const string& message)
+        {
+            // This callback is called from the internal client thread.
+            cout << "log:" << endl;
+            cout << "\t" << message << endl;
+        });
+
     client.setOnDataChannelOpened(
         [](const Client& client)
         {
