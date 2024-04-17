@@ -1,5 +1,7 @@
 #include <OpenteraWebrtcNativeClient/Handlers/DataChannelPeerConnectionHandler.h>
 
+#include <iostream>
+
 using namespace opentera;
 using namespace std;
 
@@ -98,10 +100,14 @@ void DataChannelPeerConnectionHandler::OnStateChange()
         switch (m_dataChannel->state())
         {
             case webrtc::DataChannelInterface::kOpen:
+                cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** DataChannelPeerConnectionHandler::OnStateChange - webrtc::DataChannelInterface::kOpen" << endl;
+
                 m_onDataChannelOpen(m_peerClient);
                 m_onDataChannelClosedCalled = false;
                 break;
             case webrtc::DataChannelInterface::kClosed:
+                cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** DataChannelPeerConnectionHandler::OnStateChange - webrtc::DataChannelInterface::kClosed" << endl;
+
                 if (!m_dataChannel->error().ok())
                 {
                     m_onDataChannelError(m_peerClient, m_dataChannel->error().message());
@@ -109,7 +115,11 @@ void DataChannelPeerConnectionHandler::OnStateChange()
                 m_onDataChannelClosed(m_peerClient);
                 m_onDataChannelClosedCalled = true;
                 break;
-            default:
+            case webrtc::DataChannelInterface::kConnecting:
+                cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** DataChannelPeerConnectionHandler::OnStateChange - webrtc::DataChannelInterface::kConnecting" << endl;
+                break;
+            case webrtc::DataChannelInterface::kClosing:
+                cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** DataChannelPeerConnectionHandler::OnStateChange - webrtc::DataChannelInterface::kClosing" << endl;
                 break;
         }
     }

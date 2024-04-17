@@ -1,5 +1,7 @@
 #include <OpenteraWebrtcNativeClient/Handlers/PeerConnectionHandler.h>
 
+#include <iostream>
+
 using namespace opentera;
 using namespace std;
 
@@ -136,18 +138,63 @@ void PeerConnectionHandler::OnConnectionChange(webrtc::PeerConnectionInterface::
     switch (newState)
     {
         case webrtc::PeerConnectionInterface::PeerConnectionState::kConnected:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kConnected" << endl;
             m_onClientConnected(m_peerClient);
             m_onClientDisconnectedCalled = false;
             break;
 
         case webrtc::PeerConnectionInterface::PeerConnectionState::kDisconnected:
-        case webrtc::PeerConnectionInterface::PeerConnectionState::kFailed:
-        case webrtc::PeerConnectionInterface::PeerConnectionState::kClosed:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kDisconnected" << endl;
             m_onClientDisconnected(m_peerClient);
             m_onClientDisconnectedCalled = true;
             break;
+        case webrtc::PeerConnectionInterface::PeerConnectionState::kFailed:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kFailed" << endl;
+            m_onClientDisconnected(m_peerClient);
+            m_onClientDisconnectedCalled = true;
+            break;
+        case webrtc::PeerConnectionInterface::PeerConnectionState::kClosed:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kClosed" << endl;
+            m_onClientDisconnected(m_peerClient);
+            m_onClientDisconnectedCalled = true;
+            break;
+        case webrtc::PeerConnectionInterface::PeerConnectionState::kNew:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kNew" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::PeerConnectionState::kConnecting:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnConnectionChange - PeerConnectionState::kConnecting" << endl;
+            break;
+    }
+}
 
-        default:
+void PeerConnectionHandler::OnStandardizedIceConnectionChange(
+    webrtc::PeerConnectionInterface::IceConnectionState new_state)
+{
+    switch (new_state)
+    {
+        case webrtc::PeerConnectionInterface::kIceConnectionNew:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionNew" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionChecking:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionChecking" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionConnected:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionConnected" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionCompleted:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionCompleted" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionFailed:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionFailed" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionDisconnected:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionDisconnected" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionClosed:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionClosed" << endl;
+            break;
+        case webrtc::PeerConnectionInterface::kIceConnectionMax:
+            cout << "*** " << m_id << " <--> " << m_peerClient.id() << " *** PeerConnectionHandler::OnStandardizedIceConnectionChange - IceConnectionState::kIceConnectionMax" << endl;
             break;
     }
 }
