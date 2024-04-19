@@ -79,6 +79,13 @@ int main(int argc, char* argv[])
             cout << "OnClientDisconnected:" << endl;
             cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         });
+    client.setOnClientConnectionFailed(
+        [](const Client& client)
+        {
+            // This callback is called from the internal client thread.
+            cout << "OnClientConnectionFailed:" << endl;
+            cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
+        });
 
     client.setOnError(
         [](const string& error)

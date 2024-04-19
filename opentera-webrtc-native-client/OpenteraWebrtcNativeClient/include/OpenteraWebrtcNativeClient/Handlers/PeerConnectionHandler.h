@@ -42,6 +42,7 @@ namespace opentera
         std::function<void(const std::string&)> m_onError;
         std::function<void(const Client&)> m_onClientConnected;
         std::function<void(const Client&)> m_onClientDisconnected;
+        std::function<void(const Client&)> m_onClientConnectionFailed;
 
         rtc::scoped_refptr<webrtc::PeerConnectionInterface> m_peerConnection;
 
@@ -55,7 +56,8 @@ namespace opentera
             SignalingClient& m_signalingClient,
             std::function<void(const std::string&)>&& onError,
             std::function<void(const Client&)>&& onClientConnected,
-            std::function<void(const Client&)>&& onClientDisconnected);
+            std::function<void(const Client&)>&& onClientDisconnected,
+            std::function<void(const Client&)>&& onClientConnectionFailed);
         ~PeerConnectionHandler() override;
 
         virtual void setPeerConnection(const rtc::scoped_refptr<webrtc::PeerConnectionInterface>& peerConnection);
@@ -69,6 +71,10 @@ namespace opentera
         void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState newState) override;
         void OnStandardizedIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) override;
         void OnIceCandidate(const webrtc::IceCandidateInterface* candidate) override;
+
+        void OnRenegotiationNeeded() override;
+        void OnNegotiationNeededEvent(uint32_t event_id) override;
+        void OnIceConnectionReceivingChange(bool receiving) override;
 
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;
 

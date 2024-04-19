@@ -109,7 +109,7 @@ private:
         for (size_t i = 0; i < data.size(); i++)
         {
             data[i] = static_cast<int16_t>(SinAudioSourceAmplitude * sin(t));
-            t += 2 * M_PI / data.size();
+            t += 2 * M_PI / static_cast<double>(data.size());
         }
 
         while (!m_stopped.load())
@@ -118,8 +118,7 @@ private:
 
             auto start = chrono::steady_clock::now();
             this_thread::sleep_for(SinAudioSourceFrameDuration - SinAudioSourceSleepBuffer);
-            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration)
-                ;
+            while ((chrono::steady_clock::now() - start) < SinAudioSourceFrameDuration);
         }
     }
 };
@@ -194,6 +193,13 @@ int main(int argc, char* argv[])
             cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
             cv::destroyWindow(client.id());
         });
+    client.setOnClientConnectionFailed(
+        [](const Client& client)
+        {
+            // This callback is called from the internal client thread.
+            cout << "OnClientConnectionFailed:" << endl;
+            cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
+        });
 
     client.setOnError(
         [](const string& error)
@@ -221,7 +227,7 @@ int main(int argc, char* argv[])
         [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
         {
             // This callback is called from a WebRTC processing thread.
-            // cout << "OnVideoFrameReceived:" << endl;
+            cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
         });

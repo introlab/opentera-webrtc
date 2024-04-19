@@ -33,6 +33,7 @@ namespace opentera
             std::function<void(const std::string&)> onError,
             std::function<void(const Client&)> onClientConnected,
             std::function<void(const Client&)> onClientDisconnected,
+            std::function<void(const Client&)> onClientConnectionFailed,
             DataChannelConfiguration dataChannelConfiguration,
             std::function<void(const Client&)> onDataChannelOpen,
             std::function<void(const Client&)> onDataChannelClosed,

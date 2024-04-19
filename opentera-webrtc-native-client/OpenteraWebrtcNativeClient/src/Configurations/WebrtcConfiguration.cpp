@@ -19,6 +19,12 @@ WebrtcConfiguration::operator webrtc::PeerConnectionInterface::RTCConfiguration(
     }
 
     configuration.sdp_semantics = webrtc::SdpSemantics::kUnifiedPlan;
+    configuration.ice_connection_receiving_timeout = 2000;
+    configuration.ice_backup_candidate_pair_ping_interval = 500;
+
+    configuration.ice_unwritable_min_checks = 1;
+    configuration.ice_unwritable_timeout = 1000;
+    configuration.ice_inactive_timeout = 1000;
 
     return configuration;
 }

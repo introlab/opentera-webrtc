@@ -239,6 +239,20 @@ function<void(const Client&)> WebrtcClient::getOnClientDisconnectedFunction()
     };
 }
 
+function<void(const Client&)> WebrtcClient::getOnClientConnectionFailedFunction()
+{
+    return [this](const Client& client)
+    {
+        callAsync(
+            m_internalClientThread.get(),
+            [this, client]()
+            {
+                removeConnection(client.id());
+                invokeIfCallable(m_onClientConnectionFailed, client);
+            });
+    };
+}
+
 void setOnRoomClientsChanged(const function<void(const vector<Client>&)>& callback);
 
 void WebrtcClient::connectSignalingClientCallbacks()
