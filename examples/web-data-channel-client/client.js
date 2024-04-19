@@ -60,6 +60,10 @@
       alert('The call is rejected (' + name + ')');
     };
 
+    dataChannelClient.onClientConnectionFail = (id, name, clientData) => {
+      console.log('The connect with the client ' + name + '(' + id + ') failed.');
+    }
+
     dataChannelClient.onDataChannelOpen = (id, name, clientData) => {
       sendButton.disabled = false;
       callAllButton.disabled = true;
