@@ -35,6 +35,7 @@ set(SOURCE
 
     opentera-signaling-server
     README.md
+    requirements.txt
 )
 # Same relative tree between CMAKE_CURRENT_SOURCE_DIR and PYTHON_PACKAGE_DIR for files in SOURCE will work as expected with this command
 pip_configure_package_file_hierarchy(${SOURCE})
