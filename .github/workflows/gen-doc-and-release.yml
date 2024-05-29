@@ -90,8 +90,8 @@ jobs:
           body: |
             Latest build of opentera-webrtc v${{ steps.generate_version_output.outputs.version }}
             - Please see API documentation at https://introlab.github.io/opentera-webrtc
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
 
       - name: Create opentera-webrtc-web-client package archive
         working-directory: opentera-webrtc-web-client
