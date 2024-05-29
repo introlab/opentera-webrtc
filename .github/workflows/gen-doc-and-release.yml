@@ -64,8 +64,8 @@ jobs:
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python3 --version | perl -pe 's/Python //')" \
           -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON
-          cmake --build . native_client-html-target
-          cmake --build . signaling_server-dist-target
+          cmake --build . --target native_client-html-target
+          cmake --build . --target signaling_server-dist-target
 
       - name: Copy Python Documentation to Doc Folder
         run: |
