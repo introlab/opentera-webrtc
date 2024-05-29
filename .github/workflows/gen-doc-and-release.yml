@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
     branches: [main]
 
-
 jobs:
   build-gen-doc-and-release:
     runs-on: ubuntu-22.04
@@ -41,7 +40,6 @@ jobs:
           python -m pip install --user --upgrade pybind11-stubgen
           python -m pip install --user --upgrade numpy
           python -m pip install --user -r signaling-server/requirements.txt
-
 
       - name: Generate C++ Documentation
         working-directory: doc/cpp
@@ -87,9 +85,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: v${{ steps.generate_version_output.outputs.version }}
-          release_name: opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
+          release_name: opentera-webrtc-${{ steps.generate_version_output.outputs.version }}
           body: |
-            Latest build of opentera-webrtc-native-client v${{ steps.generate_version_output.outputs.version }}
+            Latest build of opentera-webrtc v${{ steps.generate_version_output.outputs.version }}
             - Please see API documentation at https://introlab.github.io/opentera-webrtc
-          draft: false
-          prerelease: false
+          draft: true
+          prerelease: true
+
+      - name: Create opentera-webrtc-web-client package archive
+        working-directory: opentera-webrtc-web-client
+        run: tar -czvf opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz package.json index.js webpack.config.js README.md src
+
+      - name: Upload opentera-webrtc-web-client package
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./opentera-webrtc-web-client/opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_name: opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_content_type: application/x-tgz
