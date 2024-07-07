@@ -48,6 +48,7 @@ def on_client_connection_failed(client):
     print('\tid={}, name={}, data={}\n'.format(
         client.id, client.name, client.data))
 
+
 def on_error(error):
     # This callback is called from the internal client thread.
     print('error:')
