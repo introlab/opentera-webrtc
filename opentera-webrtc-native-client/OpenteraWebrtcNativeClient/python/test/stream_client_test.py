@@ -129,19 +129,24 @@ class StreamClientTestCase(FailureTestCase):
         while not on_video_frame_awaiter1.is_finished() or not on_video_frame_awaiter2.is_finished():
             print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 18, flush=True)
             timestamp_us = int((time.time() - start_time) * 1e6)
+            print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 19, flush=True)
             video_source1.send_frame(frame1, timestamp_us)
+            print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 20, flush=True)
             video_source2.send_frame(frame2, timestamp_us)
+            print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 21, flush=True)
             time.sleep(0.005)
+            print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 22, flush=True)
 
+        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 23, flush=True)
         client1.close_all_room_peer_connections()
-        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 19, flush=True)
+        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 24, flush=True)
         time.sleep(1)
-        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 20, flush=True)
+        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 25, flush=True)
 
         client1.close_sync()
-        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 21, flush=True)
+        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 26, flush=True)
         client2.close_sync()
-        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 22, flush=True)
+        print('StreamClientTestCase.test_video_stream__should_be_sent_and_received', 27, flush=True)
 
         # Asserts
         self.assertEqual(self._on_add_remote_stream_client_name1, 'c2')
