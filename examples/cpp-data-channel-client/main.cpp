@@ -1,35 +1,21 @@
 #include <OpenteraWebrtcNativeClient/DataChannelClient.h>
 
 #include <iostream>
-#include <atomic>
-#include <csignal>
-#include <thread>
 
 using namespace opentera;
 using namespace std;
 
-atomic_bool stopped = false;
-
-void sigIntSigTermSigQuitHandler(int sig)
-{
-    stopped = true;
-}
-
 int main(int argc, char* argv[])
 {
-    signal(SIGINT, sigIntSigTermSigQuitHandler);
-    signal(SIGTERM, sigIntSigTermSigQuitHandler);
-    signal(SIGQUIT, sigIntSigTermSigQuitHandler);
-
     vector<IceServer> iceServers;
-    if (!IceServer::fetchFromServer("https://telesante.3it.usherbrooke.ca:40075/webrtc_ttop/10090/iceservers", "abc", iceServers))
+    if (!IceServer::fetchFromServer("http://localhost:8080/iceservers", "abc", iceServers))
     {
         cout << "IceServer::fetchFromServer failed" << endl;
         iceServers.clear();
     }
 
     auto signalingServerConfiguration =
-        SignalingServerConfiguration::create("wss://telesante.3it.usherbrooke.ca:40075/webrtc_ttop/10090/signaling", "C++", "chat", "abc");
+        SignalingServerConfiguration::create("ws://localhost:8080/signaling", "C++", "chat", "abc");
     auto webrtcConfiguration = WebrtcConfiguration::create(iceServers);
     auto dataChannelConfiguration = DataChannelConfiguration::create();
     DataChannelClient client(signalingServerConfiguration, webrtcConfiguration, dataChannelConfiguration);
@@ -50,11 +36,11 @@ int main(int argc, char* argv[])
         [](const string& error)
         {
             // This callback is called from the internal client thread.
-            cout << "setOnSignalingConnectionError:" << endl << "\t" << error;
+            cout << "OnSignalingConnectionError:" << endl << "\t" << error;
         });
 
     client.setOnRoomClientsChanged(
-        [&client](const vector<RoomClient>& roomClients)
+        [](const vector<RoomClient>& roomClients)
         {
             // This callback is called from the internal client thread.
             cout << "OnRoomClientsChanged:" << endl;
@@ -62,7 +48,6 @@ int main(int argc, char* argv[])
             {
                 cout << "\tid=" << c.id() << ", name=" << c.name() << ", isConnected=" << c.isConnected() << endl;
             }
-            client.callAll();
         });
 
     client.setOnClientConnected(
@@ -135,13 +120,8 @@ int main(int argc, char* argv[])
         });
 
     client.connect();
-    int i = 0;
-    while (!stopped)
-    {
-        i++;
-        client.sendToAll("message " + to_string(i));
-        this_thread::sleep_for(100ms);
-    }
+
+    cin.get();
 
     return 0;
 }

@@ -69,12 +69,7 @@ namespace opentera
 
         // Observer methods
         void OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState newState) override;
-        void OnStandardizedIceConnectionChange(webrtc::PeerConnectionInterface::IceConnectionState new_state) override;
         void OnIceCandidate(const webrtc::IceCandidateInterface* candidate) override;
-
-        void OnRenegotiationNeeded() override;
-        void OnNegotiationNeededEvent(uint32_t event_id) override;
-        void OnIceConnectionReceivingChange(bool receiving) override;
 
         void OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) override;
 

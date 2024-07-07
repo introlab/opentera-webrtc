@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
         [](const string& error)
         {
             // This callback is called from the internal client thread.
-            cout << "OnSignalingConnectionClosed:" << endl << "\t" << error;
+            cout << "OnSignalingConnectionError:" << endl << "\t" << error;
         });
 
     client.setOnRoomClientsChanged(
@@ -207,6 +207,14 @@ int main(int argc, char* argv[])
             // This callback is called from the internal client thread.
             cout << "error:" << endl;
             cout << "\t" << error << endl;
+        });
+
+    client.setLogger(
+        [](const string& message)
+        {
+            // This callback is called from the internal client thread.
+            cout << "log:" << endl;
+            cout << "\t" << message << endl;
         });
 
     client.setOnAddRemoteStream(
