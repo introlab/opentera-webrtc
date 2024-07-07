@@ -6,12 +6,11 @@ on:
   workflow_dispatch:
     branches: [main]
 
-
 jobs:
   build-gen-doc-and-release:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -42,7 +41,6 @@ jobs:
           python -m pip install --user --upgrade numpy
           python -m pip install --user -r signaling-server/requirements.txt
 
-
       - name: Generate C++ Documentation
         working-directory: doc/cpp
         run: |
@@ -66,7 +64,8 @@ jobs:
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_PIP_INSTALL_PREFIX='--user' \
           -DOPENTERA_WEBRTC_NATIVE_CLIENT_PYTHON_VERSION="$(python3 --version | perl -pe 's/Python //')" \
           -DOPENTERA_WEBRTC_USE_SYSTEM_OPENCV=ON
-          make -j2 native_client-html-target
+          cmake --build . --target native_client-html-target
+          cmake --build . --target signaling_server-dist-target
 
       - name: Copy Python Documentation to Doc Folder
         run: |
@@ -74,7 +73,7 @@ jobs:
           cp -r build/opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/package/opentera_webrtc_native_client/_build/* doc/python
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: gh-pages
@@ -87,9 +86,46 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: v${{ steps.generate_version_output.outputs.version }}
-          release_name: opentera-webrtc-native-client-${{ steps.generate_version_output.outputs.version }}
+          release_name: opentera-webrtc-${{ steps.generate_version_output.outputs.version }}
           body: |
-            Latest build of opentera-webrtc-native-client v${{ steps.generate_version_output.outputs.version }}
+            Latest build of opentera-webrtc v${{ steps.generate_version_output.outputs.version }}
             - Please see API documentation at https://introlab.github.io/opentera-webrtc
           draft: false
           prerelease: false
+
+      - name: Create opentera-webrtc-web-client package archive
+        working-directory: opentera-webrtc-web-client
+        run: tar -czvf opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz package.json index.js webpack.config.js README.md src
+
+      - name: Upload opentera-webrtc-web-client NPM package
+        id: upload-release-npm-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./opentera-webrtc-web-client/opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_name: opentera-webrtc-web-client-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload opentera-webrtc-signaling-server Python wheel
+        id: upload-release-wheel-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/signaling-server/opentera_webrtc_signaling_server/dist/opentera_webrtc_signaling_server-${{ steps.generate_version_output.outputs.version }}-py3-none-any.whl
+          asset_name: opentera-webrtc-signaling-server-${{ steps.generate_version_output.outputs.version }}-py3-none-any.whl
+          asset_content_type: application/zip
+
+      - name: Upload opentera-webrtc-signaling-server Python sdist
+        id: upload-release-pysdist-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: build/signaling-server/opentera_webrtc_signaling_server/dist/opentera_webrtc_signaling_server-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_name: opentera-webrtc-signaling-server-${{ steps.generate_version_output.outputs.version }}.tar.gz
+          asset_content_type: application/gzip
