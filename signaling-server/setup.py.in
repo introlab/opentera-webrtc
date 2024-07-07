@@ -17,7 +17,10 @@ def get_doc_files():
     return list(files.items())
 
 
-long_description = read_file("README.md")
+LONG_DESCRIPTION = read_file("README.md")
+REQUIREMENTS = read_file("requirements.txt").splitlines()
+DATA_FILES = [('', ["requirements.txt"])]
+$<IF:$<BOOL:${ENABLE_HTML_DOC}>,DATA_FILES.extend(get_doc_files()),>
 
 setup(
     name="opentera_webrtc_signaling_server",
@@ -25,7 +28,7 @@ setup(
     author="Marc-Antoine Maheux, Cedric Godin, Dominic Letourneau",
     author_email="marc-antoine.maheux@usherbrooke.ca, cedric.godin@usherbrooke.ca, dominic.letourneau@usherbrooke.ca",
     description="OpenTera WebRTC Signaling Server",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     url="https://github.com/introlab/opentera-webrtc",
     packages=['opentera_webrtc.signaling_server'],
@@ -38,9 +41,9 @@ setup(
     license="Apache Software License",
     platforms=['linux_x86_64'],
     python_requires='>=3.8',
-    $<IF:$<BOOL:${ENABLE_HTML_DOC}>,data_files=get_doc_files()$<COMMA>,>
+    data_files=DATA_FILES,
     include_package_data=True,
     zip_safe=False,
-    install_requires=["python-socketio", "aiohttp", "aiohttp_index"],
+    install_requires=REQUIREMENTS,
     scripts=['opentera-signaling-server'],
 )
