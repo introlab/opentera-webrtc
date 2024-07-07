@@ -22,16 +22,19 @@ class StreamClientTestCase(FailureTestCase):
     def test_video_stream__should_be_sent_and_received(self):
         # Initialize the clients
         setup_awaiter = CallbackAwaiter(2, 15)
+        print(1)
 
         frame1 = np.zeros((480, 640, 3), dtype=np.uint8)
         frame1[:, :, 2] = 255
         frame2 = np.zeros((480, 640, 3), dtype=np.uint8)
         frame2[:, :, 0] = 255
 
+        print(2)
         video_source1 = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, True))
         video_source2 = webrtc.VideoSource(webrtc.VideoSourceConfiguration.create(False, True))
 
         def on_signaling_connection_opened():
+            print(3)
             setup_awaiter.done()
 
         client1 = webrtc.StreamClient(
@@ -45,16 +48,21 @@ class StreamClientTestCase(FailureTestCase):
             webrtc.WebrtcConfiguration.create(),
             webrtc.VideoStreamConfiguration.create(),
             video_source2)
+        print(4)
 
         client1.on_signaling_connection_opened = on_signaling_connection_opened
         client2.on_signaling_connection_opened = on_signaling_connection_opened
+        print(5)
 
         client1.on_error = lambda: self.add_failure('client1.on_error')
         client2.on_error = lambda: self.add_failure('client2.on_error')
+        print(6)
 
         client1.connect()
         client2.connect()
+        print(7)
         setup_awaiter.wait()
+        print(8)
 
         # Setup the callback
         on_video_frame_awaiter1 = CallbackAwaiter(1, 15)
@@ -64,25 +72,32 @@ class StreamClientTestCase(FailureTestCase):
         self._on_add_remote_stream_client_name2 = None
         self._mean_color_1 = np.array([0, 0, 0], dtype=np.uint8)
         self._mean_color_2 = np.array([0, 0, 0], dtype=np.uint8)
+        print(9)
 
         def on_add_remote_stream1(client):
+            print(10)
             self._on_add_remote_stream_client_name1 = client.name
 
         def on_add_remote_stream2(client):
+            print(11)
             self._on_add_remote_stream_client_name2 = client.name
 
         def on_remove_remote_stream(client):
+            print(12)
             self.add_failure('on_remove_remote_stream')
 
         def on_video_frame_received1(client, frame, timestamp):
+            print(13)
             self._mean_color_1 = np.mean(frame, axis=(0, 1))
             on_video_frame_awaiter1.done()
 
         def on_video_frame_received2(client, frame, timestamp):
+            print(14)
             self._mean_color_2 = np.mean(frame, axis=(0, 1))
             on_video_frame_awaiter2.done()
 
         def on_audio_frame_received(client, data, sample_rate, number_of_channels, number_of_frames):
+            print(15)
             self.add_failure('on_audio_frame_received')
 
         client1.on_add_remote_stream = on_add_remote_stream1
@@ -98,22 +113,29 @@ class StreamClientTestCase(FailureTestCase):
         client2.on_audio_frame_received = on_audio_frame_received
         client1.on_mixed_audio_frame_received = on_audio_frame_received
         client2.on_mixed_audio_frame_received = on_audio_frame_received
+        print(16)
 
         # Setup the call
         client1.call_all()
+        print(17)
 
         start_time = time.time()
         while not on_video_frame_awaiter1.is_finished() or not on_video_frame_awaiter2.is_finished():
+            print(18)
             timestamp_us = int((time.time() - start_time) * 1e6)
             video_source1.send_frame(frame1, timestamp_us)
             video_source2.send_frame(frame2, timestamp_us)
             time.sleep(0.005)
 
         client1.close_all_room_peer_connections()
+        print(19)
         time.sleep(1)
+        print(20)
 
         client1.close_sync()
+        print(21)
         client2.close_sync()
+        print(22)
 
         # Asserts
         self.assertEqual(self._on_add_remote_stream_client_name1, 'c2')
