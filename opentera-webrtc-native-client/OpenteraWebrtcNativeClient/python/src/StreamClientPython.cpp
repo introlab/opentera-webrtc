@@ -6,8 +6,6 @@
 #include <pybind11/functional.h>
 #include <pybind11/numpy.h>
 
-#include <iostream>
-
 using namespace opentera;
 using namespace std;
 namespace py = pybind11;
@@ -32,13 +30,9 @@ void setOnVideoFrameReceived(
             {bgrImg.step[0], bgrImg.step[1], sizeof(uint8_t)},
             true);  // Readonly
 
-        cout << "C++ Python OnVideoFrameReceived 1" << endl;
         py::gil_scoped_acquire acquire;
-        cout << "C++ Python OnVideoFrameReceived 2" << endl;
         py::array_t<uint8_t> numpyBgrImg(bufferInfo);
-        cout << "C++ Python OnVideoFrameReceived 3" << endl;
         pythonCallback(client, numpyBgrImg, timestampUs);
-        cout << "C++ Python OnVideoFrameReceived 4" << endl;
     };
 
     self.setOnVideoFrameReceived(callback);
@@ -107,13 +101,9 @@ void setOnEncodedVideoFrameReceived(
                         uint32_t height,
                         uint64_t timestampUs)
     {
-        cout << "C++ Python OnEncodedVideoFrameReceived 1" << endl;
         py::gil_scoped_acquire acquire;
-        cout << "C++ Python OnEncodedVideoFrameReceived 2" << endl;
         py::bytes dataBytes(reinterpret_cast<const char*>(data), dataSize);
-        cout << "C++ Python OnEncodedVideoFrameReceived 3" << endl;
         pythonCallback(client, dataBytes, codecType, isKeyFrame, width, height, timestampUs);
-        cout << "C++ Python OnEncodedVideoFrameReceived 4" << endl;
     };
 
     self.setOnEncodedVideoFrameReceived(callback);
@@ -130,13 +120,9 @@ void setOnAudioFrameReceived(
                         size_t numberOfChannels,
                         size_t numberOfFrames)
     {
-        cout << "C++ Python OnAudioFrameReceived 1" << endl;
         py::buffer_info bufferInfo = getAudioBufferInfo(audioData, bitsPerSample, numberOfChannels, numberOfFrames);
-        cout << "C++ Python OnAudioFrameReceived 2" << endl;
         py::gil_scoped_acquire acquire;
-        cout << "C++ Python OnAudioFrameReceived 3" << endl;
         pythonCallback(client, py::array(bufferInfo), sampleRate, numberOfChannels, numberOfFrames);
-        cout << "C++ Python OnAudioFrameReceived 4" << endl;
     };
 
     self.setOnAudioFrameReceived(callback);
@@ -149,13 +135,9 @@ void setOnMixedAudioFrameReceived(
     auto callback =
         [=](const void* audioData, int bitsPerSample, int sampleRate, size_t numberOfChannels, size_t numberOfFrames)
     {
-        cout << "C++ Python OnMixedAudioFrameReceived 1" << endl;
         py::buffer_info bufferInfo = getAudioBufferInfo(audioData, bitsPerSample, numberOfChannels, numberOfFrames);
-        cout << "C++ Python OnMixedAudioFrameReceived 2" << endl;
         py::gil_scoped_acquire acquire;
-        cout << "C++ Python OnMixedAudioFrameReceived 3" << endl;
         pythonCallback(py::array(bufferInfo), sampleRate, numberOfChannels, numberOfFrames);
-        cout << "C++ Python OnMixedAudioFrameReceived 4" << endl;
     };
 
     self.setOnMixedAudioFrameReceived(callback);
