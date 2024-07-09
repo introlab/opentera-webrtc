@@ -76,7 +76,7 @@ webrtc::VideoDecoderFactory::CodecSupport WebRtcGStreamerVideoDecoderFactory::Qu
 }
 
 unique_ptr<webrtc::VideoDecoder>
-    WebRtcGStreamerVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)
+    WebRtcGStreamerVideoDecoderFactory::Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
 {
     auto it = m_decoderFactories.find(format.name);
     if (it == m_decoderFactories.end())
@@ -85,7 +85,7 @@ unique_ptr<webrtc::VideoDecoder>
     }
     else
     {
-        return it->second.factory(format);
+        return it->second.factory(env, format);
     }
 }
 
@@ -193,7 +193,7 @@ bool WebRtcGStreamerVideoDecoderFactory::builtinVideoDecoderFactorySupports(stri
 WebRtcGStreamerVideoDecoderFactory::DecoderFactory
     WebRtcGStreamerVideoDecoderFactory::createBuiltinDecoderFactory(int priority)
 {
-    return {priority, false, [this](const webrtc::SdpVideoFormat& format) {
-                return m_builtinVideoDecoderFactory->CreateVideoDecoder(format);
+    return {priority, false, [this](const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) {
+                return m_builtinVideoDecoderFactory->Create(env, format);
             }};
 }

@@ -77,7 +77,7 @@ webrtc::VideoEncoderFactory::CodecSupport WebRtcGStreamerVideoEncoderFactory::Qu
 }
 
 unique_ptr<webrtc::VideoEncoder>
-    WebRtcGStreamerVideoEncoderFactory::CreateVideoEncoder(const webrtc::SdpVideoFormat& format)
+    WebRtcGStreamerVideoEncoderFactory::Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
 {
     auto it = m_encoderFactories.find(format.name);
     if (it == m_encoderFactories.end())
@@ -86,7 +86,7 @@ unique_ptr<webrtc::VideoEncoder>
     }
     else
     {
-        return it->second.factory(format);
+        return it->second.factory(env, format);
     }
 }
 
@@ -201,6 +201,6 @@ WebRtcGStreamerVideoEncoderFactory::EncoderFactory
         priority,
         false,
         [](const webrtc::SdpVideoFormat::Parameters& parameters) { return true; },
-        [this](const webrtc::SdpVideoFormat& format)
-        { return m_builtinVideoEncoderFactory->CreateVideoEncoder(format); }};
+        [this](const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
+        { return m_builtinVideoEncoderFactory->Create(env, format); }};
 }

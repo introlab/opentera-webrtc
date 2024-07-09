@@ -25,7 +25,9 @@ namespace opentera
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
         CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool referenceScaling) const override;
-        std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
+        std::unique_ptr<webrtc::VideoDecoder> Create(
+              const webrtc::Environment& env,
+              const webrtc::SdpVideoFormat& format) override;
     };
 
     class ForcedCodecVideoEncoderFactory : public webrtc::VideoEncoderFactory
@@ -49,7 +51,9 @@ namespace opentera
             absl::optional<std::string> scalabilityMode) const override;
 
         // Creates a VideoEncoder for the specified format.
-        std::unique_ptr<webrtc::VideoEncoder> CreateVideoEncoder(const webrtc::SdpVideoFormat& format) override;
+        std::unique_ptr<webrtc::VideoEncoder> Create(
+            const webrtc::Environment& env,
+            const webrtc::SdpVideoFormat& format) override;
     };
 
     std::unique_ptr<webrtc::VideoDecoderFactory>

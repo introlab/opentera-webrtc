@@ -107,9 +107,9 @@ webrtc::VideoDecoderFactory::CodecSupport
 }
 
 unique_ptr<webrtc::VideoDecoder>
-    ForcedCodecVideoDecoderFactory::CreateVideoDecoder(const webrtc::SdpVideoFormat& format)
+    ForcedCodecVideoDecoderFactory::Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
 {
-    return m_factory->CreateVideoDecoder(format);
+    return m_factory->Create(env, format);
 }
 
 
@@ -134,9 +134,9 @@ webrtc::VideoEncoderFactory::CodecSupport ForcedCodecVideoEncoderFactory::QueryC
 }
 
 unique_ptr<webrtc::VideoEncoder>
-    ForcedCodecVideoEncoderFactory::CreateVideoEncoder(const webrtc::SdpVideoFormat& format)
+    ForcedCodecVideoEncoderFactory::Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
 {
-    return m_factory->CreateVideoEncoder(format);
+    return m_factory->Create(env, format);
 }
 
 
