@@ -1,5 +1,6 @@
 #include <OpenteraWebrtcNativeClient/Codecs/VideoCodecFactories.h>
 
+#include <api/environment/environment_factory.h>
 #include <api/video_codecs/video_decoder.h>
 #include <api/video_codecs/video_encoder.h>
 #include <modules/video_coding/include/video_error_codes.h>
@@ -87,7 +88,8 @@ public:
     }
 
     // Creates a VideoDecoder for the specified format.
-    unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override
+    unique_ptr<webrtc::VideoDecoder>
+        Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) override
     {
         return make_unique<DummyVideoDecoder>(format);
     }
@@ -118,7 +120,8 @@ public:
     }
 
     // Creates a VideoDecoder for the specified format.
-    unique_ptr<webrtc::VideoEncoder> CreateVideoEncoder(const webrtc::SdpVideoFormat& format) override
+    unique_ptr<webrtc::VideoEncoder>
+        Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) override
     {
         return make_unique<DummyVideoEncoder>(format);
     }
@@ -228,15 +231,17 @@ TEST(VideoCodecFactoriesTests, QueryCodecSupport_vp8ForcedCodecs_shouldReturnSup
     EXPECT_FALSE(av1EncoderSupport.is_power_efficient);
 }
 
-TEST(VideoCodecFactoriesTests, CreateVideoDecoder_shouldCallDummyFactory)
+TEST(VideoCodecFactoriesTests, Create_shouldCallDummyFactory)
 {
     unordered_set<VideoStreamCodec> forcedCodecs;
 
     ForcedCodecVideoDecoderFactory decoderFactory(make_unique<DummyVideoDecoderFactory>(), forcedCodecs);
     ForcedCodecVideoEncoderFactory encoderFactory(make_unique<DummyVideoEncoderFactory>(), forcedCodecs);
 
-    auto decoder = decoderFactory.CreateVideoDecoder(webrtc::SdpVideoFormat(cricket::kVp9CodecName));
-    auto encoder = encoderFactory.CreateVideoEncoder(webrtc::SdpVideoFormat(cricket::kH264CodecName));
+    auto environmentFactory = webrtc::EnvironmentFactory();
+    auto env = environmentFactory.Create();
+    auto decoder = decoderFactory.Create(env, webrtc::SdpVideoFormat(cricket::kVp9CodecName));
+    auto encoder = encoderFactory.Create(env, webrtc::SdpVideoFormat(cricket::kH264CodecName));
 
     EXPECT_EQ(dynamic_cast<DummyVideoDecoder&>(*decoder).format().name, cricket::kVp9CodecName);
     EXPECT_EQ(dynamic_cast<DummyVideoEncoder&>(*encoder).format().name, cricket::kH264CodecName);

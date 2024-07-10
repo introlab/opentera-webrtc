@@ -12,5 +12,4 @@ TEST(EncodedVideoSinkTests, VideoCodecType_shouldMatchWebrtcVideoCodecType)
     EXPECT_EQ(VideoCodecType::VP9, static_cast<VideoCodecType>(webrtc::kVideoCodecVP9));
     EXPECT_EQ(VideoCodecType::AV1, static_cast<VideoCodecType>(webrtc::kVideoCodecAV1));
     EXPECT_EQ(VideoCodecType::H264, static_cast<VideoCodecType>(webrtc::kVideoCodecH264));
-    EXPECT_EQ(VideoCodecType::Multiplex, static_cast<VideoCodecType>(webrtc::kVideoCodecMultiplex));
 }

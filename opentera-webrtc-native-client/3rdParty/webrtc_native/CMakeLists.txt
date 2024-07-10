@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "6167.3df661.54" CACHE INTERNAL "")
+set(webrtc_native_build_version "6422.8505a9.224" CACHE INTERNAL "")
 
 if(WIN32)
 	set(architecture "win64")
@@ -12,8 +12,8 @@ elseif(UNIX)
 		include(${CMAKE_SOURCE_DIR}/cmake/macos_get_version.cmake)
 		get_macos_sw_vers_product_version()
 
-		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "11" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "12" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "13")
-			message(FATAL_ERROR "MacOS version not supported: ${SW_VERS_VERSION_SHORT}, must be 11, 12 or 13.")
+		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "12" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "13")
+			message(FATAL_ERROR "MacOS version not supported: ${SW_VERS_VERSION_SHORT}, must be 12 or 13.")
 		endif()
 
 		set(archive_stem webrtc-native-build-macos-${SW_VERS_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
@@ -52,8 +52,8 @@ elseif(UNIX)
 			message(FATAL_ERROR "System not supported: ${LSB_RELEASE_ID_SHORT}, must be ubuntu")
 		endif()
 
-		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "22.04")
-			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 20.04 or 22.04.")
+		if (NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "20.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "22.04" AND NOT ${LSB_RELEASE_VERSION_SHORT} MATCHES "24.04")
+			message(FATAL_ERROR "Ubuntu version not supported: ${LSB_RELEASE_VERSION_SHORT}, must be 20.04 or 22.04 or 24.04.")
 		endif()
 
 		set(archive_stem webrtc-native-build-${LSB_RELEASE_ID_SHORT}-${LSB_RELEASE_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})

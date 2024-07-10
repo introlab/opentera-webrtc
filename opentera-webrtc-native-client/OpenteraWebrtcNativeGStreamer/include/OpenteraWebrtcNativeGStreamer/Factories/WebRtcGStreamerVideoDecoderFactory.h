@@ -34,7 +34,9 @@ namespace opentera
         {
             int priority;
             bool isHardwareAccelerated;
-            std::function<std::unique_ptr<webrtc::VideoDecoder>(const webrtc::SdpVideoFormat&)> factory;
+            std::function<
+                std::unique_ptr<webrtc::VideoDecoder>(const webrtc::Environment& env, const webrtc::SdpVideoFormat&)>
+                factory;
         };
 
         std::unique_ptr<VideoDecoderFactory> m_builtinVideoDecoderFactory;
@@ -46,7 +48,8 @@ namespace opentera
 
         std::vector<webrtc::SdpVideoFormat> GetSupportedFormats() const override;
         CodecSupport QueryCodecSupport(const webrtc::SdpVideoFormat& format, bool referenceScaling) const override;
-        std::unique_ptr<webrtc::VideoDecoder> CreateVideoDecoder(const webrtc::SdpVideoFormat& format) override;
+        std::unique_ptr<webrtc::VideoDecoder>
+            Create(const webrtc::Environment& env, const webrtc::SdpVideoFormat& format) override;
 
     private:
         void addH264Decoders(bool forceHardwareAcceleration, bool useGStreamerSoftwareDecoder);
@@ -64,7 +67,9 @@ namespace opentera
     WebRtcGStreamerVideoDecoderFactory::DecoderFactory
         WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
     {
-        return {priority, Decoder::isHardwareAccelerated(), [](auto _) { return std::make_unique<Decoder>(); }};
+        return {priority, Decoder::isHardwareAccelerated(), [](auto _env, auto _format) {
+                    return std::make_unique<Decoder>();
+                }};
     }
 }
 
