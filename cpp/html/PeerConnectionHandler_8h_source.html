@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.1.4</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -91,60 +91,62 @@ $(function() {
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        std::function&lt;void(<span class="keyword">const</span> std::string&amp;)&gt; m_onError;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        std::function&lt;void(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt; m_onClientConnected;</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        std::function&lt;void(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt; m_onClientDisconnected;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        rtc::scoped_refptr&lt;webrtc::PeerConnectionInterface&gt; m_peerConnection;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordtype">bool</span> m_onClientDisconnectedCalled;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <a class="code" href="classopentera_1_1PeerConnectionHandler.html">PeerConnectionHandler</a>(</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            std::string&amp;&amp; <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;&amp; peerClient,</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <span class="keywordtype">bool</span> isCaller,</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <a class="code" href="classopentera_1_1SignalingClient.html">SignalingClient</a>&amp; m_signalingClient,</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> std::string&amp;)&gt;&amp;&amp; onError,</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt;&amp;&amp; onClientConnected,</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt;&amp;&amp; onClientDisconnected);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        ~<a class="code" href="classopentera_1_1PeerConnectionHandler.html">PeerConnectionHandler</a>() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setPeerConnection(<span class="keyword">const</span> rtc::scoped_refptr&lt;webrtc::PeerConnectionInterface&gt;&amp; peerConnection);</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        std::function&lt;void(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt; m_onClientConnectionFailed;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        rtc::scoped_refptr&lt;webrtc::PeerConnectionInterface&gt; m_peerConnection;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordtype">bool</span> m_onClientDisconnectedCalled;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <a class="code" href="classopentera_1_1PeerConnectionHandler.html">PeerConnectionHandler</a>(</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            std::string&amp;&amp; <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;&amp; peerClient,</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keywordtype">bool</span> isCaller,</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <a class="code" href="classopentera_1_1SignalingClient.html">SignalingClient</a>&amp; m_signalingClient,</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> std::string&amp;)&gt;&amp;&amp; onError,</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt;&amp;&amp; onClientConnected,</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt;&amp;&amp; onClientDisconnected,</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            std::function&lt;<span class="keywordtype">void</span>(<span class="keyword">const</span> <a class="code" href="classopentera_1_1Client.html">Client</a>&amp;)&gt;&amp;&amp; onClientConnectionFailed);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        ~<a class="code" href="classopentera_1_1PeerConnectionHandler.html">PeerConnectionHandler</a>() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordtype">void</span> makePeerCall();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordtype">void</span> receivePeerCall(<span class="keyword">const</span> std::string&amp; sdp);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">void</span> receivePeerCallAnswer(<span class="keyword">const</span> std::string&amp; sdp);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">void</span> receiveIceCandidate(<span class="keyword">const</span> std::string&amp; sdpMid, <span class="keywordtype">int</span> sdpMLineIndex, <span class="keyword">const</span> std::string&amp; sdp);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="comment">// Observer methods</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">void</span> OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState newState) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> OnIceCandidate(<span class="keyword">const</span> webrtc::IceCandidateInterface* candidate) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordtype">void</span> OnDataChannel(rtc::scoped_refptr&lt;webrtc::DataChannelInterface&gt; dataChannel) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> setPeerConnection(<span class="keyword">const</span> rtc::scoped_refptr&lt;webrtc::PeerConnectionInterface&gt;&amp; peerConnection);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">void</span> makePeerCall();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordtype">void</span> receivePeerCall(<span class="keyword">const</span> std::string&amp; sdp);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keywordtype">void</span> receivePeerCallAnswer(<span class="keyword">const</span> std::string&amp; sdp);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">void</span> receiveIceCandidate(<span class="keyword">const</span> std::string&amp; sdpMid, <span class="keywordtype">int</span> sdpMLineIndex, <span class="keyword">const</span> std::string&amp; sdp);</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="comment">// Observer methods</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordtype">void</span> OnConnectionChange(webrtc::PeerConnectionInterface::PeerConnectionState newState) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordtype">void</span> OnIceCandidate(<span class="keyword">const</span> webrtc::IceCandidateInterface* candidate) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordtype">void</span> OnTrack(rtc::scoped_refptr&lt;webrtc::RtpTransceiverInterface&gt; transceiver) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <span class="keywordtype">void</span> OnRemoveTrack(rtc::scoped_refptr&lt;webrtc::RtpReceiverInterface&gt; receiver) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordtype">void</span> OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="keywordtype">void</span> OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keywordtype">void</span> OnCreateSessionDescriptionObserverFailure(webrtc::RTCError error) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">void</span> OnSetSessionDescriptionObserverSuccess() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keywordtype">void</span> OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">void</span> AddRef() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        [[nodiscard]] rtc::RefCountReleaseStatus Release() <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> createAnswer();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    };</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">void</span> setTransceiverDirection(</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        <span class="keyword">const</span> rtc::scoped_refptr&lt;webrtc::RtpTransceiverInterface&gt;&amp; transceiver,</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;        webrtc::RtpTransceiverDirection direction);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordtype">void</span> OnDataChannel(rtc::scoped_refptr&lt;webrtc::DataChannelInterface&gt; dataChannel) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordtype">void</span> OnTrack(rtc::scoped_refptr&lt;webrtc::RtpTransceiverInterface&gt; transceiver) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordtype">void</span> OnRemoveTrack(rtc::scoped_refptr&lt;webrtc::RtpReceiverInterface&gt; receiver) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordtype">void</span> OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        <span class="keywordtype">void</span> OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordtype">void</span> OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">void</span> OnCreateSessionDescriptionObserverFailure(webrtc::RTCError error) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordtype">void</span> OnSetSessionDescriptionObserverSuccess() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordtype">void</span> OnSetSessionDescriptionObserverFailure(webrtc::RTCError error) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordtype">void</span> AddRef() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        [[nodiscard]] rtc::RefCountReleaseStatus Release() <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keyword">virtual</span> <span class="keywordtype">void</span> createAnswer();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    };</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordtype">void</span> setTransceiverDirection(</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        <span class="keyword">const</span> rtc::scoped_refptr&lt;webrtc::RtpTransceiverInterface&gt;&amp; transceiver,</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        webrtc::RtpTransceiverDirection direction);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassopentera_1_1Client_html"><div class="ttname"><a href="classopentera_1_1Client.html">opentera::Client</a></div><div class="ttdoc">Represents a peer client.</div><div class="ttdef"><b>Definition:</b> Client.h:14</div></div>
 <div class="ttc" id="aclassopentera_1_1CreateSessionDescriptionObserverHelper_html"><div class="ttname"><a href="classopentera_1_1CreateSessionDescriptionObserverHelper.html">opentera::CreateSessionDescriptionObserverHelper</a></div><div class="ttdef"><b>Definition:</b> PeerConnectionHandler.h:14</div></div>
 <div class="ttc" id="aclassopentera_1_1PeerConnectionHandler_html"><div class="ttname"><a href="classopentera_1_1PeerConnectionHandler.html">opentera::PeerConnectionHandler</a></div><div class="ttdef"><b>Definition:</b> PeerConnectionHandler.h:36</div></div>
@@ -154,7 +156,7 @@ $(function() {
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 29 2024 19:25:13 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Wed Jul 10 2024 14:20:23 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

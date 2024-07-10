@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;1.1.4</span>
+   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -59,7 +59,7 @@ $(function() {
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>_makePeerCall</b>(ids) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>_peerCallAnswerReceived</b>(data) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>_peerCallReceived</b>(data) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0"><td class="entry"><b>_removeConnection</b>(id) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>_removeConnection</b>(id, callOnClientDisconnect) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>_updateClientDatumById</b>(clients) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr bgcolor="#f0f0f0"><td class="entry"><b>_updateClientNamesById</b>(clients) (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a69436df63f9f5b494df06cac1bdb76d2">callAcceptor</a>(callAcceptor)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
@@ -78,18 +78,19 @@ $(function() {
   <tr><td class="entry"><a class="el" href="classWebrtcClient.html#afda2db4449d47b99646f38d548cec431">isRtcConnected</a>()</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#ab64d6788a4a62108f719da41a9f26cc9">onCallReject</a>(onCallReject)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
   <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a029b80cf69d57730387c8baa7da0ffaa">onClientConnect</a>(onClientConnect)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a158b47b2a19659f25b96148f06d93ffb">onClientDisconnect</a>(onClientDisconnect)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a9d6108fb2022368d783ee3a3a53dc744">onRoomClientsChange</a>(onRoomClientsChange)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#abc42910d5567dffc9471db4fef7139b7">onSignalingConnectionClose</a>(onSignalingConnectionClose)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a60f2a923dd0814a5d224470ed8cb3dc1">onSignalingConnectionError</a>(onSignalingConnectionError)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a2e9c6c18b4d9c1ef97694bfad7dd3869">onSignalingConnectionOpen</a>(onSignalingConnectionOpen)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a2d25b7663e029eb49630fb2fa8f10d7e">roomClients</a>()</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
-  <tr bgcolor="#f0f0f0" class="even"><td class="entry"><b>updateRoomClients</b>() (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#ae6c961c939943889975d4d4827b43cc6">onClientConnectionFail</a>(onClientConnectionFail)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a158b47b2a19659f25b96148f06d93ffb">onClientDisconnect</a>(onClientDisconnect)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a9d6108fb2022368d783ee3a3a53dc744">onRoomClientsChange</a>(onRoomClientsChange)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#abc42910d5567dffc9471db4fef7139b7">onSignalingConnectionClose</a>(onSignalingConnectionClose)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a60f2a923dd0814a5d224470ed8cb3dc1">onSignalingConnectionError</a>(onSignalingConnectionError)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classWebrtcClient.html#a2e9c6c18b4d9c1ef97694bfad7dd3869">onSignalingConnectionOpen</a>(onSignalingConnectionOpen)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classWebrtcClient.html#a2d25b7663e029eb49630fb2fa8f10d7e">roomClients</a>()</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
+  <tr bgcolor="#f0f0f0"><td class="entry"><b>updateRoomClients</b>() (defined in <a class="el" href="classWebrtcClient.html">WebrtcClient</a>)</td><td class="entry"><a class="el" href="classWebrtcClient.html">WebrtcClient</a></td><td class="entry"><span class="mlabel">inline</span></td></tr>
 </table></div><!-- contents -->
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 29 2024 19:25:13 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Wed Jul 10 2024 14:20:24 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

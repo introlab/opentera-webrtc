@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.1.4</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -185,6 +185,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <tr class="memitem:a0e7cd7e0d50b4038bf8b497f2b2c536a inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1WebrtcClient.html#a0e7cd7e0d50b4038bf8b497f2b2c536a">setOnClientDisconnected</a> (const std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;callback)</td></tr>
 <tr class="memdesc:a0e7cd7e0d50b4038bf8b497f2b2c536a inherit pub_methods_classopentera_1_1WebrtcClient"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when a client peer connection closes.  <a href="classopentera_1_1WebrtcClient.html#a0e7cd7e0d50b4038bf8b497f2b2c536a">More...</a><br /></td></tr>
 <tr class="separator:a0e7cd7e0d50b4038bf8b497f2b2c536a inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abda7b40f3beb55ef22e83dd49a27c976 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1WebrtcClient.html#abda7b40f3beb55ef22e83dd49a27c976">setOnClientConnectionFailed</a> (const std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt; &amp;callback)</td></tr>
+<tr class="memdesc:abda7b40f3beb55ef22e83dd49a27c976 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when a client peer connection fails.  <a href="classopentera_1_1WebrtcClient.html#abda7b40f3beb55ef22e83dd49a27c976">More...</a><br /></td></tr>
+<tr class="separator:abda7b40f3beb55ef22e83dd49a27c976 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd0a1c8265d6a8f81efc5c1c4545ab32 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classopentera_1_1WebrtcClient.html#afd0a1c8265d6a8f81efc5c1c4545ab32">setOnError</a> (const std::function&lt; void(const std::string &amp;error)&gt; &amp;callback)</td></tr>
 <tr class="memdesc:afd0a1c8265d6a8f81efc5c1c4545ab32 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when an error occurs.  <a href="classopentera_1_1WebrtcClient.html#afd0a1c8265d6a8f81efc5c1c4545ab32">More...</a><br /></td></tr>
 <tr class="separator:afd0a1c8265d6a8f81efc5c1c4545ab32 inherit pub_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -220,6 +223,9 @@ std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">C
 <tr class="memitem:a74c08033eb3791a974248729de89a7a2 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top"><a id="a74c08033eb3791a974248729de89a7a2"></a>
 std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getOnClientDisconnectedFunction</b> ()</td></tr>
 <tr class="separator:a74c08033eb3791a974248729de89a7a2 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8963ddc5058b31afe98d7275fc616d63 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top"><a id="a8963ddc5058b31afe98d7275fc616d63"></a>
+std::function&lt; void(const <a class="el" href="classopentera_1_1Client.html">Client</a> &amp;)&gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getOnClientConnectionFailedFunction</b> ()</td></tr>
+<tr class="separator:a8963ddc5058b31afe98d7275fc616d63 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a41ced160a01d131b3290d23426db0ad1 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memItemLeft" align="right" valign="top"><a id="a41ced160a01d131b3290d23426db0ad1"></a>
 rtc::Thread *&#160;</td><td class="memItemRight" valign="bottom"><b>getInternalClientThread</b> ()</td></tr>
 <tr class="separator:a41ced160a01d131b3290d23426db0ad1 inherit pro_methods_classopentera_1_1WebrtcClient"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -572,7 +578,7 @@ Callback parameters:<ul>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 29 2024 19:25:13 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Wed Jul 10 2024 14:20:24 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>opentera_webrtc.native_client &mdash; OpenTera 1.1.4 documentation</title>
+  <title>opentera_webrtc.native_client &mdash; OpenTera 1.2.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../index.html" class="icon icon-home"> OpenTera
           </a>
               <div class="version">
-                1.1.4
+                1.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -145,6 +145,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.logger"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.logger</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_call_rejected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_call_rejected</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_client_connected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_client_connected</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_client_connection_failed"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_client_connection_failed</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_client_disconnected"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_client_disconnected</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_error"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_error</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#opentera_webrtc.native_client.WebrtcClient.on_room_clients_changed"><code class="docutils literal notranslate"><span class="pre">WebrtcClient.on_room_clients_changed</span></code></a></li>
@@ -878,7 +879,7 @@
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>create(forced_codecs: Set[VideoStreamCodec]) -&gt; VideoStreamConfiguration</p></li>
+<li><p>create(forced_codecs: set[VideoStreamCodec]) -&gt; VideoStreamConfiguration</p></li>
 </ol>
 <p>Creates a video stream configuration with the specified value.</p>
 <dl class="field-list simple">
@@ -890,7 +891,7 @@
 </dd>
 </dl>
 <ol class="arabic simple" start="3">
-<li><p>create(forced_codecs: Set[VideoStreamCodec], force_gstreamer_hardware_acceleration: bool, use_gstreamer_software_encoder_decoder: bool) -&gt; VideoStreamConfiguration</p></li>
+<li><p>create(forced_codecs: set[VideoStreamCodec], force_gstreamer_hardware_acceleration: bool, use_gstreamer_software_encoder_decoder: bool) -&gt; VideoStreamConfiguration</p></li>
 </ol>
 <p>Creates a video stream configuration with the specified values.</p>
 <dl class="field-list simple">
@@ -961,7 +962,7 @@
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>create(ice_servers: List[IceServer]) -&gt; WebrtcConfiguration</p></li>
+<li><p>create(ice_servers: list[IceServer]) -&gt; WebrtcConfiguration</p></li>
 </ol>
 <p>Creates a WebRTC peer connection configuration with the specified value.</p>
 <dl class="field-list simple">
@@ -1097,7 +1098,7 @@
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fetch_from_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.fetch_from_server" title="Permalink to this definition"></a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>fetch_from_server(url: str, password: str) -&gt; List[IceServer]</p></li>
+<li><p>fetch_from_server(url: str, password: str) -&gt; list[IceServer]</p></li>
 </ol>
 <p>Fetches the ice servers from the signaling server.</p>
 <dl class="field-list simple">
@@ -1112,7 +1113,7 @@
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>fetch_from_server(url: str, password: str, verify_certificate: bool) -&gt; List[IceServer]</p></li>
+<li><p>fetch_from_server(url: str, password: str, verify_certificate: bool) -&gt; list[IceServer]</p></li>
 </ol>
 <p>Fetches the ice servers from the signaling server.</p>
 <dl class="field-list simple">
@@ -1131,7 +1132,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.IceServer.from_json">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">IceServer</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.from_json" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">IceServer</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#opentera_webrtc.native_client.IceServer.from_json" title="Permalink to this definition"></a></dt>
 <dd><p>Gets ice servers from a JSON</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1296,7 +1297,7 @@ Frame will be resized to match the transport layer request</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.call_ids">
-<span class="sig-name descname"><span class="pre">call_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.call_ids" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">call_ids</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">WebrtcClient</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#list" title="(in Python v3.10)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.call_ids" title="Permalink to this definition"></a></dt>
 <dd><p>Calls the specified clients.</p>
 </dd></dl>
 
@@ -1433,6 +1434,24 @@ If no room client matches with the id, a default room client is returned.</p>
 <dl class="simple">
 <dt>Callback parameters:</dt><dd><ul class="simple">
 <li><p>client: The client that is connected</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> – The callback</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="opentera_webrtc.native_client.WebrtcClient.on_client_connection_failed">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_client_connection_failed</span></span><a class="headerlink" href="#opentera_webrtc.native_client.WebrtcClient.on_client_connection_failed" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the callback that is called when a client peer connection fails.</p>
+<p>The callback is called from the internal client thread. The callback should not block.</p>
+<dl class="simple">
+<dt>Callback parameters:</dt><dd><ul class="simple">
+<li><p>client: The client that has a connection failure</p></li>
 </ul>
 </dd>
 </dl>
@@ -1666,7 +1685,7 @@ If no room client matches with the id, a default room client is returned.</p>
 <span class="sig-name descname"><span class="pre">send_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opentera_webrtc.native_client.DataChannelClient.send_to" title="Permalink to this definition"></a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>send_to(self: DataChannelClient, bytes: bytes, ids: List[str]) -&gt; None</p></li>
+<li><p>send_to(self: DataChannelClient, bytes: bytes, ids: list[str]) -&gt; None</p></li>
 </ol>
 <p>Sends binary data to the specified clients.</p>
 <dl class="field-list simple">
@@ -1678,7 +1697,7 @@ If no room client matches with the id, a default room client is returned.</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>send_to(self: DataChannelClient, message: str, ids: List[str]) -&gt; bool</p></li>
+<li><p>send_to(self: DataChannelClient, message: str, ids: list[str]) -&gt; bool</p></li>
 </ol>
 <p>Sends a string message to the specified clients.</p>
 <dl class="field-list simple">

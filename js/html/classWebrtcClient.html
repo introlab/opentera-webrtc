@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;1.1.4</span>
+   <div id="projectname">OpenTera WebRTC API (JavaScript)<span id="projectnumber">&#160;1.2.0</span>
    </div>
   </td>
  </tr>
@@ -96,9 +96,9 @@ async&#160;</td><td class="memItemRight" valign="bottom"><b>_getCallAcceptance</
 <tr class="memitem:a3c21771025372fc1b8378925f415e29b"><td class="memItemLeft" align="right" valign="top"><a id="a3c21771025372fc1b8378925f415e29b"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>_disconnectRtcPeerConnectionEvents</b> (rtcPeerConnection)</td></tr>
 <tr class="separator:a3c21771025372fc1b8378925f415e29b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af184ee15421e06cdb2562b6ee298a513"><td class="memItemLeft" align="right" valign="top"><a id="af184ee15421e06cdb2562b6ee298a513"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>_removeConnection</b> (<a class="el" href="classWebrtcClient.html#a616d57f8c5373dfc4d1ed8a053838aa5">id</a>)</td></tr>
-<tr class="separator:af184ee15421e06cdb2562b6ee298a513"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a123dc443c90f2cc68868fe75a3d5a687"><td class="memItemLeft" align="right" valign="top"><a id="a123dc443c90f2cc68868fe75a3d5a687"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>_removeConnection</b> (<a class="el" href="classWebrtcClient.html#a616d57f8c5373dfc4d1ed8a053838aa5">id</a>, callOnClientDisconnect)</td></tr>
+<tr class="separator:a123dc443c90f2cc68868fe75a3d5a687"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad05e89ede2731d79a7f80ee75a4d1c49"><td class="memItemLeft" align="right" valign="top"><a id="ad05e89ede2731d79a7f80ee75a4d1c49"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>_addConnectionStateToClients</b> (clients)</td></tr>
 <tr class="separator:ad05e89ede2731d79a7f80ee75a4d1c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -182,8 +182,11 @@ async&#160;</td><td class="memItemRight" valign="bottom"><b>_getCallAcceptance</
 <tr class="memdesc:a029b80cf69d57730387c8baa7da0ffaa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when a client peer connection opens.  <a href="classWebrtcClient.html#a029b80cf69d57730387c8baa7da0ffaa">More...</a><br /></td></tr>
 <tr class="separator:a029b80cf69d57730387c8baa7da0ffaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a158b47b2a19659f25b96148f06d93ffb"><td class="memItemLeft" align="right" valign="top">set&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWebrtcClient.html#a158b47b2a19659f25b96148f06d93ffb">onClientDisconnect</a> (onClientDisconnect)</td></tr>
-<tr class="memdesc:a158b47b2a19659f25b96148f06d93ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when an error occurs.  <a href="classWebrtcClient.html#a158b47b2a19659f25b96148f06d93ffb">More...</a><br /></td></tr>
+<tr class="memdesc:a158b47b2a19659f25b96148f06d93ffb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when a client peer connection closes.  <a href="classWebrtcClient.html#a158b47b2a19659f25b96148f06d93ffb">More...</a><br /></td></tr>
 <tr class="separator:a158b47b2a19659f25b96148f06d93ffb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c961c939943889975d4d4827b43cc6"><td class="memItemLeft" align="right" valign="top">set&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classWebrtcClient.html#ae6c961c939943889975d4d4827b43cc6">onClientConnectionFail</a> (onClientConnectionFail)</td></tr>
+<tr class="memdesc:ae6c961c939943889975d4d4827b43cc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the callback that is called when a client peer connection fails.  <a href="classWebrtcClient.html#ae6c961c939943889975d4d4827b43cc6">More...</a><br /></td></tr>
+<tr class="separator:ae6c961c939943889975d4d4827b43cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents the base class of <a class="el" href="classDataChannelClient.html" title="Represents a client for data channel communication.">DataChannelClient</a>, <a class="el" href="classStreamClient.html" title="A signaling client to join a WebRTC room and stream a video source.">StreamClient</a> and <a class="el" href="classStreamDataChannelClient.html" title="A signaling client to join a WebRTC room, stream a video source and send data channel communication.">StreamDataChannelClient</a>. </p>
@@ -604,6 +607,45 @@ Callback parameters:<ul>
 
 </div>
 </div>
+<a id="ae6c961c939943889975d4d4827b43cc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6c961c939943889975d4d4827b43cc6">&#9670;&nbsp;</a></span>onClientConnectionFail()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">set WebrtcClient::onClientConnectionFail </td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>onClientConnectionFail</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the callback that is called when a client peer connection fails. </p>
+Callback parameters:<ul>
+<li>clientId: The client id</li>
+<li>clientName: The client name</li>
+<li>clientData: The client data </li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">{CallableFunction}</td><td>onClientConnectionFail The callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a158b47b2a19659f25b96148f06d93ffb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a158b47b2a19659f25b96148f06d93ffb">&#9670;&nbsp;</a></span>onClientDisconnect()</h2>
 
@@ -628,7 +670,7 @@ Callback parameters:<ul>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the callback that is called when an error occurs. </p>
+<p>Sets the callback that is called when a client peer connection closes. </p>
 Callback parameters:<ul>
 <li>clientId: The client id</li>
 <li>clientName: The client name</li>
@@ -820,7 +862,7 @@ Callback parameter: None <dl class="params"><dt>Parameters</dt><dd>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed May 29 2024 19:25:13 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Wed Jul 10 2024 14:20:24 for OpenTera WebRTC API (JavaScript) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
