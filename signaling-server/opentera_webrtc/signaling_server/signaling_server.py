@@ -252,6 +252,7 @@ class Args:
     password: str
     ice_servers: Path
     static_folder: Path
+    follow_symlinks: bool
     certificate: Path
     key: Path
     log_level: int
@@ -266,6 +267,7 @@ def main(other_routes=None):
     parser.add_argument('--password', type=str, help='Choose the password', default=None)
     parser.add_argument('--ice_servers', type=ExpandUserPath, help='Choose the ice servers json file', default=None)
     parser.add_argument('--static_folder', type=ExpandUserPath, help='Choose the static folder', default=None)
+    parser.add_argument('--follow_symlinks', action="store_true", help='Follow symlinks for static folder, SECURITY RISK')
     parser.add_argument('--certificate', type=ExpandUserPath, help='TLS certificate path', default=None)
     parser.add_argument('--key', type=ExpandUserPath, help='TLS private key path', default=None)
     parser.add_argument('--log_level', type=int, choices=[logging.CRITICAL, logging.ERROR,
@@ -306,7 +308,7 @@ def main(other_routes=None):
 
     # Create static route if required
     if args.static_folder is not None:
-        app.add_routes([web.static('/', args.static_folder)])
+        app.add_routes([web.static('/', args.static_folder, follow_symlinks=args.follow_symlinks)])
 
     # Run app
     if using_tls:
