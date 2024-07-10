@@ -1,4 +1,4 @@
-set(webrtc_native_build_version "6478.a18e38.173" CACHE INTERNAL "")
+set(webrtc_native_build_version "6422.8505a9.224" CACHE INTERNAL "")
 
 if(WIN32)
 	set(architecture "win64")
@@ -12,8 +12,8 @@ elseif(UNIX)
 		include(${CMAKE_SOURCE_DIR}/cmake/macos_get_version.cmake)
 		get_macos_sw_vers_product_version()
 
-		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "11" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "12" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "13")
-			message(FATAL_ERROR "MacOS version not supported: ${SW_VERS_VERSION_SHORT}, must be 11, 12 or 13.")
+		if (NOT ${SW_VERS_VERSION_SHORT} MATCHES "12" AND NOT ${SW_VERS_VERSION_SHORT} MATCHES "13")
+			message(FATAL_ERROR "MacOS version not supported: ${SW_VERS_VERSION_SHORT}, must be 12 or 13.")
 		endif()
 
 		set(archive_stem webrtc-native-build-macos-${SW_VERS_VERSION_SHORT}-${architecture}-${CMAKE_BUILD_TYPE}-${webrtc_native_build_version})
