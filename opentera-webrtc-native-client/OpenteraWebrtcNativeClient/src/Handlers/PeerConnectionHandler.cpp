@@ -49,7 +49,8 @@ PeerConnectionHandler::PeerConnectionHandler(
     SignalingClient& m_signalingClient,
     function<void(const string&)>&& onError,
     function<void(const Client&)>&& onClientConnected,
-    function<void(const Client&)>&& onClientDisconnected)
+    function<void(const Client&)>&& onClientDisconnected,
+    function<void(const Client&)>&& onClientConnectionFailed)
     : m_id(move(id)),
       m_peerClient(move(peerClient)),
       m_isCaller(isCaller),
@@ -57,6 +58,7 @@ PeerConnectionHandler::PeerConnectionHandler(
       m_onError(move(onError)),
       m_onClientConnected(move(onClientConnected)),
       m_onClientDisconnected(move(onClientDisconnected)),
+      m_onClientConnectionFailed(move(onClientConnectionFailed)),
       m_onClientDisconnectedCalled(true)
 {
 }
@@ -139,14 +141,14 @@ void PeerConnectionHandler::OnConnectionChange(webrtc::PeerConnectionInterface::
             m_onClientConnected(m_peerClient);
             m_onClientDisconnectedCalled = false;
             break;
-
-        case webrtc::PeerConnectionInterface::PeerConnectionState::kDisconnected:
         case webrtc::PeerConnectionInterface::PeerConnectionState::kFailed:
+            m_onClientConnectionFailed(m_peerClient);
+            break;
+        case webrtc::PeerConnectionInterface::PeerConnectionState::kDisconnected:
         case webrtc::PeerConnectionInterface::PeerConnectionState::kClosed:
             m_onClientDisconnected(m_peerClient);
             m_onClientDisconnectedCalled = true;
             break;
-
         default:
             break;
     }

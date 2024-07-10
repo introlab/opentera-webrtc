@@ -87,6 +87,7 @@ unique_ptr<PeerConnectionHandler>
         getOnErrorFunction(),
         getOnClientConnectedFunction(),
         getOnClientDisconnectedFunction(),
+        getOnClientConnectionFailedFunction(),
         m_dataChannelConfiguration,
         onDataChannelOpen,
         onDataChannelClosed,

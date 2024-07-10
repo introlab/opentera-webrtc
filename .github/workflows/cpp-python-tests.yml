@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-12]
         python-version: ["3.8", "3.9", "3.10"]
         build-type: [Debug, Release]
         enable-gstreamer: [ON, OFF]
@@ -180,7 +180,7 @@ jobs:
         working-directory: opentera-webrtc-native-client/OpenteraWebrtcNativeClient/python/test
         run: |
           if [ -f requirements.txt ]; then python -m pip install --user -r requirements.txt; fi
-          python -m pytest -v
+          python -m pytest -vv -s
 
       # With stdout
       - name: Run Python signaling-server Tests with STDOUT

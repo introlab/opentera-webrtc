@@ -208,6 +208,7 @@ unique_ptr<PeerConnectionHandler>
         getOnErrorFunction(),
         getOnClientConnectedFunction(),
         getOnClientDisconnectedFunction(),
+        getOnClientConnectionFailedFunction(),
         videoTrack,
         audioTrack,
         onAddRemoteStream,

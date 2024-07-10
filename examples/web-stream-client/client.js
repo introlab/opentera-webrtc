@@ -62,6 +62,10 @@
       });
     };
 
+    streamClient.onClientConnectionFail = (id, name, clientData) => {
+      console.log('The connect with the client ' + name + '(' + id + ') failed.');
+    }
+
     streamClient.onAddRemoteStream = (id, name, clientData, stream) => {
       callAllButton.disabled = true;
       hangUpAllButton.disabled = false;

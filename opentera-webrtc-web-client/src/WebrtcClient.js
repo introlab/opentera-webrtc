@@ -59,6 +59,7 @@ class WebrtcClient {
 
     this._onClientConnect = () => {};
     this._onClientDisconnect = () => {};
+    this._onClientConnectionFail = () => {};
 
     this._offerOptions = {};
 
@@ -205,8 +206,14 @@ class WebrtcClient {
         this._onClientConnect(id, this.getClientName(id), this.getClientData(id));
         break;
 
-      case 'disconnected':
       case 'failed':
+        this._logger('RtcPeerConnection failed event id=', id);
+        this._removeConnection(id, false);
+        this._onClientConnectionFail(id, this.getClientName(id), this.getClientData(id));
+        this.updateRoomClients();
+        break;
+
+      case 'disconnected':
       case 'closed':
         this._logger('RtcPeerConnection disconnected, failed or closed event, id=', id);
 
@@ -222,13 +229,18 @@ class WebrtcClient {
     rtcPeerConnection.onconnectionstatechange = () => {};
   }
 
-  _removeConnection(id) {
+  _removeConnection(id, callOnClientDisconnect) {
+    callOnClientDisconnect = typeof callOnClientDisconnect !== 'undefined' ? callOnClientDisconnect : true;
+
     if (id in this._rtcPeerConnections) {
       this._rtcPeerConnections[id].close();
       this._disconnectRtcPeerConnectionEvents(this._rtcPeerConnections[id]);
       delete this._rtcPeerConnections[id];
       this._alreadyAcceptedCalls = this._alreadyAcceptedCalls.filter(x => x != id);
-      this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
+
+      if (callOnClientDisconnect) {
+        this._onClientDisconnect(id, this.getClientName(id), this.getClientData(id));
+      }
     }
   }
 
@@ -498,7 +510,7 @@ class WebrtcClient {
   }
 
   /**
-   * @brief Sets the callback that is called when an error occurs.
+   * @brief Sets the callback that is called when a client peer connection closes.
    *
    * @parblock
    * Callback parameters:
@@ -511,6 +523,22 @@ class WebrtcClient {
    */
   set onClientDisconnect(onClientDisconnect) {
     this._onClientDisconnect = onClientDisconnect;
+  }
+
+  /**
+   * @brief Sets the callback that is called when a client peer connection fails.
+   *
+   * @parblock
+   * Callback parameters:
+   *  - clientId: The client id
+   *  - clientName: The client name
+   *  - clientData: The client data
+   * @endparblock
+   *
+   * @param {CallableFunction} onClientConnectionFail The callback
+   */
+  set onClientConnectionFail(onClientConnectionFail) {
+    this._onClientConnectionFail = onClientConnectionFail;
   }
 }
 

@@ -186,6 +186,20 @@ void opentera::initWebrtcClientPython(pybind11::module& m)
             " - client: The client that is disconnected\n"
             "\n"
             ":param callback: The callback")
+        .def_property(
+            "on_client_connection_failed",
+            nullptr,
+            GilScopedRelease<WebrtcClient>::guard(&WebrtcClient::setOnClientConnectionFailed),
+            "Sets the callback that is called when a client peer "
+            "connection fails.\n"
+            "\n"
+            "The callback is called from the internal client thread. "
+            "The callback should not block.\n"
+            "\n"
+            "Callback parameters:\n"
+            " - client: The client that has a connection failure\n"
+            "\n"
+            ":param callback: The callback")
 
         .def_property(
             "on_error",

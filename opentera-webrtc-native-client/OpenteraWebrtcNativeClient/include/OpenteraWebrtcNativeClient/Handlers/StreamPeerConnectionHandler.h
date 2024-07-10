@@ -55,6 +55,7 @@ namespace opentera
             std::function<void(const std::string&)> onError,
             std::function<void(const Client&)> onClientConnected,
             std::function<void(const Client&)> onClientDisconnected,
+            std::function<void(const Client&)> onClientConnectionFailed,
             rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack,
             rtc::scoped_refptr<webrtc::AudioTrackInterface> audioTrack,
             std::function<void(const Client&)> onAddRemoteStream,

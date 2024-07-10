@@ -46,6 +46,13 @@ def on_client_disconnected(client):
         client.id, client.name, client.data))
 
 
+def on_client_connection_failed(client):
+    # This callback is called from the internal client thread.
+    print('on_client_connection_failed:')
+    print('\tid={}, name={}, data={}\n'.format(
+        client.id, client.name, client.data))
+
+
 def on_add_remote_stream(client):
     # This callback is called from the internal client thread.
     print('on_add_remote_stream:')
@@ -116,6 +123,7 @@ if __name__ == '__main__':
 
     client.on_client_connected = on_client_connected
     client.on_client_disconnected = on_client_disconnected
+    client.on_client_connection_failed = on_client_connection_failed
 
     client.on_add_remote_stream = on_add_remote_stream
     client.on_remove_remote_stream = on_remove_remote_stream

@@ -45,6 +45,7 @@ namespace opentera
 
         std::function<void(const Client&)> m_onClientConnected;
         std::function<void(const Client&)> m_onClientDisconnected;
+        std::function<void(const Client&)> m_onClientConnectionFailed;
 
         std::function<void(const std::string& error)> m_onError;
 
@@ -53,6 +54,8 @@ namespace opentera
         std::unique_ptr<rtc::Thread> m_networkThread;
         std::unique_ptr<rtc::Thread> m_workerThread;
         std::unique_ptr<rtc::Thread> m_signalingThread;
+
+        bool m_destructorCalled;
 
     protected:
         std::unique_ptr<SignalingClient> m_signalingClient;
@@ -105,6 +108,7 @@ namespace opentera
 
         void setOnClientConnected(const std::function<void(const Client&)>& callback);
         void setOnClientDisconnected(const std::function<void(const Client&)>& callback);
+        void setOnClientConnectionFailed(const std::function<void(const Client&)>& callback);
 
         void setOnError(const std::function<void(const std::string& error)>& callback);
 
@@ -122,6 +126,7 @@ namespace opentera
         std::function<void(const std::string&)> getOnErrorFunction();
         std::function<void(const Client&)> getOnClientConnectedFunction();
         std::function<void(const Client&)> getOnClientDisconnectedFunction();
+        std::function<void(const Client&)> getOnClientConnectionFailedFunction();
 
         rtc::Thread* getInternalClientThread();
 
@@ -330,6 +335,23 @@ namespace opentera
     inline void WebrtcClient::setOnClientDisconnected(const std::function<void(const Client&)>& callback)
     {
         callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientDisconnected = callback; });
+    }
+
+    /**
+     * @brief Sets the callback that is called when a client peer connection fails.
+     *
+     * The callback is called from the internal client thread. The callback should not block.
+     *
+     * @parblock
+     * Callback parameters:
+     *  - client: The client that has a connection failure
+     * @endparblock
+     *
+     * @param callback The callback
+     */
+    inline void WebrtcClient::setOnClientConnectionFailed(const std::function<void(const Client&)>& callback)
+    {
+        callSync(m_internalClientThread.get(), [this, &callback]() { m_onClientConnectionFailed = callback; });
     }
 
     /**
