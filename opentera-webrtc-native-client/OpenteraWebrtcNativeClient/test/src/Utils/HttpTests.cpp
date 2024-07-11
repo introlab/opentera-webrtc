@@ -11,15 +11,35 @@ using ::testing::HasSubstr;
 TEST(HttpTests, get_http_shouldReturnTrueAndSetResponse)
 {
     string response;
-    EXPECT_TRUE(Http::get("http://www.perdus.com", response, {}));
-    EXPECT_THAT(response, HasSubstr("Vous Etes Perdus ?"));
+    if (Http::get("http://www.perdu.com", response, {}))
+    {
+        EXPECT_THAT(response, HasSubstr("Vous Etes Perdu ?"));
+    }
+    else if (Http::get("http://www.perdus.com", response, {}))
+    {
+        EXPECT_THAT(response, HasSubstr("Vous Etes Perdus ?"));
+    }
+    else
+    {
+        FAIL() << "Neither 'http://www.perdus.com' nor 'http://www.perdu.com' could be reached.";
+    }
 }
 
 TEST(HttpTests, get_https_shouldReturnTrueAndSetResponse)
 {
     string response;
-    EXPECT_TRUE(Http::get("https://www.perdus.com", response, {}));
-    EXPECT_THAT(response, HasSubstr("Vous Etes Perdus ?"));
+    if (Http::get("https://www.perdu.com", response, {}))
+    {
+        EXPECT_THAT(response, HasSubstr("Vous Etes Perdu ?"));
+    }
+    else if (Http::get("https://www.perdus.com", response, {}))
+    {
+        EXPECT_THAT(response, HasSubstr("Vous Etes Perdus ?"));
+    }
+    else
+    {
+        FAIL() << "Neither 'https://www.perdu.com' nor 'https://www.perdus.com' could be reached.";
+    }
 }
 
 TEST(HttpTests, get_invalidUrl_shouldReturnFalse)
