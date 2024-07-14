@@ -23,6 +23,12 @@ class WebSocketClientManager:
                 await self._ws_by_id[id].close()
                 del self._ws_by_id[id]
 
+    async def close_all(self):
+        self._create_lock_if_none()
+        async with self._lock:
+            asyncio.gather(*[ws.close() for ws in self._ws_by_id.values()])
+            self._ws_by_id.clear()
+
     async def send_to(self, message, ids):
         if isinstance(ids, str):
             ids = [ids]
