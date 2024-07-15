@@ -238,6 +238,11 @@ async def get_ice_servers(request: web.Request):
         return web.json_response([])
 
 
+async def on_shutdown(app):
+    await web_socket_client_manager.close_all()
+    await room_manager.clear_all()
+
+
 def _isAuthorized(user_password):
     return password is None or user_password == password
 
@@ -310,13 +315,16 @@ def main(other_routes=None):
     if args.static_folder is not None:
         app.add_routes([web.static('/', args.static_folder, follow_symlinks=args.follow_symlinks)])
 
+    # Shutdown callback
+    app.on_shutdown.append(on_shutdown)
+
     # Run app
     if using_tls:
         ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_context.load_cert_chain(args.certificate, args.key)
-        web.run_app(app, port=args.port, ssl_context=ssl_context)
+        web.run_app(app, port=args.port, ssl_context=ssl_context, shutdown_timeout=2)
     else:
-        web.run_app(app, port=args.port)
+        web.run_app(app, port=args.port, shutdown_timeout=2)
 
 
 if __name__ == '__main__':

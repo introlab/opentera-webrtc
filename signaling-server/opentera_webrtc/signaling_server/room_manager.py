@@ -11,6 +11,14 @@ class RoomManager:
 
         self._lock = None
 
+    async def clear_all(self):
+        self._create_lock_if_none()
+        async with self._lock:
+            self._room_by_id.clear()
+            self._ids_by_room.clear()
+            self._client_name_by_id.clear()
+            self._client_datum_by_id.clear()
+
     async def add_client(self, id, client_name, client_data, room):
         self._create_lock_if_none()
         async with self._lock:
