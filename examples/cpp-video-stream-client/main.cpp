@@ -45,7 +45,7 @@ private:
             cap.open(m_path);
             if (!cap.isOpened())
             {
-                cout << "Invalid video file" << endl;
+                cerr << "Invalid video file" << endl;
                 exit(EXIT_FAILURE);
             }
 

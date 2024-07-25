@@ -8,7 +8,7 @@
 \subsection data_channel_client_example Data Channel Client Example
 \include{lineno} cpp-data-channel-client/main.cpp
 
-\subsection stream_client_example Stream Client Example
-\include{lineno} cpp-stream-client/main.cpp
+\subsection video_stream_client_example Video Stream Client Example
+\include{lineno} cpp-video-stream-client/main.cpp
 
 */
