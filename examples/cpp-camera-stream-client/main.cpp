@@ -229,7 +229,6 @@ int main(int argc, char* argv[])
         [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
         {
             // This callback is called from a WebRTC processing thread.
-            cout << "OnVideoFrameReceived:" << endl;
             cv::imshow(client.id(), bgrImg);
             cv::waitKey(1);
         });
