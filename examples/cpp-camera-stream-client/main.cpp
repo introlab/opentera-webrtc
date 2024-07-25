@@ -64,6 +64,13 @@ private:
 };
 
 constexpr uint32_t SoundCardTotalDelayMs = 0;
+constexpr bool EchoCancellation = true;
+constexpr bool AutoGainControl = true;
+constexpr bool NoiseSuppression = true;
+constexpr bool HighpassFilter = false;
+constexpr bool StereoSwapping = false;
+constexpr bool TransientSuppression = false;
+
 constexpr int BitsPerSample = 16;
 constexpr PcmAudioFrameFormat AudioFormat = PcmAudioFrameFormat::Signed16;
 constexpr int SampleRate = 48000;
@@ -78,7 +85,14 @@ class AlsaAudioSource : public AudioSource
 public:
     AlsaAudioSource()
         : AudioSource(
-              AudioSourceConfiguration::create(SoundCardTotalDelayMs),
+              AudioSourceConfiguration::create(
+                  SoundCardTotalDelayMs,
+                  EchoCancellation,
+                  AutoGainControl,
+                  NoiseSuppression,
+                  HighpassFilter,
+                  StereoSwapping,
+                  TransientSuppression),
               BitsPerSample,
               SampleRate,
               NumberOfChannels),
