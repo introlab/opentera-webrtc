@@ -249,7 +249,7 @@ int main(int argc, char* argv[])
     client.setOnMixedAudioFrameReceived(
         [&](const void* audioData, int bitsPerSample, int sampleRate, size_t numberOfChannels, size_t numberOfFrames)
         {
-            if (bitsPerSample == 16 && numberOfChannels == 1 && sampleRate == SampleRate)
+            if (bitsPerSample == BitsPerSample && numberOfChannels == NumberOfChannels && sampleRate == SampleRate)
             {
                 playbackDevice.write(PcmAudioFrame(AudioFormat, NumberOfChannels, numberOfFrames, (uint8_t*)audioData));
             }
