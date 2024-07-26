@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.2.4</span>
+   <div id="projectname">OpenTera WebRTC API (C++)<span id="projectnumber">&#160;1.2.5</span>
    </div>
   </td>
  </tr>
@@ -45,7 +45,7 @@ $(function() {
 <div class="contents">
 <div class="toc"><h3>Table of Contents</h3>
 <ul><li class="level1"><a href="#examples">Examples</a><ul><li class="level2"><a href="#data_channel_client_example">Data Channel Client Example</a></li>
-<li class="level2"><a href="#stream_client_example">Stream Client Example</a></li>
+<li class="level2"><a href="#video_stream_client_example">Video Stream Client Example</a></li>
 </ul>
 </li>
 </ul>
@@ -189,8 +189,8 @@ Data Channel Client Example</h2>
 <div class="ttc" id="aclassopentera_1_1IceServer_html_a75644096eb6a5d321f06d6f24d94dae0"><div class="ttname"><a href="classopentera_1_1IceServer.html#a75644096eb6a5d321f06d6f24d94dae0">opentera::IceServer::fetchFromServer</a></div><div class="ttdeci">static bool fetchFromServer(const std::string &amp;url, const std::string &amp;password, std::vector&lt; IceServer &gt; &amp;iceServers, bool verifyCertificate=true)</div><div class="ttdoc">Fetches the ice servers from the signaling server.</div><div class="ttdef"><b>Definition:</b> IceServer.cpp:61</div></div>
 <div class="ttc" id="aclassopentera_1_1SignalingServerConfiguration_html_a78fe9b992fe862bb585d0df35f7dc558"><div class="ttname"><a href="classopentera_1_1SignalingServerConfiguration.html#a78fe9b992fe862bb585d0df35f7dc558">opentera::SignalingServerConfiguration::create</a></div><div class="ttdeci">static SignalingServerConfiguration create(std::string url, std::string clientName, std::string room)</div><div class="ttdoc">Creates an signaling server configuration with the specified values.</div><div class="ttdef"><b>Definition:</b> SignalingServerConfiguration.h:64</div></div>
 <div class="ttc" id="aclassopentera_1_1WebrtcConfiguration_html_add13ac8efa8ee5b84406932b8dbf8072"><div class="ttname"><a href="classopentera_1_1WebrtcConfiguration.html#add13ac8efa8ee5b84406932b8dbf8072">opentera::WebrtcConfiguration::create</a></div><div class="ttdeci">static WebrtcConfiguration create()</div><div class="ttdoc">Creates a WebRTC peer connection configuration with default values.</div><div class="ttdef"><b>Definition:</b> WebrtcConfiguration.h:39</div></div>
-</div><!-- fragment --><h2><a class="anchor" id="stream_client_example"></a>
-Stream Client Example</h2>
+</div><!-- fragment --><h2><a class="anchor" id="video_stream_client_example"></a>
+Video Stream Client Example</h2>
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#include &lt;OpenteraWebrtcNativeClient/StreamClient.h&gt;</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160; </div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;opencv2/core.hpp&gt;</span></div>
@@ -238,7 +238,7 @@ Stream Client Example</h2>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            cap.open(m_path);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">if</span> (!cap.isOpened())</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                cout &lt;&lt; <span class="stringliteral">&quot;Invalid video file&quot;</span> &lt;&lt; endl;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                cerr &lt;&lt; <span class="stringliteral">&quot;Invalid video file&quot;</span> &lt;&lt; endl;</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                exit(EXIT_FAILURE);</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            }</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
@@ -472,7 +472,7 @@ Stream Client Example</h2>
 <!-- HTML footer for doxygen 1.9.6-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Fri Jul 26 2024 13:56:21 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+Generated on Fri Jul 26 2024 16:17:44 for OpenTera WebRTC API (C++) by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
 </small></address>
 </body>
 </html>
