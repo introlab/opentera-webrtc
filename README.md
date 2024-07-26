@@ -43,7 +43,8 @@ Please read the [Code of Conduct](CODE_OF_CONDUCT.md) and [CONTRIBUTING](CONTRIB
 ### C++
 
 * [data-channel-client](examples/cpp-data-channel-client)
-* [stream-client](examples/cpp-stream-client)
+* [cpp-video-stream-client](examples/cpp-video-stream-client)
+* [cpp-camera-stream-client](examples/cpp-camera-stream-client)
 
 ### Python
 

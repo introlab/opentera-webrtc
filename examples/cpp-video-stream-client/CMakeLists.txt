@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14.0)
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-project(CppStreamClient)
+project(CppVideoStreamClient)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
@@ -13,22 +13,22 @@ include_directories(../../opentera-webrtc-native-client/3rdParty/IXWebSocket)
 include_directories(../../opentera-webrtc-native-client/3rdParty/cpp-httplib)
 include_directories(../../opentera-webrtc-native-client/OpenteraWebrtcNativeClient/include)
 
-add_executable(CppStreamClient main.cpp)
+add_executable(CppVideoStreamClient main.cpp)
 
-target_link_libraries(CppStreamClient
+target_link_libraries(CppVideoStreamClient
     OpenteraWebrtcNativeClient
     opencv_videoio
     opencv_highgui
 )
 
 if (NOT WIN32)
-    target_link_libraries(CppStreamClient
+    target_link_libraries(CppVideoStreamClient
         pthread
     )
 endif()
 
 if (NOT OPENTERA_WEBRTC_USE_SYSTEM_OPENCV)
-    add_dependencies(CppStreamClient opencv_highgui opencv_videoio)
+    add_dependencies(CppVideoStreamClient opencv_highgui opencv_videoio)
 endif()
 
-set_property(TARGET CppStreamClient PROPERTY CXX_STANDARD 17)
+set_property(TARGET CppVideoStreamClient PROPERTY CXX_STANDARD 17)
