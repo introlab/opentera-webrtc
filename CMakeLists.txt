@@ -12,6 +12,7 @@ CACHE INTERNAL "")
 message(STATUS "opentera-webrtc-native-client Version : ${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
 
 add_definitions(-DOPENTERA_WEBRTC_NATIVE_CLIENT_VERSION="${OPENTERA_WEBRTC_NATIVE_CLIENT_VERSION}")
+add_definitions(-DWEBRTC_USE_H264)
 
 if (POLICY CMP0014)
     cmake_policy(SET CMP0014 NEW)
