@@ -6,7 +6,7 @@ on:
         - cron: '0 5 * * *'
 jobs:
     get_stats:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         steps:
             - name: Update Stats
               uses: introlab/github-stats-action@v1
