@@ -1,2 +1,2 @@
-aiohttp==3.9.4
+aiohttp==3.10.2
 aiohttp_index==0.1
