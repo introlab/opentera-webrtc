@@ -67,7 +67,8 @@ void Vp8GStreamerVideoEncoder::populateCodecSpecificInfo(
 }
 
 
-SoftwareVp8GStreamerVideoEncoder::SoftwareVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+SoftwareVp8GStreamerVideoEncoder::SoftwareVp8GStreamerVideoEncoder(
+    [[maybe_unused]] const webrtc::CodecParameterMap& parameters)
     : Vp8GStreamerVideoEncoder(
           "vp8enc name=encoder deadline=1",
           "target-bitrate",
@@ -95,13 +96,15 @@ bool SoftwareVp8GStreamerVideoEncoder::isHardwareAccelerated()
     return false;
 }
 
-bool SoftwareVp8GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool SoftwareVp8GStreamerVideoEncoder::areParametersSupported(
+    [[maybe_unused]] const webrtc::CodecParameterMap& parameters)
 {
     return true;
 }
 
 
-VaapiVp8GStreamerVideoEncoder::VaapiVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+VaapiVp8GStreamerVideoEncoder::VaapiVp8GStreamerVideoEncoder(
+    [[maybe_unused]] const webrtc::CodecParameterMap& parameters)
     : Vp8GStreamerVideoEncoder("vaapivp8enc name=encoder", "bitrate", BitRateUnit::KBitPerSec, "keyframe-period")
 {
 }
@@ -125,13 +128,14 @@ bool VaapiVp8GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool VaapiVp8GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool VaapiVp8GStreamerVideoEncoder::areParametersSupported([[maybe_unused]] const webrtc::CodecParameterMap& parameters)
 {
     return true;
 }
 
 
-TegraVp8GStreamerVideoEncoder::TegraVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+TegraVp8GStreamerVideoEncoder::TegraVp8GStreamerVideoEncoder(
+    [[maybe_unused]] const webrtc::CodecParameterMap& parameters)
     : Vp8GStreamerVideoEncoder(
           "nvvidconv ! nvv4l2vp8enc name=encoder",
           "bitrate",
@@ -160,7 +164,7 @@ bool TegraVp8GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool TegraVp8GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool TegraVp8GStreamerVideoEncoder::areParametersSupported([[maybe_unused]] const webrtc::CodecParameterMap& parameters)
 {
     return true;
 }

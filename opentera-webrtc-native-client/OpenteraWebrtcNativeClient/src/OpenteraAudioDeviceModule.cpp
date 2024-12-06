@@ -65,7 +65,7 @@ void OpenteraAudioDeviceModule::sendFrame(
         newMicLevel);  // New mic volume (not used)
 }
 
-int32_t OpenteraAudioDeviceModule::ActiveAudioLayer(AudioLayer* audioLayer) const
+int32_t OpenteraAudioDeviceModule::ActiveAudioLayer([[maybe_unused]] AudioLayer* audioLayer) const
 {
     return 0;
 }
@@ -113,7 +113,7 @@ int16_t OpenteraAudioDeviceModule::RecordingDevices()
 }
 
 int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(
-    uint16_t index,
+    [[maybe_unused]] uint16_t index,
     char name[webrtc::kAdmMaxDeviceNameSize],
     char guid[webrtc::kAdmMaxGuidSize])
 {
@@ -123,7 +123,7 @@ int32_t OpenteraAudioDeviceModule::PlayoutDeviceName(
 }
 
 int32_t OpenteraAudioDeviceModule::RecordingDeviceName(
-    uint16_t index,
+    [[maybe_unused]] uint16_t index,
     char name[webrtc::kAdmMaxDeviceNameSize],
     char guid[webrtc::kAdmMaxGuidSize])
 {
@@ -132,7 +132,7 @@ int32_t OpenteraAudioDeviceModule::RecordingDeviceName(
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetPlayoutDevice(uint16_t index)
+int32_t OpenteraAudioDeviceModule::SetPlayoutDevice([[maybe_unused]] uint16_t index)
 {
     if (m_isPlayoutInitialized)
     {
@@ -141,7 +141,7 @@ int32_t OpenteraAudioDeviceModule::SetPlayoutDevice(uint16_t index)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetPlayoutDevice(WindowsDeviceType device)
+int32_t OpenteraAudioDeviceModule::SetPlayoutDevice([[maybe_unused]] WindowsDeviceType device)
 {
     if (m_isPlayoutInitialized)
     {
@@ -151,7 +151,7 @@ int32_t OpenteraAudioDeviceModule::SetPlayoutDevice(WindowsDeviceType device)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetRecordingDevice(uint16_t index)
+int32_t OpenteraAudioDeviceModule::SetRecordingDevice([[maybe_unused]] uint16_t index)
 {
     if (m_isRecordingInitialized)
     {
@@ -161,7 +161,7 @@ int32_t OpenteraAudioDeviceModule::SetRecordingDevice(uint16_t index)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetRecordingDevice(WindowsDeviceType device)
+int32_t OpenteraAudioDeviceModule::SetRecordingDevice([[maybe_unused]] WindowsDeviceType device)
 {
     if (m_isRecordingInitialized)
     {
@@ -277,22 +277,22 @@ int32_t OpenteraAudioDeviceModule::SpeakerVolumeIsAvailable(bool* available)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetSpeakerVolume(uint32_t volume)
+int32_t OpenteraAudioDeviceModule::SetSpeakerVolume([[maybe_unused]] uint32_t volume)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::SpeakerVolume(uint32_t* volume) const
+int32_t OpenteraAudioDeviceModule::SpeakerVolume([[maybe_unused]] uint32_t* volume) const
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MaxSpeakerVolume(uint32_t* maxVolume) const
+int32_t OpenteraAudioDeviceModule::MaxSpeakerVolume([[maybe_unused]] uint32_t* maxVolume) const
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MinSpeakerVolume(uint32_t* minVolume) const
+int32_t OpenteraAudioDeviceModule::MinSpeakerVolume([[maybe_unused]] uint32_t* minVolume) const
 {
     return -1;
 }
@@ -303,22 +303,22 @@ int32_t OpenteraAudioDeviceModule::MicrophoneVolumeIsAvailable(bool* available)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetMicrophoneVolume(uint32_t volume)
+int32_t OpenteraAudioDeviceModule::SetMicrophoneVolume([[maybe_unused]] uint32_t volume)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MicrophoneVolume(uint32_t* volume) const
+int32_t OpenteraAudioDeviceModule::MicrophoneVolume([[maybe_unused]] uint32_t* volume) const
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MaxMicrophoneVolume(uint32_t* maxVolume) const
+int32_t OpenteraAudioDeviceModule::MaxMicrophoneVolume([[maybe_unused]] uint32_t* maxVolume) const
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MinMicrophoneVolume(uint32_t* minVolume) const
+int32_t OpenteraAudioDeviceModule::MinMicrophoneVolume([[maybe_unused]] uint32_t* minVolume) const
 {
     return -1;
 }
@@ -329,12 +329,12 @@ int32_t OpenteraAudioDeviceModule::SpeakerMuteIsAvailable(bool* available)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetSpeakerMute(bool enable)
+int32_t OpenteraAudioDeviceModule::SetSpeakerMute([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::SpeakerMute(bool* enabled) const
+int32_t OpenteraAudioDeviceModule::SpeakerMute([[maybe_unused]] bool* enabled) const
 {
     return -1;
 }
@@ -345,12 +345,12 @@ int32_t OpenteraAudioDeviceModule::MicrophoneMuteIsAvailable(bool* available)
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetMicrophoneMute(bool enable)
+int32_t OpenteraAudioDeviceModule::SetMicrophoneMute([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::MicrophoneMute(bool* enabled) const
+int32_t OpenteraAudioDeviceModule::MicrophoneMute([[maybe_unused]] bool* enabled) const
 {
     return -1;
 }
@@ -361,12 +361,12 @@ int32_t OpenteraAudioDeviceModule::StereoPlayoutIsAvailable(bool* available) con
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetStereoPlayout(bool enable)
+int32_t OpenteraAudioDeviceModule::SetStereoPlayout([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::StereoPlayout(bool* enabled) const
+int32_t OpenteraAudioDeviceModule::StereoPlayout([[maybe_unused]] bool* enabled) const
 {
     return -1;
 }
@@ -377,12 +377,12 @@ int32_t OpenteraAudioDeviceModule::StereoRecordingIsAvailable(bool* available) c
     return 0;
 }
 
-int32_t OpenteraAudioDeviceModule::SetStereoRecording(bool enable)
+int32_t OpenteraAudioDeviceModule::SetStereoRecording([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::StereoRecording(bool* enabled) const
+int32_t OpenteraAudioDeviceModule::StereoRecording([[maybe_unused]] bool* enabled) const
 {
     return -1;
 }
@@ -408,17 +408,17 @@ bool OpenteraAudioDeviceModule::BuiltInNSIsAvailable() const
     return false;
 }
 
-int32_t OpenteraAudioDeviceModule::EnableBuiltInAEC(bool enable)
+int32_t OpenteraAudioDeviceModule::EnableBuiltInAEC([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::EnableBuiltInAGC(bool enable)
+int32_t OpenteraAudioDeviceModule::EnableBuiltInAGC([[maybe_unused]] bool enable)
 {
     return -1;
 }
 
-int32_t OpenteraAudioDeviceModule::EnableBuiltInNS(bool enable)
+int32_t OpenteraAudioDeviceModule::EnableBuiltInNS([[maybe_unused]] bool enable)
 {
     return -1;
 }

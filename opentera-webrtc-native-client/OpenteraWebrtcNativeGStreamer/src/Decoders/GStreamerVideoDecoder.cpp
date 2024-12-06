@@ -65,7 +65,10 @@ int32_t GStreamerVideoDecoder::Release()
     return WEBRTC_VIDEO_CODEC_OK;
 }
 
-int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bool missingFrames, int64_t renderTimeMs)
+int32_t GStreamerVideoDecoder::Decode(
+    const webrtc::EncodedImage& inputImage,
+    [[maybe_unused]] bool missingFrames,
+    int64_t renderTimeMs)
 {
     if (m_keyframeNeeded)
     {
@@ -88,7 +91,9 @@ int32_t GStreamerVideoDecoder::Decode(const webrtc::EncodedImage& inputImage, bo
     }
 
     if (m_resetPipelineOnSizeChanges && inputImage._frameType == webrtc::VideoFrameType::kVideoFrameKey &&
-        m_width != 0 && m_height != 0 && (m_width != inputImage._encodedWidth || m_height != inputImage._encodedHeight))
+        m_width != 0 && m_height != 0 &&
+        (m_width != static_cast<gint>(inputImage._encodedWidth) ||
+         m_height != static_cast<gint>(inputImage._encodedHeight)))
     {
         initializePipeline();
         initializeBufferTimestamps(renderTimeMs, inputImage.RtpTimestamp());

@@ -46,40 +46,40 @@ namespace opentera
     class SoftwareVp8GStreamerVideoEncoder : public Vp8GStreamerVideoEncoder
     {
     public:
-        explicit SoftwareVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit SoftwareVp8GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~SoftwareVp8GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class VaapiVp8GStreamerVideoEncoder : public Vp8GStreamerVideoEncoder
     {
     public:
-        explicit VaapiVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit VaapiVp8GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~VaapiVp8GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class TegraVp8GStreamerVideoEncoder : public Vp8GStreamerVideoEncoder
     {
     public:
-        explicit TegraVp8GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit TegraVp8GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~TegraVp8GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 }
 

@@ -156,7 +156,8 @@ void WebRtcGStreamerVideoEncoderFactory::addVp8Encoders(
 }
 
 void WebRtcGStreamerVideoEncoderFactory::addVp9Encoders(
-    bool forceHardwareAcceleration,
+    // TODO Remove maybe_unused when VP9 works.
+    [[maybe_unused]] bool forceHardwareAcceleration,
     bool useGStreamerSoftwareEncoder)
 {
     auto VP9_CODEC_NAME = Vp9GStreamerVideoEncoder::codecName();
@@ -200,7 +201,7 @@ WebRtcGStreamerVideoEncoderFactory::EncoderFactory
     return {
         priority,
         false,
-        [](const webrtc::SdpVideoFormat::Parameters& parameters) { return true; },
+        []([[maybe_unused]] const webrtc::CodecParameterMap& parameters) { return true; },
         [this](const webrtc::Environment& env, const webrtc::SdpVideoFormat& format)
         { return m_builtinVideoEncoderFactory->Create(env, format); }};
 }

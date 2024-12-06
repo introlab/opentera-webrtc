@@ -32,7 +32,7 @@ constexpr const char* MainProfileLevelIdPrefix = "4f";
 constexpr const char* High444ProfileLevelIdPrefix = "f4";
 
 H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
-    const webrtc::SdpVideoFormat::Parameters& parameters,
+    const webrtc::CodecParameterMap& parameters,
     string encoderPipeline,
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
@@ -56,7 +56,7 @@ H264GStreamerVideoEncoder::H264GStreamerVideoEncoder(
     }
 }
 
-string H264GStreamerVideoEncoder::mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters)
+string H264GStreamerVideoEncoder::mediaTypeCaps(const webrtc::CodecParameterMap& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
     if (it == parameters.end() || it->second.find(BaselineProfileLevelIdPrefix) == 0)
@@ -82,7 +82,7 @@ const char* H264GStreamerVideoEncoder::codecName()
     return cricket::kH264CodecName;
 }
 
-bool H264GStreamerVideoEncoder::isProfileBaselineOrMain(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool H264GStreamerVideoEncoder::isProfileBaselineOrMain(const webrtc::CodecParameterMap& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
     if (it == parameters.end())
@@ -95,7 +95,7 @@ bool H264GStreamerVideoEncoder::isProfileBaselineOrMain(const webrtc::SdpVideoFo
     }
 }
 
-bool H264GStreamerVideoEncoder::isProfileBaselineOrMainOrHigh444(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool H264GStreamerVideoEncoder::isProfileBaselineOrMainOrHigh444(const webrtc::CodecParameterMap& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
     if (it == parameters.end())
@@ -116,15 +116,14 @@ int H264GStreamerVideoEncoder::getKeyframeInterval(const webrtc::VideoCodec& cod
 
 void H264GStreamerVideoEncoder::populateCodecSpecificInfo(
     webrtc::CodecSpecificInfo& codecSpecificInfo,
-    const webrtc::EncodedImage& encodedFrame)
+    [[maybe_unused]] const webrtc::EncodedImage& encodedFrame)
 {
     codecSpecificInfo.codecType = webrtc::kVideoCodecH264;
     codecSpecificInfo.codecSpecific.H264.packetization_mode = m_packetizationMode;
 }
 
 
-SoftwareH264GStreamerVideoEncoder::SoftwareH264GStreamerVideoEncoder(
-    const webrtc::SdpVideoFormat::Parameters& parameters)
+SoftwareH264GStreamerVideoEncoder::SoftwareH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
           "x264enc name=encoder tune=zerolatency ! h264parse",
@@ -153,13 +152,13 @@ bool SoftwareH264GStreamerVideoEncoder::isHardwareAccelerated()
     return false;
 }
 
-bool SoftwareH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool SoftwareH264GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfileBaselineOrMainOrHigh444(parameters);
 }
 
 
-VaapiH264GStreamerVideoEncoder::VaapiH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+VaapiH264GStreamerVideoEncoder::VaapiH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
           "vaapih264enc name=encoder ! h264parse",
@@ -188,13 +187,13 @@ bool VaapiH264GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool VaapiH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool VaapiH264GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfileBaselineOrMain(parameters);
 }
 
 
-TegraH264GStreamerVideoEncoder::TegraH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+TegraH264GStreamerVideoEncoder::TegraH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
           "nvvidconv ! nvv4l2h264enc name=encoder profile=" + profileFromParameters(parameters) + " ! h264parse",
@@ -224,12 +223,12 @@ bool TegraH264GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool TegraH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool TegraH264GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfileBaselineOrMain(parameters);
 }
 
-string TegraH264GStreamerVideoEncoder::profileFromParameters(const webrtc::SdpVideoFormat::Parameters& parameters)
+string TegraH264GStreamerVideoEncoder::profileFromParameters(const webrtc::CodecParameterMap& parameters)
 {
     auto it = parameters.find(cricket::kH264FmtpProfileLevelId);
     if (it != parameters.end() && it->second.find(MainProfileLevelIdPrefix) == 0)
@@ -243,7 +242,7 @@ string TegraH264GStreamerVideoEncoder::profileFromParameters(const webrtc::SdpVi
 }
 
 
-V4l2H264GStreamerVideoEncoder::V4l2H264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+V4l2H264GStreamerVideoEncoder::V4l2H264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
           "v4l2h264enc name=encoder ! h264parse",
@@ -273,14 +272,13 @@ bool V4l2H264GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool V4l2H264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool V4l2H264GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfileBaselineOrMain(parameters);
 }
 
 
-AppleMediaH264GStreamerVideoEncoder::AppleMediaH264GStreamerVideoEncoder(
-    const webrtc::SdpVideoFormat::Parameters& parameters)
+AppleMediaH264GStreamerVideoEncoder::AppleMediaH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : H264GStreamerVideoEncoder(
           parameters,
           "vtenc_h264 name=encoder ! h264parse",
@@ -309,7 +307,7 @@ bool AppleMediaH264GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool AppleMediaH264GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool AppleMediaH264GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfileBaselineOrMain(parameters);
 }

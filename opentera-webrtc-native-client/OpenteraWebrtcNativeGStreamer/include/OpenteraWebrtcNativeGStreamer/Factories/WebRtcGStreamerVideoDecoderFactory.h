@@ -67,9 +67,10 @@ namespace opentera
     WebRtcGStreamerVideoDecoderFactory::DecoderFactory
         WebRtcGStreamerVideoDecoderFactory::createDecoderFactory(int priority)
     {
-        return {priority, Decoder::isHardwareAccelerated(), [](auto _env, auto _format) {
-                    return std::make_unique<Decoder>();
-                }};
+        return {
+            priority,
+            Decoder::isHardwareAccelerated(),
+            []([[maybe_unused]] auto _env, [[maybe_unused]] auto _format) { return std::make_unique<Decoder>(); }};
     }
 }
 

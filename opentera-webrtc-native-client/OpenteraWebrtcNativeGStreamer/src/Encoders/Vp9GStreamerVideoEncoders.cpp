@@ -24,7 +24,7 @@ using namespace std;
 // TODO fix VP9
 
 Vp9GStreamerVideoEncoder::Vp9GStreamerVideoEncoder(
-    const webrtc::SdpVideoFormat::Parameters& parameters,
+    const webrtc::CodecParameterMap& parameters,
     string encoderPipeline,
     string encoderBitratePropertyName,
     BitRateUnit bitRatePropertyUnit,
@@ -38,7 +38,7 @@ Vp9GStreamerVideoEncoder::Vp9GStreamerVideoEncoder(
 {
 }
 
-string Vp9GStreamerVideoEncoder::mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters)
+string Vp9GStreamerVideoEncoder::mediaTypeCaps(const webrtc::CodecParameterMap& parameters)
 {
     auto it = parameters.find(cricket::kVP9ProfileId);
     if (it == parameters.end())
@@ -56,7 +56,7 @@ const char* Vp9GStreamerVideoEncoder::codecName()
     return cricket::kVp9CodecName;
 }
 
-bool Vp9GStreamerVideoEncoder::isProfile0123OrNone(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool Vp9GStreamerVideoEncoder::isProfile0123OrNone(const webrtc::CodecParameterMap& parameters)
 {
     if (parameters.size() > 1)
     {
@@ -81,7 +81,7 @@ int Vp9GStreamerVideoEncoder::getKeyframeInterval(const webrtc::VideoCodec& code
 
 void Vp9GStreamerVideoEncoder::populateCodecSpecificInfo(
     webrtc::CodecSpecificInfo& codecSpecificInfo,
-    const webrtc::EncodedImage& encodedFrame)
+    [[maybe_unused]] const webrtc::EncodedImage& encodedFrame)
 {
     codecSpecificInfo.codecType = webrtc::kVideoCodecVP9;
 
@@ -101,7 +101,7 @@ int Vp9GStreamerVideoEncoder::InitEncode(
 }
 
 
-SoftwareVp9GStreamerVideoEncoder::SoftwareVp9GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+SoftwareVp9GStreamerVideoEncoder::SoftwareVp9GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : Vp9GStreamerVideoEncoder(
           parameters,
           "vp9enc name=encoder deadline=1",
@@ -130,13 +130,13 @@ bool SoftwareVp9GStreamerVideoEncoder::isHardwareAccelerated()
     return false;
 }
 
-bool SoftwareVp9GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool SoftwareVp9GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfile0123OrNone(parameters);
 }
 
 
-TegraVp9GStreamerVideoEncoder::TegraVp9GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters)
+TegraVp9GStreamerVideoEncoder::TegraVp9GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters)
     : Vp9GStreamerVideoEncoder(
           parameters,
           "nvvidconv ! nvv4l2vp9enc name=encoder",
@@ -166,7 +166,7 @@ bool TegraVp9GStreamerVideoEncoder::isHardwareAccelerated()
     return true;
 }
 
-bool TegraVp9GStreamerVideoEncoder::areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters)
+bool TegraVp9GStreamerVideoEncoder::areParametersSupported(const webrtc::CodecParameterMap& parameters)
 {
     return isProfile0123OrNone(parameters);
 }

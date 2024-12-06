@@ -508,7 +508,7 @@ bool WebrtcClient::getCallAcceptance(const string& id)
 }
 
 unique_ptr<PeerConnectionHandler>
-    WebrtcClient::createConnection(const string& peerId, const Client& peerClient, bool isCaller)
+    WebrtcClient::createConnection([[maybe_unused]] const string& peerId, const Client& peerClient, bool isCaller)
 {
     return callSync(
         m_internalClientThread.get(),

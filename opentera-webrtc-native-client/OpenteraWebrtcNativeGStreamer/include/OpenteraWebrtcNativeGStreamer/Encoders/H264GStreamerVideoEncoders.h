@@ -28,7 +28,7 @@ namespace opentera
 
     public:
         H264GStreamerVideoEncoder(
-            const webrtc::SdpVideoFormat::Parameters& parameters,
+            const webrtc::CodecParameterMap& parameters,
             std::string encoderPipeline,
             std::string encoderBitratePropertyName,
             BitRateUnit bitRatePropertyUnit,
@@ -36,11 +36,11 @@ namespace opentera
             const char* additionalMediaTypeCaps = "");
         ~H264GStreamerVideoEncoder() override = default;
 
-        static std::string mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static std::string mediaTypeCaps(const webrtc::CodecParameterMap& parameters);
         static const char* codecName();
 
-        static bool isProfileBaselineOrMain(const webrtc::SdpVideoFormat::Parameters& parameters);
-        static bool isProfileBaselineOrMainOrHigh444(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool isProfileBaselineOrMain(const webrtc::CodecParameterMap& parameters);
+        static bool isProfileBaselineOrMainOrHigh444(const webrtc::CodecParameterMap& parameters);
 
     protected:
         int getKeyframeInterval(const webrtc::VideoCodec& codecSettings) override;
@@ -53,69 +53,69 @@ namespace opentera
     class SoftwareH264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
     {
     public:
-        explicit SoftwareH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit SoftwareH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~SoftwareH264GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class VaapiH264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
     {
     public:
-        explicit VaapiH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit VaapiH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~VaapiH264GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class TegraH264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
     {
     public:
-        explicit TegraH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit TegraH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~TegraH264GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
 
     private:
-        static std::string profileFromParameters(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static std::string profileFromParameters(const webrtc::CodecParameterMap& parameters);
     };
 
     class V4l2H264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
     {
     public:
-        explicit V4l2H264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit V4l2H264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~V4l2H264GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class AppleMediaH264GStreamerVideoEncoder : public H264GStreamerVideoEncoder
     {
     public:
-        explicit AppleMediaH264GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit AppleMediaH264GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~AppleMediaH264GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 }
 
