@@ -18,6 +18,7 @@ set(OPENSSL_INCLUDE_DIR ${boringssl_INCLUDE})
 set(OPENSSL_LIBRARIES ${boringssl_LIBRARY})
 add_subdirectory(IXWebSocket)
 set_property(TARGET ixwebsocket PROPERTY CXX_STANDARD 17)
+target_compile_options(ixwebsocket PRIVATE -w)
 
 if (OPENTERA_WEBRTC_ENABLE_TESTS)
     add_subdirectory(googletest)

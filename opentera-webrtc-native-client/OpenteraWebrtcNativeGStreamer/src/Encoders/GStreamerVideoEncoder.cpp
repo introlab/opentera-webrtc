@@ -63,7 +63,9 @@ int32_t GStreamerVideoEncoder::Release()
     return WEBRTC_VIDEO_CODEC_OK;
 }
 
-int GStreamerVideoEncoder::InitEncode(const webrtc::VideoCodec* codecSettings, const VideoEncoder::Settings& settings)
+int GStreamerVideoEncoder::InitEncode(
+    const webrtc::VideoCodec* codecSettings,
+    [[maybe_unused]] const VideoEncoder::Settings& settings)
 {
     if (codecSettings == nullptr || codecSettings->maxFramerate < 1 ||
         (codecSettings->maxBitrate > 0 && codecSettings->startBitrate > codecSettings->maxBitrate) ||

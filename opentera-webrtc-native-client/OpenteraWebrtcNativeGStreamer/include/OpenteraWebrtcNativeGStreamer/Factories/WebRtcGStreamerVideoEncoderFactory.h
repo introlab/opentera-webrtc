@@ -34,7 +34,7 @@ namespace opentera
         {
             int priority;
             bool isHardwareAccelerated;
-            std::function<bool(const webrtc::SdpVideoFormat::Parameters&)> areParametersSupported;
+            std::function<bool(const webrtc::CodecParameterMap&)> areParametersSupported;
             std::function<
                 std::unique_ptr<webrtc::VideoEncoder>(const webrtc::Environment& env, const webrtc::SdpVideoFormat&)>
                 factory;
@@ -74,7 +74,7 @@ namespace opentera
             priority,
             Encoder::isHardwareAccelerated(),
             [](auto parameters) { return Encoder::areParametersSupported(parameters); },
-            [](auto env, auto format) { return std::make_unique<Encoder>(format.parameters); }};
+            []([[maybe_unused]] auto env, auto format) { return std::make_unique<Encoder>(format.parameters); }};
     }
 }
 

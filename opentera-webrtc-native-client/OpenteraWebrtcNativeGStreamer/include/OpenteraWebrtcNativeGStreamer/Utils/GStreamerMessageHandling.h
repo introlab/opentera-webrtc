@@ -34,7 +34,7 @@ namespace opentera::internal
         switch (GST_MESSAGE_TYPE(message))
         {
             case GST_MESSAGE_ERROR:
-                GST_ERROR_OBJECT(pipeline, "Got message: %" GST_PTR_FORMAT, message);
+                GST_ERROR_OBJECT(pipeline, "Got message: %" GST_PTR_FORMAT, static_cast<void*>(message));
                 {
 #ifdef DEBUG_GSTREAMER
                     std::string dotFileName = std::string(GST_OBJECT_NAME(pipeline)) + "_error";

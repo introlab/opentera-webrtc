@@ -28,7 +28,7 @@ namespace opentera
 
     public:
         Vp9GStreamerVideoEncoder(
-            const webrtc::SdpVideoFormat::Parameters& parameters,
+            const webrtc::CodecParameterMap& parameters,
             std::string encoderPipeline,
             std::string encoderBitratePropertyName,
             BitRateUnit bitRatePropertyUnit,
@@ -37,10 +37,10 @@ namespace opentera
 
         int InitEncode(const webrtc::VideoCodec* codecSettings, const Settings& settings) override;
 
-        static std::string mediaTypeCaps(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static std::string mediaTypeCaps(const webrtc::CodecParameterMap& parameters);
         static const char* codecName();
 
-        static bool isProfile0123OrNone(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool isProfile0123OrNone(const webrtc::CodecParameterMap& parameters);
 
     protected:
         int getKeyframeInterval(const webrtc::VideoCodec& codecSettings) override;
@@ -53,27 +53,27 @@ namespace opentera
     class SoftwareVp9GStreamerVideoEncoder : public Vp9GStreamerVideoEncoder
     {
     public:
-        explicit SoftwareVp9GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit SoftwareVp9GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~SoftwareVp9GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 
     class TegraVp9GStreamerVideoEncoder : public Vp9GStreamerVideoEncoder
     {
     public:
-        explicit TegraVp9GStreamerVideoEncoder(const webrtc::SdpVideoFormat::Parameters& parameters);
+        explicit TegraVp9GStreamerVideoEncoder(const webrtc::CodecParameterMap& parameters);
         ~TegraVp9GStreamerVideoEncoder() override = default;
 
         [[nodiscard]] webrtc::VideoEncoder::EncoderInfo GetEncoderInfo() const override;
 
         static bool isSupported();
         static bool isHardwareAccelerated();
-        static bool areParametersSupported(const webrtc::SdpVideoFormat::Parameters& parameters);
+        static bool areParametersSupported(const webrtc::CodecParameterMap& parameters);
     };
 }
 

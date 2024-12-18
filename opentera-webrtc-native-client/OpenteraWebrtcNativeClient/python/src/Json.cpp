@@ -107,6 +107,9 @@ py::object opentera::jsonToPyObject(const nlohmann::json& json)
             }
             return dict;
         }
+
+        case nlohmann::detail::value_t::discarded:
+            return py::none();
     }
 
     return py::none();

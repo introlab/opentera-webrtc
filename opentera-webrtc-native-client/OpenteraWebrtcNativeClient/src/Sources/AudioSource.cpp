@@ -55,12 +55,12 @@ AudioSource::AudioSource(
 /**
  * Do nothing.
  */
-void AudioSource::AddSink(webrtc::AudioTrackSinkInterface* sink) {}
+void AudioSource::AddSink([[maybe_unused]] webrtc::AudioTrackSinkInterface* sink) {}
 
 /**
  * Do nothing.
  */
-void AudioSource::RemoveSink(webrtc::AudioTrackSinkInterface* sink) {}
+void AudioSource::RemoveSink([[maybe_unused]] webrtc::AudioTrackSinkInterface* sink) {}
 
 /**
  * @brief Indicates if this source is remote

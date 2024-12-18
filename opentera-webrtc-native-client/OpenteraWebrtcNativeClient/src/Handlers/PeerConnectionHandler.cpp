@@ -162,15 +162,22 @@ void PeerConnectionHandler::OnIceCandidate(const webrtc::IceCandidateInterface* 
     m_signalingClient.sendIceCandidate(candidate->sdp_mid(), candidate->sdp_mline_index(), sdp, m_peerClient.id());
 }
 
-void PeerConnectionHandler::OnDataChannel(rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel) {}
+void PeerConnectionHandler::OnDataChannel([[maybe_unused]] rtc::scoped_refptr<webrtc::DataChannelInterface> dataChannel)
+{
+}
 
-void PeerConnectionHandler::OnTrack(rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) {}
+void PeerConnectionHandler::OnTrack([[maybe_unused]] rtc::scoped_refptr<webrtc::RtpTransceiverInterface> transceiver) {}
 
-void PeerConnectionHandler::OnRemoveTrack(rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) {}
+void PeerConnectionHandler::OnRemoveTrack([[maybe_unused]] rtc::scoped_refptr<webrtc::RtpReceiverInterface> receiver) {}
 
-void PeerConnectionHandler::OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState newState) {}
+void PeerConnectionHandler::OnSignalingChange([[maybe_unused]] webrtc::PeerConnectionInterface::SignalingState newState)
+{
+}
 
-void PeerConnectionHandler::OnIceGatheringChange(webrtc::PeerConnectionInterface::IceGatheringState newState) {}
+void PeerConnectionHandler::OnIceGatheringChange(
+    [[maybe_unused]] webrtc::PeerConnectionInterface::IceGatheringState newState)
+{
+}
 
 void PeerConnectionHandler::OnCreateSessionDescriptionObserverSuccess(webrtc::SessionDescriptionInterface* desc)
 {

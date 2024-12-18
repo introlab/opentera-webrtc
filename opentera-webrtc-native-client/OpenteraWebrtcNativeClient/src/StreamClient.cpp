@@ -185,7 +185,9 @@ unique_ptr<PeerConnectionHandler>
     rtc::scoped_refptr<webrtc::VideoTrackInterface> videoTrack = nullptr;
     if (m_videoSource != nullptr)
     {
-        videoTrack = m_peerConnectionFactory->CreateVideoTrack("stream_video", m_videoSource.get());
+        videoTrack = m_peerConnectionFactory->CreateVideoTrack(
+            rtc::scoped_refptr<webrtc::VideoTrackSourceInterface>(m_videoSource.get()),
+            "stream_video");
         videoTrack->set_enabled(!m_isLocalVideoMuted);
     }
 
