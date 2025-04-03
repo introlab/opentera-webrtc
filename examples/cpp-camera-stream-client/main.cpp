@@ -240,7 +240,7 @@ int main(int argc, char* argv[])
             cout << "\tid=" << client.id() << ", name=" << client.name() << endl;
         });
     client.setOnVideoFrameReceived(
-        [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
+        [](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs, uint64_t ntpTimeMs)
         {
             // This callback is called from a WebRTC processing thread.
             cv::imshow(client.id(), bgrImg);
