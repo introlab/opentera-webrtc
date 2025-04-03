@@ -44,8 +44,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
 {
     if (onVideoFrameReceived)
     {
-        m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs)
-                                             { onVideoFrameReceived(m_peerClient, bgrImg, timestampUs); });
+        m_videoSink = make_unique<VideoSink>([=](const cv::Mat& bgrImg, uint64_t timestampUs, uint64_t ntpTimeMs)
+                                             { onVideoFrameReceived(m_peerClient, bgrImg, timestampUs, ntpTimeMs); });
     }
 
     if (onEncodedVideoFrameReceived)
@@ -57,7 +57,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
                 bool isKeyFrame,
                 uint32_t width,
                 uint32_t height,
-                uint64_t timestampUs) {
+                uint64_t timestampUs)
+            {
                 onEncodedVideoFrameReceived(
                     m_peerClient,
                     data,
@@ -77,7 +78,8 @@ StreamPeerConnectionHandler::StreamPeerConnectionHandler(
                 int bitsPerSample,
                 int sampleRate,
                 size_t numberOfChannels,
-                size_t numberOfFrames) {
+                size_t numberOfFrames)
+            {
                 onAudioFrameReceived(
                     m_peerClient,
                     audioData,

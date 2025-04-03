@@ -10,7 +10,7 @@
 
 namespace opentera
 {
-    using VideoFrameReceivedCallback = std::function<void(const Client&, const cv::Mat&, uint64_t)>;
+    using VideoFrameReceivedCallback = std::function<void(const Client&, const cv::Mat&, uint64_t, uint64_t)>;
     using EncodedVideoFrameReceivedCallback = std::function<void(
         const Client& client,
         const uint8_t* data,

@@ -9,7 +9,7 @@
 namespace opentera
 {
 
-    using VideoSinkCallback = std::function<void(const cv::Mat&, uint64_t)>;
+    using VideoSinkCallback = std::function<void(const cv::Mat&, uint64_t, uint64_t)>;
 
     /**
      * @brief Class that sinks frame from a webrtc stream
@@ -32,7 +32,10 @@ namespace opentera
      * @brief get frame requirements for this sink
      * @return frame requirements for this sink
      */
-    inline rtc::VideoSinkWants VideoSink::wants() const { return m_wants; }
+    inline rtc::VideoSinkWants VideoSink::wants() const
+    {
+        return m_wants;
+    }
 
 }
 
