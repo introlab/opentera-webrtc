@@ -74,11 +74,11 @@ class StreamClientTestCase(FailureTestCase):
         def on_remove_remote_stream(client):
             self.add_failure('on_remove_remote_stream')
 
-        def on_video_frame_received1(client, frame, timestamp_us, ntp_time_us):
+        def on_video_frame_received1(client, frame, timestamp):
             self._mean_color_1 = np.mean(frame, axis=(0, 1))
             on_video_frame_awaiter1.done()
 
-        def on_video_frame_received2(client, frame, timestamp_us, ntp_time_us):
+        def on_video_frame_received2(client, frame, timestamp):
             self._mean_color_2 = np.mean(frame, axis=(0, 1))
             on_video_frame_awaiter2.done()
 

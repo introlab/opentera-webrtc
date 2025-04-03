@@ -12,9 +12,9 @@ namespace py = pybind11;
 
 void setOnVideoFrameReceived(
     StreamClient& self,
-    const function<void(const Client&, const py::array_t<uint8_t>&, uint64_t, uint64_t)>& pythonCallback)
+    const function<void(const Client&, const py::array_t<uint8_t>&, uint64_t)>& pythonCallback)
 {
-    auto callback = [=](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs, uint64_t ntpTimeMs)
+    auto callback = [=](const Client& client, const cv::Mat& bgrImg, uint64_t timestampUs)
     {
         size_t height = bgrImg.rows;
         size_t width = bgrImg.cols;
@@ -32,7 +32,7 @@ void setOnVideoFrameReceived(
 
         py::gil_scoped_acquire acquire;
         py::array_t<uint8_t> numpyBgrImg(bufferInfo);
-        pythonCallback(client, numpyBgrImg, timestampUs, ntpTimeMs);
+        pythonCallback(client, numpyBgrImg, timestampUs);
     };
 
     self.setOnVideoFrameReceived(callback);
@@ -315,7 +315,6 @@ void opentera::initStreamClientPython(pybind11::module& m)
             " - client: The client of the stream frame\n"
             " - bgr_img: The BGR frame image (numpy.array[uint8])\n"
             " - timestamp_us The timestamp in microseconds\n"
-            " - ntp_time_ms The ntp time in milliseconds\n"
             "\n"
             ":param callback: The callback")
         .def_property(

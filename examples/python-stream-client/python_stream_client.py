@@ -67,7 +67,7 @@ def on_remove_remote_stream(client):
         client.id, client.name, client.data))
 
 
-def on_video_frame_received(client, image, timestamp_us, ntp_time_us):
+def on_video_frame_received(client, image, timestampUs):
     # This callback is called from a WebRTC processing thread.
     cv2.imshow(client.id, image)
     cv2.waitKey(1)

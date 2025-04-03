@@ -61,7 +61,7 @@ void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
     switch (frame.rotation())
     {
         case webrtc::kVideoRotation_0:
-            m_onFrameReceived(m_bgrImg, frame.timestamp_us(), frame.ntp_time_ms());
+            m_onFrameReceived(m_bgrImg, frame.timestamp_us());
             return;
         case webrtc::kVideoRotation_90:
             cv::rotate(m_bgrImg, m_bgrRotatedImg, cv::ROTATE_90_CLOCKWISE);
@@ -73,5 +73,5 @@ void VideoSink::OnFrame(const webrtc::VideoFrame& frame)
             cv::rotate(m_bgrImg, m_bgrRotatedImg, cv::ROTATE_90_COUNTERCLOCKWISE);
             break;
     }
-    m_onFrameReceived(m_bgrRotatedImg, frame.timestamp_us(), frame.ntp_time_ms());
+    m_onFrameReceived(m_bgrRotatedImg, frame.timestamp_us());
 }

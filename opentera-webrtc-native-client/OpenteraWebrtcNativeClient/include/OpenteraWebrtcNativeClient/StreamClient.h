@@ -96,18 +96,12 @@ namespace opentera
     /**
      * @brief Mutes the local audio.
      */
-    inline void StreamClient::muteLocalAudio()
-    {
-        setLocalAudioMuted(true);
-    }
+    inline void StreamClient::muteLocalAudio() { setLocalAudioMuted(true); }
 
     /**
      * @brief Unmutes the local audio.
      */
-    inline void StreamClient::unmuteLocalAudio()
-    {
-        setLocalAudioMuted(false);
-    }
+    inline void StreamClient::unmuteLocalAudio() { setLocalAudioMuted(false); }
 
     /**
      * @brief Indicates if the remote audio is muted.
@@ -121,18 +115,12 @@ namespace opentera
     /**
      * @brief Mutes the remote audio.
      */
-    inline void StreamClient::muteRemoteAudio()
-    {
-        setRemoteAudioMuted(true);
-    }
+    inline void StreamClient::muteRemoteAudio() { setRemoteAudioMuted(true); }
 
     /**
      * @brief Unmutes the remote audio.
      */
-    inline void StreamClient::unmuteRemoteAudio()
-    {
-        setRemoteAudioMuted(false);
-    }
+    inline void StreamClient::unmuteRemoteAudio() { setRemoteAudioMuted(false); }
 
     /**
      * @brief Indicates if the local video is muted.
@@ -146,18 +134,12 @@ namespace opentera
     /**
      * @brief Mutes the local video.
      */
-    inline void StreamClient::muteLocalVideo()
-    {
-        setLocalVideoMuted(true);
-    }
+    inline void StreamClient::muteLocalVideo() { setLocalVideoMuted(true); }
 
     /**
      * @brief Unmutes the local video.
      */
-    inline void StreamClient::unmuteLocalVideo()
-    {
-        setLocalVideoMuted(false);
-    }
+    inline void StreamClient::unmuteLocalVideo() { setLocalVideoMuted(false); }
 
     /**
      * @brief Sets the callback that is called when a stream is added.
@@ -203,7 +185,6 @@ namespace opentera
      *  - client: The client of the stream frame
      *  - bgrImg: The BGR frame image
      *  - timestampUs The timestamp in microseconds
-     *  - ntpTimeMs The ntp time in milliseconds
      * @endparblock
      *
      * @param callback The callback
